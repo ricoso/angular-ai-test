@@ -42,13 +42,37 @@
 - Validation, rules, orchestration
 - NO HTTP calls, calls API Service
 
-### Signal Store
-- signalStore({ providedIn: 'root' })
-- State: entities[], selectedId, isLoading, error
-- Computed: selected, filtered, count, hasEntities
-- Methods: load(), add(), update(), remove(), select()
-- Inject API Service, call in methods
-- Use patchState() to update
+### Signal Store (NUR Feature Store Pattern!)
+
+```typescript
+export const XxxStore = signalStore(
+  { providedIn: 'root' },
+  withState({ items: [], loading: false, error: null }),
+  withComputed(({ items }) => ({
+    itemCount: computed(() => items().length)
+  })),
+  withMethods((store, api = inject(XxxApiService)) => ({
+    async loadItems() {
+      patchState(store, { loading: true });
+      try {
+        const items = await api.getAll();
+        patchState(store, { items, error: null });
+      } catch (err) {
+        patchState(store, { error: err.message });
+      } finally {
+        patchState(store, { loading: false });
+      }
+    }
+  })),
+  withHooks({ onInit(store) { store.loadItems(); } })
+);
+```
+
+- State: entities[], loading, error
+- Computed: filtered, count, selected
+- Methods: load(), add(), update(), remove()
+- Inject API Service in withMethods
+- Use patchState() for updates
 
 ### Router Resolver (Optional)
 - Functional resolver, triggers Store directly
