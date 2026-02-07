@@ -1,0 +1,7 @@
+{
+  "name": "create-component",
+  "description": "Create presentational component in feature",
+  "usage": "/create-component <feature> <component-name>",
+  "examples": ["/create-component product product-card"],
+  "command": "./scripts/create-component.sh ${feature} ${name}"
+}

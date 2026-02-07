@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "ngrx-signalstore": {
+      "command": "node",
+      "args": ["./mcp/ngrx-signalstore/index.js"],
+      "cwd": "${workspaceFolder}"
+    },
+    "angular-material": {
+      "command": "node",
+      "args": ["./mcp/angular-material/index.js"],
+      "cwd": "${workspaceFolder}"
+    },
+    "angular-cli": {
+      "command": "npx",
+      "args": ["-y", "@angular/cli", "mcp"]
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "ngrx-signalstore-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP Server for NgRx Signal Store documentation and patterns",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "ngrx-signalstore-mcp": "./index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.5.0"
+  },
+  "keywords": ["mcp", "ngrx", "signals", "angular"],
+  "author": "",
+  "license": "MIT"
+}

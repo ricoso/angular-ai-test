@@ -1,0 +1,455 @@
+# Claude Code Skills for Angular 21 Template
+
+## Feature Development
+
+### /create-feature
+Create a new feature with complete Container/Presentational structure.
+
+**Usage:** `/create-feature <feature-name>`
+
+**Example:** `/create-feature product`
+
+**What it does:**
+1. Creates feature directory structure
+2. Generates Container Component (OnPush, separate HTML/SCSS)
+3. Generates API Service (HTTP calls only)
+4. Generates Business Service (validation, logic)
+5. Generates Signal Store (state management)
+6. Generates Models (TypeScript interfaces)
+7. Generates Routes (lazy loading)
+8. Creates all test files (.spec.ts)
+
+**Files created:**
+- `containers/<feature>-container/` - Container Component
+- `services/<feature>-api.service.ts` - API Service
+- `services/<feature>-business.service.ts` - Business Service
+- `stores/<feature>.store.ts` - Signal Store
+- `models/<feature>.model.ts` - Models
+- `<feature>.routes.ts` - Routes
+
+**Next steps:**
+- Add route to `app.routes.ts`
+- Create presentational components
+- Implement business logic
+
+---
+
+### /create-component
+Create a presentational component in a feature.
+
+**Usage:** `/create-component <feature> <component-name>`
+
+**Example:** `/create-component product product-card`
+
+**What it does:**
+1. Creates component directory in feature
+2. Generates TypeScript file (OnPush, Input/Output)
+3. Generates separate HTML template
+4. Generates separate SCSS styles
+5. Generates test file
+
+**Pattern:**
+- OnPush Change Detection
+- Signal Inputs: `input()`, `input.required()`
+- Signal Outputs: `output()`
+- No Store/Service injection
+- Pure UI logic only
+
+---
+
+### /create-requirement
+Create a new requirement with German + English versions.
+
+**Usage:** `/create-requirement <FeatureName> <number>`
+
+**Example:** `/create-requirement UserNotifications 42`
+
+**What it does:**
+1. Creates requirement directory: `REQ-{number}-{name}/`
+2. Copies template to `requirement.md` (German)
+3. Copies template to `requirement.en.md` (English)
+4. Replaces placeholders
+
+**Next steps:**
+- Fill out both versions (parallel!)
+- Add mockups (optional)
+- Add to `REQUIREMENTS.md`
+
+---
+
+## Code Generation
+
+### /add-service
+Add a service to existing feature.
+
+**Usage:** `/add-service <feature> <service-type>`
+
+**Example:** `/add-service product validation`
+
+**Service Types:**
+- `api` - API Service (HTTP calls)
+- `business` - Business Service (logic, validation)
+- `utility` - Utility Service (helpers)
+
+---
+
+### /add-store-method
+Add a method to existing Signal Store.
+
+**Usage:** `/add-store-method <feature> <method-name> <type>`
+
+**Example:** `/add-store-method product filterByCategory action`
+
+**Types:**
+- `action` - Async action (load, create, update, delete)
+- `setter` - Synchronous state update
+- `computed` - Derived state calculation
+
+---
+
+## Testing
+
+### /generate-tests
+Generate missing test files for a feature.
+
+**Usage:** `/generate-tests <feature>`
+
+**Example:** `/generate-tests product`
+
+**What it does:**
+- Scans feature directory
+- Finds files without `.spec.ts`
+- Generates test templates
+- Includes test cases for:
+  - Component creation
+  - Input/Output
+  - Event handlers
+  - Service methods
+
+---
+
+### /run-tests
+Run tests for specific feature.
+
+**Usage:** `/run-tests <feature>`
+
+**Example:** `/run-tests product`
+
+**What it does:**
+- Runs Jest tests for feature
+- Shows coverage report
+- Highlights failing tests
+
+---
+
+## Documentation
+
+### /update-requirement
+Update requirement documentation after implementation.
+
+**Usage:** `/update-requirement <req-number>`
+
+**Example:** `/update-requirement 42`
+
+**What it does:**
+- Opens requirement files (DE + EN)
+- Adds Implementation Notes section
+- Updates status to "Implemented"
+- Adds test results
+- Adds coverage report
+
+---
+
+### /generate-api-docs
+Generate API documentation from services.
+
+**Usage:** `/generate-api-docs <feature>`
+
+**Example:** `/generate-api-docs product`
+
+**What it does:**
+- Scans API services
+- Extracts endpoints
+- Generates OpenAPI spec
+- Creates markdown documentation
+
+---
+
+## Code Quality
+
+### /check-architecture
+Verify architecture patterns in feature.
+
+**Usage:** `/check-architecture <feature>`
+
+**Example:** `/check-architecture product`
+
+**Checks:**
+- ✅ Container has OnPush
+- ✅ Presentational components have no Store injection
+- ✅ API Service has no business logic
+- ✅ Business Service uses API Service
+- ✅ Signal Store uses Services
+- ✅ All @for loops have trackBy
+- ✅ No method calls in templates
+- ✅ Separate HTML + SCSS files
+
+**Output:**
+- List of violations
+- Suggestions for fixes
+
+---
+
+### /fix-performance
+Auto-fix common performance issues.
+
+**Usage:** `/fix-performance <feature>`
+
+**Example:** `/fix-performance product`
+
+**Fixes:**
+- Adds `track` to @for loops
+- Changes to OnPush Change Detection
+- Converts methods to computed signals
+- Adds debounce to form inputs
+- Adds lazy loading to routes
+
+---
+
+## Refactoring
+
+### /split-component
+Split large component into Container + Presentational.
+
+**Usage:** `/split-component <path-to-component>`
+
+**Example:** `/split-component src/app/features/product/components/product-detail`
+
+**What it does:**
+1. Analyzes component
+2. Identifies UI logic vs business logic
+3. Creates Container component (business logic)
+4. Creates Presentational component (UI)
+5. Moves code appropriately
+6. Updates imports
+
+---
+
+### /extract-service
+Extract logic from component to service.
+
+**Usage:** `/extract-service <component-path> <service-type>`
+
+**Example:** `/extract-service product-container business`
+
+**What it does:**
+- Identifies business logic in component
+- Creates/updates service
+- Moves logic to service
+- Updates component to use service
+
+---
+
+## Migration
+
+### /migrate-to-signals
+Migrate component to use Signals.
+
+**Usage:** `/migrate-to-signals <component-path>`
+
+**Example:** `/migrate-to-signals src/app/features/product/components/product-list`
+
+**Migrations:**
+- `@Input()` → `input()` / `input.required()`
+- `@Output()` → `output()`
+- `BehaviorSubject` → `signal()`
+- Methods → `computed()`
+
+---
+
+### /add-i18n
+Add i18n support to component/feature.
+
+**Usage:** `/add-i18n <feature>`
+
+**Example:** `/add-i18n product`
+
+**What it does:**
+1. Creates translation types in `core/i18n/`
+2. Adds translation keys for feature
+3. Updates components to use `translate` pipe
+4. Generates English + German translations
+
+---
+
+## Workflow Helpers
+
+### /implement-spec
+Start implementation from requirement.
+
+**Usage:** `/implement-spec <req-number>`
+
+**Example:** `/implement-spec 42`
+
+**Workflow:**
+1. Read requirement (DE + EN)
+2. Check mockups if available
+3. Read relevant skills
+4. Create feature structure
+5. Generate components
+6. Create tests
+7. Update requirement with notes
+
+---
+
+### /review-code
+AI code review for feature.
+
+**Usage:** `/review-code <feature>`
+
+**Example:** `/review-code product`
+
+**Checks:**
+- Architecture compliance
+- Performance issues
+- Security concerns
+- Best practices
+- Test coverage
+- TypeScript strict mode
+- Naming conventions
+
+**Output:**
+- Detailed review report
+- Priority issues
+- Suggested improvements
+
+---
+
+## Quick Actions
+
+### /scaffold
+Quick scaffold from requirement to implementation.
+
+**Usage:** `/scaffold <req-number>`
+
+**Example:** `/scaffold 42`
+
+**What it does:**
+1. Read REQ-042 requirement
+2. Extract feature name
+3. Create feature structure
+4. Generate components based on mockups
+5. Add routes
+6. Create test stubs
+7. Open files for editing
+
+---
+
+### /status
+Show project status.
+
+**Usage:** `/status`
+
+**Shows:**
+- Features implemented
+- Test coverage overall
+- Requirements status (Draft, Approved, Implemented)
+- TODO items
+- Recent changes
+
+---
+
+## Best Practices Helpers
+
+### /check-naming
+Verify naming conventions.
+
+**Usage:** `/check-naming <feature>`
+
+**Example:** `/check-naming product`
+
+**Checks against Naming Glossary:**
+- Container methods: `on[Action]()`
+- API methods: `getAll()`, `create()`, etc.
+- Business methods: `validateAnd...()`, `confirm...()`
+- Store methods: `load...()`, `add...()`, etc.
+- Computed signals: `filtered...`, `selected...`, etc.
+
+---
+
+### /add-trackby
+Add trackBy to all @for loops in feature.
+
+**Usage:** `/add-trackby <feature>`
+
+**Example:** `/add-trackby product`
+
+**What it does:**
+- Scans all templates
+- Finds @for loops without proper track
+- Adds `track item.id` (or appropriate key)
+- Reports changes
+
+---
+
+## Tips
+
+**Pro Tip 1:** Use tab completion for feature/component names
+
+**Pro Tip 2:** Chain commands:
+```
+/create-feature product
+/create-component product product-list
+/create-component product product-card
+/add-trackby product
+```
+
+**Pro Tip 3:** Always check architecture:
+```
+/create-feature product
+# ... implement ...
+/check-architecture product
+```
+
+**Pro Tip 4:** Keep requirements synced:
+```
+# After implementation
+/update-requirement 42
+```
+
+---
+
+## Custom Workflows
+
+You can create custom workflows by combining commands:
+
+### New Feature Workflow
+```bash
+1. /create-requirement "ProductManagement" 10
+2. /create-feature product
+3. /create-component product product-list
+4. /create-component product product-card
+5. /add-trackby product
+6. /check-architecture product
+7. /generate-tests product
+8. /run-tests product
+9. /update-requirement 10
+```
+
+### Refactoring Workflow
+```bash
+1. /check-architecture product
+2. /fix-performance product
+3. /check-naming product
+4. /run-tests product
+5. /review-code product
+```
+
+### Migration Workflow
+```bash
+1. /migrate-to-signals old-component
+2. /split-component old-component
+3. /add-trackby product
+4. /generate-tests product
+5. /run-tests product
+```

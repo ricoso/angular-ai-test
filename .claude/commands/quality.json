@@ -1,0 +1,12 @@
+{
+  "name": "quality",
+  "description": "Run quality checks before commit",
+  "commands": {
+    "lint": "npm run lint:fix",
+    "format": "npm run format",
+    "type-check": "npm run type-check",
+    "test": "npm run test:ci",
+    "build": "npm run build",
+    "all": "npm run lint:fix && npm run format && npm run type-check && npm run test:ci && npm run build"
+  }
+}

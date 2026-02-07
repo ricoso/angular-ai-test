@@ -1,0 +1,7 @@
+{
+  "name": "create-requirement",
+  "description": "Create requirement folder with DE+EN versions",
+  "usage": "/create-requirement <name> <number>",
+  "examples": ["/create-requirement UserNotifications 42"],
+  "command": "./scripts/create-requirement.sh '${name}' ${number}"
+}

@@ -1,0 +1,42 @@
+import type { Config } from 'jest';
+
+const config: Config = {
+  preset: 'jest-preset-angular',
+  setupFilesAfterEnv: ['<rootDir>/src/setup-jest.ts'],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  coverageDirectory: 'coverage',
+  collectCoverageFrom: [
+    'src/app/**/*.ts',
+    '!src/app/**/*.spec.ts',
+    '!src/app/**/*.module.ts',
+    '!src/app/**/*.routes.ts',
+    '!src/app/**/models/**',
+  ],
+  coverageThreshold: {
+    global: {
+      statements: 80,
+      branches: 75,
+      functions: 75,
+      lines: 80,
+    },
+  },
+  moduleNameMapper: {
+    '^@core/(.*)$': '<rootDir>/src/app/core/$1',
+    '^@shared/(.*)$': '<rootDir>/src/app/shared/$1',
+    '^@features/(.*)$': '<rootDir>/src/app/features/$1',
+    '^@layouts/(.*)$': '<rootDir>/src/app/layouts/$1',
+    '^@environments/(.*)$': '<rootDir>/src/environments/$1',
+  },
+  testMatch: ['**/*.spec.ts'],
+  transform: {
+    '^.+\\.(ts|js|html)$': [
+      'jest-preset-angular',
+      {
+        tsconfig: '<rootDir>/tsconfig.spec.json',
+        stringifyContentPathRegex: '\\.html$',
+      },
+    ],
+  },
+};
+
+export default config;

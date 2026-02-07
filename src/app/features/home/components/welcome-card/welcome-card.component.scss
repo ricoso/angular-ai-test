@@ -1,0 +1,41 @@
+.welcome-card {
+  background: white;
+  border-radius: 12px;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  
+  .welcome-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+  
+  h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+    color: #333;
+  }
+  
+  p {
+    margin: 0 0 1.5rem 0;
+    color: #666;
+    font-size: 1.1rem;
+  }
+  
+  .welcome-badges {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    
+    .badge {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+  }
+}

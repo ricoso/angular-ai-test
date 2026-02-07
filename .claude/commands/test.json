@@ -1,0 +1,10 @@
+{
+  "name": "test",
+  "description": "Run tests with coverage check",
+  "commands": {
+    "run-tests": "npm test",
+    "test-ci": "npm run test:ci",
+    "coverage": "npm run test:coverage",
+    "test-file": "npm test -- ${filename}"
+  }
+}
