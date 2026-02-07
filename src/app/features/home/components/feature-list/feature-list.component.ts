@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
 
 interface Feature {
+  id: string;
   title: string;
   description: string;
   icon: string;

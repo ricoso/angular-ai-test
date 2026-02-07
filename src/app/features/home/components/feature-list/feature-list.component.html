@@ -2,7 +2,7 @@
   <h3>Key Features</h3>
   
   <div class="features-grid">
-    @for (feature of features(); track feature.title) {
+    @for (feature of features(); track feature.id) {
       <div class="feature-card" (click)="onFeatureClick(feature)">
         <div class="feature-icon">{{ feature.icon }}</div>
         <h4>{{ feature.title }}</h4>

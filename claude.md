@@ -56,13 +56,34 @@ Alle Skills in `.claude/skills/`:
 
 ## Workflow: Spec-Driven Development
 
+**Trigger:** `Implementiere REQ-042-UserNotifications`
+
 ```
-1. Lese SPEC → docs/requirements/REQ-XXX-Name/
-2. Lese Skills → .claude/skills/angular-architecture.md (IMMER!)
-3. Nutze MCP → "Zeig mir feature-store Pattern"
-4. Implementiere → Feature Store + Container + Children
-5. Teste → npm run test:coverage (Ziel: >80%)
-6. Update SPEC → Implementation Notes
+1. Branch erstellen → git checkout -b feat/REQ-042-UserNotifications
+2. Lese SPEC → docs/requirements/REQ-042-UserNotifications/
+3. Lese Skills:
+   - angular-architecture.md (IMMER!)
+   - i18n-typings.md (bei HTML Templates)
+   - forms.md (bei Formularen)
+   - routing-patterns.md (bei Routes)
+   - performance.md (bei Listen/Loops)
+4. Nutze MCP → "Zeig mir feature-store Pattern"
+5. Implementiere → Feature Store + Container + Children
+6. Schreibe Tests → Jest Unit Tests für Store, Services, Components
+7. Teste → npm run test:coverage (Ziel: >80%)
+8. Prüfe:
+   - /check-architecture user-notifications (IMMER)
+   - /check-i18n user-notifications (bei HTML)
+   - /check-performance user-notifications (bei Listen/Loops)
+   - /check-code-language user-notifications (IMMER)
+   - /check-forms user-notifications (bei Formularen)
+   - /check-routing user-notifications (bei Routes)
+   - /check-typescript user-notifications (bei Types)
+   - /check-eslint user-notifications (IMMER)
+   - npm run lint:fix
+   - npm run type-check
+9. Update SPEC → Implementation Notes
+10. Commit → git commit -m "feat(REQ-042): ..."
 ```
 
 ---

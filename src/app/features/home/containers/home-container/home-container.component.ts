@@ -3,6 +3,7 @@ import { WelcomeCardComponent } from '../../components/welcome-card/welcome-card
 import { FeatureListComponent } from '../../components/feature-list/feature-list.component';
 
 interface Feature {
+  id: string;
   title: string;
   description: string;
   icon: string;
@@ -20,31 +21,37 @@ export class HomeContainerComponent {
   // Container: Manages state with signals
   features = signal<Feature[]>([
     {
+      id: 'container-pattern',
       title: 'Container/Presentational Pattern',
       description: 'One Container per route with Presentational children. Clean separation of concerns.',
       icon: '🎯'
     },
     {
+      id: 'signal-store',
       title: 'Signal Store',
       description: 'NgRx Signal Store for state management. No BehaviorSubject!',
       icon: '📦'
     },
     {
+      id: 'service-layers',
       title: 'Service Layers',
       description: 'API Services for HTTP, Business Services for logic. Clear responsibilities.',
       icon: '⚙️'
     },
     {
+      id: 'onpush',
       title: 'OnPush Everywhere',
       description: 'Optimal change detection with OnPush strategy on all components.',
       icon: '⚡'
     },
     {
+      id: 'jest-testing',
       title: 'Jest Testing',
       description: 'Fast unit tests with Jest. Coverage target: >80%.',
       icon: '✅'
     },
     {
+      id: 'typescript-strict',
       title: 'TypeScript Strict',
       description: 'Full type safety with TypeScript strict mode enabled.',
       icon: '🔒'
