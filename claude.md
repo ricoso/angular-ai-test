@@ -8,18 +8,137 @@
 - **Testing**: Jest 30
 - **i18n**: ngx-translate (TypeScript Typings)
 
-> Für Quick Start, CLI Commands und Project Structure → siehe **README.md**
-
 ---
 
 ## 🔴 ARCHITEKTUR-REGELN
 
-> **Details:** `.claude/skills/angular-architecture.md` (IMMER lesen!)
+### Container/Presentational Pattern
+- 1 Route = 1 Container Component + Presentational Children
+- Container: `inject(Store)`, OnPush, Event Handler (`onXxx()`)
+- Presentational: `input()`, `output()` only, KEIN Store, KEINE Services
 
-- **Container/Presentational**: 1 Route = 1 Container + Children
-- **Store**: NUR Feature Store Pattern (withState, withComputed, withMethods, withHooks)
-- **Services**: API Service (HTTP) + Business Service (Logic)
-- **Performance**: OnPush, trackBy, Computed statt Template-Methoden
+### Feature Store Pattern (PFLICHT!)
+- IMMER: `withState`, `withComputed`, `withMethods`, `withHooks`
+- State: `items[]`, `loading`, `error`
+- Computed: `filteredItems`, `itemCount`, `hasItems`
+- Methods: `loadItems()`, `addItem()`, `updateItem()`, `removeItem()`
+- ⚠️ **KEIN `onInit` im Store** für Feature-Daten → Route Resolver verwenden!
+- ✅ `onInit` NUR für: App-Config, Auth Session, Feature Flags (globale Daten)
+> **Beispiele:** `.claude/skills/angular-architecture.md`
+
+### Service Layers
+- **API Service** (`xxx-api.service.ts`): NUR HTTP calls, return `Promise<T>`
+- **Business Service** (`xxx-business.service.ts`): Validation, Logik, nutzt API Service
+- **Store**: State only, nutzt API Service in `withMethods`
+
+### Performance (PFLICHT!)
+- ✅ `ChangeDetectionStrategy.OnPush` bei ALLEN Components
+- ✅ `@for` mit `track item.id` (NICHT `$index`)
+- ✅ `computed()` statt Methoden im Template
+- ✅ Lazy Loading für alle Features
+- ✅ Image lazy loading: `<img loading="lazy" />`
+- ✅ Virtual Scroll für Listen >100 Items
+- ✅ Debounce bei Input Events (300ms)
+- ✅ `takeUntil(destroy$)` für Unsubscribe
+- ❌ KEINE Methoden-Aufrufe im Template (`{{ method() }}`)
+- ❌ KEINE Berechnungen im Template (`{{ a * b }}`)
+- ❌ KEINE Array-Operationen im Template (`{{ arr.filter() }}`)
+
+### TypeScript
+- ❌ KEIN `any` - immer Interfaces/Types (nutze `unknown` wenn nötig)
+- ✅ Interfaces für Models in `models/` Ordner (extensible objects)
+- ✅ Types für Unions/Utilities (`type Status = 'active' | 'inactive'`)
+- ✅ DTOs für API Requests/Responses
+- ✅ Explicit Return Types bei Methoden
+- ✅ Utility Types nutzen: `Partial<T>`, `Required<T>`, `Pick<T>`, `Omit<T>`, `Record<K,V>`
+- ✅ Type Guards für Runtime-Checks (`obj is User`)
+- ✅ Union Types statt Enums
+- ✅ PascalCase für Interfaces/Types, camelCase für Variablen
+
+---
+
+## 🌐 i18n REGELN
+
+- ✅ ALLE Texte in Templates mit `{{ 'key' | translate }}`
+- ✅ IMMER beide Sprachen: DE + EN (unabhängig von Code-Sprache!)
+- ✅ Type-safe Keys: `TranslationKey` Type verwenden
+- ✅ Key-Naming: `{feature}.{type}.{name}` (z.B. `user.form.name`, `user.buttons.save`)
+- ✅ TypeScript-only (KEINE JSON files!)
+- ✅ `translate.instant(key)` in Components, Pipe in Templates
+- ❌ KEINE hardcoded Strings in Templates
+> **Beispiele:** `.claude/skills/i18n-typings.md`
+
+---
+
+## 📝 FORMS REGELN
+
+- ✅ Reactive Forms (`FormGroup`, `FormControl`)
+- ✅ Typed Forms mit Generics
+- ✅ FormGroup als Signal in Container
+- ✅ FormGroup via `input()` an Presentational weitergeben
+- ✅ Validators im Component, NICHT im Template
+- ✅ Custom Validators in `validators/` Ordner (separate file)
+- ✅ `valueChanges` mit `debounceTime(300)` für Auto-Save
+- ✅ `takeUntil(destroy$)` für Unsubscribe
+- ✅ `form.markAllAsTouched()` bei Submit-Fehler
+- ✅ Error Handling in Presentational Component
+- ❌ KEIN `ngModel` (Template-Driven)
+- ❌ KEINE Form-Logik in Presentational Components
+> **Beispiele:** `.claude/skills/forms.md`
+
+---
+
+## 🛤️ ROUTING REGELN
+
+- ✅ Lazy Loading für alle Features (`loadChildren`)
+- ✅ Route Resolver mit RxMethod für Data Loading
+- ✅ Resolver triggert Store → Store lädt Daten → Component abonniert Store
+- ✅ `ResolveFn<void>` (return void, KEINE Daten zurückgeben!)
+- ✅ Functional Guards (`CanActivateFn`)
+- ✅ Route Params mit `input()` (nicht ActivatedRoute)
+- ✅ Container Component als Route Target
+- ✅ Store mit `rxMethod<void>(pipe(...))` für Resolver
+- ✅ `from()` für Promise → Observable conversion
+- ✅ `tap` → `patchState` für loading/data/error
+- ❌ KEINE Class-based Guards
+- ❌ KEIN ActivatedRoute injection (nutze `input()`)
+- ❌ KEINE Daten-Rückgabe aus Resolver
+> **Beispiele:** `.claude/skills/routing-patterns.md`
+
+---
+
+## 🌍 CODE LANGUAGE REGELN
+
+- Code-Sprache = Requirement-Sprache
+- UI IMMER bilingual (i18n DE + EN)
+- **Deutsche REQ:**
+  - Methods: `beimAbsenden()`, `ladeBenutzer()`, `erstelle()`, `loesche()`
+  - Variables: `benutzer[]`, `istLaden`, `gefilterteBenutzer`
+  - Types: `Benutzer`, `BenutzerErstellenDTO`
+  - Computed: `gefilterteBenutzer`, `istLaden`, `hatBenutzer`
+- **Englische REQ:**
+  - Methods: `onSubmit()`, `loadUsers()`, `create()`, `delete()`
+  - Variables: `users[]`, `isLoading`, `filteredUsers`
+  - Types: `User`, `CreateUserDTO`
+  - Computed: `filteredUsers`, `isLoading`, `hasUsers`
+- Glossar nutzen aus REQ-TEMPLATE Section 16
+> **Glossar:** `.claude/skills/code-language.md`
+
+---
+
+## 🔧 ESLINT REGELN
+
+- ✅ `npm run lint:fix` vor Commit
+- ✅ Imports sortiert (Angular → Third Party → Local)
+- ✅ Component Selectors mit Prefix: `app-user-card` (kebab-case)
+- ✅ OnPush Change Detection (PFLICHT!)
+- ✅ Explicit Return Types bei Methoden
+- ✅ KEIN `any` Type
+- ✅ Unused Imports entfernen
+- ✅ camelCase für Variablen, PascalCase für Klassen
+- ✅ UPPER_SNAKE_CASE für Konstanten
+- ✅ Underscore-Prefix für intentionally unused: `_unusedVar`
+> **Details:** `.claude/skills/eslint.md`
 
 ---
 
@@ -37,23 +156,6 @@ npm run mcp:setup  # Einmalig nach Clone
 
 ---
 
-## Skills (VOR Implementation lesen!)
-
-Alle Skills in `.claude/skills/`:
-
-| Skill | Wann lesen? |
-|-------|-------------|
-| **angular-architecture.md** | IMMER bei Components/Services |
-| **code-language.md** | Bei DE/EN Naming im Code |
-| **forms.md** | Bei Formularen |
-| **performance.md** | Bei Performance-kritischem Code |
-| **eslint.md** | Bei Linting-Fehlern |
-| **typescript-config.md** | Bei Type-Problemen |
-| **i18n-typings.md** | IMMER bei HTML Templates |
-| **routing-patterns.md** | Bei Routes/Navigation |
-
----
-
 ## Workflow: Spec-Driven Development
 
 **Trigger:** `Implementiere REQ-042-UserNotifications`
@@ -61,7 +163,7 @@ Alle Skills in `.claude/skills/`:
 ```
 1. Branch erstellen → git checkout -b feat/REQ-042-UserNotifications
 2. Lese SPEC → docs/requirements/REQ-042-UserNotifications/
-3. Lese Skills:
+3. Lese Skills (bei Bedarf):
    - angular-architecture.md (IMMER!)
    - i18n-typings.md (bei HTML Templates)
    - forms.md (bei Formularen)
@@ -112,13 +214,12 @@ test(REQ-XXX): Add 85% coverage
 
 ## Commands
 
-> Vollständige Liste → siehe **README.md** und **.claudeskills**
-
 ```bash
 npm start              # Dev Server
 npm test               # Jest Watch
 npm run test:coverage  # Coverage Report
 npm run lint:fix       # ESLint Auto-fix
+npm run type-check     # TypeScript Check
 ```
 
 ---
@@ -128,12 +229,7 @@ npm run lint:fix       # ESLint Auto-fix
 ```
 src/app/
 ├── core/                      # Singletons (Guards, Interceptors)
-│   ├── guards/
-│   └── interceptors/
 ├── shared/                    # Wiederverwendbare Components
-│   ├── components/
-│   ├── directives/
-│   └── pipes/
 ├── features/                  # Feature Module
 │   └── user/
 │       ├── user-container.component.ts

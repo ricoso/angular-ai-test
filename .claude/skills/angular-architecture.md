@@ -45,26 +45,36 @@
 ### Signal Store (NUR Feature Store Pattern!)
 
 ```typescript
-export const XxxStore = signalStore(
+// user.store.ts
+export const UserStore = signalStore(
   { providedIn: 'root' },
-  withState({ items: [], loading: false, error: null }),
-  withComputed(({ items }) => ({
-    itemCount: computed(() => items().length)
+  withState({
+    users: [] as User[],
+    loading: false,
+    error: null as string | null
+  }),
+  withComputed(({ users }) => ({
+    userCount: computed(() => users().length),
+    hasUsers: computed(() => users().length > 0)
   })),
-  withMethods((store, api = inject(XxxApiService)) => ({
-    async loadItems() {
+  withMethods((store, api = inject(UserApiService)) => ({
+    async loadUsers() {
       patchState(store, { loading: true });
       try {
-        const items = await api.getAll();
-        patchState(store, { items, error: null });
+        const users = await api.getAll();
+        patchState(store, { users, error: null });
       } catch (err) {
         patchState(store, { error: err.message });
       } finally {
         patchState(store, { loading: false });
       }
+    },
+    async addUser(user: User) {
+      await api.create(user);
+      patchState(store, { users: [...store.users(), user] });
     }
-  })),
-  withHooks({ onInit(store) { store.loadItems(); } })
+  }))
+  // ⚠️ KEIN withHooks onInit für Feature-Daten!
 );
 ```
 
@@ -73,13 +83,56 @@ export const XxxStore = signalStore(
 - Methods: load(), add(), update(), remove()
 - Inject API Service in withMethods
 - Use patchState() for updates
+- ⚠️ **KEIN `onInit`** für Feature-Daten → Route Resolver!
 
-### Router Resolver (Optional)
-- Functional resolver, triggers Store directly
-- Store has RxMethod for loading
-- Resolver: inject Store, call rxMethod(), return Observable
-- Container: Subscribe to Store signals/observables
-- NO manual data passing, Store handles everything
+### Router Resolver (STANDARD für Feature-Daten!)
+
+```typescript
+// user.resolver.ts
+export const usersResolver: ResolveFn<void> = () => {
+  const store = inject(UserStore);
+  store.loadUsers();
+  return;
+};
+
+// user.routes.ts
+export const USER_ROUTES: Routes = [
+  {
+    path: '',
+    component: UserContainerComponent,
+    resolve: { _: usersResolver }  // Resolver triggert Store
+  }
+];
+```
+
+### Store `onInit` - NUR für globale Daten!
+
+```typescript
+// ✅ OK: App-Config Store (global, einmalig)
+export const ConfigStore = signalStore(
+  { providedIn: 'root' },
+  withState({ theme: 'light', language: 'de' }),
+  withMethods((store, api = inject(ConfigApiService)) => ({
+    async loadConfig() { /* ... */ }
+  })),
+  withHooks({
+    onInit(store) { store.loadConfig(); }  // ✅ OK für globale Config
+  })
+);
+
+// ❌ FALSCH: Feature Store mit onInit
+export const UserStore = signalStore(
+  withHooks({
+    onInit(store) { store.loadUsers(); }  // ❌ NICHT für Feature-Daten!
+  })
+);
+```
+
+**Wann `onInit` im Store?**
+- ✅ App-Konfiguration (einmalig beim Start)
+- ✅ Auth/User Session (global)
+- ✅ Feature Flags
+- ❌ NICHT für Feature-Daten (Users, Products, Orders)
 
 ---
 
