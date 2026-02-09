@@ -1,10 +1,10 @@
-<div class="welcome-card">
-  <div class="welcome-icon">👋</div>
-  <h2>Hello, {{ userName() }}!</h2>
-  <p>Welcome to Angular 22 Template</p>
-  <div class="welcome-badges">
-    <span class="badge">Container Pattern</span>
-    <span class="badge">Signal Store</span>
-    <span class="badge">Jest Tests</span>
+<article class="welcome-card" aria-labelledby="welcome-heading">
+  <div class="welcome-card__icon" aria-hidden="true">👋</div>
+  <h2 id="welcome-heading">Hallo, {{ userName() }}!</h2>
+  <p>Willkommen beim Angular 21 Template</p>
+  <div class="welcome-card__badges" role="list" aria-label="Features">
+    <span class="welcome-card__badge" role="listitem">Container Pattern</span>
+    <span class="welcome-card__badge" role="listitem">Signal Store</span>
+    <span class="welcome-card__badge" role="listitem">Jest Tests</span>
   </div>
-</div>
+</article>

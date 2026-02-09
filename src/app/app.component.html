@@ -1,14 +1,29 @@
-<div class="app-container">
-  <header class="app-header">
-    <h1>{{ title }}</h1>
-    <p>Container/Presentational Pattern • Signal Store • Jest Testing</p>
+<!-- Skip Link (Accessibility) -->
+<a href="#main-content" class="skip-link">
+  Zum Hauptinhalt springen
+</a>
+
+<div class="app-layout">
+  <!-- Header -->
+  <header class="app-header" role="banner">
+    <div class="app-header__content">
+      <h1 class="app-header__title">{{ title }}</h1>
+      <p class="app-header__subtitle">Container/Presentational Pattern • Signal Store • Jest Testing</p>
+    </div>
+
+    <!-- Font Size Toggle (Accessibility) -->
+    <div class="app-header__a11y">
+      <app-font-size-toggle />
+    </div>
   </header>
-  
-  <main class="app-main">
+
+  <!-- Main Content -->
+  <main id="main-content" class="app-main" role="main">
     <router-outlet />
   </main>
-  
-  <footer class="app-footer">
-    <p>Angular 22 • TypeScript 5.7 • OnPush Everywhere</p>
+
+  <!-- Footer -->
+  <footer class="app-footer" role="contentinfo">
+    <p>Angular 21 • TypeScript 5.7 • OnPush Everywhere</p>
   </footer>
 </div>

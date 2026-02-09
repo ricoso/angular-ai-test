@@ -1,0 +1,57 @@
+// Breakpoints (em-based for accessibility)
+$breakpoint-mobile: 30em;    // 480px
+$breakpoint-tablet: 48em;    // 768px
+$breakpoint-desktop: 64em;   // 1024px
+$breakpoint-wide: 80em;      // 1280px
+
+// Mobile-First Mixins (use min-width!)
+@mixin mobile-only {
+  @media (max-width: #{$breakpoint-mobile}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$breakpoint-tablet}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$breakpoint-desktop}) {
+    @content;
+  }
+}
+
+@mixin wide {
+  @media (min-width: #{$breakpoint-wide}) {
+    @content;
+  }
+}
+
+// Visibility Utilities
+.hide-mobile {
+  @include mobile-only {
+    display: none !important;
+  }
+}
+
+.hide-desktop {
+  @include desktop {
+    display: none !important;
+  }
+}
+
+.show-mobile-only {
+  display: none !important;
+  @include mobile-only {
+    display: block !important;
+  }
+}
+
+.show-desktop-only {
+  display: none !important;
+  @include desktop {
+    display: block !important;
+  }
+}

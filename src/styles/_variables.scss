@@ -1,0 +1,72 @@
+// CSS Custom Properties
+:root {
+  // Colors
+  --primary-color: #667eea;
+  --primary-dark: #5a67d8;
+  --secondary-color: #764ba2;
+  --accent-color: #ed8936;
+
+  // Text Colors (WCAG AA Contrast)
+  --text-color: #1a1a1a;        // 15:1 on white
+  --text-secondary: #595959;    // 7:1 on white
+  --text-muted: #767676;        // 4.5:1 minimum!
+  --text-on-primary: #ffffff;
+  --text-on-dark: #ffffff;
+
+  // Backgrounds
+  --background-color: #f8f9fa;
+  --surface-color: #ffffff;
+  --surface-hover: #f5f5f5;
+
+  // Borders
+  --border-color: #e0e0e0;
+  --divider-color: #eeeeee;
+
+  // Semantic Colors
+  --error-color: #c62828;
+  --success-color: #2e7d32;
+  --warning-color: #e65100;
+  --info-color: #1565c0;
+
+  // Focus
+  --focus-color: #005fcc;
+
+  // Shadows
+  --shadow-sm: 0 0.0625em 0.125em rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 0.5em 1em rgba(0, 0, 0, 0.15);
+
+  // Font Sizes (adjustable via Font-Size Toggle)
+  --font-size-base: 1em;        // 16px default
+  --font-size-xs: 0.875em;      // 14px
+  --font-size-sm: 1em;          // 16px
+  --font-size-md: 1.125em;      // 18px
+  --font-size-lg: 1.25em;       // 20px
+  --font-size-xl: 1.5em;        // 24px
+  --font-size-2xl: 2em;         // 32px
+
+  // Line Heights
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  // Spacing
+  --spacing-xs: 0.25em;
+  --spacing-sm: 0.5em;
+  --spacing-md: 1em;
+  --spacing-lg: 1.5em;
+  --spacing-xl: 2em;
+
+  // Border Radius
+  --radius-sm: 0.25em;
+  --radius-md: 0.5em;
+  --radius-lg: 0.75em;
+  --radius-xl: 1em;
+  --radius-full: 50%;
+}
+
+// Font-Size Toggle Support
+html[data-font-size="small"]   { --font-size-base: 0.875em; }  // 14px
+html[data-font-size="normal"]  { --font-size-base: 1em; }      // 16px
+html[data-font-size="large"]   { --font-size-base: 1.125em; }  // 18px
+html[data-font-size="x-large"] { --font-size-base: 1.25em; }   // 20px

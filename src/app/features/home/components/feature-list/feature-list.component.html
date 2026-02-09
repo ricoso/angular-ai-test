@@ -1,13 +1,20 @@
-<div class="feature-list">
-  <h3>Key Features</h3>
-  
-  <div class="features-grid">
+<section class="feature-list" aria-labelledby="features-heading">
+  <h3 id="features-heading">Wichtige Features</h3>
+
+  <div class="feature-list__grid" role="list">
     @for (feature of features(); track feature.id) {
-      <div class="feature-card" (click)="onFeatureClick(feature)">
-        <div class="feature-icon">{{ feature.icon }}</div>
+      <article
+        class="feature-card"
+        role="listitem"
+        tabindex="0"
+        [attr.aria-label]="feature.title + ': ' + feature.description"
+        (click)="onFeatureClick(feature)"
+        (keydown.enter)="onFeatureClick(feature)"
+        (keydown.space)="onFeatureClick(feature); $event.preventDefault()">
+        <div class="feature-card__icon" aria-hidden="true">{{ feature.icon }}</div>
         <h4>{{ feature.title }}</h4>
         <p>{{ feature.description }}</p>
-      </div>
+      </article>
     }
   </div>
-</div>
+</section>

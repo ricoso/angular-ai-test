@@ -24,6 +24,18 @@
 - Methods: `loadItems()`, `addItem()`, `updateItem()`, `removeItem()`
 - ⚠️ **KEIN `onInit` im Store** für Feature-Daten → Route Resolver verwenden!
 - ✅ `onInit` NUR für: App-Config, Auth Session, Feature Flags (globale Daten)
+- ✅ **Public Interface** für Feature Stores definieren (Type Safety)
+- ✅ `providedIn: 'root'` für Feature Stores (global)
+> **Beispiele:** `.claude/skills/angular-architecture.md`
+
+### Component Store Pattern (für UI State)
+- ✅ Separater Store für UI-State (tabs, modals, filters, sort)
+- ✅ Provided in `providers` Array des Components (NICHT root!)
+- ✅ Automatisch destroyed mit Component
+- ✅ KEIN `withHooks` (nur lokaler State)
+- ✅ Container kombiniert Feature Store (Business) + Component Store (UI)
+- ❌ KEINE Business-Daten im Component Store
+- ❌ KEIN UI-State im Feature Store
 > **Beispiele:** `.claude/skills/angular-architecture.md`
 
 ### Service Layers
@@ -139,6 +151,58 @@
 - ✅ UPPER_SNAKE_CASE für Konstanten
 - ✅ Underscore-Prefix für intentionally unused: `_unusedVar`
 > **Details:** `.claude/skills/eslint.md`
+
+---
+
+## 🎨 HTML & STYLING REGELN
+
+### HTML
+- ❌ KEINE Inline Styles (`style=""`) - IMMER CSS Classes verwenden!
+- ✅ Semantic HTML (header, nav, main, article, section, footer)
+- ✅ Skip Link: `<a href="#main-content" class="skip-link">`
+- ✅ ARIA labels für Icon-Buttons
+- ✅ ARIA live regions für dynamische Updates (`role="status"`, `aria-live="polite"`)
+- ✅ Alt text für Images mit `loading="lazy"` (leer für dekorative)
+- ✅ Labels mit Inputs verknüpft (`for`/`id`)
+
+### Accessibility (PFLICHT! WCAG 2.1 AA)
+- ✅ **Schriftgröße**: Min 1em (16px), nie unter 0.875em (14px)
+- ✅ **Line-height**: Min 1.5 für Fließtext
+- ✅ **Farbkontrast**: Min 4.5:1 (Text auf Hintergrund)
+- ✅ **Focus-Styles**: Sichtbar mit `:focus-visible`, NIEMALS `outline: none`!
+- ✅ **Keyboard-Navigation**: Tab, Enter, Space, Arrow Keys
+- ✅ **Reduced Motion**: `@media (prefers-reduced-motion: reduce)` respektieren
+- ✅ **High Contrast**: `@media (forced-colors: active)` unterstützen
+- ✅ **Screen Reader**: `.sr-only` Klasse für visuell versteckten Text
+- ❌ KEINE Animationen ohne `prefers-reduced-motion` Check
+- ❌ KEINE Focus-Styles entfernen
+
+### SCSS (PFLICHT!)
+- ✅ **em/rem statt px** für Responsive Design (1em = 16px)
+- ✅ **BEM mit Nesting** (`&__element`, `&--modifier`)
+- ✅ **@extend** für Wiederverwendung (Placeholders in `_placeholders.scss`)
+- ✅ **Spacing Utilities**: `m-4` (1em), `p-8` (2em), `gap-2` (0.5em) → siehe `src/styles/_utilities.scss`
+- ✅ **CSS Flexbox + Grid** (KEIN Angular Flex Layout!)
+- ✅ **Material Overrides** in `_material-overrides.scss` (zentral!)
+- ✅ **Breakpoints in em**: `48em` (768px), `64em` (1024px)
+- ❌ KEINE Pixel-Werte (außer border: 0.0625em statt 1px)
+
+### Layout Utilities
+- ✅ Flexbox: `.flex`, `.items-center`, `.justify-between`, `.gap-4`
+- ✅ Grid: `.grid`, `.grid-cols-4`, `.gap-4`, `.col-span-2`
+- ✅ Spacing: `.m-4`, `.p-8`, `.mt-2`, `.px-6`, `.py-4`
+- ✅ Display: `.d-flex`, `.d-grid`, `.d-none`
+
+### Responsive Design (PFLICHT!)
+- ✅ **Mobile-First**: Mobile Layout als Default, dann `@media (min-width)` für Tablet/Desktop
+- ✅ **Touch-friendly**: Min 2.75em (44px) für Buttons/Links
+- ✅ **Navigation**: Hamburger Menu auf Mobile
+- ✅ **Forms**: Full-width Inputs auf Mobile
+- ✅ **Tables**: Card-View auf Mobile, Table auf Desktop
+- ✅ **Grid**: 1 Spalte (Mobile) → 2 Spalten (Tablet) → 4 Spalten (Desktop)
+- ❌ KEIN `max-width` in Media Queries (nur `min-width`!)
+- ❌ KEIN Desktop-First Design
+> **Beispiele:** `.claude/skills/html-styling.md`
 
 ---
 
