@@ -68,13 +68,6 @@ npm run type-check
 npm run test:coverage
 ```
 
-### Step 8: Commit
-
-```bash
-git add .
-git commit -m "feat($ARGUMENTS): Implement <Name>"
-```
-
 ## Checkliste
 
 - [ ] Models definiert

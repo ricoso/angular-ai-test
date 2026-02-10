@@ -95,29 +95,6 @@ Prüft:
 - [ ] i18n Keys DE + EN
 - [ ] Dependencies in REQUIREMENTS.md
 
-### Step 8: Git Commit & Pull Request
-
-```bash
-# Alle Änderungen stagen
-git add docs/requirements/
-
-# Commit erstellen
-git commit -m "req($ARGUMENTS): Add <Name> requirement"
-
-# Push mit Upstream
-git push -u origin req/$ARGUMENTS
-
-# PR erstellen
-gh pr create --title "req($ARGUMENTS): Add <Name> requirement" --body "## Summary
-- New requirement: $ARGUMENTS
-- Screenshot analyzed (if present)
-- Template filled out
-
-## Checklist
-- [ ] /check-requirement passed
-- [ ] Acceptance Criteria complete
-- [ ] Dependencies documented"
-```
 
 ## Beispiel
 
