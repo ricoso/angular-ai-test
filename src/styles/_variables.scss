@@ -1,72 +1,114 @@
-// CSS Custom Properties
+// =============================================================================
+// CSS Custom Properties - Design System
+// =============================================================================
+// SINGLE SOURCE OF TRUTH für alle Farben, Abstände, etc.
+// Siehe: .claude/skills/ui-design-system.md
+// =============================================================================
+
 :root {
-  // Colors
-  --primary-color: #667eea;
-  --primary-dark: #5a67d8;
-  --secondary-color: #764ba2;
-  --accent-color: #ed8936;
+  // ===========================================================================
+  // BRAND COLORS
+  // ===========================================================================
+  --color-primary: #667eea;           // Hauptfarbe für Buttons, Links, Active States
+  --color-primary-hover: #5a67d8;     // Primary Hover State
+  --color-secondary: #764ba2;         // Sekundäre Aktionen
+  --color-accent: #ed8936;            // Highlights, Badges, Notifications
 
-  // Text Colors (WCAG AA Contrast)
-  --text-color: #1a1a1a;        // 15:1 on white
-  --text-secondary: #595959;    // 7:1 on white
-  --text-muted: #767676;        // 4.5:1 minimum!
-  --text-on-primary: #ffffff;
-  --text-on-dark: #ffffff;
+  // ===========================================================================
+  // TEXT COLORS (WCAG AA Contrast geprüft!)
+  // ===========================================================================
+  --color-text-primary: #1a1a1a;      // Haupttext - 15:1 Kontrast auf weiß
+  --color-text-secondary: #595959;    // Sekundärtext - 7:1 Kontrast auf weiß
+  --color-text-muted: #767676;        // Dezenter Text - 4.5:1 Minimum!
+  --color-text-on-primary: #ffffff;   // Text auf Primary-Farbe
+  --color-text-on-dark: #ffffff;      // Text auf dunklem Hintergrund
 
-  // Backgrounds
-  --background-color: #f8f9fa;
-  --surface-color: #ffffff;
-  --surface-hover: #f5f5f5;
+  // ===========================================================================
+  // BACKGROUND COLORS (Hell & Freundlich!)
+  // ===========================================================================
+  --color-background-page: #f8f9fa;   // Page Background - HELL!
+  --color-background-surface: #ffffff; // Cards, Dialogs, Modals
+  --color-background-hover: #f5f5f5;  // Hover State für Surfaces
 
-  // Borders
-  --border-color: #e0e0e0;
-  --divider-color: #eeeeee;
+  // ===========================================================================
+  // BORDER & DIVIDER
+  // ===========================================================================
+  --color-border: #e0e0e0;            // Standard Border
+  --color-divider: #eeeeee;           // Trennlinien
 
-  // Semantic Colors
-  --error-color: #c62828;
-  --success-color: #2e7d32;
-  --warning-color: #e65100;
-  --info-color: #1565c0;
+  // ===========================================================================
+  // SEMANTIC COLORS (Status & Feedback)
+  // ===========================================================================
+  --color-error: #c62828;             // Fehler, Validierung
+  --color-success: #2e7d32;           // Erfolg, Bestätigung
+  --color-warning: #e65100;           // Warnung, Achtung
+  --color-info: #1565c0;              // Info, Hinweis
 
-  // Focus
-  --focus-color: #005fcc;
+  // ===========================================================================
+  // FOCUS (Accessibility!)
+  // ===========================================================================
+  --color-focus-ring: #005fcc;        // Focus Outline für Keyboard-Navigation
 
-  // Shadows
-  --shadow-sm: 0 0.0625em 0.125em rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 0.5em 1em rgba(0, 0, 0, 0.15);
+  // ===========================================================================
+  // SHADOWS
+  // ===========================================================================
+  --shadow-small: 0 0.0625em 0.125em rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
+  --shadow-large: 0 0.5em 1em rgba(0, 0, 0, 0.15);
 
-  // Font Sizes (adjustable via Font-Size Toggle)
-  --font-size-base: 1em;        // 16px default
-  --font-size-xs: 0.875em;      // 14px
-  --font-size-sm: 1em;          // 16px
-  --font-size-md: 1.125em;      // 18px
-  --font-size-lg: 1.25em;       // 20px
-  --font-size-xl: 1.5em;        // 24px
-  --font-size-2xl: 2em;         // 32px
+  // ===========================================================================
+  // TYPOGRAPHY
+  // ===========================================================================
+  --font-size-base: 1em;              // 16px - Basis für alle Berechnungen
+  --font-size-xs: 0.875em;            // 14px - Minimum! (WCAG)
+  --font-size-sm: 1em;                // 16px
+  --font-size-md: 1.125em;            // 18px
+  --font-size-lg: 1.25em;             // 20px
+  --font-size-xl: 1.5em;              // 24px
+  --font-size-2xl: 2em;               // 32px
 
-  // Line Heights
-  --line-height-tight: 1.25;
-  --line-height-normal: 1.5;
-  --line-height-relaxed: 1.75;
+  --line-height-tight: 1.25;          // Headlines
+  --line-height-normal: 1.5;          // Fließtext (WCAG Minimum!)
+  --line-height-relaxed: 1.75;        // Langer Text
 
-  // Spacing
-  --spacing-xs: 0.25em;
-  --spacing-sm: 0.5em;
-  --spacing-md: 1em;
-  --spacing-lg: 1.5em;
-  --spacing-xl: 2em;
+  // ===========================================================================
+  // SPACING (em-basiert für Responsive)
+  // ===========================================================================
+  --spacing-xs: 0.25em;               // 4px
+  --spacing-sm: 0.5em;                // 8px
+  --spacing-md: 1em;                  // 16px
+  --spacing-lg: 1.5em;                // 24px
+  --spacing-xl: 2em;                  // 32px
 
-  // Border Radius
-  --radius-sm: 0.25em;
-  --radius-md: 0.5em;
-  --radius-lg: 0.75em;
-  --radius-xl: 1em;
-  --radius-full: 50%;
+  // ===========================================================================
+  // BORDER RADIUS
+  // ===========================================================================
+  --radius-sm: 0.25em;                // Kleine Elemente
+  --radius-md: 0.5em;                 // Buttons, Inputs
+  --radius-lg: 0.75em;                // Cards
+  --radius-xl: 1em;                   // Große Cards, Modals
+  --radius-full: 50%;                 // Runde Elemente (Avatar, Icons)
+
+  // ===========================================================================
+  // TOUCH TARGETS (Accessibility!)
+  // ===========================================================================
+  --touch-target-min: 2.75em;         // 44px - WCAG Minimum für Touch!
 }
 
-// Font-Size Toggle Support
+// =============================================================================
+// ACCESSIBILITY: Font-Size Toggle Support
+// =============================================================================
 html[data-font-size="small"]   { --font-size-base: 0.875em; }  // 14px
-html[data-font-size="normal"]  { --font-size-base: 1em; }      // 16px
+html[data-font-size="normal"]  { --font-size-base: 1em; }      // 16px (Default)
 html[data-font-size="large"]   { --font-size-base: 1.125em; }  // 18px
 html[data-font-size="x-large"] { --font-size-base: 1.25em; }   // 20px
+
+// =============================================================================
+// ACCESSIBILITY: High Contrast Mode
+// =============================================================================
+html[data-high-contrast="true"] {
+  --color-text-primary: #000000;
+  --color-text-secondary: #000000;
+  --color-background-page: #ffffff;
+  --color-border: #000000;
+}

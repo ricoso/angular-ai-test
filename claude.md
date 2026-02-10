@@ -180,6 +180,7 @@
 - ❌ KEINE Focus-Styles entfernen
 
 ### SCSS (PFLICHT!)
+- ✅ **IMMER `src/styles/_variables.scss`** für Farben, Abstände, etc.
 - ✅ **em/rem statt px** für Responsive Design (1em = 16px)
 - ✅ **BEM mit Nesting** (`&__element`, `&--modifier`)
 - ✅ **@extend** für Wiederverwendung (Placeholders in `_placeholders.scss`)
@@ -188,6 +189,8 @@
 - ✅ **Material Overrides** in `_material-overrides.scss` (zentral!)
 - ✅ **Breakpoints in em**: `48em` (768px), `64em` (1024px)
 - ❌ KEINE Pixel-Werte (außer border: 0.0625em statt 1px)
+- ❌ KEINE hardcoded Farben - IMMER CSS Variables!
+> **Design System:** `src/styles/_variables.scss`, `.claude/skills/ui-design-system.md`
 
 ### Layout Utilities
 - ✅ Flexbox: `.flex`, `.items-center`, `.justify-between`, `.gap-4`
@@ -261,42 +264,85 @@ npm run mcp:setup  # Einmalig nach Clone
 
 ---
 
+## 🚀 Workflow Commands
+
+### Neues Requirement erstellen
+
+| Trigger | Beispiel |
+|---------|----------|
+| `/create-requirement` | `/create-requirement REQ-003-UserProfile` |
+| `Erstelle Requirement` | `Erstelle Requirement REQ-003-UserProfile` |
+| `Create requirement` | `Create requirement REQ-003-UserProfile` |
+
+→ Branch `req/...`, Ordner, Template, Screenshot-Analyse, PR
+
+### Requirement prüfen
+
+| Trigger | Beispiel |
+|---------|----------|
+| `/check-requirement` | `/check-requirement REQ-001-Header` |
+| `Prüfe Requirement` | `Prüfe Requirement REQ-001-Header` |
+| `Check requirement` | `Check requirement REQ-001-Header` |
+
+→ Prüft Vollständigkeit, Design System, i18n
+
+### Requirement implementieren
+
+| Trigger | Beispiel |
+|---------|----------|
+| `/implement-requirement` | `/implement-requirement REQ-001-Header` |
+| `Implementiere` | `Implementiere REQ-001-Header` |
+| `Implement` | `Implement REQ-001-Header` |
+
+→ Liest Spec, erstellt Code, Tests, Commit
+
+> **Details:** `.claude/commands/create-requirement.md`, `.claude/commands/check-requirement.md`, `.claude/commands/implement-requirement.md`
+
+---
+
 ## Workflow: Spec-Driven Development
 
-**Trigger:** `Implementiere REQ-042-UserNotifications`
+**Erstellen:** `/create-requirement REQ-XXX-Name`
+**Prüfen:** `/check-requirement REQ-XXX-Name`
+**Implementieren:** `/implement-requirement REQ-XXX-Name`
 
 ```
-1. Branch erstellen → git checkout -b feat/REQ-042-UserNotifications
-2. Lese SPEC → docs/requirements/REQ-042-UserNotifications/
-3. Lese Skills (bei Bedarf):
-   - angular-architecture.md (IMMER!)
-   - i18n-typings.md (bei HTML Templates)
-   - forms.md (bei Formularen)
-   - routing-patterns.md (bei Routes)
-   - performance.md (bei Listen/Loops)
-4. Nutze MCP → "Zeig mir feature-store Pattern"
-5. Implementiere → Feature Store + Container + Children
-6. Schreibe Tests → Jest Unit Tests für Store, Services, Components
-7. Teste → npm run test:coverage (Ziel: >80%)
-8. Prüfe:
-   - /check-all user-notifications (EMPFOHLEN - alle 11 Checks)
-   - npm run lint:fix
-   - npm run type-check
+1. /create-requirement REQ-042-UserNotifications
+   → Branch: req/REQ-042-UserNotifications
+   → Ordner + Template erstellt
+   → Screenshot analysiert (falls vorhanden)
 
-   Oder gruppiert:
-   - /check-arch user-notifications (Architecture, Stores, Routing)
-   - /check-quality user-notifications (ESLint, TS, Performance, Styling)
+2. /check-requirement REQ-042-UserNotifications
+   → Prüft Pflicht-Sections
+   → Prüft Design System (keine hardcoded Farben)
+   → Prüft i18n Keys (DE + EN)
+   → PR erstellt
 
-   Oder einzeln (bei Bedarf):
-   - /check-architecture, /check-stores, /check-routing
-   - /check-eslint, /check-typescript, /check-performance, /check-styling
-   - /check-i18n, /check-forms, /check-code-language
-9. 🔒 Security Check (PFLICHT!):
-   - /check-security user-notifications (IMMER!)
-   - npm audit
-   - Keine sensiblen Daten in Code/Logs
-10. Update SPEC → Implementation Notes
-11. Commit → git commit -m "feat(REQ-042): ..."
+3. /implement-requirement REQ-042-UserNotifications
+   → Branch: feat/REQ-042-UserNotifications
+   → Liest Spec aus docs/requirements/
+   → Implementiert: Store + Container + Children
+   → Tests + Lint + Type-Check
+   → Commit
+```
+
+### Prüf-Commands
+
+**Requirement prüfen:**
+```
+/check-requirement <REQ-ID>     # Nach /create-requirement
+```
+
+**Code prüfen (nach /implement-requirement):**
+```
+/check-architecture <feature>   # IMMER
+/check-i18n <feature>           # bei HTML
+/check-code-language <feature>  # IMMER
+/check-eslint <feature>         # IMMER
+/check-forms <feature>          # bei Formularen
+/check-routing <feature>        # bei Routes
+/check-stores <feature>         # bei Stores
+/check-styling <feature>        # bei SCSS
 ```
 
 ---
