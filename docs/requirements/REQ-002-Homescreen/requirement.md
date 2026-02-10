@@ -62,7 +62,7 @@ Startseite der Anwendung zur Auswahl einer Fahrzeugmarke. Der Benutzer wählt ei
 - Öffentlich zugänglich
 
 ### 3.3 Data
-- Liste der verfügbaren Marken (statisch oder aus API)
+- Liste der verfügbaren Marken (statisch initial wert im store)
 - Marken-Logos als Assets
 
 ---
