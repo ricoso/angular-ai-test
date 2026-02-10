@@ -23,7 +23,7 @@
 
 | REQ-ID | Name | Status | Priority | Dependencies | Description |
 |--------|------|--------|----------|--------------|-------------|
-| REQ-001 | Header | 📝 Draft | High | - | Wiederverwendbarer Header mit Logo und Accessibility-Einstellungen (Font-Size, High-Contrast, Reduced-Motion) |
+| REQ-001 | Header | 🔍 In Review | High | - | Wiederverwendbarer Header mit Logo und Accessibility-Einstellungen (Font-Size, High-Contrast, Reduced-Motion) |
 | REQ-002 | Homescreen | 📝 Draft | High | REQ-001 | Startseite mit Fahrzeugmarken-Auswahl (Audi, BMW, Mercedes-Benz, MINI, Volkswagen) |
 
 ---

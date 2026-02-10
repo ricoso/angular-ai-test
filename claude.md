@@ -230,7 +230,9 @@
 - ❌ KEINE sensiblen Daten in URL-Parametern
 - ❌ KEINE `console.log()` mit sensiblen Daten in Production
 - ❌ KEINE Credentials im Source Code
-- ✅ Environment Variables für API Keys
+- ✅ Alle Secrets in `.env` (NIEMALS committen!)
+- ✅ `.env` in `.gitignore`
+- ✅ `environment.ts`: nur `import.meta.env` Referenzen
 
 ### Input Validation
 - ✅ Client-Side Validators (UX, nicht Security!)

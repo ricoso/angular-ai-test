@@ -68,6 +68,8 @@
 - Keine Passwörter/Tokens in localStorage: ✅❌
 - Keine sensiblen Daten in URL-Parametern: ✅❌
 - Keine console.log() mit sensiblen Daten: ✅❌
+- Secrets nur in `.env`: ✅❌
+- `.env` in `.gitignore`: ✅❌
 
 **HTTP Security:**
 - HTTPS only: ✅❌
