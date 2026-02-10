@@ -1,5 +1,7 @@
 # Angular 21 Projekt - Claude Code Anweisungen
 
+> 📖 **Projekt-Vision:** [`docs/VISION.md`](docs/VISION.md) - Langfristige Ziele, Qualitätsstandards, Roadmap
+
 ## Projekt-Info
 
 - **Framework**: Angular 21 Standalone Components
@@ -206,6 +208,45 @@
 - ❌ KEIN `max-width` in Media Queries (nur `min-width`!)
 - ❌ KEIN Desktop-First Design
 > **Beispiele:** `.claude/skills/html-styling.md`
+
+---
+
+## 🔒 SECURITY REGELN (PFLICHT!)
+
+### XSS Prevention
+- ❌ KEIN `[innerHTML]` ohne DomSanitizer
+- ❌ KEIN `bypassSecurityTrustHtml()` mit User-Input
+- ❌ KEINE `eval()` oder `Function()` Aufrufe
+- ✅ Angular Template Escaping nutzen (automatisch)
+
+### Authentication & Authorization
+- ✅ **JWT in HttpOnly Cookies** (NICHT localStorage!)
+- ✅ **Route Guards** für geschützte Routes
+- ✅ **Role-Based Access Control** implementieren
+- ✅ Token-Expiration prüfen
+
+### Sensitive Data
+- ❌ KEINE Passwörter/Tokens in localStorage
+- ❌ KEINE sensiblen Daten in URL-Parametern
+- ❌ KEINE `console.log()` mit sensiblen Daten in Production
+- ❌ KEINE Credentials im Source Code
+- ✅ Environment Variables für API Keys
+
+### Input Validation
+- ✅ Client-Side Validators (UX, nicht Security!)
+- ✅ Server-Side Validation (PFLICHT für Security!)
+- ✅ Sanitization für HTML-Content
+
+### HTTP Security
+- ✅ HTTPS only (keine HTTP Calls)
+- ✅ CSRF Token via HttpClient XSRF
+- ✅ Security Headers (CSP, X-Frame-Options, etc.)
+
+### Dependencies
+- ✅ `npm audit` vor jedem Release
+- ✅ Keine bekannten Vulnerabilities
+- ✅ Regelmäßige Updates
+> **Details:** `.claude/commands/check-security.md`
 
 ---
 
