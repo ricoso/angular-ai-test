@@ -1,4 +1,4 @@
-# Routing Patterns (ULTRA-COMPACT)
+# Routing Patterns (COMPACT)
 
 ---
 
@@ -6,107 +6,28 @@
 
 ```typescript
 // app.routes.ts
-{
-  path: 'users',
-  loadChildren: () => import('./features/user/user.routes')
-}
+{ path: 'users', loadChildren: () => import('./features/user/user.routes') }
 
 // user.routes.ts
-{
-  path: '',
-  component: UserContainerComponent,
-  resolve: { data: userResolver }  // Triggers Store
-}
+{ path: '', component: UserContainerComponent, resolve: { _: usersResolver } }
 ```
 
 ---
 
-## Router Resolver (with Store RxMethod)
+## Resolver Pattern
 
-**Pattern:** Resolver triggers Store → Store loads data → Component subscribes to Store
+**Pattern:** Resolver → Store → Component subscribes
 
-### Deutsches Requirement
+### Store with RxMethod
 
-**Store mit RxMethod:**
 ```typescript
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { pipe, switchMap, tap } from 'rxjs';
 
-export const BenutzerStore = signalStore(
-  { providedIn: 'root' },
-  
-  withState<BenutzerState>({
-    benutzer: [],
-    istLaden: false,
-    fehler: null
-  }),
-  
-  withMethods((store, benutzerApi = inject(BenutzerApiService)) => ({
-    // RxMethod für Resolver
-    ladeBenutzer: rxMethod<void>(
-      pipe(
-        tap(() => patchState(store, { istLaden: true, fehler: null })),
-        switchMap(() => from(benutzerApi.holeAlle())),
-        tap({
-          next: (benutzer) => patchState(store, { benutzer, istLaden: false }),
-          error: (fehler) => patchState(store, { fehler: fehler.message, istLaden: false })
-        })
-      )
-    )
-  }))
-);
-```
-
-**Resolver:**
-```typescript
-import { inject } from '@angular/core';
-import { ResolveFn } from '@angular/router';
-import { BenutzerStore } from '../stores/benutzer.store';
-
-export const benutzerResolver: ResolveFn<void> = () => {
-  const store = inject(BenutzerStore);
-  
-  // Trigger Store RxMethod
-  store.ladeBenutzer();
-  
-  // Return void (Store handles everything)
-  return;
-};
-```
-
-**Routes:**
-```typescript
-{
-  path: '',
-  component: BenutzerContainerComponent,
-  resolve: { data: benutzerResolver }  // 'data' ist dummy key
-}
-```
-
-**Container:**
-```typescript
-export class BenutzerContainerComponent {
-  protected benutzerStore = inject(BenutzerStore);
-  
-  // Signals from Store (reactive!)
-  benutzer = this.benutzerStore.benutzer;
-  istLaden = this.benutzerStore.istLaden;
-  
-  // NO ngOnInit needed! Store is already loading via Resolver
-}
-```
-
----
-
-### Englisches Requirement
-
-**Store with RxMethod:**
-```typescript
 export const UserStore = signalStore(
   { providedIn: 'root' },
-  
+
   withState({ users: [], isLoading: false, error: null }),
-  
+
   withMethods((store, userApi = inject(UserApiService)) => ({
     loadUsers: rxMethod<void>(
       pipe(
@@ -122,63 +43,53 @@ export const UserStore = signalStore(
 );
 ```
 
-**Resolver:**
+### Resolver
+
 ```typescript
 export const usersResolver: ResolveFn<void> = () => {
   const store = inject(UserStore);
   store.loadUsers();
-  return;
+  return;  // Return void!
 };
 ```
 
-**Container:**
+### Container
+
 ```typescript
 export class UserContainerComponent {
   protected userStore = inject(UserStore);
-  
+
   users = this.userStore.users;
   isLoading = this.userStore.isLoading;
+
+  // NO ngOnInit for loading!
 }
 ```
 
 ---
 
-## Resolver with Params (Detail Route)
+## Resolver with Params
 
-**Store:**
 ```typescript
-withMethods((store, benutzerApi = inject(BenutzerApiService)) => ({
-  ladeBenutzer: rxMethod<string>(  // Accepts ID
-    pipe(
-      tap(() => patchState(store, { istLaden: true })),
-      switchMap((id) => from(benutzerApi.holeNachId(id))),
-      tap({
-        next: (benutzer) => patchState(store, { ausgewaehlterBenutzer: benutzer, istLaden: false }),
-        error: (fehler) => patchState(store, { fehler: fehler.message, istLaden: false })
-      })
-    )
+// Store
+loadUser: rxMethod<string>(
+  pipe(
+    tap(() => patchState(store, { isLoading: true })),
+    switchMap((id) => from(userApi.getById(id))),
+    tap({ next: (user) => patchState(store, { selectedUser: user, isLoading: false }) })
   )
-}))
-```
+)
 
-**Resolver:**
-```typescript
-export const benutzerDetailResolver: ResolveFn<void> = (route) => {
-  const store = inject(BenutzerStore);
+// Resolver
+export const userDetailResolver: ResolveFn<void> = (route) => {
+  const store = inject(UserStore);
   const id = route.paramMap.get('id')!;
-  
-  store.ladeBenutzer(id);  // Pass ID to RxMethod
+  store.loadUser(id);
   return;
 };
-```
 
-**Routes:**
-```typescript
-{
-  path: ':id',
-  component: BenutzerDetailContainerComponent,
-  resolve: { data: benutzerDetailResolver }
-}
+// Routes
+{ path: ':id', component: UserDetailComponent, resolve: { _: userDetailResolver } }
 ```
 
 ---
@@ -189,8 +100,8 @@ export const benutzerDetailResolver: ResolveFn<void> = (route) => {
 export const authGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
-  
-  if (!auth.istAuthentifiziert()) {
+
+  if (!auth.isAuthenticated()) {
     router.navigate(['/login']);
     return false;
   }
@@ -198,11 +109,7 @@ export const authGuard: CanActivateFn = () => {
 };
 
 // Routes
-{
-  path: 'admin',
-  canActivate: [authGuard],
-  loadChildren: () => import('./features/admin/admin.routes')
-}
+{ path: 'admin', canActivate: [authGuard], loadChildren: () => import('./admin/admin.routes') }
 ```
 
 ---
@@ -210,14 +117,9 @@ export const authGuard: CanActivateFn = () => {
 ## Navigation
 
 ```typescript
-// Simple
-router.navigate(['/benutzer']);
-
-// With ID
-router.navigate(['/benutzer', id]);
-
-// With query params
-router.navigate(['/benutzer'], { queryParams: { filter: 'aktiv' } });
+router.navigate(['/users']);
+router.navigate(['/users', id]);
+router.navigate(['/users'], { queryParams: { filter: 'active' } });
 ```
 
 ---
@@ -225,24 +127,20 @@ router.navigate(['/benutzer'], { queryParams: { filter: 'aktiv' } });
 ## Checklist
 
 **Store:**
-- [ ] RxMethod für Resolver: `rxMethod<void>(pipe(...))`
-- [ ] tap → patchState (loading, data, error)
-- [ ] switchMap → API call
-- [ ] from() für Promise → Observable
+- [ ] `rxMethod<void>(pipe(...))` for Resolver
+- [ ] `tap → patchState` (loading, data, error)
+- [ ] `from()` for Promise → Observable
 
 **Resolver:**
-- [ ] Inject Store
-- [ ] Call store.rxMethod()
-- [ ] Return void (NO data passing!)
-- [ ] ResolveFn<void>
+- [ ] `ResolveFn<void>`
+- [ ] Call `store.rxMethod()`
+- [ ] Return void
 
 **Container:**
-- [ ] Inject Store
-- [ ] Signals from Store (benutzer, istLaden)
-- [ ] NO ngOnInit for loading!
-- [ ] Store handles everything
+- [ ] Signals from Store
+- [ ] NO ngOnInit for loading
 
 **Routes:**
-- [ ] resolve: { data: resolver }
+- [ ] `resolve: { _: resolver }`
 - [ ] Lazy loading
 - [ ] Guards (optional)
