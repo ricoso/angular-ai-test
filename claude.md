@@ -1,5 +1,7 @@
 # Angular 21 Projekt - Claude Code Anweisungen
 
+> 📖 **Projekt-Vision:** [`docs/VISION.md`](docs/VISION.md) - Langfristige Ziele, Qualitätsstandards, Roadmap
+
 ## Projekt-Info
 
 - **Framework**: Angular 21 Standalone Components
@@ -206,6 +208,45 @@
 
 ---
 
+## 🔒 SECURITY REGELN (PFLICHT!)
+
+### XSS Prevention
+- ❌ KEIN `[innerHTML]` ohne DomSanitizer
+- ❌ KEIN `bypassSecurityTrustHtml()` mit User-Input
+- ❌ KEINE `eval()` oder `Function()` Aufrufe
+- ✅ Angular Template Escaping nutzen (automatisch)
+
+### Authentication & Authorization
+- ✅ **JWT in HttpOnly Cookies** (NICHT localStorage!)
+- ✅ **Route Guards** für geschützte Routes
+- ✅ **Role-Based Access Control** implementieren
+- ✅ Token-Expiration prüfen
+
+### Sensitive Data
+- ❌ KEINE Passwörter/Tokens in localStorage
+- ❌ KEINE sensiblen Daten in URL-Parametern
+- ❌ KEINE `console.log()` mit sensiblen Daten in Production
+- ❌ KEINE Credentials im Source Code
+- ✅ Environment Variables für API Keys
+
+### Input Validation
+- ✅ Client-Side Validators (UX, nicht Security!)
+- ✅ Server-Side Validation (PFLICHT für Security!)
+- ✅ Sanitization für HTML-Content
+
+### HTTP Security
+- ✅ HTTPS only (keine HTTP Calls)
+- ✅ CSRF Token via HttpClient XSRF
+- ✅ Security Headers (CSP, X-Frame-Options, etc.)
+
+### Dependencies
+- ✅ `npm audit` vor jedem Release
+- ✅ Keine bekannten Vulnerabilities
+- ✅ Regelmäßige Updates
+> **Details:** `.claude/commands/check-security.md`
+
+---
+
 ## MCP Server
 
 ```bash
@@ -238,18 +279,24 @@ npm run mcp:setup  # Einmalig nach Clone
 6. Schreibe Tests → Jest Unit Tests für Store, Services, Components
 7. Teste → npm run test:coverage (Ziel: >80%)
 8. Prüfe:
-   - /check-architecture user-notifications (IMMER)
-   - /check-i18n user-notifications (bei HTML)
-   - /check-performance user-notifications (bei Listen/Loops)
-   - /check-code-language user-notifications (IMMER)
-   - /check-forms user-notifications (bei Formularen)
-   - /check-routing user-notifications (bei Routes)
-   - /check-typescript user-notifications (bei Types)
-   - /check-eslint user-notifications (IMMER)
+   - /check-all user-notifications (EMPFOHLEN - alle 11 Checks)
    - npm run lint:fix
    - npm run type-check
-9. Update SPEC → Implementation Notes
-10. Commit → git commit -m "feat(REQ-042): ..."
+
+   Oder gruppiert:
+   - /check-arch user-notifications (Architecture, Stores, Routing)
+   - /check-quality user-notifications (ESLint, TS, Performance, Styling)
+
+   Oder einzeln (bei Bedarf):
+   - /check-architecture, /check-stores, /check-routing
+   - /check-eslint, /check-typescript, /check-performance, /check-styling
+   - /check-i18n, /check-forms, /check-code-language
+9. 🔒 Security Check (PFLICHT!):
+   - /check-security user-notifications (IMMER!)
+   - npm audit
+   - Keine sensiblen Daten in Code/Logs
+10. Update SPEC → Implementation Notes
+11. Commit → git commit -m "feat(REQ-042): ..."
 ```
 
 ---
