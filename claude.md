@@ -235,6 +235,16 @@ npm run mcp:setup  # Einmalig nach Clone
 
 → Branch `req/...`, Ordner, Template, Screenshot-Analyse, PR
 
+### Requirement prüfen
+
+| Trigger | Beispiel |
+|---------|----------|
+| `/check-requirement` | `/check-requirement REQ-001-Header` |
+| `Prüfe Requirement` | `Prüfe Requirement REQ-001-Header` |
+| `Check requirement` | `Check requirement REQ-001-Header` |
+
+→ Prüft Vollständigkeit, Design System, i18n
+
 ### Requirement implementieren
 
 | Trigger | Beispiel |
@@ -245,13 +255,14 @@ npm run mcp:setup  # Einmalig nach Clone
 
 → Liest Spec, erstellt Code, Tests, Commit
 
-> **Details:** `.claude/commands/create-requirement.md`, `.claude/commands/implement-requirement.md`
+> **Details:** `.claude/commands/create-requirement.md`, `.claude/commands/check-requirement.md`, `.claude/commands/implement-requirement.md`
 
 ---
 
 ## Workflow: Spec-Driven Development
 
 **Erstellen:** `/create-requirement REQ-XXX-Name`
+**Prüfen:** `/check-requirement REQ-XXX-Name`
 **Implementieren:** `/implement-requirement REQ-XXX-Name`
 
 ```
@@ -259,9 +270,14 @@ npm run mcp:setup  # Einmalig nach Clone
    → Branch: req/REQ-042-UserNotifications
    → Ordner + Template erstellt
    → Screenshot analysiert (falls vorhanden)
+
+2. /check-requirement REQ-042-UserNotifications
+   → Prüft Pflicht-Sections
+   → Prüft Design System (keine hardcoded Farben)
+   → Prüft i18n Keys (DE + EN)
    → PR erstellt
 
-2. /implement-requirement REQ-042-UserNotifications
+3. /implement-requirement REQ-042-UserNotifications
    → Branch: feat/REQ-042-UserNotifications
    → Liest Spec aus docs/requirements/
    → Implementiert: Store + Container + Children
@@ -270,6 +286,13 @@ npm run mcp:setup  # Einmalig nach Clone
 ```
 
 ### Prüf-Commands
+
+**Requirement prüfen:**
+```
+/check-requirement <REQ-ID>     # Nach /create-requirement
+```
+
+**Code prüfen (nach /implement-requirement):**
 ```
 /check-architecture <feature>   # IMMER
 /check-i18n <feature>           # bei HTML

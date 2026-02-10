@@ -45,18 +45,15 @@ Suche nach Bildern im Ordner (`*.png`, `*.jpg`, `*.jpeg`).
 
 ### Step 4: Styling-Vorgaben anwenden
 
-**IMMER aus `src/styles/_variables.scss`:**
-
-| Element | Variable | Wert |
-|---------|----------|------|
-| Hintergrund | `--background-color` | #f8f9fa (hell!) |
-| Cards/Buttons | `--surface-color` | #ffffff |
-| Primary | `--primary-color` | #667eea |
-| Text | `--text-color` | #1a1a1a |
-| Sekundärtext | `--text-secondary` | #595959 |
+**IMMER aus `src/styles/_variables.scss`** (sprechende Namen!):
+- `--color-background-page` - Page Hintergrund
+- `--color-background-surface` - Cards, Modals
+- `--color-primary` - Buttons, Links
+- `--color-text-primary` - Haupttext
+- `--color-text-secondary` - Sekundärtext
 
 **IMMER hinzufügen:**
-- Accessibility-Header (siehe `.claude/skills/ui-design-system.md`)
+- Accessibility-Header mit Icon `accessibility_new`
 - WCAG 2.1 AA Konformität
 - Mobile-First Responsive Design
 
@@ -85,7 +82,20 @@ Neues REQ zur Liste in `docs/requirements/REQUIREMENTS.md` hinzufügen:
 | REQ-XXX | Name | Draft | Priority | Dependencies |
 ```
 
-### Step 7: Git Commit & Pull Request
+### Step 7: Requirement prüfen
+
+```
+/check-requirement $ARGUMENTS
+```
+
+Prüft:
+- [ ] Alle Pflicht-Sections ausgefüllt
+- [ ] Keine Platzhalter `[...]` mehr
+- [ ] Keine hardcoded Farben
+- [ ] i18n Keys DE + EN
+- [ ] Dependencies in REQUIREMENTS.md
+
+### Step 8: Git Commit & Pull Request
 
 ```bash
 # Alle Änderungen stagen
@@ -104,7 +114,7 @@ gh pr create --title "req($ARGUMENTS): Add <Name> requirement" --body "## Summar
 - Template filled out
 
 ## Checklist
-- [ ] Requirement reviewed
+- [ ] /check-requirement passed
 - [ ] Acceptance Criteria complete
 - [ ] Dependencies documented"
 ```
