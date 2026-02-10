@@ -59,14 +59,23 @@ Reihenfolge:
 ### Step 7: Prüfen
 
 ```bash
-/check-architecture $ARGUMENTS
-/check-i18n $ARGUMENTS
-/check-code-language $ARGUMENTS
-/check-eslint $ARGUMENTS
 npm run lint:fix
 npm run type-check
 npm run test:coverage
 ```
+
+### Step 8: Quality Report generieren
+
+```bash
+/check-all <feature-name>
+```
+
+Dies führt ALLE 11 Checks parallel aus und generiert automatisch:
+```
+docs/requirements/$ARGUMENTS/qualitaets.md
+```
+
+**Ziel:** Score >= 90/100, keine ❌ Errors
 
 ## Checkliste
 
@@ -80,6 +89,9 @@ npm run test:coverage
 - [ ] WCAG 2.1 AA
 - [ ] Tests >80%
 - [ ] Lint + Type-Check passed
+- [ ] `/check-all` ausgeführt
+- [ ] `qualitaets.md` generiert (Score >= 90)
+- [ ] Commit erstellt
 
 ## Referenzen
 

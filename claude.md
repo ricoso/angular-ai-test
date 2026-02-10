@@ -305,6 +305,7 @@ npm run mcp:setup  # Einmalig nach Clone
 **Erstellen:** `/create-requirement REQ-XXX-Name`
 **Prüfen:** `/check-requirement REQ-XXX-Name`
 **Implementieren:** `/implement-requirement REQ-XXX-Name`
+**Qualität prüfen:** `/check-all <feature>` → generiert `qualitaets.md`
 
 ```
 1. /create-requirement REQ-042-UserNotifications
@@ -323,7 +324,12 @@ npm run mcp:setup  # Einmalig nach Clone
    → Liest Spec aus docs/requirements/
    → Implementiert: Store + Container + Children
    → Tests + Lint + Type-Check
-   → Commit
+
+4. /check-all user-notifications
+   → Führt 11 Checks parallel aus
+   → Generiert: docs/requirements/REQ-042-UserNotifications/qualitaets.md
+   → Ziel: Score >= 90/100
+   → Bei ✅: Commit + PR erstellen
 ```
 
 ### Prüf-Commands
@@ -335,14 +341,28 @@ npm run mcp:setup  # Einmalig nach Clone
 
 **Code prüfen (nach /implement-requirement):**
 ```
-/check-architecture <feature>   # IMMER
-/check-i18n <feature>           # bei HTML
-/check-code-language <feature>  # IMMER
-/check-eslint <feature>         # IMMER
-/check-forms <feature>          # bei Formularen
-/check-routing <feature>        # bei Routes
-/check-stores <feature>         # bei Stores
-/check-styling <feature>        # bei SCSS
+/check-all <feature>            # EMPFOHLEN: Alle 11 Checks + qualitaets.md
+```
+
+**Einzelne Checks (optional):**
+```
+/check-architecture <feature>   # Container/Presentational
+/check-stores <feature>         # NgRx Signal Store
+/check-routing <feature>        # Routing Patterns
+/check-security <feature>       # Security Audit
+/check-eslint <feature>         # ESLint Rules
+/check-typescript <feature>     # Type Safety
+/check-performance <feature>    # Performance
+/check-styling <feature>        # SCSS & Accessibility
+/check-i18n <feature>           # Internationalization
+/check-forms <feature>          # Reactive Forms
+/check-code-language <feature>  # Code Language
+```
+
+**Gruppierte Checks:**
+```
+/check-arch <feature>           # Architecture + Stores + Routing
+/check-quality <feature>        # ESLint + TypeScript + Performance + Styling
 ```
 
 ---
@@ -383,6 +403,7 @@ npm run type-check     # TypeScript Check
 
 ## Project Structure
 
+### Code
 ```
 src/app/
 ├── core/                      # Singletons (Guards, Interceptors)
@@ -402,4 +423,16 @@ src/app/
 │       └── models/
 │           └── user.model.ts
 └── app.routes.ts
+```
+
+### Requirements & Qualität
+```
+docs/requirements/
+├── REQUIREMENTS.md            # Übersicht aller Requirements
+├── REQ-TEMPLATE.md            # Template für neue Requirements
+├── QUALITAETS-TEMPLATE.md     # Template für Quality Reports
+└── REQ-XXX-FeatureName/
+    ├── requirement.md         # Spezifikation
+    ├── mockup.png             # Optional: Design
+    └── qualitaets.md          # Quality Report (nach /check-all)
 ```
