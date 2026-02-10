@@ -1,0 +1,60 @@
+.accessibility-menu {
+  padding: var(--spacing-md);
+  min-width: 15em;
+
+  &__section {
+    padding: var(--spacing-sm) 0;
+
+    &:not(:last-child) {
+      border-bottom: 0.0625em solid var(--color-divider);
+      margin-bottom: var(--spacing-sm);
+    }
+  }
+
+  &__heading {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--spacing-sm) 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  &__radio {
+    // Touch-friendly target
+    ::ng-deep .mdc-form-field {
+      min-height: var(--touch-target-min);
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  &__toggle {
+    width: 100%;
+
+    // Touch-friendly target
+    ::ng-deep .mdc-form-field {
+      min-height: var(--touch-target-min);
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+// Focus styles (Accessibility!)
+.accessibility-menu {
+  &__radio,
+  &__toggle {
+    &:focus-within {
+      outline: 0.125em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+      border-radius: var(--radius-sm);
+    }
+  }
+}

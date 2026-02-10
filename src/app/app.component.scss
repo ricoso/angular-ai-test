@@ -4,69 +4,14 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-}
-
-.app-header {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-  color: var(--text-on-primary);
-  padding: var(--spacing-md);
-  box-shadow: var(--shadow-md);
-
-  // Mobile: Stack layout
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  text-align: center;
-
-  // Desktop: Row layout
-  @include tablet {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-lg) var(--spacing-xl);
-    text-align: left;
-  }
-
-  &__content {
-    flex: 1;
-  }
-
-  &__title {
-    margin: 0 0 var(--spacing-sm) 0;
-    font-size: var(--font-size-xl);
-    font-weight: 700;
-    color: inherit;
-
-    @include tablet {
-      font-size: var(--font-size-2xl);
-    }
-  }
-
-  &__subtitle {
-    margin: 0;
-    opacity: 0.9;
-    font-size: var(--font-size-xs);
-
-    @include tablet {
-      font-size: var(--font-size-sm);
-    }
-  }
-
-  &__a11y {
-    display: flex;
-    justify-content: center;
-
-    @include tablet {
-      justify-content: flex-end;
-    }
-  }
+  background-color: var(--color-background-page);
 }
 
 .app-main {
   flex: 1;
   padding: var(--spacing-md);
   width: 100%;
-  max-width: 75em;
+  max-width: 80em;
   margin: 0 auto;
 
   @include tablet {
@@ -75,10 +20,10 @@
 }
 
 .app-footer {
-  background: var(--surface-color);
+  background: var(--color-background-surface);
   padding: var(--spacing-md);
   text-align: center;
-  border-top: 0.0625em solid var(--border-color);
+  border-top: 0.0625em solid var(--color-border);
 
   @include tablet {
     padding: var(--spacing-lg);
@@ -86,7 +31,42 @@
 
   p {
     margin: 0;
-    color: var(--text-secondary);
+    color: var(--color-text-secondary);
     font-size: var(--font-size-xs);
+  }
+}
+
+// Skip Link (Accessibility)
+.skip-link {
+  position: absolute;
+  top: -10em;
+  left: var(--spacing-md);
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-weight: 600;
+  z-index: 9999;
+  transition: top 0.2s ease;
+
+  &:focus {
+    top: var(--spacing-md);
+    outline: 0.125em solid var(--color-focus-ring);
+    outline-offset: 0.125em;
+  }
+}
+
+// Reduced Motion Support
+@media (prefers-reduced-motion: reduce) {
+  .skip-link {
+    transition: none;
+  }
+}
+
+// Global Reduced Motion Class (applied by AccessibilityStore)
+:host-context(html.reduce-motion) {
+  .skip-link {
+    transition: none;
   }
 }

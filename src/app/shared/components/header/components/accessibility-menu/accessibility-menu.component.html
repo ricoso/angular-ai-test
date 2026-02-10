@@ -1,0 +1,54 @@
+<div class="accessibility-menu">
+  <!-- Schriftgröße -->
+  <section class="accessibility-menu__section">
+    <h3 class="accessibility-menu__heading" id="font-size-label">
+      {{ 'header.accessibility.fontSize' | translate }}
+    </h3>
+    <mat-radio-group
+      class="accessibility-menu__radio-group"
+      [value]="schriftgroesse()"
+      (change)="beimSchriftgroesseAendern($event.value)"
+      aria-labelledby="font-size-label">
+      @for (groesse of schriftgroessen; track groesse) {
+        <mat-radio-button
+          class="accessibility-menu__radio"
+          [value]="groesse">
+          @switch (groesse) {
+            @case ('small') {
+              {{ 'header.accessibility.fontSize.small' | translate }}
+            }
+            @case ('normal') {
+              {{ 'header.accessibility.fontSize.normal' | translate }}
+            }
+            @case ('large') {
+              {{ 'header.accessibility.fontSize.large' | translate }}
+            }
+            @case ('x-large') {
+              {{ 'header.accessibility.fontSize.xLarge' | translate }}
+            }
+          }
+        </mat-radio-button>
+      }
+    </mat-radio-group>
+  </section>
+
+  <!-- Hoher Kontrast -->
+  <section class="accessibility-menu__section">
+    <mat-slide-toggle
+      class="accessibility-menu__toggle"
+      [checked]="hoherKontrast()"
+      (change)="beimHohenKontrastAendern($event.checked)">
+      {{ 'header.accessibility.highContrast' | translate }}
+    </mat-slide-toggle>
+  </section>
+
+  <!-- Reduzierte Bewegung -->
+  <section class="accessibility-menu__section">
+    <mat-slide-toggle
+      class="accessibility-menu__toggle"
+      [checked]="reduzierteBewegung()"
+      (change)="beimReduzierteBewegungAendern($event.checked)">
+      {{ 'header.accessibility.reducedMotion' | translate }}
+    </mat-slide-toggle>
+  </section>
+</div>
