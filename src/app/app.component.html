@@ -1,21 +1,11 @@
 <!-- Skip Link (Accessibility) -->
 <a href="#main-content" class="skip-link">
-  Zum Hauptinhalt springen
+  {{ 'app.skipLink' | translate }}
 </a>
 
 <div class="app-layout">
   <!-- Header -->
-  <header class="app-header" role="banner">
-    <div class="app-header__content">
-      <h1 class="app-header__title">{{ title }}</h1>
-      <p class="app-header__subtitle">Container/Presentational Pattern • Signal Store • Jest Testing</p>
-    </div>
-
-    <!-- Font Size Toggle (Accessibility) -->
-    <div class="app-header__a11y">
-      <app-font-size-toggle />
-    </div>
-  </header>
+  <app-header />
 
   <!-- Main Content -->
   <main id="main-content" class="app-main" role="main">
@@ -24,6 +14,6 @@
 
   <!-- Footer -->
   <footer class="app-footer" role="contentinfo">
-    <p>Angular 21 • TypeScript 5.7 • OnPush Everywhere</p>
+    <p>Gottfried Schultz Automobilhandels SE</p>
   </footer>
 </div>

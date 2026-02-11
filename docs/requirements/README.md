@@ -7,10 +7,12 @@
 ```
 docs/requirements/
 ├── REQUIREMENTS.md          # Central list
-├── REQ-TEMPLATE.md          # Template
-└── REQ-XXX-FeatureName/    # One folder per requirement
-    ├── requirement.md      # Main doc (German OR English)
-    └── mockup.png          # Optional mockup
+├── REQ-TEMPLATE.md          # Requirement Template
+├── QUALITAETS-TEMPLATE.md   # Quality Report Template
+└── REQ-XXX-FeatureName/     # One folder per requirement
+    ├── requirement.md       # Main doc (German OR English)
+    ├── mockup.png           # Optional mockup
+    └── qualitaets.md        # Quality Report (nach /check-all)
 ```
 
 **Regel:** Requirements in EINER Sprache (Projekt-Wahl: DE oder EN)
@@ -127,11 +129,18 @@ FR_{Number}_{FeatureName}
 
 ## Checklist
 
+### Before Implementation
 - [ ] Folder created: `REQ-XXX-FeatureName/`
 - [ ] requirement.md filled out
 - [ ] Mockups added (if any)
 - [ ] Registered in REQUIREMENTS.md
 - [ ] Status set
 - [ ] Owner assigned
+
+### After Implementation
 - [ ] Code language matches requirement language
 - [ ] UI i18n keys defined (both languages)
+- [ ] `/check-all` executed
+- [ ] qualitaets.md generated (Score >= 90)
+- [ ] All ❌ Issues resolved
+- [ ] PR created

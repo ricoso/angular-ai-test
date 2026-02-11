@@ -1,0 +1,45 @@
+<header class="header" role="banner">
+  <div class="header__content">
+    <!-- Logo & Company Name -->
+    <a routerLink="/" class="header__logo-link" aria-label="Zur Startseite">
+      <div class="header__logo-container">
+        <img
+          src="logo.svg"
+          alt="{{ 'header.logo.alt' | translate }}"
+          class="header__logo"
+          loading="lazy"
+        />
+      </div>
+      <div class="header__company">
+        <span class="header__company-name">{{ 'app.title' | translate }}</span>
+        <span class="header__company-subtitle">{{ 'app.subtitle' | translate }}</span>
+      </div>
+    </a>
+
+    <!-- Spacer -->
+    <div class="header__spacer"></div>
+
+    <!-- Accessibility Button -->
+    <button
+      mat-icon-button
+      class="header__a11y-button"
+      [matMenuTriggerFor]="accessibilityMenu"
+      [attr.aria-label]="'header.accessibility.buttonLabel' | translate">
+      <mat-icon aria-hidden="true">accessibility_new</mat-icon>
+    </button>
+
+    <!-- Accessibility Menu -->
+    <mat-menu #accessibilityMenu="matMenu" class="header__a11y-menu">
+      <div (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+        <app-accessibility-menu
+          [schriftgroesse]="barrierefreiheitStore.schriftgroesse()"
+          [hoherKontrast]="barrierefreiheitStore.hoherKontrast()"
+          [reduzierteBewegung]="barrierefreiheitStore.reduzierteBewegung()"
+          (schriftgroesseGeaendert)="beimSchriftgroesseAendern($event)"
+          (hoherKontrastGeaendert)="beimHohenKontrastAendern($event)"
+          (reduzierteBewegungGeaendert)="beimReduzierteBewegungAendern($event)"
+        />
+      </div>
+    </mat-menu>
+  </div>
+</header>

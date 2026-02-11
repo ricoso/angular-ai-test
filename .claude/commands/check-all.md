@@ -210,6 +210,14 @@ Gewichtung:
 
 Gib den Report in folgendem Format aus:
 
+**UND generiere automatisch die `qualitaets.md`:**
+
+```
+docs/requirements/$REQ_ID/qualitaets.md
+```
+
+Nutze das Template aus `docs/requirements/QUALITAETS-TEMPLATE.md` und fülle alle Werte aus.
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔍 FULL CHECK: $ARGUMENTS (PARALLEL)
@@ -249,6 +257,34 @@ Gib den Report in folgendem Format aus:
 ⚠️ Review empfohlen      (Score 70-89)
 ❌ Nicht bereit          (Score < 70 oder kritische Fehler)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+---
+
+### Schritt 5: Generiere qualitaets.md
+
+**WICHTIG:** Nach dem Konsolidieren der Ergebnisse:
+
+1. **Ermittle REQ-ID** aus dem Feature-Namen:
+   - Feature `header` → suche in `docs/requirements/REQ-*-Header/`
+   - Feature `user-management` → suche in `docs/requirements/REQ-*-UserManagement/`
+
+2. **Lese das Template:** `docs/requirements/QUALITAETS-TEMPLATE.md`
+
+3. **Erstelle/Aktualisiere:** `docs/requirements/REQ-XXX-Name/qualitaets.md`
+   - Fülle ALLE Scores und Status aus den Agent-Ergebnissen
+   - Setze Datum und Uhrzeit
+   - Liste alle gefundenen Issues mit Datei:Zeile
+   - Berechne Empfehlung basierend auf Gesamtscore
+
+4. **Aktualisiere Changelog:**
+   - Falls die Datei bereits existiert: Füge neuen Eintrag hinzu
+   - Falls neu: Erstelle initialen Eintrag
+
+5. **Bestätige:**
+```
+📄 qualitaets.md erstellt/aktualisiert:
+   docs/requirements/REQ-XXX-Name/qualitaets.md
 ```
 
 ---
