@@ -2,6 +2,56 @@
 
 ---
 
+## App Routes Pattern
+
+```typescript
+// app.routes.ts
+export const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'app',
+    pathMatch: 'full'
+  },
+  {
+    path: 'app',
+    loadComponent: () => import('./features/app/containers/app-container/app-container.component')
+      .then(m => m.AppContainerComponent)
+  },
+  {
+    path: '**',
+    redirectTo: 'app'
+  }
+];
+```
+
+**Struktur:**
+- `''` → Redirect zu `app` (Startpunkt)
+- `app` → Lazy-loaded App Feature
+- `**` → Wildcard Redirect zu `app`
+
+---
+
+## GitHub Pages (HashLocation)
+
+Für Static Hosting ohne Server-Side Routing:
+
+```typescript
+// app.config.ts
+import { provideRouter, withHashLocation } from '@angular/router';
+
+providers: [
+  provideRouter(routes, withHashLocation())
+]
+```
+
+**URLs:**
+| Route | URL |
+|-------|-----|
+| App (Start) | `https://user.github.io/repo/#/app` |
+| Users | `https://user.github.io/repo/#/users` |
+
+---
+
 ## Lazy Loading (PFLICHT!)
 
 ```typescript

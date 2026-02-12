@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:ghpages": "ng build --base-href /angular-ai-test/",
     "watch": "ng build --watch",
     "test": "jest --watch",
     "test:ci": "jest --ci --coverage",

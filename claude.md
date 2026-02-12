@@ -9,6 +9,57 @@
 - **UI**: Angular Material 21
 - **Testing**: Jest 30
 - **i18n**: ngx-translate (TypeScript Typings)
+- **Deployment**: Click-Dummy (GitHub Pages, HashLocation)
+
+---
+
+## 🚀 Projekt Setup (Bei neuem Projekt fragen!)
+
+**Frage:** Ist das ein Click-Dummy oder eine Production App?
+
+| Antwort | Konfiguration |
+|---------|---------------|
+| **Click-Dummy** | HashLocation + GitHub Pages |
+| **Production** | SSR + Server Deployment |
+
+### Click-Dummy Setup
+
+```typescript
+// app.config.ts
+import { provideRouter, withHashLocation } from '@angular/router';
+
+providers: [
+  provideRouter(routes, withHashLocation())
+]
+```
+
+**GitHub Actions:** `.github/workflows/deploy-gh-pages.yml`
+**URL:** `https://<user>.github.io/<repo>/#/app`
+
+### Production Setup (SSR)
+
+```bash
+ng add @angular/ssr
+```
+
+```typescript
+// app.config.ts - KEIN HashLocation!
+providers: [
+  provideRouter(routes)
+]
+```
+
+**Deployment:** Node.js Server, Docker, Cloud Run, etc.
+
+### Nach Setup in CLAUDE.md dokumentieren:
+
+```markdown
+- **Deployment**: Click-Dummy (GitHub Pages, HashLocation)
+```
+oder
+```markdown
+- **Deployment**: Production (SSR, Node.js)
+```
 
 ---
 

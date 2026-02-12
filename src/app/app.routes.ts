@@ -3,16 +3,16 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'app',
     pathMatch: 'full'
   },
   {
-    path: 'home',
-    loadComponent: () => import('./features/home/containers/home-container/home-container.component')
-      .then(m => m.HomeContainerComponent)
+    path: 'app',
+    loadComponent: () => import('./app.component')
+      .then(m => m.AppComponent)
   },
   {
     path: '**',
-    redirectTo: 'home'
+    redirectTo: 'app'
   }
 ];
