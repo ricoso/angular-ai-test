@@ -5,14 +5,14 @@
       <div class="header__logo-container">
         <img
           src="logo.svg"
-          alt="{{ 'header.logo.alt' | translate }}"
+          [alt]="t.header.logo.alt"
           class="header__logo"
           loading="lazy"
         />
       </div>
       <div class="header__company">
-        <span class="header__company-name">{{ 'app.title' | translate }}</span>
-        <span class="header__company-subtitle">{{ 'app.subtitle' | translate }}</span>
+        <span class="header__company-name">{{ t.app.title }}</span>
+        <span class="header__company-subtitle">{{ t.app.subtitle }}</span>
       </div>
     </a>
 
@@ -24,7 +24,7 @@
       mat-icon-button
       class="header__a11y-button"
       [matMenuTriggerFor]="accessibilityMenu"
-      [attr.aria-label]="'header.accessibility.buttonLabel' | translate">
+      [attr.aria-label]="t.header.accessibility.buttonLabel">
       <span class="icon-framed icon-framed--sm">
         <mat-icon aria-hidden="true">accessibility_new</mat-icon>
       </span>

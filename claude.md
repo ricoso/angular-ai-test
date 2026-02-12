@@ -63,6 +63,120 @@ oder
 
 ---
 
+## 🚨 AGENT-GENERIERUNGSREGELN (PFLICHT!)
+
+> **Diese Regeln MÜSSEN bei JEDER Code-Generierung befolgt werden!**
+
+### ❌ VERBOTEN - NIEMALS generieren:
+
+| Verboten | Stattdessen |
+|----------|-------------|
+| `template: \`...\`` (inline) | Separate `.html` Datei |
+| `styles: [\`...\`]` (inline) | Separate `.scss` Datei |
+| `onInit` im Store für Feature-Daten | Route Resolver + `rxMethod` |
+| `ngOnInit()` in Component für Data Loading | Route Resolver |
+| `@for (item of items; track $index)` | `track item.id` (unique ID) |
+| `{{ method() }}` im Template | `computed()` Signal |
+| `any` Type | Interface oder `unknown` |
+| `ngModel` | Reactive Forms |
+| `implements OnInit` für Data Loading | Route Resolver |
+
+### ✅ IMMER generieren:
+
+| Immer | Beispiel |
+|-------|----------|
+| Separate HTML-Datei | `user-container.component.html` |
+| Separate SCSS-Datei | `user-container.component.scss` |
+| Route Resolver für Daten | `user.resolver.ts` → `store.loadUsers()` |
+| OnPush Change Detection | `changeDetection: ChangeDetectionStrategy.OnPush` |
+| Track mit ID | `@for (user of users(); track user.id)` |
+| Computed für Template | `activeUsers = computed(() => ...)` |
+
+### 🔄 Data Loading Pattern (KRITISCH!)
+
+```typescript
+// ❌ FALSCH #1 - NIEMALS onInit im Store!
+export const UserStore = signalStore(
+  withHooks({
+    onInit(store) {
+      store.loadUsers(); // ❌ Feature-Daten in onInit!
+    }
+  })
+);
+
+// ❌ FALSCH #2 - NIEMALS ngOnInit in Component für Data Loading!
+@Component({...})
+export class UserContainerComponent implements OnInit {
+  private readonly store = inject(UserStore);
+
+  ngOnInit(): void {
+    this.store.loadUsers(); // ❌ Data Loading in Component!
+  }
+}
+
+// ✅ RICHTIG - IMMER Route Resolver verwenden!
+
+// 1. Resolver erstellen
+export const userResolver: ResolveFn<void> = () => {
+  inject(UserStore).loadUsers();
+  return of(void 0);
+};
+
+// 2. Route mit Resolver
+{ path: 'users', component: UserContainerComponent, resolve: { _: userResolver } }
+
+// 3. Store OHNE onInit für Feature-Daten
+export const UserStore = signalStore(
+  { providedIn: 'root' },
+  withState<UserState>({ users: [], loading: false, error: null }),
+  withMethods((store, api = inject(UserApiService)) => ({
+    loadUsers: rxMethod<void>(pipe(...))
+  }))
+);
+
+// 4. Component OHNE ngOnInit für Data Loading
+@Component({...})
+export class UserContainerComponent {
+  // ✅ Nur Store inject, KEIN ngOnInit für Daten!
+  protected readonly store = inject(UserStore);
+
+  // ✅ Event Handler sind OK
+  protected onRefresh(): void {
+    this.store.loadUsers();
+  }
+}
+```
+
+### ⚠️ Wann ist ngOnInit erlaubt?
+
+| Erlaubt in ngOnInit | Verboten in ngOnInit |
+|---------------------|----------------------|
+| Route Params auslesen | API Calls / Data Loading |
+| Event Listener setup | Store-Methoden aufrufen |
+| DOM-Manipulation | HTTP Requests |
+| Timer starten | Service-Methoden für Daten |
+
+### 📁 Component-Generierung (IMMER 3 Dateien!)
+
+```
+user-container/
+├── user-container.component.ts    # Logik
+├── user-container.component.html  # Template (SEPARATE DATEI!)
+└── user-container.component.scss  # Styles (SEPARATE DATEI!)
+```
+
+```typescript
+// ✅ RICHTIG - templateUrl + styleUrls
+@Component({
+  selector: 'app-user-container',
+  templateUrl: './user-container.component.html',
+  styleUrls: ['./user-container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+```
+
+---
+
 ## 🔴 ARCHITEKTUR-REGELN
 
 ### Container/Presentational Pattern

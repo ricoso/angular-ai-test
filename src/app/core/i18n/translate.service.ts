@@ -1,31 +1,18 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { translations, TranslationKey, Language } from './translations';
+import { translations, Language, Translations } from './translations';
 
 const LANGUAGE_STORAGE_KEY = 'app-language';
 
 /**
- * Hilfsfunktion zum Auflösen von verschachtelten Keys
- * 'header.accessibility.fontSize.label' → translations.de.header.accessibility.fontSize.label
- */
-function getNestedValue(obj: unknown, path: string): string | undefined {
-  const keys = path.split('.');
-  let current: unknown = obj;
-
-  for (const key of keys) {
-    if (current && typeof current === 'object' && key in current) {
-      current = (current as Record<string, unknown>)[key];
-    } else {
-      return undefined;
-    }
-  }
-
-  return typeof current === 'string' ? current : undefined;
-}
-
-/**
  * Type-safe TranslateService
  * Verwendet Signals für reaktive Language-Switching
- * Unterstützt verschachtelte Keys: 'header.accessibility.fontSize.label'
+ *
+ * Usage in Components:
+ *   protected readonly t = inject(TranslateService).t;
+ *
+ * Template:
+ *   {{ t.app.title }}
+ *   {{ t.header.accessibility.fontSize.small }}
  */
 @Injectable({ providedIn: 'root' })
 export class TranslateService {
@@ -36,19 +23,31 @@ export class TranslateService {
   );
 
   /**
-   * Gibt die Übersetzung für einen Key zurück
-   * Unterstützt verschachtelte Keys: 'header.accessibility.fontSize.label'
+   * Reaktives Translations-Objekt für Templates
+   * Proxy ermöglicht direkten Zugriff: t.app.title (ohne Klammern)
    */
-  instant(key: TranslationKey): string {
-    const value = getNestedValue(this.aktuelleUebersetzungen(), key);
-    return value ?? key;
-  }
+  readonly t: Translations = new Proxy({} as Translations, {
+    get: (_, prop: string) => (this.aktuelleUebersetzungen() as Record<string, unknown>)[prop]
+  });
 
   /**
-   * Gibt ein computed Signal für reaktive Templates zurück
+   * Direkte Übersetzung für Pipe (Legacy)
    */
-  get(key: TranslationKey): () => string {
-    return computed(() => this.instant(key));
+  instant(key: string): string {
+    return this.getNestedValue(this.aktuelleUebersetzungen(), key) ?? key;
+  }
+
+  private getNestedValue(obj: unknown, path: string): string | undefined {
+    const keys = path.split('.');
+    let current: unknown = obj;
+    for (const key of keys) {
+      if (current && typeof current === 'object' && key in current) {
+        current = (current as Record<string, unknown>)[key];
+      } else {
+        return undefined;
+      }
+    }
+    return typeof current === 'string' ? current : undefined;
   }
 
   /**
@@ -71,13 +70,6 @@ export class TranslateService {
   }
 
   /**
-   * Gibt die aktuelle Sprache als Signal zurück
-   */
-  getSpracheSignal(): () => Language {
-    return this.aktuelleSprache.asReadonly();
-  }
-
-  /**
    * Lädt die Sprache aus dem LocalStorage oder verwendet Default
    */
   private ladeSpracheAusSpeicher(): Language {
@@ -89,7 +81,6 @@ export class TranslateService {
     } catch {
       // LocalStorage nicht verfügbar
     }
-    // Browser-Sprache als Fallback
     const browserSprache = navigator.language.toLowerCase();
     return browserSprache.startsWith('de') ? 'de' : 'en';
   }

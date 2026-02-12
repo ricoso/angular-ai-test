@@ -6,7 +6,7 @@
 
 ---
 
-## Pattern: TypeScript-only (NO JSON!) - Verschachtelt (Nested)
+## Pattern: TypeScript-only (NO JSON!) - Objektorientiert
 
 ```typescript
 // src/app/core/i18n/translations.ts
@@ -17,17 +17,9 @@ export const translations = {
       subtitle: 'Untertitel'
     },
     user: {
-      form: {
-        name: 'Name',
-        email: 'E-Mail'
-      },
-      buttons: {
-        save: 'Speichern',
-        cancel: 'Abbrechen'
-      },
-      errors: {
-        notFound: 'Benutzer nicht gefunden'
-      }
+      form: { name: 'Name', email: 'E-Mail' },
+      buttons: { save: 'Speichern', cancel: 'Abbrechen' },
+      errors: { notFound: 'Benutzer nicht gefunden' }
     }
   },
   en: {
@@ -36,142 +28,88 @@ export const translations = {
       subtitle: 'Subtitle'
     },
     user: {
-      form: {
-        name: 'Name',
-        email: 'Email'
-      },
-      buttons: {
-        save: 'Save',
-        cancel: 'Cancel'
-      },
-      errors: {
-        notFound: 'User not found'
-      }
+      form: { name: 'Name', email: 'Email' },
+      buttons: { save: 'Save', cancel: 'Cancel' },
+      errors: { notFound: 'User not found' }
     }
   }
 } as const;
 
-// Hilfstypes für verschachtelte Keys
-type NestedKeyOf<T> = T extends object
-  ? {
-      [K in keyof T]: K extends string
-        ? T[K] extends object
-          ? `${K}` | `${K}.${NestedKeyOf<T[K]>}`
-          : `${K}`
-        : never;
-    }[keyof T]
-  : never;
-
-export type TranslationKey = NestedKeyOf<typeof translations.de>;
+export type Translations = DeepStringify<typeof translations.de>;
 export type Language = keyof typeof translations;
 ```
 
 ---
 
-## TranslateService (mit Nested Key Support)
+## TranslateService
 
 ```typescript
 // src/app/core/i18n/translate.service.ts
-import { Injectable, signal, computed } from '@angular/core';
-import { translations, TranslationKey, Language } from './translations';
-
-/**
- * Hilfsfunktion zum Auflösen von verschachtelten Keys
- * 'user.form.name' → translations.de.user.form.name
- */
-function getNestedValue(obj: unknown, path: string): string | undefined {
-  const keys = path.split('.');
-  let current: unknown = obj;
-
-  for (const key of keys) {
-    if (current && typeof current === 'object' && key in current) {
-      current = (current as Record<string, unknown>)[key];
-    } else {
-      return undefined;
-    }
-  }
-
-  return typeof current === 'string' ? current : undefined;
-}
-
 @Injectable({ providedIn: 'root' })
 export class TranslateService {
-  private currentLang = signal<Language>('de');
+  private readonly aktuelleSprache = signal<Language>('de');
 
-  private currentTranslations = computed(() =>
-    translations[this.currentLang()]
+  private readonly aktuelleUebersetzungen = computed(() =>
+    translations[this.aktuelleSprache()]
   );
 
-  // Type-safe instant translation mit Nested Key Support
-  instant(key: TranslationKey): string {
-    const value = getNestedValue(this.currentTranslations(), key);
-    return value ?? key;
-  }
+  /**
+   * Reaktives Translations-Objekt für Templates
+   * Proxy ermöglicht direkten Zugriff: t.app.title
+   */
+  readonly t: Translations = new Proxy({} as Translations, {
+    get: (_, prop: string) =>
+      (this.aktuelleUebersetzungen() as Record<string, unknown>)[prop]
+  });
 
-  // Computed Signal für reaktive Templates
-  get(key: TranslationKey) {
-    return computed(() => this.instant(key));
-  }
-
-  // Switch language
-  use(lang: Language) {
-    this.currentLang.set(lang);
-    localStorage.setItem('lang', lang);
-  }
-
-  // Get current language
-  getCurrentLang(): Language {
-    return this.currentLang();
+  use(sprache: Language): void {
+    this.aktuelleSprache.set(sprache);
+    localStorage.setItem('app-language', sprache);
   }
 }
 ```
 
 ---
 
-## TranslatePipe
+## Usage in Components
+
+### Component Setup
 
 ```typescript
-// src/app/core/i18n/translate.pipe.ts
-import { Pipe, PipeTransform, inject } from '@angular/core';
-import { TranslateService } from './translate.service';
-import { TranslationKey } from './translations';
+import { Component, inject } from '@angular/core';
+import { TranslateService } from '@core/i18n';
 
-@Pipe({
-  name: 'translate',
-  standalone: true,
-  pure: false // Re-evaluate on language change
+@Component({
+  selector: 'app-my-component',
+  templateUrl: './my.component.html'
 })
-export class TranslatePipe implements PipeTransform {
-  private translate = inject(TranslateService);
-
-  transform(key: TranslationKey): string {
-    return this.translate.instant(key);
-  }
+export class MyComponent {
+  // Direkt vom Service - fertig!
+  protected readonly t = inject(TranslateService).t;
 }
 ```
 
----
-
-## Usage
-
-### In Templates
+### In Templates (Direkter Zugriff - KEIN `()` nötig!)
 
 ```html
-<h1>{{ 'app.title' | translate }}</h1>
-<label>{{ 'user.form.name' | translate }}</label>
-<button>{{ 'user.buttons.save' | translate }}</button>
+<!-- Direkter Objekt-Zugriff - Type-safe! -->
+<h1>{{ t.app.title }}</h1>
+<label>{{ t.user.form.name }}</label>
+<button>{{ t.user.buttons.save }}</button>
+
+<!-- In Attributen -->
+<img [alt]="t.header.logo.alt" />
+<button [attr.aria-label]="t.header.accessibility.buttonLabel">
 ```
 
-### In Components
+### In Component-Logik
 
 ```typescript
-import { TranslateService } from '@core/i18n/translate.service';
-
 export class MyComponent {
-  private translate = inject(TranslateService);
+  protected readonly t = inject(TranslateService).t;
 
-  showMessage() {
-    const msg = this.translate.instant('user.errors.notFound');
+  showMessage(): void {
+    const msg = this.t.user.errors.notFound;
     this.notification.show(msg);
   }
 }
@@ -181,25 +119,12 @@ export class MyComponent {
 
 ```typescript
 export class LanguageSwitcherComponent {
-  private translate = inject(TranslateService);
+  private readonly translateService = inject(TranslateService);
 
-  currentLang = computed(() => this.translate.getCurrentLang());
-
-  switchLanguage(lang: 'de' | 'en') {
-    this.translate.use(lang);
+  protected wechsleSprache(sprache: 'de' | 'en'): void {
+    this.translateService.use(sprache);
   }
 }
-```
-
-```html
-<button (click)="switchLanguage('de')"
-        [class.active]="currentLang() === 'de'">
-  DE
-</button>
-<button (click)="switchLanguage('en')"
-        [class.active]="currentLang() === 'en'">
-  EN
-</button>
 ```
 
 ---
@@ -214,37 +139,35 @@ type: form, buttons, errors, success, labels
 name: specific identifier
 ```
 
-**Nested Structure:**
-```typescript
-// Gut: Verschachtelt und konsistent
-buchung: {
-  marke: {
-    titel: '...',
-    untertitel: '...'
-  },
-  services: {
-    huAu: {
-      label: '...',
-      beschreibung: '...'
-    }
-  },
-  buttons: {
-    weiter: '...',
-    zurueck: '...'
-  },
-  fehler: {
-    pflichtfeld: '...',
-    emailUngueltig: '...'
-  }
-}
-```
-
 **Zugriff in Templates:**
 ```html
-{{ 'buchung.marke.titel' | translate }}
-{{ 'buchung.services.huAu.label' | translate }}
-{{ 'buchung.buttons.weiter' | translate }}
-{{ 'buchung.fehler.pflichtfeld' | translate }}
+{{ t.buchung.marke.titel }}
+{{ t.buchung.services.huAu.label }}
+{{ t.buchung.buttons.weiter }}
+```
+
+---
+
+## Migration
+
+### Alt (Pipe)
+```html
+{{ 'user.form.name' | translate }}
+```
+
+### Neu (Objekt)
+```html
+{{ t.user.form.name }}
+```
+
+### Component Migration
+```typescript
+// Alt
+import { TranslatePipe } from '@core/i18n';
+@Component({ imports: [TranslatePipe] })
+
+// Neu - Kein Import nötig!
+protected readonly t = inject(TranslateService).t;
 ```
 
 ---
@@ -252,18 +175,14 @@ buchung: {
 ## Best Practices
 
 ### DO
-- Type-safe keys (TranslationKey)
-- All UI text via i18n (both DE + EN)
-- Consistent naming convention
-- **Beide Sprachen im gleichen verschachtelten Format**
-- Pipe in templates
-- instant() in components
-- camelCase für Keys (huAu, nicht hu-au)
+- `inject(TranslateService).t` in Components
+- Direkter Zugriff: `t.path.to.key`
+- Type-safe durch TypeScript + Proxy
+- Alle UI-Texte via i18n (DE + EN)
+- camelCase für Keys
 
 ### DON'T
-- Hardcoded strings in templates
+- ~~Pipe: `{{ 'key' | translate }}`~~
+- ~~Signal-Aufruf: `t().path`~~
+- Hardcoded strings
 - JSON translation files
-- Missing translations in one language
-- Inconsistent key naming
-- **Flat keys in einer Sprache, nested in der anderen**
-- Bindestriche in Keys (hu-au → huAu)
