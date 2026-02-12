@@ -25,6 +25,7 @@
 |--------|------|--------|----------|--------------|-------------|
 | REQ-001 | Header | 🔍 In Review | High | - | Wiederverwendbarer Header mit Logo und Accessibility-Einstellungen (Font-Size, High-Contrast, Reduced-Motion) |
 | REQ-002 | Homescreen | 📝 Draft | High | REQ-001 | Startseite mit Fahrzeugmarken-Auswahl (Audi, BMW, Mercedes-Benz, MINI, Volkswagen) |
+| REQ-0815 | Test Homescreen | 📝 Draft | High | REQ-001 | Test: Homescreen mit Fahrzeugmarken-Auswahl (Audi, BMW, Mercedes-Benz, MINI, Volkswagen) |
 
 ---
 
@@ -46,6 +47,7 @@ REQ-001-Header
 |--------|---------------------|
 | REQ-001 | [REQ-001-Header](./REQ-001-Header/requirement.md) |
 | REQ-002 | [REQ-002-Homescreen](./REQ-002-Homescreen/requirement.md) |
+| REQ-0815 | [REQ-0815-test](./REQ-0815-test/requirement.md) |
 
 ---
 
@@ -53,12 +55,12 @@ REQ-001-Header
 
 | Status | Count |
 |--------|-------|
-| 📝 Draft | 2 |
+| 📝 Draft | 3 |
 | 🔍 In Review | 0 |
 | ✅ Approved | 0 |
 | 🚧 In Progress | 0 |
 | ✔️ Implemented | 0 |
-| **Total** | **2** |
+| **Total** | **3** |
 
 ---
 
