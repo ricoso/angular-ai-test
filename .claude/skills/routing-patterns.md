@@ -9,25 +9,26 @@
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'app',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
   {
-    path: 'app',
-    loadComponent: () => import('./features/app/containers/app-container/app-container.component')
-      .then(m => m.AppContainerComponent)
+    path: 'home',
+    loadComponent: () => import('./features/home/containers/home-container/home-container.component')
+      .then(m => m.HomeContainerComponent)
   },
   {
     path: '**',
-    redirectTo: 'app'
+    redirectTo: 'home'
   }
 ];
 ```
 
 **Struktur:**
-- `''` → Redirect zu `app` (Startpunkt)
-- `app` → Lazy-loaded App Feature
-- `**` → Wildcard Redirect zu `app`
+- `AppComponent` = Layout (Header + `<router-outlet>`)
+- `''` → Redirect zu `home` (Startpunkt)
+- `home` → Lazy-loaded Home Feature
+- `**` → Wildcard Redirect zu `home`
 
 ---
 
@@ -47,7 +48,7 @@ providers: [
 **URLs:**
 | Route | URL |
 |-------|-----|
-| App (Start) | `https://user.github.io/repo/#/app` |
+| Home (Start) | `https://user.github.io/repo/#/home` |
 | Users | `https://user.github.io/repo/#/users` |
 
 ---
