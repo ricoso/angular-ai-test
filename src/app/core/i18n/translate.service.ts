@@ -4,8 +4,28 @@ import { translations, TranslationKey, Language } from './translations';
 const LANGUAGE_STORAGE_KEY = 'app-language';
 
 /**
+ * Hilfsfunktion zum Auflösen von verschachtelten Keys
+ * 'header.accessibility.fontSize.label' → translations.de.header.accessibility.fontSize.label
+ */
+function getNestedValue(obj: unknown, path: string): string | undefined {
+  const keys = path.split('.');
+  let current: unknown = obj;
+
+  for (const key of keys) {
+    if (current && typeof current === 'object' && key in current) {
+      current = (current as Record<string, unknown>)[key];
+    } else {
+      return undefined;
+    }
+  }
+
+  return typeof current === 'string' ? current : undefined;
+}
+
+/**
  * Type-safe TranslateService
  * Verwendet Signals für reaktive Language-Switching
+ * Unterstützt verschachtelte Keys: 'header.accessibility.fontSize.label'
  */
 @Injectable({ providedIn: 'root' })
 export class TranslateService {
@@ -17,9 +37,11 @@ export class TranslateService {
 
   /**
    * Gibt die Übersetzung für einen Key zurück
+   * Unterstützt verschachtelte Keys: 'header.accessibility.fontSize.label'
    */
   instant(key: TranslationKey): string {
-    return this.aktuelleUebersetzungen()[key] || key;
+    const value = getNestedValue(this.aktuelleUebersetzungen(), key);
+    return value ?? key;
   }
 
   /**

@@ -6,65 +6,119 @@
 
 ---
 
-## Pattern: TypeScript-only (NO JSON!)
+## Pattern: TypeScript-only (NO JSON!) - Verschachtelt (Nested)
 
 ```typescript
 // src/app/core/i18n/translations.ts
 export const translations = {
   de: {
-    'app.title': 'Meine App',
-    'user.form.name': 'Name',
-    'user.form.email': 'E-Mail',
-    'user.buttons.save': 'Speichern',
-    'user.errors.notFound': 'Benutzer nicht gefunden'
+    app: {
+      title: 'Meine App',
+      subtitle: 'Untertitel'
+    },
+    user: {
+      form: {
+        name: 'Name',
+        email: 'E-Mail'
+      },
+      buttons: {
+        save: 'Speichern',
+        cancel: 'Abbrechen'
+      },
+      errors: {
+        notFound: 'Benutzer nicht gefunden'
+      }
+    }
   },
   en: {
-    'app.title': 'My App',
-    'user.form.name': 'Name',
-    'user.form.email': 'Email',
-    'user.buttons.save': 'Save',
-    'user.errors.notFound': 'User not found'
+    app: {
+      title: 'My App',
+      subtitle: 'Subtitle'
+    },
+    user: {
+      form: {
+        name: 'Name',
+        email: 'Email'
+      },
+      buttons: {
+        save: 'Save',
+        cancel: 'Cancel'
+      },
+      errors: {
+        notFound: 'User not found'
+      }
+    }
   }
-};
+} as const;
 
-export type TranslationKey = keyof typeof translations.de;
+// Hilfstypes für verschachtelte Keys
+type NestedKeyOf<T> = T extends object
+  ? {
+      [K in keyof T]: K extends string
+        ? T[K] extends object
+          ? `${K}` | `${K}.${NestedKeyOf<T[K]>}`
+          : `${K}`
+        : never;
+    }[keyof T]
+  : never;
+
+export type TranslationKey = NestedKeyOf<typeof translations.de>;
 export type Language = keyof typeof translations;
 ```
 
 ---
 
-## TranslateService
+## TranslateService (mit Nested Key Support)
 
 ```typescript
 // src/app/core/i18n/translate.service.ts
 import { Injectable, signal, computed } from '@angular/core';
 import { translations, TranslationKey, Language } from './translations';
 
+/**
+ * Hilfsfunktion zum Auflösen von verschachtelten Keys
+ * 'user.form.name' → translations.de.user.form.name
+ */
+function getNestedValue(obj: unknown, path: string): string | undefined {
+  const keys = path.split('.');
+  let current: unknown = obj;
+
+  for (const key of keys) {
+    if (current && typeof current === 'object' && key in current) {
+      current = (current as Record<string, unknown>)[key];
+    } else {
+      return undefined;
+    }
+  }
+
+  return typeof current === 'string' ? current : undefined;
+}
+
 @Injectable({ providedIn: 'root' })
 export class TranslateService {
   private currentLang = signal<Language>('de');
-  
-  // Get current translations
-  private currentTranslations = computed(() => 
+
+  private currentTranslations = computed(() =>
     translations[this.currentLang()]
   );
-  
-  // Type-safe instant translation
+
+  // Type-safe instant translation mit Nested Key Support
   instant(key: TranslationKey): string {
-    return this.currentTranslations()[key] || key;
+    const value = getNestedValue(this.currentTranslations(), key);
+    return value ?? key;
   }
-  
-  // Observable translation (for templates)
+
+  // Computed Signal für reaktive Templates
   get(key: TranslationKey) {
     return computed(() => this.instant(key));
   }
-  
+
   // Switch language
   use(lang: Language) {
     this.currentLang.set(lang);
     localStorage.setItem('lang', lang);
   }
-  
+
   // Get current language
   getCurrentLang(): Language {
     return this.currentLang();
@@ -89,7 +143,7 @@ import { TranslationKey } from './translations';
 })
 export class TranslatePipe implements PipeTransform {
   private translate = inject(TranslateService);
-  
+
   transform(key: TranslationKey): string {
     return this.translate.instant(key);
   }
@@ -115,7 +169,7 @@ import { TranslateService } from '@core/i18n/translate.service';
 
 export class MyComponent {
   private translate = inject(TranslateService);
-  
+
   showMessage() {
     const msg = this.translate.instant('user.errors.notFound');
     this.notification.show(msg);
@@ -128,9 +182,9 @@ export class MyComponent {
 ```typescript
 export class LanguageSwitcherComponent {
   private translate = inject(TranslateService);
-  
+
   currentLang = computed(() => this.translate.getCurrentLang());
-  
+
   switchLanguage(lang: 'de' | 'en') {
     this.translate.use(lang);
   }
@@ -138,11 +192,11 @@ export class LanguageSwitcherComponent {
 ```
 
 ```html
-<button (click)="switchLanguage('de')" 
+<button (click)="switchLanguage('de')"
         [class.active]="currentLang() === 'de'">
   DE
 </button>
-<button (click)="switchLanguage('en')" 
+<button (click)="switchLanguage('en')"
         [class.active]="currentLang() === 'en'">
   EN
 </button>
@@ -155,32 +209,61 @@ export class LanguageSwitcherComponent {
 ```
 {feature}.{type}.{name}
 
-feature: user, product, app
+feature: user, product, app, header, buchung
 type: form, buttons, errors, success, labels
 name: specific identifier
 ```
 
-**Examples:**
+**Nested Structure:**
 ```typescript
-'user.form.firstName'
-'user.buttons.save'
-'user.errors.notFound'
-'product.labels.price'
+// Gut: Verschachtelt und konsistent
+buchung: {
+  marke: {
+    titel: '...',
+    untertitel: '...'
+  },
+  services: {
+    huAu: {
+      label: '...',
+      beschreibung: '...'
+    }
+  },
+  buttons: {
+    weiter: '...',
+    zurueck: '...'
+  },
+  fehler: {
+    pflichtfeld: '...',
+    emailUngueltig: '...'
+  }
+}
+```
+
+**Zugriff in Templates:**
+```html
+{{ 'buchung.marke.titel' | translate }}
+{{ 'buchung.services.huAu.label' | translate }}
+{{ 'buchung.buttons.weiter' | translate }}
+{{ 'buchung.fehler.pflichtfeld' | translate }}
 ```
 
 ---
 
 ## Best Practices
 
-### ✅ DO
+### DO
 - Type-safe keys (TranslationKey)
 - All UI text via i18n (both DE + EN)
 - Consistent naming convention
+- **Beide Sprachen im gleichen verschachtelten Format**
 - Pipe in templates
 - instant() in components
+- camelCase für Keys (huAu, nicht hu-au)
 
-### ❌ DON'T
+### DON'T
 - Hardcoded strings in templates
 - JSON translation files
 - Missing translations in one language
 - Inconsistent key naming
+- **Flat keys in einer Sprache, nested in der anderen**
+- Bindestriche in Keys (hu-au → huAu)
