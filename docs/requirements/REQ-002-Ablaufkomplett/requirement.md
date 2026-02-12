@@ -11,15 +11,17 @@
 ## 1. Overview
 
 ### 1.1 Purpose
-Kompletter Service-Buchungsablauf für Werkstatttermine. Der Benutzer durchläuft einen Wizard mit 10 Schritten: Markenauswahl → Standortwahl → Serviceauswahl → Optionen → Warenkorb → Terminwahl → Kundendaten → Bemerkungen → Übersicht → Buchungsbestätigung.
+Kompletter Service-Buchungsablauf für Werkstatttermine. Der Benutzer durchläuft einen Wizard mit 8 Schritten: Markenauswahl → Standortwahl → Serviceauswahl (mit Optionen in Kachel) → Terminwahl → Kalender (optional) → Kundendaten → Bemerkungen → Übersicht/Absenden.
+
+**Wichtig:** Das Warenkorb-Icon ist ab Schritt 3 auf allen Seiten sichtbar und zeigt die Anzahl der gewählten Services. Services können jederzeit über das Warenkorb-Icon abgewählt werden.
 
 ### 1.2 Scope
 **Included:**
 - Wizard-basierter Buchungsablauf
 - Marken- und Standortauswahl
-- Service-Auswahl mit Optionen (Modal)
-- Warenkorb-Funktionalität
-- Terminauswahl (Schnellauswahl + Kalender)
+- Service-Auswahl mit Optionen (in expandierbarer Kachel, KEIN Modal)
+- **Persistentes Warenkorb-Icon** auf allen Seiten (ab Service-Auswahl) mit Badge-Counter
+- Terminauswahl (Schnellauswahl + Kalender) mit **dynamischer Berechnung** des nächsten Arbeitstags
 - Kundendaten-Formular
 - Bemerkungen/Anmerkungen
 - Buchungsübersicht und Absenden
@@ -90,41 +92,48 @@ Kompletter Service-Buchungsablauf für Werkstatttermine. Der Benutzer durchläuf
 └───────────┬─────────────┘
             ▼
 ┌─────────────────────────┐
-│ 3. Serviceauswahl       │◄──┐
-│    /buchung/services    │   │
-└───────────┬─────────────┘   │
-            ▼                 │
-┌─────────────────────────┐   │
-│ 4. Service-Optionen     │───┘ (Modal, zurück zu Services)
-│    [Dialog/Modal]       │
-└───────────┬─────────────┘
-            ▼
-┌─────────────────────────┐
-│ 5. Warenkorb            │
-│    (Teil von Services)  │
+│ 3. Serviceauswahl       │  ← Kachel expandiert bei Klick
+│    /buchung/services    │    (Optionen direkt in Kachel)
+│    + Warenkorb-Icon     │  ← Badge zeigt Anzahl Services
 └───────────┬─────────────┘
             ▼
 ┌─────────────────────────┐     ┌─────────────────────────┐
-│ 6. Terminauswahl        │────►│ 7. Kalender             │
+│ 4. Terminauswahl        │────►│ 5. Kalender             │
 │    /buchung/termin      │     │    (individuelle Wahl)  │
+│    + Warenkorb-Icon     │     │    + Warenkorb-Icon     │
 └───────────┬─────────────┘     └───────────┬─────────────┘
             │◄──────────────────────────────┘
             ▼
 ┌─────────────────────────┐
-│ 8. Kundendaten          │
+│ 6. Kundendaten          │
 │    /buchung/kundendaten │
+│    + Warenkorb-Icon     │
 └───────────┬─────────────┘
             ▼
 ┌─────────────────────────┐
-│ 9. Bemerkungen          │
+│ 7. Bemerkungen          │
 │    /buchung/bemerkungen │
+│    + Warenkorb-Icon     │
 └───────────┬─────────────┘
             ▼
 ┌─────────────────────────┐
-│ 10. Übersicht           │
+│ 8. Übersicht            │
 │    /buchung/uebersicht  │
 │    → "Jetzt anfragen"   │
 └─────────────────────────┘
+
+WARENKORB-ICON (persistent auf Seiten 3-7):
+┌──────────────────────────────────────────┐
+│ 🛒 [2]  ← Badge mit Anzahl Services      │
+│                                          │
+│ Klick öffnet Dropdown:                   │
+│ ┌──────────────────────────────────────┐ │
+│ │ ✓ HU/AU                          [X] │ │
+│ │ ✓ Inspektion                     [X] │ │
+│ │ ✓ Räderwechsel (mit Einlagerung) [X] │ │
+│ └──────────────────────────────────────┘ │
+│ Services können hier abgewählt werden    │
+└──────────────────────────────────────────┘
 ```
 
 ---
@@ -159,11 +168,16 @@ Kompletter Service-Buchungsablauf für Werkstatttermine. Der Benutzer durchläuf
 
 ---
 
-**Schritt 3: Serviceauswahl**
+**Schritt 3: Serviceauswahl + Warenkorb**
 - **Route:** `/buchung/services`
 - **User:** Sieht "Welche Services möchten Sie buchen?" und Service-Cards
 - **System:** Zeigt HU/AU, Inspektion, Räderwechsel mit Icons und Beschreibungen
-- **Expected:** Klick auf Service öffnet ggf. Optionen-Modal, mehrere Services können gewählt werden
+- **Interaktion:**
+  1. Klick auf Service-Kachel → Kachel **expandiert** und zeigt Optionen (falls vorhanden)
+  2. Bei Services MIT Optionen: Checkboxen werden in der expandierten Kachel sichtbar
+  3. Bei Services OHNE Optionen: Service wird direkt zum Warenkorb hinzugefügt
+  4. **KEIN Modal!** Alles in der Kachel
+- **Warenkorb-Icon:** Erscheint sobald 1+ Service gewählt, zeigt Badge mit Anzahl
 
 ![Serviceauswahl](./Services.png)
 
@@ -173,49 +187,65 @@ Kompletter Service-Buchungsablauf für Werkstatttermine. Der Benutzer durchläuf
 |---------|------|--------------|--------------|
 | HU/AU | 🕐 (Tacho) | Jetzt Ihren Termin für eine gesetzliche HU/AU vereinbaren! | Nein |
 | Inspektion | 🔧 | Lassen Sie Ihre fällige Inspektion hier durchführen! Buchen Sie jetzt einen Termin. | Nein |
-| Räderwechsel | ⚙️ (Felge) | Kommen Sie zu uns für Ihren Räderwechsel - inkl. optionaler Einlagerung! | Ja |
+| Räderwechsel | ⚙️ (Felge) | Kommen Sie zu uns für Ihren Räderwechsel - inkl. optionaler Einlagerung! | Ja (in Kachel) |
 
----
-
-**Schritt 4: Service-Optionen (Modal)**
-- **Trigger:** Klick auf Service mit Optionen (z.B. Räderwechsel)
-- **User:** Sieht Modal mit Service-Details und Checkbox-Optionen
-- **System:** Zeigt Optionen wie "Räderwechsel ohne Einlagerung" / "Räderwechsel mit Einlagerung"
-- **Expected:** Nach "Bestätigen" wird Service mit gewählter Option zum Warenkorb hinzugefügt
+**Service-Optionen (in expandierter Kachel, KEIN Modal):**
 
 ![Service-Optionen](./ServiceOptionen.png)
 
-**Räderwechsel-Optionen:**
+Wenn Räderwechsel angeklickt wird, expandiert die Kachel und zeigt:
 - [ ] Räderwechsel ohne Einlagerung
 - [ ] Räderwechsel mit Einlagerung
 
+Nach Auswahl einer Option → Service wird zum Warenkorb hinzugefügt.
+
 ---
 
-**Schritt 5: Warenkorb**
-- **Teil von:** Serviceauswahl-Seite (unten eingeblendet)
-- **User:** Sieht "Sie haben X Services ausgewählt" mit Einkaufswagen-Icon
-- **System:** Zeigt Liste der gewählten Services, "Weiter" Button wird aktiv
-- **Expected:** Klick auf "weiter" führt zu Terminauswahl
+**Warenkorb-Icon (persistent auf allen folgenden Seiten)**
 
 ![Warenkorb](./Einkaufswagenklick.png)
 
+- **Position:** Oben rechts (neben X-Button) oder unten als Leiste
+- **Badge:** Zeigt Anzahl der gewählten Services (z.B. "2")
+- **Klick:** Öffnet Dropdown/Overlay mit Liste der gewählten Services
+- **Abwählen:** Jeder Service hat ein X-Icon zum Entfernen
+- **Aktualisierung:** Badge aktualisiert sich sofort bei Änderungen
+- **Sichtbar auf:** Services, Termin, Kalender, Kundendaten, Bemerkungen
+
 ---
 
-**Schritt 6: Terminauswahl (Schnellauswahl)**
+**Schritt 4: Terminauswahl (Schnellauswahl)**
 - **Route:** `/buchung/termin`
 - **User:** Sieht "Wählen Sie den für Sie passenden Tag und Uhrzeit aus"
-- **System:** Zeigt 4 Schnelltermin-Vorschläge (z.B. Fr 13.02.2026 07:30, Fr 13.02.2026 18:00, etc.)
+- **System:** Zeigt 4 Schnelltermin-Vorschläge **dynamisch berechnet**
+- **Dynamische Berechnung:**
+  - Nächster Arbeitstag ab heute (Mo-Fr)
+  - Falls heute Freitag nach 18:00 → nächster Montag
+  - Falls heute Samstag/Sonntag → nächster Montag
+  - 2 Uhrzeiten pro Tag: 07:30 (Früh) und 18:00 (Spät)
+  - 2 Tage angezeigt = 4 Termine
 - **Expected:** Klick auf Termin speichert Auswahl, oder Klick auf "Werkstattkalender" öffnet Kalender
+- **Warenkorb-Icon:** Weiterhin sichtbar mit Badge
 
 ![Terminauswahl](./NächsmöglicheTermine.png)
 
+**Beispiel dynamische Termine (heute = Donnerstag 12.02.2026):**
+| # | Wochentag | Datum | Uhrzeit |
+|---|-----------|-------|---------|
+| 1 | Fr | 13.02.2026 | 07:30 |
+| 2 | Fr | 13.02.2026 | 18:00 |
+| 3 | Mo | 16.02.2026 | 07:30 |
+| 4 | Mo | 16.02.2026 | 18:00 |
+
 ---
 
-**Schritt 7: Kalenderauswahl (Optional)**
+**Schritt 5: Kalenderauswahl (Optional)**
 - **Teil von:** Terminauswahl
 - **User:** Sieht Kalender mit Datumsauswahl und verfügbare Uhrzeiten
 - **System:** Zeigt Datepicker + Grid mit verfügbaren Uhrzeiten für 3 Arbeitstage
+- **Dynamische Berechnung:** Kalender zeigt nur Arbeitstage (Mo-Fr), Wochenenden ausgegraut
 - **Expected:** Nach Auswahl von Datum und Uhrzeit weiter zu Kundendaten
+- **Warenkorb-Icon:** Weiterhin sichtbar mit Badge
 
 ![Kalender](./individuelleTermin.png)
 ![Uhrzeiten](./individuell_termin2.png)
@@ -226,11 +256,12 @@ Kompletter Service-Buchungsablauf für Werkstatttermine. Der Benutzer durchläuf
 
 ---
 
-**Schritt 8: Kundendaten**
+**Schritt 6: Kundendaten**
 - **Route:** `/buchung/kundendaten`
 - **User:** Sieht Formular "Bitte geben Sie uns die letzten Informationen zu Ihrem Fahrzeug"
 - **System:** Zeigt Eingabefelder für alle Kundendaten
 - **Expected:** Nach Validierung und "Weiter" zu Bemerkungen
+- **Warenkorb-Icon:** Weiterhin sichtbar mit Badge (Services können hier noch abgewählt werden)
 
 ![Kundendaten](./kundendateneingeben.png)
 
@@ -257,11 +288,12 @@ Kompletter Service-Buchungsablauf für Werkstatttermine. Der Benutzer durchläuf
 
 ---
 
-**Schritt 9: Bemerkungen**
+**Schritt 7: Bemerkungen**
 - **Route:** `/buchung/bemerkungen`
 - **User:** Sieht "Bitte geben Sie uns weitere Hinweise zu Ihrer Buchung"
 - **System:** Zeigt Textarea für Anmerkungen + Hinweise zu gewählten Services
 - **Expected:** Nach "Weiter" zur Übersicht
+- **Warenkorb-Icon:** Weiterhin sichtbar mit Badge (Services können hier noch abgewählt werden)
 
 ![Bemerkungen](./bemerkungennachkundendaten.png)
 
@@ -271,7 +303,7 @@ Kompletter Service-Buchungsablauf für Werkstatttermine. Der Benutzer durchläuf
 
 ---
 
-**Schritt 10: Übersicht & Absenden**
+**Schritt 8: Übersicht & Absenden**
 - **Route:** `/buchung/uebersicht`
 - **User:** Sieht Zusammenfassung aller Eingaben
 - **System:** Zeigt Wunschtermin, gewählte Services, Kundendaten, Fahrzeugdaten, Preis
@@ -305,21 +337,42 @@ Kompletter Service-Buchungsablauf für Werkstatttermine. Der Benutzer durchläuf
 
 **Flow:**
 1. System zeigt Kalender-View
-2. Benutzer wählt Datum im Datepicker
-3. System zeigt verfügbare Uhrzeiten für 3 Arbeitstage
+2. Benutzer wählt Datum im Datepicker (nur Arbeitstage wählbar)
+3. System zeigt verfügbare Uhrzeiten für 3 Arbeitstage (dynamisch berechnet)
 4. Benutzer wählt Uhrzeit
-5. Weiter mit Schritt 8 (Kundendaten)
+5. Weiter mit Schritt 6 (Kundendaten)
 
 ### 5.3 Service ohne Optionen
 
 **Trigger:** Benutzer klickt auf Service ohne Optionen (HU/AU, Inspektion)
 
 **Flow:**
-1. Service wird direkt zum Warenkorb hinzugefügt
+1. Service wird direkt zum Warenkorb hinzugefügt (keine Expansion)
 2. Service-Card zeigt Häkchen
-3. Warenkorb-Counter wird aktualisiert
+3. Warenkorb-Icon erscheint/Badge wird aktualisiert
 
-### 5.4 Abbruch der Buchung
+### 5.4 Service mit Optionen
+
+**Trigger:** Benutzer klickt auf Service mit Optionen (Räderwechsel)
+
+**Flow:**
+1. Kachel expandiert und zeigt Checkbox-Optionen
+2. Benutzer wählt eine Option
+3. Service mit Option wird zum Warenkorb hinzugefügt
+4. Kachel kann wieder eingeklappt werden
+
+### 5.5 Service über Warenkorb-Icon abwählen
+
+**Trigger:** Benutzer klickt auf Warenkorb-Icon (auf beliebiger Seite ab Schritt 3)
+
+**Flow:**
+1. Dropdown/Overlay öffnet sich mit Liste der gewählten Services
+2. Benutzer klickt X bei einem Service
+3. Service wird entfernt
+4. Badge-Counter aktualisiert sich
+5. Bei 0 Services: Weiter-Button deaktiviert
+
+### 5.6 Abbruch der Buchung
 
 **Trigger:** Benutzer klickt auf X (Schließen) Button
 
@@ -385,7 +438,10 @@ Kompletter Service-Buchungsablauf für Werkstatttermine. Der Benutzer durchläuf
 - **BR-4:** Termin muss in der Zukunft liegen
 - **BR-5:** Standorte werden basierend auf Marke gefiltert
 - **BR-6:** Nur Arbeitstage (Mo-Fr) für Termine verfügbar
-- **BR-7:** Räderwechsel erfordert Option-Auswahl (mit/ohne Einlagerung)
+- **BR-7:** Räderwechsel erfordert Option-Auswahl (mit/ohne Einlagerung) - in expandierter Kachel
+- **BR-8:** Schnelltermine werden **dynamisch berechnet** ab nächstem Arbeitstag
+- **BR-9:** Warenkorb-Icon ist auf allen Seiten ab Schritt 3 sichtbar
+- **BR-10:** Services können jederzeit über Warenkorb-Icon abgewählt werden
 
 ---
 
@@ -780,13 +836,13 @@ Content-Type: application/json
   7. Klickt "Jetzt anfragen"
 - **Then:** Buchung wird gesendet, Bestätigung angezeigt
 
-### TC-2: Räderwechsel mit Option
+### TC-2: Räderwechsel mit Option (Kachel expandiert)
 
 - **Given:** Benutzer ist auf Service-Auswahl
-- **When:** Klickt auf "Räderwechsel"
-- **Then:** Modal öffnet mit Optionen "mit/ohne Einlagerung"
-- **When:** Wählt "mit Einlagerung" und klickt "Bestätigen"
-- **Then:** Service mit Option im Warenkorb
+- **When:** Klickt auf "Räderwechsel"-Kachel
+- **Then:** Kachel expandiert und zeigt Optionen "mit/ohne Einlagerung" als Checkboxen
+- **When:** Wählt "mit Einlagerung"
+- **Then:** Service mit Option im Warenkorb, Warenkorb-Icon zeigt Badge "1"
 
 ### TC-3: Kalender-Terminauswahl
 
@@ -806,15 +862,15 @@ Content-Type: application/json
 
 ### TC-5: Zurück-Navigation
 
-- **Given:** Benutzer ist auf Schritt 5 (Warenkorb)
+- **Given:** Benutzer ist auf Schritt 4 (Terminauswahl)
 - **When:** Klickt Zurück-Pfeil
-- **Then:** Navigation zu Schritt 3 (Services), Auswahl bleibt erhalten
+- **Then:** Navigation zu Schritt 3 (Services), Auswahl bleibt erhalten, Warenkorb-Badge unverändert
 
-### TC-6: Service entfernen
+### TC-6: Service über Warenkorb-Icon entfernen
 
-- **Given:** Benutzer hat 2 Services im Warenkorb
-- **When:** Klickt auf X bei einem Service
-- **Then:** Service wird entfernt, Counter aktualisiert
+- **Given:** Benutzer hat 2 Services im Warenkorb, ist auf Schritt 6 (Kundendaten)
+- **When:** Klickt auf Warenkorb-Icon, dann auf X bei einem Service
+- **Then:** Service wird entfernt, Badge aktualisiert sich auf "1"
 
 ### TC-7: Marke wechseln
 
@@ -828,6 +884,28 @@ Content-Type: application/json
 - **When:** Navigiert mit Tab und Enter
 - **Then:** Alle Buttons sind fokussierbar und aktivierbar
 
+### TC-9: Warenkorb-Icon Persistenz
+
+- **Given:** Benutzer hat 2 Services gewählt (Schritt 3)
+- **When:** Navigiert zu Schritt 6 (Kundendaten)
+- **Then:** Warenkorb-Icon ist sichtbar mit Badge "2"
+- **When:** Klickt auf Warenkorb-Icon
+- **Then:** Dropdown zeigt beide Services mit X-Buttons
+
+### TC-10: Dynamische Termine (Wochenende)
+
+- **Given:** Heute ist Samstag 14.02.2026
+- **When:** Benutzer öffnet Terminauswahl
+- **Then:** Erste Schnelltermine sind für Montag 16.02.2026 (07:30, 18:00)
+
+### TC-11: Service-Kachel expandiert
+
+- **Given:** Benutzer ist auf Service-Auswahl
+- **When:** Klickt auf HU/AU (ohne Optionen)
+- **Then:** Kein Expand, Service direkt im Warenkorb
+- **When:** Klickt auf Räderwechsel (mit Optionen)
+- **Then:** Kachel expandiert, zeigt Checkboxen für Optionen
+
 ---
 
 ## 14. Implementation
@@ -835,28 +913,31 @@ Content-Type: application/json
 ### Components
 
 **Container Components:**
-- [ ] `BuchungWizardContainerComponent` - Wizard-Steuerung, Route-Outlet
+- [ ] `BuchungWizardContainerComponent` - Wizard-Steuerung, Route-Outlet, **Warenkorb-Icon**
 - [ ] `MarkenauswahlContainerComponent` - Schritt 1
 - [ ] `StandortauswahlContainerComponent` - Schritt 2
-- [ ] `ServiceauswahlContainerComponent` - Schritt 3-5
-- [ ] `TerminauswahlContainerComponent` - Schritt 6-7
-- [ ] `KundendatenContainerComponent` - Schritt 8
-- [ ] `BemerkungenContainerComponent` - Schritt 9
-- [ ] `UebersichtContainerComponent` - Schritt 10
+- [ ] `ServiceauswahlContainerComponent` - Schritt 3 (inkl. Optionen in Kachel)
+- [ ] `TerminauswahlContainerComponent` - Schritt 4-5
+- [ ] `KundendatenContainerComponent` - Schritt 6
+- [ ] `BemerkungenContainerComponent` - Schritt 7
+- [ ] `UebersichtContainerComponent` - Schritt 8
 
 **Presentational Components:**
 - [ ] `MarkenButtonsComponent` - Marken-Grid
 - [ ] `StandortButtonsComponent` - Standort-Grid
-- [ ] `ServiceCardComponent` - Einzelne Service-Card
+- [ ] `ServiceCardComponent` - Einzelne Service-Card (expandierbar mit Optionen)
 - [ ] `ServiceCardsComponent` - Service-Grid
-- [ ] `ServiceOptionenDialogComponent` - Modal für Optionen
-- [ ] `WarenkorbComponent` - Warenkorb-Leiste
-- [ ] `SchnellTermineComponent` - Termin-Schnellauswahl
-- [ ] `KalenderComponent` - Datepicker
+- [ ] `WarenkorbIconComponent` - **Persistentes Warenkorb-Icon mit Badge + Dropdown**
+- [ ] `WarenkorbDropdownComponent` - Dropdown mit Service-Liste + X-Buttons
+- [ ] `SchnellTermineComponent` - Termin-Schnellauswahl (dynamisch)
+- [ ] `KalenderComponent` - Datepicker (nur Arbeitstage)
 - [ ] `UhrzeitenGridComponent` - Uhrzeiten-Buttons
 - [ ] `KundendatenFormularComponent` - Reaktives Formular
 - [ ] `BemerkungenFormularComponent` - Textarea
 - [ ] `BuchungZusammenfassungComponent` - Übersicht
+
+**ENTFERNT:**
+- ~~`ServiceOptionenDialogComponent`~~ - KEIN Modal, Optionen sind in der Kachel
 
 ### Stores
 
@@ -964,10 +1045,12 @@ src/app/features/buchung/
 │   ├── serviceauswahl/
 │   │   ├── serviceauswahl-container.component.ts
 │   │   ├── serviceauswahl-container.component.html
-│   │   ├── service-card.component.ts
-│   │   ├── service-cards.component.ts
-│   │   ├── service-optionen-dialog.component.ts
-│   │   └── warenkorb.component.ts
+│   │   ├── service-card.component.ts          # Expandierbar mit Optionen
+│   │   └── service-cards.component.ts
+│   │
+│   ├── warenkorb/
+│   │   ├── warenkorb-icon.component.ts        # Persistentes Icon mit Badge
+│   │   └── warenkorb-dropdown.component.ts    # Dropdown mit Services
 │   │
 │   ├── terminauswahl/
 │   │   ├── terminauswahl-container.component.ts
@@ -1045,9 +1128,11 @@ src/app/features/buchung/
 |---------|--------------|
 | `beimMarkeWaehlen(marke)` | Marke ausgewählt |
 | `beimStandortWaehlen(standort)` | Standort ausgewählt |
-| `beimServiceWaehlen(service)` | Service angeklickt |
-| `beimOptionBestaetigen(option)` | Option im Modal bestätigt |
-| `beimServiceEntfernen(serviceId)` | Service aus Warenkorb entfernt |
+| `beimServiceWaehlen(service)` | Service-Kachel angeklickt (expandiert) |
+| `beimOptionWaehlen(service, option)` | Option in Kachel gewählt |
+| `beimServiceEntfernen(serviceId)` | Service aus Warenkorb entfernt (über Icon) |
+| `beimWarenkorbOeffnen()` | Warenkorb-Icon geklickt |
+| `beimWarenkorbSchliessen()` | Warenkorb-Dropdown geschlossen |
 | `beimTerminWaehlen(termin)` | Termin ausgewählt |
 | `beimKalenderOeffnen()` | Kalender-Link geklickt |
 | `beimDatumWaehlen(datum)` | Datum im Kalender gewählt |
@@ -1088,12 +1173,15 @@ src/app/features/buchung/
 | Signal | Beschreibung |
 |--------|--------------|
 | `gesamtpreis` | Summe aller Services |
-| `anzahlServices` | Anzahl gewählter Services |
+| `anzahlServices` | Anzahl gewählter Services (für Badge) |
 | `hatServices` | Boolean: mindestens 1 Service |
 | `kannWeiter` | Boolean: aktueller Schritt komplett |
 | `istFormularGueltig` | Boolean: Kundendaten valide |
 | `buchungKomplett` | Boolean: alle Schritte erledigt |
 | `gefilterteStandorte` | Standorte für gewählte Marke |
+| `zeigeWarenkorbIcon` | Boolean: true ab Schritt 3 |
+| `naechsterArbeitstag` | Dynamisch berechneter nächster Arbeitstag |
+| `schnellTermineDynamisch` | 4 Termine ab nächstem Arbeitstag |
 
 ### Variables / State
 | Variable | Beschreibung |
@@ -1145,9 +1233,11 @@ export const buchungDe = {
   'buchung.optionen.mit-einlagerung': 'Räderwechsel mit Einlagerung',
   'buchung.optionen.bestaetigen': 'Bestätigen',
 
-  // Schritt 5: Warenkorb
+  // Warenkorb-Icon (persistent auf allen Seiten ab Schritt 3)
   'buchung.warenkorb.anzahl': 'Sie haben {{anzahl}} Services ausgewählt',
   'buchung.warenkorb.leer': 'Noch keine Services ausgewählt',
+  'buchung.warenkorb.entfernen': 'Service entfernen',
+  'buchung.warenkorb.badge-label': '{{anzahl}} Services im Warenkorb',
 
   // Schritt 6: Terminauswahl
   'buchung.termin.titel': 'Wählen Sie den für Sie passenden Tag und Uhrzeit aus',
@@ -1263,9 +1353,11 @@ export const buchungEn = {
   'buchung.optionen.mit-einlagerung': 'Tire change with storage',
   'buchung.optionen.bestaetigen': 'Confirm',
 
-  // Step 5: Cart
+  // Cart Icon (persistent on all pages from step 3)
   'buchung.warenkorb.anzahl': 'You have selected {{anzahl}} services',
   'buchung.warenkorb.leer': 'No services selected yet',
+  'buchung.warenkorb.entfernen': 'Remove service',
+  'buchung.warenkorb.badge-label': '{{anzahl}} services in cart',
 
   // Step 6: Appointment selection
   'buchung.termin.titel': 'Select the day and time that suits you',
