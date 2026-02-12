@@ -24,7 +24,7 @@
 | REQ-ID | Name | Status | Priority | Dependencies | Description |
 |--------|------|--------|----------|--------------|-------------|
 | REQ-001 | Header | 🔍 In Review | High | - | Wiederverwendbarer Header mit Logo und Accessibility-Einstellungen (Font-Size, High-Contrast, Reduced-Motion) |
-| REQ-002 | Homescreen | 📝 Draft | High | REQ-001 | Startseite mit Fahrzeugmarken-Auswahl (Audi, BMW, Mercedes-Benz, MINI, Volkswagen) |
+| REQ-002 | Ablaufkomplett | 📝 Draft | High | REQ-001 | Kompletter Service-Buchungsablauf: Marke → Standort → Services → Termin → Kundendaten → Übersicht (10 Schritte) |
 
 ---
 
@@ -33,9 +33,15 @@
 ```
 REQ-001-Header
     │
-    └──► REQ-002-Homescreen
+    └──► REQ-002-Ablaufkomplett (Service-Buchungsablauf)
               │
-              └──► (Future: Marken-Pages)
+              ├── /buchung/marke
+              ├── /buchung/standort
+              ├── /buchung/services
+              ├── /buchung/termin
+              ├── /buchung/kundendaten
+              ├── /buchung/bemerkungen
+              └── /buchung/uebersicht
 ```
 
 ---
@@ -45,7 +51,7 @@ REQ-001-Header
 | REQ-ID | Requirement Document |
 |--------|---------------------|
 | REQ-001 | [REQ-001-Header](./REQ-001-Header/requirement.md) |
-| REQ-002 | [REQ-002-Homescreen](./REQ-002-Homescreen/requirement.md) |
+| REQ-002 | [REQ-002-Ablaufkomplett](./REQ-002-Ablaufkomplett/requirement.md) |
 
 ---
 
