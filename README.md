@@ -68,6 +68,12 @@ src/app/
 
 ---
 
+## Github Page
+
+https://ricoso.github.io/angular-ai-test/#/app
+
+---
+
 ## Documentation
 
 - **CLAUDE.md** - Architektur-Regeln & Workflow
