@@ -108,3 +108,45 @@
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
 }
+
+// =============================================================================
+// ICON FRAMED - Icons IMMER mit Rahmen!
+// =============================================================================
+// Standard: Abgerundetes Quadrat mit leichtem Schatten
+// Usage: <span class="icon-framed"><mat-icon>settings</mat-icon></span>
+
+.icon-framed {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5em;
+  height: 2.5em;
+  background: var(--color-background-surface);
+  border: 0.0625em solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-small);
+
+  // Variante: Primary Color Akzent
+  &--primary {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  // Variante: Secondary Color Akzent
+  &--secondary {
+    border-color: var(--color-secondary);
+    color: var(--color-secondary);
+  }
+
+  // Variante: Größere Version (3em)
+  &--lg {
+    width: 3em;
+    height: 3em;
+  }
+
+  // Variante: Kleinere Version (2em)
+  &--sm {
+    width: 2em;
+    height: 2em;
+  }
+}

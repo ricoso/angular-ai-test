@@ -48,6 +48,38 @@ Jede Page nutzt `<app-header>` aus REQ-001 mit:
 
 **Touch-Targets:** `min-height: var(--touch-target-min)` (44px)
 
+### 5. Icons IMMER mit Rahmen
+
+**Standard:** Abgerundetes Quadrat mit leichtem Schatten
+
+```html
+<!-- RICHTIG -->
+<span class="icon-framed">
+  <mat-icon>settings</mat-icon>
+</span>
+
+<!-- Mit Varianten -->
+<span class="icon-framed icon-framed--primary">
+  <mat-icon>check_circle</mat-icon>
+</span>
+
+<span class="icon-framed icon-framed--lg">
+  <mat-icon>home</mat-icon>
+</span>
+
+<!-- FALSCH - Kein nacktes Icon -->
+<mat-icon>settings</mat-icon>
+```
+
+**Varianten:**
+- `.icon-framed` - Standard (neutral)
+- `.icon-framed--primary` - Primary Color Akzent
+- `.icon-framed--secondary` - Secondary Color Akzent
+- `.icon-framed--lg` - Größere Version (3em)
+- `.icon-framed--sm` - Kleinere Version (2em)
+
+**Styling:** `src/styles/_utilities.scss`
+
 ---
 
 ## Material Component Mapping
