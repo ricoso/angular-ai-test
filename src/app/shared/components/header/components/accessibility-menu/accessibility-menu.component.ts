@@ -1,8 +1,8 @@
-import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, inject } from '@angular/core';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
-import { TranslatePipe } from '@app/core/i18n';
+import { TranslateService } from '@app/core/i18n';
 import { Schriftgroesse } from '@app/shared/models/accessibility.model';
 
 /**
@@ -15,14 +15,16 @@ import { Schriftgroesse } from '@app/shared/models/accessibility.model';
   imports: [
     MatRadioModule,
     MatSlideToggleModule,
-    FormsModule,
-    TranslatePipe
+    FormsModule
   ],
   templateUrl: './accessibility-menu.component.html',
   styleUrl: './accessibility-menu.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AccessibilityMenuComponent {
+  // i18n - Objektorientierter Zugriff auf Übersetzungen
+  protected readonly t = inject(TranslateService).t;
+
   // Inputs (Presentational: nur input/output, KEIN Store!)
   readonly schriftgroesse = input.required<Schriftgroesse>();
   readonly hoherKontrast = input.required<boolean>();

@@ -74,3 +74,16 @@ type NestedKeyOf<T> = T extends object
 
 export type TranslationKey = NestedKeyOf<typeof translations.de>;
 export type Language = keyof typeof translations;
+
+/**
+ * Konvertiert alle String-Literals in der Struktur zu `string`
+ * Ermöglicht reaktiven Language-Switch ohne Type-Konflikte
+ */
+type DeepStringify<T> = T extends string
+  ? string
+  : T extends object
+    ? { [K in keyof T]: DeepStringify<T[K]> }
+    : T;
+
+/** Type für das Translations-Objekt (für objektorientieren Template-Zugriff) */
+export type Translations = DeepStringify<typeof translations.de>;

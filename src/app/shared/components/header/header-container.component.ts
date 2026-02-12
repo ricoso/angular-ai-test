@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
-import { TranslatePipe } from '@app/core/i18n';
+import { TranslateService } from '@app/core/i18n';
 import { BarrierefreiheitStore } from '@app/shared/stores/accessibility.store';
 import { Schriftgroesse } from '@app/shared/models/accessibility.model';
 import { AccessibilityMenuComponent } from './components/accessibility-menu/accessibility-menu.component';
@@ -20,7 +20,6 @@ import { AccessibilityMenuComponent } from './components/accessibility-menu/acce
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
-    TranslatePipe,
     AccessibilityMenuComponent
   ],
   templateUrl: './header-container.component.html',
@@ -28,6 +27,9 @@ import { AccessibilityMenuComponent } from './components/accessibility-menu/acce
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderContainerComponent {
+  // i18n - Objektorientierter Zugriff auf Übersetzungen
+  protected readonly t = inject(TranslateService).t;
+
   // Store injection (Container darf Store injecten!)
   protected readonly barrierefreiheitStore = inject(BarrierefreiheitStore);
 
