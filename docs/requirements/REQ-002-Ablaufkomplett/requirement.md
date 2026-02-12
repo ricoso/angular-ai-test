@@ -1204,246 +1204,339 @@ src/app/features/buchung/
 
 ---
 
-## 17. i18n Keys
+## 17. i18n Keys (Verschachteltes Format)
+
+> **Hinweis:** Siehe `.claude/skills/i18n-typings.md` für das Pattern. Beide Sprachen im gleichen verschachtelten Format!
 
 ### DE (Deutsch)
 
 ```typescript
-export const buchungDe = {
-  // Schritt 1: Markenauswahl
-  'buchung.marke.titel': 'Welche Fahrzeugmarke fahren Sie?',
-  'buchung.marke.untertitel': 'Bitte wählen Sie die gewünschte Marke aus.',
+export const buchungTranslations = {
+  de: {
+    buchung: {
+      // Schritt 1: Markenauswahl
+      marke: {
+        titel: 'Welche Fahrzeugmarke fahren Sie?',
+        untertitel: 'Bitte wählen Sie die gewünschte Marke aus.'
+      },
 
-  // Schritt 2: Standortwahl
-  'buchung.standort.titel': 'An welchem Standort dürfen wir Sie begrüßen?',
-  'buchung.standort.untertitel': 'Bitte wählen Sie den gewünschten Standort aus.',
+      // Schritt 2: Standortwahl
+      standort: {
+        titel: 'An welchem Standort dürfen wir Sie begrüßen?',
+        untertitel: 'Bitte wählen Sie den gewünschten Standort aus.'
+      },
 
-  // Schritt 3: Serviceauswahl
-  'buchung.services.titel': 'Welche Services möchten Sie buchen?',
-  'buchung.services.hu-au': 'HU/AU',
-  'buchung.services.hu-au.beschreibung': 'Jetzt Ihren Termin für eine gesetzliche HU/AU vereinbaren!',
-  'buchung.services.inspektion': 'Inspektion',
-  'buchung.services.inspektion.beschreibung': 'Lassen Sie Ihre fällige Inspektion hier durchführen! Buchen Sie jetzt einen Termin.',
-  'buchung.services.raederwechsel': 'Räderwechsel',
-  'buchung.services.raederwechsel.beschreibung': 'Kommen Sie zu uns für Ihren Räderwechsel - inkl. optionaler Einlagerung!',
+      // Schritt 3: Serviceauswahl
+      services: {
+        titel: 'Welche Services möchten Sie buchen?',
+        huAu: {
+          label: 'HU/AU',
+          beschreibung: 'Jetzt Ihren Termin für eine gesetzliche HU/AU vereinbaren!'
+        },
+        inspektion: {
+          label: 'Inspektion',
+          beschreibung: 'Lassen Sie Ihre fällige Inspektion hier durchführen! Buchen Sie jetzt einen Termin.'
+        },
+        raederwechsel: {
+          label: 'Räderwechsel',
+          beschreibung: 'Kommen Sie zu uns für Ihren Räderwechsel - inkl. optionaler Einlagerung!'
+        }
+      },
 
-  // Schritt 4: Service-Optionen
-  'buchung.optionen.titel': 'Service-Optionen',
-  'buchung.optionen.ohne-einlagerung': 'Räderwechsel ohne Einlagerung',
-  'buchung.optionen.mit-einlagerung': 'Räderwechsel mit Einlagerung',
-  'buchung.optionen.bestaetigen': 'Bestätigen',
+      // Service-Optionen (in expandierter Kachel)
+      optionen: {
+        titel: 'Service-Optionen',
+        ohneEinlagerung: 'Räderwechsel ohne Einlagerung',
+        mitEinlagerung: 'Räderwechsel mit Einlagerung',
+        bestaetigen: 'Bestätigen'
+      },
 
-  // Warenkorb-Icon (persistent auf allen Seiten ab Schritt 3)
-  'buchung.warenkorb.anzahl': 'Sie haben {{anzahl}} Services ausgewählt',
-  'buchung.warenkorb.leer': 'Noch keine Services ausgewählt',
-  'buchung.warenkorb.entfernen': 'Service entfernen',
-  'buchung.warenkorb.badge-label': '{{anzahl}} Services im Warenkorb',
+      // Warenkorb-Icon (persistent auf allen Seiten ab Schritt 3)
+      warenkorb: {
+        anzahl: 'Sie haben {{anzahl}} Services ausgewählt',
+        leer: 'Noch keine Services ausgewählt',
+        entfernen: 'Service entfernen',
+        badgeLabel: '{{anzahl}} Services im Warenkorb'
+      },
 
-  // Schritt 6: Terminauswahl
-  'buchung.termin.titel': 'Wählen Sie den für Sie passenden Tag und Uhrzeit aus',
-  'buchung.termin.kalender-link': 'Hier sehen Sie weitere freie Termine in unserem Werkstattkalender',
+      // Schritt 4: Terminauswahl
+      termin: {
+        titel: 'Wählen Sie den für Sie passenden Tag und Uhrzeit aus',
+        kalenderLink: 'Hier sehen Sie weitere freie Termine in unserem Werkstattkalender'
+      },
 
-  // Schritt 7: Kalender
-  'buchung.kalender.titel': 'Hier sehen Sie weitere freie Termine in unserem Werkstattkalender',
-  'buchung.kalender.wunschtermin': 'Ihr Wunschtermin:',
-  'buchung.kalender.wunschtermin.hilfe': 'Wählen Sie Ihren Wunschtermin. Wir zeigen Ihnen alle freien Termine ab diesem Tag an.',
-  'buchung.kalender.verfuegbar': 'Wählen Sie links im Kalender einen gewünschten Tag aus und wir zeigen Ihnen die ab diesem Zeitpunkt nächsten freien Termine an.',
+      // Schritt 5: Kalender
+      kalender: {
+        titel: 'Hier sehen Sie weitere freie Termine in unserem Werkstattkalender',
+        wunschtermin: 'Ihr Wunschtermin:',
+        wunschterminHilfe: 'Wählen Sie Ihren Wunschtermin. Wir zeigen Ihnen alle freien Termine ab diesem Tag an.',
+        verfuegbar: 'Wählen Sie links im Kalender einen gewünschten Tag aus und wir zeigen Ihnen die ab diesem Zeitpunkt nächsten freien Termine an.'
+      },
 
-  // Schritt 8: Kundendaten
-  'buchung.kundendaten.titel': 'Bitte geben Sie uns die letzten Informationen zu Ihrem Fahrzeug',
-  'buchung.kundendaten.bestandskunde': 'Schon einmal bei uns gewesen?',
-  'buchung.kundendaten.bestandskunde.hilfe': 'Dann rufen Sie Ihre Daten automatisch mit Eingabe Ihrer E-Mail-Adresse ab.',
-  'buchung.kundendaten.daten-abrufen': 'Jetzt Daten abrufen!',
-  'buchung.kundendaten.email': 'E-Mail Adresse',
-  'buchung.kundendaten.anrede': 'Anrede',
-  'buchung.kundendaten.anrede.herr': 'Herr',
-  'buchung.kundendaten.anrede.frau': 'Frau',
-  'buchung.kundendaten.anrede.divers': 'Divers',
-  'buchung.kundendaten.vorname': 'Vorname',
-  'buchung.kundendaten.nachname': 'Nachname',
-  'buchung.kundendaten.strasse': 'Straße und Haus Nr.',
-  'buchung.kundendaten.plz': 'Postleitzahl',
-  'buchung.kundendaten.ort': 'Wohnort',
-  'buchung.kundendaten.telefon': 'Mobilfunknummer',
-  'buchung.kundendaten.telefon.hilfe': 'Bitte geben Sie Ihre Mobilfunknummer ohne Sonderzeichen als Zahl im Format 01701234567 ein.',
-  'buchung.kundendaten.kennzeichen': 'KFZ Kennzeichen',
-  'buchung.kundendaten.kilometerstand': 'Kilometerstand',
-  'buchung.kundendaten.fin': 'FIN',
-  'buchung.kundendaten.fin.erklaerung': 'Erklärung der FIN',
-  'buchung.kundendaten.fin.optional': 'Für dieses Feld ist keine Angabe erforderlich.',
-  'buchung.kundendaten.datenschutz': 'Ich willige in die Verarbeitung meiner personenbezogenen Daten zum Zwecke der Online-Terminvereinbarung ein. Näheres finden Sie in unserer Datenschutzerklärung.',
-  'buchung.kundendaten.pflichtfelder': 'Pflichtfelder sind mit * gekennzeichnet',
+      // Schritt 6: Kundendaten
+      kundendaten: {
+        titel: 'Bitte geben Sie uns die letzten Informationen zu Ihrem Fahrzeug',
+        bestandskunde: 'Schon einmal bei uns gewesen?',
+        bestandskundeHilfe: 'Dann rufen Sie Ihre Daten automatisch mit Eingabe Ihrer E-Mail-Adresse ab.',
+        datenAbrufen: 'Jetzt Daten abrufen!',
+        email: 'E-Mail Adresse',
+        anrede: {
+          label: 'Anrede',
+          herr: 'Herr',
+          frau: 'Frau',
+          divers: 'Divers'
+        },
+        vorname: 'Vorname',
+        nachname: 'Nachname',
+        strasse: 'Straße und Haus Nr.',
+        plz: 'Postleitzahl',
+        ort: 'Wohnort',
+        telefon: {
+          label: 'Mobilfunknummer',
+          hilfe: 'Bitte geben Sie Ihre Mobilfunknummer ohne Sonderzeichen als Zahl im Format 01701234567 ein.'
+        },
+        kennzeichen: 'KFZ Kennzeichen',
+        kilometerstand: 'Kilometerstand',
+        fin: {
+          label: 'FIN',
+          erklaerung: 'Erklärung der FIN',
+          optional: 'Für dieses Feld ist keine Angabe erforderlich.'
+        },
+        datenschutz: 'Ich willige in die Verarbeitung meiner personenbezogenen Daten zum Zwecke der Online-Terminvereinbarung ein. Näheres finden Sie in unserer Datenschutzerklärung.',
+        pflichtfelder: 'Pflichtfelder sind mit * gekennzeichnet'
+      },
 
-  // Schritt 9: Bemerkungen
-  'buchung.bemerkungen.titel': 'Bitte geben Sie uns weitere Hinweise zu Ihrer Buchung',
-  'buchung.bemerkungen.frage': 'Möchten Sie uns noch etwas zu Ihrer Buchung mitteilen?',
-  'buchung.bemerkungen.label': 'Anmerkungen',
-  'buchung.bemerkungen.placeholder': 'Bitte tragen Sie hier Ihre Nachricht an uns ein (Hinweise, Buchung weiterer Leistungen etc.)',
-  'buchung.bemerkungen.hinweise-titel': 'Wichtige Hinweise zu Ihren ausgewählten Services',
-  'buchung.bemerkungen.hinweis.hu-au': 'HU/AU: Hier kann Ihr besonderer Hinweis zur gewählten Leistung stehen. Bsp. HU/AU nur möglich Montags, Mittwochs und Freitags.',
-  'buchung.bemerkungen.hinweis.inspektion': 'Inspektion: Hier kann Ihr besonderer Hinweis zur gewählten Leistung stehen. Bsp. "Immer Fahrzeugschein mitbringen".',
+      // Schritt 7: Bemerkungen
+      bemerkungen: {
+        titel: 'Bitte geben Sie uns weitere Hinweise zu Ihrer Buchung',
+        frage: 'Möchten Sie uns noch etwas zu Ihrer Buchung mitteilen?',
+        label: 'Anmerkungen',
+        placeholder: 'Bitte tragen Sie hier Ihre Nachricht an uns ein (Hinweise, Buchung weiterer Leistungen etc.)',
+        hinweiseTitel: 'Wichtige Hinweise zu Ihren ausgewählten Services',
+        hinweis: {
+          huAu: 'HU/AU: Hier kann Ihr besonderer Hinweis zur gewählten Leistung stehen. Bsp. HU/AU nur möglich Montags, Mittwochs und Freitags.',
+          inspektion: 'Inspektion: Hier kann Ihr besonderer Hinweis zur gewählten Leistung stehen. Bsp. "Immer Fahrzeugschein mitbringen".'
+        }
+      },
 
-  // Schritt 10: Übersicht
-  'buchung.uebersicht.titel': 'Übersicht',
-  'buchung.uebersicht.untertitel': 'Bitte prüfen Sie Ihre Angaben bevor Sie den Termin versenden.',
-  'buchung.uebersicht.wunschtermin': 'Wunschtermin',
-  'buchung.uebersicht.datum': 'Datum',
-  'buchung.uebersicht.uhrzeit': 'Uhrzeit',
-  'buchung.uebersicht.gewahlter-service': 'Gewählter Service',
-  'buchung.uebersicht.leistungen': 'Folgende Leistungen werden in {{standort}} für Sie angefragt:',
-  'buchung.uebersicht.preis': '{{preis}} €',
-  'buchung.uebersicht.inkl-mwst': 'inkl. Mehrwertsteuer',
-  'buchung.uebersicht.ihre-daten': 'Ihre Daten',
-  'buchung.uebersicht.name': 'Name',
-  'buchung.uebersicht.strasse': 'Straße',
-  'buchung.uebersicht.ort': 'Ort',
-  'buchung.uebersicht.telefon': 'Telefon',
-  'buchung.uebersicht.email': 'Email',
-  'buchung.uebersicht.marke': 'Marke',
-  'buchung.uebersicht.kennzeichen': 'Kennzeichen',
-  'buchung.uebersicht.kilometerstand': 'Kilometerstand',
+      // Schritt 8: Übersicht
+      uebersicht: {
+        titel: 'Übersicht',
+        untertitel: 'Bitte prüfen Sie Ihre Angaben bevor Sie den Termin versenden.',
+        wunschtermin: 'Wunschtermin',
+        datum: 'Datum',
+        uhrzeit: 'Uhrzeit',
+        gewahlterService: 'Gewählter Service',
+        leistungen: 'Folgende Leistungen werden in {{standort}} für Sie angefragt:',
+        preis: '{{preis}} €',
+        inklMwst: 'inkl. Mehrwertsteuer',
+        ihreDaten: 'Ihre Daten',
+        name: 'Name',
+        strasse: 'Straße',
+        ort: 'Ort',
+        telefon: 'Telefon',
+        email: 'Email',
+        marke: 'Marke',
+        kennzeichen: 'Kennzeichen',
+        kilometerstand: 'Kilometerstand'
+      },
 
-  // Buttons
-  'buchung.buttons.weiter': 'weiter',
-  'buchung.buttons.zurueck': 'zurück',
-  'buchung.buttons.abbrechen': 'Abbrechen',
-  'buchung.buttons.anfragen': 'Jetzt anfragen',
-  'buchung.buttons.zur-buchungsuebersicht': 'Zur Buchungsübersicht',
+      // Buttons
+      buttons: {
+        weiter: 'weiter',
+        zurueck: 'zurück',
+        abbrechen: 'Abbrechen',
+        anfragen: 'Jetzt anfragen',
+        zurBuchungsuebersicht: 'Zur Buchungsübersicht'
+      },
 
-  // Fehler
-  'buchung.fehler.pflichtfeld': 'Dieses Feld ist erforderlich',
-  'buchung.fehler.email-ungueltig': 'Bitte geben Sie eine gültige E-Mail-Adresse ein',
-  'buchung.fehler.plz-ungueltig': 'Bitte geben Sie eine gültige Postleitzahl ein (5 Ziffern)',
-  'buchung.fehler.telefon-ungueltig': 'Bitte geben Sie eine gültige Mobilfunknummer ein',
-  'buchung.fehler.kennzeichen-ungueltig': 'Bitte geben Sie ein gültiges KFZ-Kennzeichen ein',
-  'buchung.fehler.kilometerstand-ungueltig': 'Bitte geben Sie einen gültigen Kilometerstand ein',
-  'buchung.fehler.datenschutz-erforderlich': 'Bitte akzeptieren Sie die Datenschutzerklärung',
-  'buchung.fehler.service-erforderlich': 'Bitte wählen Sie mindestens einen Service',
+      // Fehler
+      fehler: {
+        pflichtfeld: 'Dieses Feld ist erforderlich',
+        emailUngueltig: 'Bitte geben Sie eine gültige E-Mail-Adresse ein',
+        plzUngueltig: 'Bitte geben Sie eine gültige Postleitzahl ein (5 Ziffern)',
+        telefonUngueltig: 'Bitte geben Sie eine gültige Mobilfunknummer ein',
+        kennzeichenUngueltig: 'Bitte geben Sie ein gültiges KFZ-Kennzeichen ein',
+        kilometerstandUngueltig: 'Bitte geben Sie einen gültigen Kilometerstand ein',
+        datenschutzErforderlich: 'Bitte akzeptieren Sie die Datenschutzerklärung',
+        serviceErforderlich: 'Bitte wählen Sie mindestens einen Service'
+      },
 
-  // Bestätigung
-  'buchung.bestaetigung.titel': 'Vielen Dank für Ihre Anfrage!',
-  'buchung.bestaetigung.text': 'Ihre Anfrage wurde erfolgreich übermittelt. Wir melden uns in Kürze bei Ihnen.'
-};
+      // Bestätigung
+      bestaetigung: {
+        titel: 'Vielen Dank für Ihre Anfrage!',
+        text: 'Ihre Anfrage wurde erfolgreich übermittelt. Wir melden uns in Kürze bei Ihnen.'
+      }
+    }
+  },
+
+  en: {
+    buchung: {
+      // Step 1: Brand selection
+      marke: {
+        titel: 'What vehicle brand do you drive?',
+        untertitel: 'Please select your desired brand.'
+      },
+
+      // Step 2: Location selection
+      standort: {
+        titel: 'At which location may we welcome you?',
+        untertitel: 'Please select your desired location.'
+      },
+
+      // Step 3: Service selection
+      services: {
+        titel: 'Which services would you like to book?',
+        huAu: {
+          label: 'MOT/Emissions Test',
+          beschreibung: 'Schedule your appointment for a mandatory MOT/emissions test now!'
+        },
+        inspektion: {
+          label: 'Inspection',
+          beschreibung: 'Have your due inspection performed here! Book an appointment now.'
+        },
+        raederwechsel: {
+          label: 'Tire Change',
+          beschreibung: 'Come to us for your tire change - including optional tire storage!'
+        }
+      },
+
+      // Service options (in expandable tile)
+      optionen: {
+        titel: 'Service Options',
+        ohneEinlagerung: 'Tire change without storage',
+        mitEinlagerung: 'Tire change with storage',
+        bestaetigen: 'Confirm'
+      },
+
+      // Cart Icon (persistent on all pages from step 3)
+      warenkorb: {
+        anzahl: 'You have selected {{anzahl}} services',
+        leer: 'No services selected yet',
+        entfernen: 'Remove service',
+        badgeLabel: '{{anzahl}} services in cart'
+      },
+
+      // Step 4: Appointment selection
+      termin: {
+        titel: 'Select the day and time that suits you',
+        kalenderLink: 'See more available appointments in our workshop calendar'
+      },
+
+      // Step 5: Calendar
+      kalender: {
+        titel: 'See more available appointments in our workshop calendar',
+        wunschtermin: 'Your preferred date:',
+        wunschterminHilfe: 'Select your preferred date. We will show you all available appointments from this day.',
+        verfuegbar: 'Select a date in the calendar on the left and we will show you the next available appointments from that time.'
+      },
+
+      // Step 6: Customer data
+      kundendaten: {
+        titel: 'Please provide us with the final information about your vehicle',
+        bestandskunde: 'Been with us before?',
+        bestandskundeHilfe: 'Then retrieve your data automatically by entering your email address.',
+        datenAbrufen: 'Retrieve data now!',
+        email: 'Email Address',
+        anrede: {
+          label: 'Title',
+          herr: 'Mr.',
+          frau: 'Mrs.',
+          divers: 'Other'
+        },
+        vorname: 'First Name',
+        nachname: 'Last Name',
+        strasse: 'Street and House No.',
+        plz: 'Postal Code',
+        ort: 'City',
+        telefon: {
+          label: 'Mobile Number',
+          hilfe: 'Please enter your mobile number without special characters as a number in the format 01701234567.'
+        },
+        kennzeichen: 'License Plate',
+        kilometerstand: 'Mileage',
+        fin: {
+          label: 'VIN',
+          erklaerung: 'VIN explanation',
+          optional: 'This field is optional.'
+        },
+        datenschutz: 'I consent to the processing of my personal data for the purpose of online appointment booking. For more details, please see our privacy policy.',
+        pflichtfelder: 'Required fields are marked with *'
+      },
+
+      // Step 7: Notes
+      bemerkungen: {
+        titel: 'Please provide us with additional information about your booking',
+        frage: 'Would you like to tell us anything else about your booking?',
+        label: 'Notes',
+        placeholder: 'Please enter your message here (hints, additional services, etc.)',
+        hinweiseTitel: 'Important notes about your selected services',
+        hinweis: {
+          huAu: 'MOT/Emissions: Your special note about the selected service can go here. E.g., MOT only available Mondays, Wednesdays, and Fridays.',
+          inspektion: 'Inspection: Your special note about the selected service can go here. E.g., "Always bring vehicle registration".'
+        }
+      },
+
+      // Step 8: Summary
+      uebersicht: {
+        titel: 'Summary',
+        untertitel: 'Please review your information before submitting the appointment.',
+        wunschtermin: 'Preferred Appointment',
+        datum: 'Date',
+        uhrzeit: 'Time',
+        gewahlterService: 'Selected Service',
+        leistungen: 'The following services will be requested for you in {{standort}}:',
+        preis: '{{preis}} €',
+        inklMwst: 'including VAT',
+        ihreDaten: 'Your Data',
+        name: 'Name',
+        strasse: 'Street',
+        ort: 'City',
+        telefon: 'Phone',
+        email: 'Email',
+        marke: 'Brand',
+        kennzeichen: 'License Plate',
+        kilometerstand: 'Mileage'
+      },
+
+      // Buttons
+      buttons: {
+        weiter: 'next',
+        zurueck: 'back',
+        abbrechen: 'Cancel',
+        anfragen: 'Request now',
+        zurBuchungsuebersicht: 'To booking overview'
+      },
+
+      // Errors
+      fehler: {
+        pflichtfeld: 'This field is required',
+        emailUngueltig: 'Please enter a valid email address',
+        plzUngueltig: 'Please enter a valid postal code (5 digits)',
+        telefonUngueltig: 'Please enter a valid mobile number',
+        kennzeichenUngueltig: 'Please enter a valid license plate',
+        kilometerstandUngueltig: 'Please enter a valid mileage',
+        datenschutzErforderlich: 'Please accept the privacy policy',
+        serviceErforderlich: 'Please select at least one service'
+      },
+
+      // Confirmation
+      bestaetigung: {
+        titel: 'Thank you for your request!',
+        text: 'Your request has been successfully submitted. We will contact you shortly.'
+      }
+    }
+  }
+} as const;
 ```
 
-### EN (English)
-
-```typescript
-export const buchungEn = {
-  // Step 1: Brand selection
-  'buchung.marke.titel': 'What vehicle brand do you drive?',
-  'buchung.marke.untertitel': 'Please select your desired brand.',
-
-  // Step 2: Location selection
-  'buchung.standort.titel': 'At which location may we welcome you?',
-  'buchung.standort.untertitel': 'Please select your desired location.',
-
-  // Step 3: Service selection
-  'buchung.services.titel': 'Which services would you like to book?',
-  'buchung.services.hu-au': 'MOT/Emissions Test',
-  'buchung.services.hu-au.beschreibung': 'Schedule your appointment for a mandatory MOT/emissions test now!',
-  'buchung.services.inspektion': 'Inspection',
-  'buchung.services.inspektion.beschreibung': 'Have your due inspection performed here! Book an appointment now.',
-  'buchung.services.raederwechsel': 'Tire Change',
-  'buchung.services.raederwechsel.beschreibung': 'Come to us for your tire change - including optional tire storage!',
-
-  // Step 4: Service options
-  'buchung.optionen.titel': 'Service Options',
-  'buchung.optionen.ohne-einlagerung': 'Tire change without storage',
-  'buchung.optionen.mit-einlagerung': 'Tire change with storage',
-  'buchung.optionen.bestaetigen': 'Confirm',
-
-  // Cart Icon (persistent on all pages from step 3)
-  'buchung.warenkorb.anzahl': 'You have selected {{anzahl}} services',
-  'buchung.warenkorb.leer': 'No services selected yet',
-  'buchung.warenkorb.entfernen': 'Remove service',
-  'buchung.warenkorb.badge-label': '{{anzahl}} services in cart',
-
-  // Step 6: Appointment selection
-  'buchung.termin.titel': 'Select the day and time that suits you',
-  'buchung.termin.kalender-link': 'See more available appointments in our workshop calendar',
-
-  // Step 7: Calendar
-  'buchung.kalender.titel': 'See more available appointments in our workshop calendar',
-  'buchung.kalender.wunschtermin': 'Your preferred date:',
-  'buchung.kalender.wunschtermin.hilfe': 'Select your preferred date. We will show you all available appointments from this day.',
-  'buchung.kalender.verfuegbar': 'Select a date in the calendar on the left and we will show you the next available appointments from that time.',
-
-  // Step 8: Customer data
-  'buchung.kundendaten.titel': 'Please provide us with the final information about your vehicle',
-  'buchung.kundendaten.bestandskunde': 'Been with us before?',
-  'buchung.kundendaten.bestandskunde.hilfe': 'Then retrieve your data automatically by entering your email address.',
-  'buchung.kundendaten.daten-abrufen': 'Retrieve data now!',
-  'buchung.kundendaten.email': 'Email Address',
-  'buchung.kundendaten.anrede': 'Title',
-  'buchung.kundendaten.anrede.herr': 'Mr.',
-  'buchung.kundendaten.anrede.frau': 'Mrs.',
-  'buchung.kundendaten.anrede.divers': 'Other',
-  'buchung.kundendaten.vorname': 'First Name',
-  'buchung.kundendaten.nachname': 'Last Name',
-  'buchung.kundendaten.strasse': 'Street and House No.',
-  'buchung.kundendaten.plz': 'Postal Code',
-  'buchung.kundendaten.ort': 'City',
-  'buchung.kundendaten.telefon': 'Mobile Number',
-  'buchung.kundendaten.telefon.hilfe': 'Please enter your mobile number without special characters as a number in the format 01701234567.',
-  'buchung.kundendaten.kennzeichen': 'License Plate',
-  'buchung.kundendaten.kilometerstand': 'Mileage',
-  'buchung.kundendaten.fin': 'VIN',
-  'buchung.kundendaten.fin.erklaerung': 'VIN explanation',
-  'buchung.kundendaten.fin.optional': 'This field is optional.',
-  'buchung.kundendaten.datenschutz': 'I consent to the processing of my personal data for the purpose of online appointment booking. For more details, please see our privacy policy.',
-  'buchung.kundendaten.pflichtfelder': 'Required fields are marked with *',
-
-  // Step 9: Notes
-  'buchung.bemerkungen.titel': 'Please provide us with additional information about your booking',
-  'buchung.bemerkungen.frage': 'Would you like to tell us anything else about your booking?',
-  'buchung.bemerkungen.label': 'Notes',
-  'buchung.bemerkungen.placeholder': 'Please enter your message here (hints, additional services, etc.)',
-  'buchung.bemerkungen.hinweise-titel': 'Important notes about your selected services',
-  'buchung.bemerkungen.hinweis.hu-au': 'MOT/Emissions: Your special note about the selected service can go here. E.g., MOT only available Mondays, Wednesdays, and Fridays.',
-  'buchung.bemerkungen.hinweis.inspektion': 'Inspection: Your special note about the selected service can go here. E.g., "Always bring vehicle registration".',
-
-  // Step 10: Summary
-  'buchung.uebersicht.titel': 'Summary',
-  'buchung.uebersicht.untertitel': 'Please review your information before submitting the appointment.',
-  'buchung.uebersicht.wunschtermin': 'Preferred Appointment',
-  'buchung.uebersicht.datum': 'Date',
-  'buchung.uebersicht.uhrzeit': 'Time',
-  'buchung.uebersicht.gewahlter-service': 'Selected Service',
-  'buchung.uebersicht.leistungen': 'The following services will be requested for you in {{standort}}:',
-  'buchung.uebersicht.preis': '{{preis}} €',
-  'buchung.uebersicht.inkl-mwst': 'including VAT',
-  'buchung.uebersicht.ihre-daten': 'Your Data',
-  'buchung.uebersicht.name': 'Name',
-  'buchung.uebersicht.strasse': 'Street',
-  'buchung.uebersicht.ort': 'City',
-  'buchung.uebersicht.telefon': 'Phone',
-  'buchung.uebersicht.email': 'Email',
-  'buchung.uebersicht.marke': 'Brand',
-  'buchung.uebersicht.kennzeichen': 'License Plate',
-  'buchung.uebersicht.kilometerstand': 'Mileage',
-
-  // Buttons
-  'buchung.buttons.weiter': 'next',
-  'buchung.buttons.zurueck': 'back',
-  'buchung.buttons.abbrechen': 'Cancel',
-  'buchung.buttons.anfragen': 'Request now',
-  'buchung.buttons.zur-buchungsuebersicht': 'To booking overview',
-
-  // Errors
-  'buchung.fehler.pflichtfeld': 'This field is required',
-  'buchung.fehler.email-ungueltig': 'Please enter a valid email address',
-  'buchung.fehler.plz-ungueltig': 'Please enter a valid postal code (5 digits)',
-  'buchung.fehler.telefon-ungueltig': 'Please enter a valid mobile number',
-  'buchung.fehler.kennzeichen-ungueltig': 'Please enter a valid license plate',
-  'buchung.fehler.kilometerstand-ungueltig': 'Please enter a valid mileage',
-  'buchung.fehler.datenschutz-erforderlich': 'Please accept the privacy policy',
-  'buchung.fehler.service-erforderlich': 'Please select at least one service',
-
-  // Confirmation
-  'buchung.bestaetigung.titel': 'Thank you for your request!',
-  'buchung.bestaetigung.text': 'Your request has been successfully submitted. We will contact you shortly.'
-};
+**Zugriff in Templates:**
+```html
+{{ 'buchung.marke.titel' | translate }}
+{{ 'buchung.services.huAu.label' | translate }}
+{{ 'buchung.kundendaten.anrede.label' | translate }}
+{{ 'buchung.buttons.weiter' | translate }}
+{{ 'buchung.fehler.pflichtfeld' | translate }}
 ```
 
 ---
