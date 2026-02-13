@@ -47,7 +47,7 @@ Einstiegsseite des Buchungsablaufs. Der Benutzer wählt seine Fahrzeugmarke aus 
 
 ## 3. Preconditions
 
-### 3.1 System
+### 3.1 System#
 - Angular App läuft
 - Routing konfiguriert
 - Header-Component verfügbar (REQ-001)

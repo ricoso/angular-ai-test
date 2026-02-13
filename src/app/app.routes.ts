@@ -12,6 +12,11 @@ export const routes: Routes = [
       .then(m => m.HomeContainerComponent)
   },
   {
+    path: 'buchung',
+    loadChildren: () => import('./features/buchung/buchung.routes')
+      .then(m => m.buchungRoutes)
+  },
+  {
     path: '**',
     redirectTo: 'home'
   }
