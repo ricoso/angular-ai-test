@@ -1,77 +1,77 @@
 import { inject } from '@angular/core';
 import { signalStore, withState, withMethods, withHooks, patchState } from '@ngrx/signals';
 import {
-  BarrierefreiheitZustand,
-  Schriftgroesse,
-  BARRIEREFREIHEIT_STANDARDS
+  AccessibilityState,
+  FontSize,
+  ACCESSIBILITY_DEFAULTS
 } from '../models/accessibility.model';
-import { BarrierefreiheitService } from '../services/accessibility.service';
+import { AccessibilityService } from '../services/accessibility.service';
 
 /**
- * Globaler Store für Accessibility-Einstellungen
- * Verwendet withHooks für onInit, da Accessibility globale App-Config ist
+ * Global store for accessibility settings
+ * Uses withHooks for onInit since accessibility is global app config
  */
-export const BarrierefreiheitStore = signalStore(
+export const AccessibilityStore = signalStore(
   { providedIn: 'root' },
 
-  withState<BarrierefreiheitZustand>(BARRIEREFREIHEIT_STANDARDS),
+  withState<AccessibilityState>(ACCESSIBILITY_DEFAULTS),
 
-  withMethods((store, service = inject(BarrierefreiheitService)) => ({
+  withMethods((store, service = inject(AccessibilityService)) => ({
     /**
-     * Lädt Einstellungen aus LocalStorage und wendet sie an
+     * Loads settings from LocalStorage and applies them
      */
-    ladeAusSpeicher(): void {
-      const einstellungen = service.getEinstellungen();
-      patchState(store, einstellungen);
-      service.aufDokumentAnwenden(einstellungen);
+    loadFromStorage(): void {
+      const settings = service.getSettings();
+      patchState(store, settings);
+      service.applyToDocument(settings);
     },
 
     /**
-     * Setzt die Schriftgröße
+     * Sets the font size
      */
-    setzeSchriftgroesse(schriftgroesse: Schriftgroesse): void {
-      patchState(store, { schriftgroesse });
-      const zustand = this.aktuellerZustand();
-      service.speichereEinstellungen(zustand);
-      service.aufDokumentAnwenden(zustand);
+    setFontSize(fontSize: FontSize): void {
+      patchState(store, { fontSize });
+      const state = this.currentState();
+      service.saveSettings(state);
+      service.applyToDocument(state);
     },
 
     /**
-     * Setzt High Contrast Mode
+     * Sets high contrast mode
      */
-    setzeHohenKontrast(hoherKontrast: boolean): void {
-      patchState(store, { hoherKontrast });
-      const zustand = this.aktuellerZustand();
-      service.speichereEinstellungen(zustand);
-      service.aufDokumentAnwenden(zustand);
+    setHighContrast(highContrast: boolean): void {
+      patchState(store, { highContrast });
+      const state = this.currentState();
+      service.saveSettings(state);
+      service.applyToDocument(state);
     },
 
     /**
-     * Setzt Reduced Motion
+     * Sets reduced motion
      */
-    setzeReduzierteBewegung(reduzierteBewegung: boolean): void {
-      patchState(store, { reduzierteBewegung });
-      const zustand = this.aktuellerZustand();
-      service.speichereEinstellungen(zustand);
-      service.aufDokumentAnwenden(zustand);
+    setReducedMotion(reducedMotion: boolean): void {
+      patchState(store, { reducedMotion });
+      const state = this.currentState();
+      service.saveSettings(state);
+      service.applyToDocument(state);
     },
 
     /**
-     * Gibt den aktuellen Zustand als Objekt zurück
+     * Returns the current state as an object
      */
-    aktuellerZustand(): BarrierefreiheitZustand {
+    currentState(): AccessibilityState {
       return {
-        schriftgroesse: store.schriftgroesse(),
-        hoherKontrast: store.hoherKontrast(),
-        reduzierteBewegung: store.reduzierteBewegung()
+        fontSize: store.fontSize(),
+        highContrast: store.highContrast(),
+        reducedMotion: store.reducedMotion()
       };
     }
   })),
 
   withHooks({
-    // onInit ist hier erlaubt, da Accessibility globale App-Config ist
+    // onInit is allowed here since accessibility is global app config
     onInit(store) {
-      store.ladeAusSpeicher();
+      store.loadFromStorage();
     }
   })
 );

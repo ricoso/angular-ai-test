@@ -1,66 +1,36 @@
-# Code Language Rules (ULTRA-COMPACT)
+# Code Language
 
----
+## Projekt-Vorgabe
+<!-- SETUP:VORGABE -->
 
 ## Rules
 
-1. **UI:** ALWAYS bilingual i18n (DE + EN keys)
-2. **Code:** Language = Requirement language
-3. **Naming:** From glossary (REQ-TEMPLATE Section 16)
+1. Code-Sprache = **Setup-fixiert** (siehe Vorgabe oben)
+2. REQ-Sprache irrelevant → Code IMMER in Setup-Sprache
+3. UI → ALLE konfigurierten Sprachen (siehe `i18n-typings.md`)
+4. Naming → Glossar unten
 
----
+## Deutsch
 
-## German Requirement → German Code
+| Englisch | Deutsch |
+|----------|---------|
+| `onSubmit()` | `beimAbsenden()` |
+| `onCreate()` | `beimErstellen()` |
+| `onDelete()` | `beimLoeschen()` |
+| `getAll()` | `holeAlle()` |
+| `create()` | `erstelle()` |
+| `update()` | `aktualisiere()` |
+| `delete()` | `loesche()` |
+| `loadUsers()` | `ladeBenutzer()` |
+| `addUser()` | `fuegeBenutzerHinzu()` |
+| `filteredUsers` | `gefilterteBenutzer` |
+| `isLoading` | `istLaden` |
+| `hasUsers` | `hatBenutzer` |
+| `users[]` | `benutzer[]` |
+| `User` | `Benutzer` |
+| `CreateUserDTO` | `BenutzerErstellenDTO` |
 
-**Naming:**
-- Methods: beimAbsenden(), ladeBenutzer(), erstelle(), loesche()
-- Variables: benutzer[], istLaden, gefilterteBenutzer
-- Types: Benutzer, BenutzerErstellenDTO
-- Computed: gefilterteBenutzer, istLaden, hatBenutzer
+## Englisch
 
-**Glossary:**
-- onSubmit → beimAbsenden
-- onCreate → beimErstellen
-- onDelete → beimLoeschen
-- getAll → holeAlle
-- create → erstelle
-- update → aktualisiere
-- delete → loesche
-- loadUsers → ladeBenutzer
-- addUser → fuegeBenutzerHinzu
-- filteredUsers → gefilterteBenutzer
-- isLoading → istLaden
-- hasUsers → hatBenutzer
-
----
-
-## English Requirement → English Code
-
-**Use standard glossary names from REQ-TEMPLATE Section 16**
-
----
-
-## UI i18n (ALWAYS bilingual!)
-
-```typescript
-translations = {
-  de: { 'key': 'Deutscher Text' },
-  en: { 'key': 'English Text' }
-}
-```
-
-Template: `{{ 'key' | translate }}`
-
----
-
-## Checklist
-
-**German Requirement:**
-- [ ] Methods: beimAbsenden, ladeBenutzer
-- [ ] Variables: benutzer, istLaden
-- [ ] i18n: DE + EN keys
-
-**English Requirement:**
-- [ ] Methods: onSubmit, loadUsers
-- [ ] Variables: users, isLoading
-- [ ] i18n: EN + DE keys
+Standard-Naming: `loadUsers()`, `onSubmit()`, `User`, `isLoading`
+Glossar: REQ-TEMPLATE Section 16

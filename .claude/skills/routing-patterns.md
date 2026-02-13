@@ -1,5 +1,8 @@
 # Routing Patterns (COMPACT)
 
+## Projekt-Vorgabe
+<!-- SETUP:VORGABE -->
+
 ---
 
 ## App Routes Pattern

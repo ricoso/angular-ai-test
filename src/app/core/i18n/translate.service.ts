@@ -1,87 +1,84 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { translations, Language, Translations } from './translations';
+import { translations, TranslationKey, Language } from './translations';
 
 const LANGUAGE_STORAGE_KEY = 'app-language';
 
 /**
  * Type-safe TranslateService
- * Verwendet Signals für reaktive Language-Switching
- *
- * Usage in Components:
- *   protected readonly t = inject(TranslateService).t;
- *
- * Template:
- *   {{ t.app.title }}
- *   {{ t.header.accessibility.fontSize.small }}
+ * Uses signals for reactive language switching
  */
 @Injectable({ providedIn: 'root' })
 export class TranslateService {
-  private readonly aktuelleSprache = signal<Language>(this.ladeSpracheAusSpeicher());
+  private readonly currentLanguage = signal<Language>(this.loadLanguageFromStorage());
 
-  private readonly aktuelleUebersetzungen = computed(() =>
-    translations[this.aktuelleSprache()]
+  private readonly currentTranslations = computed(() =>
+    translations[this.currentLanguage()]
   );
 
   /**
-   * Reaktives Translations-Objekt für Templates
-   * Proxy ermöglicht direkten Zugriff: t.app.title (ohne Klammern)
+   * Returns the translation for a nested dot-separated key
+   * e.g. instant('header.warenkorb.titel')
    */
-  readonly t: Translations = new Proxy({} as Translations, {
-    get: (_, prop: string) => (this.aktuelleUebersetzungen() as Record<string, unknown>)[prop]
-  });
-
-  /**
-   * Direkte Übersetzung für Pipe (Legacy)
-   */
-  instant(key: string): string {
-    return this.getNestedValue(this.aktuelleUebersetzungen(), key) ?? key;
-  }
-
-  private getNestedValue(obj: unknown, path: string): string | undefined {
-    const keys = path.split('.');
-    let current: unknown = obj;
-    for (const key of keys) {
-      if (current && typeof current === 'object' && key in current) {
-        current = (current as Record<string, unknown>)[key];
+  instant(key: TranslationKey): string {
+    const parts = key.split('.');
+    let value: unknown = this.currentTranslations();
+    for (const part of parts) {
+      if (value && typeof value === 'object') {
+        value = (value as Record<string, unknown>)[part];
       } else {
-        return undefined;
+        return key;
       }
     }
-    return typeof current === 'string' ? current : undefined;
+    return typeof value === 'string' ? value : key;
   }
 
   /**
-   * Wechselt die Sprache
+   * Returns a computed signal for reactive templates
    */
-  use(sprache: Language): void {
-    this.aktuelleSprache.set(sprache);
+  get(key: TranslationKey): () => string {
+    return computed(() => this.instant(key));
+  }
+
+  /**
+   * Switches the language
+   */
+  use(language: Language): void {
+    this.currentLanguage.set(language);
     try {
-      localStorage.setItem(LANGUAGE_STORAGE_KEY, sprache);
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
     } catch {
-      // LocalStorage nicht verfügbar
+      // LocalStorage not available
     }
   }
 
   /**
-   * Gibt die aktuelle Sprache zurück
+   * Returns the current language
    */
-  getAktuelleSprache(): Language {
-    return this.aktuelleSprache();
+  getCurrentLanguage(): Language {
+    return this.currentLanguage();
   }
 
   /**
-   * Lädt die Sprache aus dem LocalStorage oder verwendet Default
+   * Returns the current language as a signal
    */
-  private ladeSpracheAusSpeicher(): Language {
+  getLanguageSignal(): () => Language {
+    return this.currentLanguage.asReadonly();
+  }
+
+  /**
+   * Loads language from LocalStorage or uses default
+   */
+  private loadLanguageFromStorage(): Language {
     try {
-      const gespeichert = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-      if (gespeichert === 'de' || gespeichert === 'en') {
-        return gespeichert;
+      const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+      if (stored === 'de' || stored === 'en') {
+        return stored;
       }
     } catch {
-      // LocalStorage nicht verfügbar
+      // LocalStorage not available
     }
-    const browserSprache = navigator.language.toLowerCase();
-    return browserSprache.startsWith('de') ? 'de' : 'en';
+    // Browser language as fallback
+    const browserLanguage = navigator.language.toLowerCase();
+    return browserLanguage.startsWith('de') ? 'de' : 'en';
   }
 }

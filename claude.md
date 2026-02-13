@@ -238,12 +238,12 @@ user-container/
 
 ## 🌐 i18n REGELN
 
-- ✅ ALLE Texte in Templates mit `{{ 'key' | translate }}`
-- ✅ IMMER beide Sprachen: DE + EN (unabhängig von Code-Sprache!)
-- ✅ Type-safe Keys: `TranslationKey` Type verwenden
+- ⚠️ **UI-Sprachen werden im Setup festgelegt** (siehe Projekt-Info)
+- ✅ ALLE Texte in Templates mit `{{ t.feature.key }}`
+- ✅ IMMER ALLE konfigurierten Sprachen pflegen
+- ✅ Type-safe Keys: TypeScript + Proxy (kein Pipe)
 - ✅ Key-Naming: `{feature}.{type}.{name}` (z.B. `user.form.name`, `user.buttons.save`)
 - ✅ TypeScript-only (KEINE JSON files!)
-- ✅ `translate.instant(key)` in Components, Pipe in Templates
 - ❌ KEINE hardcoded Strings in Templates
 > **Beispiele:** `.claude/skills/i18n-typings.md`
 
@@ -288,20 +288,11 @@ user-container/
 
 ## 🌍 CODE LANGUAGE REGELN
 
-- Code-Sprache = Requirement-Sprache
-- UI IMMER bilingual (i18n DE + EN)
-- **Deutsche REQ:**
-  - Methods: `beimAbsenden()`, `ladeBenutzer()`, `erstelle()`, `loesche()`
-  - Variables: `benutzer[]`, `istLaden`, `gefilterteBenutzer`
-  - Types: `Benutzer`, `BenutzerErstellenDTO`
-  - Computed: `gefilterteBenutzer`, `istLaden`, `hatBenutzer`
-- **Englische REQ:**
-  - Methods: `onSubmit()`, `loadUsers()`, `create()`, `delete()`
-  - Variables: `users[]`, `isLoading`, `filteredUsers`
-  - Types: `User`, `CreateUserDTO`
-  - Computed: `filteredUsers`, `isLoading`, `hasUsers`
+- ⚠️ **Code-Sprache wird im Setup FIXIERT** (siehe Projekt-Info)
+- Requirements können in jeder Sprache kommen → Code IMMER in Setup-Sprache
+- UI IMMER in ALLEN konfigurierten Sprachen (siehe Projekt-Info)
 - Glossar nutzen aus REQ-TEMPLATE Section 16
-> **Glossar:** `.claude/skills/code-language.md`
+> **Details:** `.claude/skills/code-language.md`
 
 ---
 

@@ -99,86 +99,9 @@ npm run test:coverage
 ### Step 8: Quality Report generieren
 
 ```bash
-/check-all <feature-name>
+git add .
+git commit -m "feat($ARGUMENTS): Implement <Name>"
 ```
-
-Dies führt ALLE 11 Checks parallel aus und generiert automatisch:
-```
-docs/requirements/$ARGUMENTS/qualitaets.md
-```
-
-**Ziel:** Score >= 90/100, keine ❌ Errors
-
-### Step 9: Commit + Push + PR erstellen
-
-1. **Änderungen stagen:**
-   ```bash
-   git add .
-   ```
-
-2. **Commit erstellen:**
-   ```bash
-   git commit -m "$(cat <<'EOF'
-   feat($ARGUMENTS): implement requirement
-
-   - Add models, store, services
-   - Add container and presentational components
-   - Add i18n translations (DE + EN)
-   - Add unit tests (>80% coverage)
-
-   Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
-   EOF
-   )"
-   ```
-
-3. **Push zum Remote:**
-   ```bash
-   git push -u origin feat/$ARGUMENTS
-   ```
-
-4. **PR erstellen:**
-   ```bash
-   gh pr create --title "feat($ARGUMENTS): implement requirement" --body "$(cat <<'EOF'
-   ## Summary
-   - Implements requirement $ARGUMENTS
-   - See: docs/requirements/$ARGUMENTS/requirement.md
-
-   ## Quality Report
-   - See: docs/requirements/$ARGUMENTS/qualitaets.md
-   - Score: >= 90/100
-
-   ## Checklist
-   - [ ] Code review
-   - [ ] Tests passing
-   - [ ] No lint errors
-
-   🤖 Generated with [Claude Code](https://claude.com/claude-code)
-   EOF
-   )"
-   ```
-
-5. **PR-URL ausgeben**
-
-### Step 10: Status aktualisieren
-
-Nach PR-Erstellung:
-
-1. **Requirement-Datei aktualisieren:**
-   ```
-   docs/requirements/$ARGUMENTS/requirement.md
-   ```
-   - `**Status:** Draft` → `**Status:** In Review`
-
-2. **REQUIREMENTS.md aktualisieren:**
-   - Requirements List: `📝 Draft` → `🔍 In Review`
-   - Statistics: Draft -1, In Review +1
-
-3. **Commit + Push:**
-   ```bash
-   git add docs/requirements/
-   git commit -m "chore($ARGUMENTS): update status to In Review"
-   git push
-   ```
 
 ## Checkliste
 
@@ -193,11 +116,6 @@ Nach PR-Erstellung:
 - [ ] WCAG 2.1 AA
 - [ ] Tests >80%
 - [ ] Lint + Type-Check passed
-- [ ] `/check-all` ausgeführt
-- [ ] `qualitaets.md` generiert (Score >= 90)
-- [ ] Commit erstellt (Step 9)
-- [ ] PR erstellt (Step 9)
-- [ ] Status auf "In Review" gesetzt (Step 10)
 
 ## Referenzen
 

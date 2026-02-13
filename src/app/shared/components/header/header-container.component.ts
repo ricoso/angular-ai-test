@@ -3,14 +3,16 @@ import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
-import { TranslateService } from '@app/core/i18n';
-import { BarrierefreiheitStore } from '@app/shared/stores/accessibility.store';
-import { Schriftgroesse } from '@app/shared/models/accessibility.model';
+import { TranslatePipe, i18nKeys } from '@app/core/i18n';
+import { AccessibilityStore } from '@app/shared/stores/accessibility.store';
+import { CartStore } from '@app/shared/stores/cart.store';
+import { FontSize } from '@app/shared/models/accessibility.model';
 import { AccessibilityMenuComponent } from './components/accessibility-menu/accessibility-menu.component';
+import { CartIconComponent } from './components/cart-icon/cart-icon.component';
 
 /**
- * Container Component für den Application Header
- * Bindet den AccessibilityStore ein und delegiert an Presentational Components
+ * Container Component for the Application Header
+ * Connects AccessibilityStore and CartStore
  */
 @Component({
   selector: 'app-header',
@@ -20,37 +22,34 @@ import { AccessibilityMenuComponent } from './components/accessibility-menu/acce
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
-    AccessibilityMenuComponent
+    TranslatePipe,
+    AccessibilityMenuComponent,
+    CartIconComponent
   ],
   templateUrl: './header-container.component.html',
   styleUrl: './header-container.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderContainerComponent {
-  // i18n - Objektorientierter Zugriff auf Übersetzungen
-  protected readonly t = inject(TranslateService).t;
+  protected readonly accessibilityStore = inject(AccessibilityStore);
+  protected readonly cartStore = inject(CartStore);
 
-  // Store injection (Container darf Store injecten!)
-  protected readonly barrierefreiheitStore = inject(BarrierefreiheitStore);
+  protected readonly app = i18nKeys.app;
+  protected readonly header = i18nKeys.header;
 
-  /**
-   * Handler für Schriftgröße-Änderung
-   */
-  protected beimSchriftgroesseAendern(groesse: Schriftgroesse): void {
-    this.barrierefreiheitStore.setzeSchriftgroesse(groesse);
+  protected onFontSizeChange(fontSize: FontSize): void {
+    this.accessibilityStore.setFontSize(fontSize);
   }
 
-  /**
-   * Handler für High Contrast-Änderung
-   */
-  protected beimHohenKontrastAendern(wert: boolean): void {
-    this.barrierefreiheitStore.setzeHohenKontrast(wert);
+  protected onHighContrastChange(value: boolean): void {
+    this.accessibilityStore.setHighContrast(value);
   }
 
-  /**
-   * Handler für Reduced Motion-Änderung
-   */
-  protected beimReduzierteBewegungAendern(wert: boolean): void {
-    this.barrierefreiheitStore.setzeReduzierteBewegung(wert);
+  protected onReducedMotionChange(value: boolean): void {
+    this.accessibilityStore.setReducedMotion(value);
+  }
+
+  protected onCartOpen(): void {
+    // Placeholder — will be extended later
   }
 }

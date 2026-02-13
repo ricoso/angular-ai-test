@@ -2,93 +2,100 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
 import { HeaderContainerComponent } from './header-container.component';
-import { BarrierefreiheitStore } from '@shared/stores/accessibility.store';
-import { BarrierefreiheitService } from '@shared/services/accessibility.service';
-import { BARRIEREFREIHEIT_STANDARDS } from '@shared/models/accessibility.model';
+import { AccessibilityStore } from '@shared/stores/accessibility.store';
+import { CartStore } from '@shared/stores/cart.store';
+import { AccessibilityService } from '@shared/services/accessibility.service';
+import { ACCESSIBILITY_DEFAULTS } from '@shared/models/accessibility.model';
 
 describe('HeaderContainerComponent', () => {
   let component: HeaderContainerComponent;
   let fixture: ComponentFixture<HeaderContainerComponent>;
-  let store: InstanceType<typeof BarrierefreiheitStore>;
-  let serviceMock: jest.Mocked<BarrierefreiheitService>;
+  let accessibilityStore: InstanceType<typeof AccessibilityStore>;
+  let serviceMock: jest.Mocked<AccessibilityService>;
 
   beforeEach(async () => {
     serviceMock = {
-      getEinstellungen: jest.fn().mockReturnValue({ ...BARRIEREFREIHEIT_STANDARDS }),
-      speichereEinstellungen: jest.fn(),
-      aufDokumentAnwenden: jest.fn()
-    } as unknown as jest.Mocked<BarrierefreiheitService>;
+      getSettings: jest.fn().mockReturnValue({ ...ACCESSIBILITY_DEFAULTS }),
+      saveSettings: jest.fn(),
+      applyToDocument: jest.fn()
+    } as unknown as jest.Mocked<AccessibilityService>;
 
     await TestBed.configureTestingModule({
       imports: [HeaderContainerComponent],
       providers: [
         provideRouter([]),
         provideAnimationsAsync('noop'),
-        BarrierefreiheitStore,
-        { provide: BarrierefreiheitService, useValue: serviceMock }
+        AccessibilityStore,
+        CartStore,
+        { provide: AccessibilityService, useValue: serviceMock }
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeaderContainerComponent);
     component = fixture.componentInstance;
-    store = TestBed.inject(BarrierefreiheitStore);
+    accessibilityStore = TestBed.inject(AccessibilityStore);
     fixture.detectChanges();
   });
 
-  it('sollte erstellt werden', () => {
+  it('should be created', () => {
     expect(component).toBeTruthy();
   });
 
-  it('sollte Logo-Link rendern', () => {
+  it('should render logo link', () => {
     const logoLink = fixture.nativeElement.querySelector('.header__logo-link');
     expect(logoLink).toBeTruthy();
     expect(logoLink.getAttribute('href')).toBe('/');
   });
 
-  it('sollte Accessibility-Button rendern', () => {
+  it('should render accessibility button', () => {
     const a11yButton = fixture.nativeElement.querySelector('.header__a11y-button');
     expect(a11yButton).toBeTruthy();
   });
 
-  it('sollte Accessibility-Icon anzeigen', () => {
-    const icon = fixture.nativeElement.querySelector('mat-icon');
+  it('should display accessibility icon', () => {
+    const icon = fixture.nativeElement.querySelector('.header__a11y-button mat-icon');
     expect(icon).toBeTruthy();
     expect(icon.textContent).toContain('accessibility_new');
   });
 
+  it('should render cart icon', () => {
+    const cartIcon = fixture.nativeElement.querySelector('app-cart-icon');
+    expect(cartIcon).toBeTruthy();
+  });
+
   describe('Event Handler', () => {
-    it('sollte beimSchriftgroesseAendern an Store delegieren', () => {
-      const setzeSchriftgroesseSpy = jest.spyOn(store, 'setzeSchriftgroesse');
+    it('should delegate onFontSizeChange to store', () => {
+      const setFontSizeSpy = jest.spyOn(accessibilityStore, 'setFontSize');
 
-      component['beimSchriftgroesseAendern']('large');
+      component['onFontSizeChange']('large');
 
-      expect(setzeSchriftgroesseSpy).toHaveBeenCalledWith('large');
+      expect(setFontSizeSpy).toHaveBeenCalledWith('large');
     });
 
-    it('sollte beimHohenKontrastAendern an Store delegieren', () => {
-      const setzeHohenKontrastSpy = jest.spyOn(store, 'setzeHohenKontrast');
+    it('should delegate onHighContrastChange to store', () => {
+      const setHighContrastSpy = jest.spyOn(accessibilityStore, 'setHighContrast');
 
-      component['beimHohenKontrastAendern'](true);
+      component['onHighContrastChange'](true);
 
-      expect(setzeHohenKontrastSpy).toHaveBeenCalledWith(true);
+      expect(setHighContrastSpy).toHaveBeenCalledWith(true);
     });
 
-    it('sollte beimReduzierteBewegungAendern an Store delegieren', () => {
-      const setzeReduzierteBewegungSpy = jest.spyOn(store, 'setzeReduzierteBewegung');
+    it('should delegate onReducedMotionChange to store', () => {
+      const setReducedMotionSpy = jest.spyOn(accessibilityStore, 'setReducedMotion');
 
-      component['beimReduzierteBewegungAendern'](true);
+      component['onReducedMotionChange'](true);
 
-      expect(setzeReduzierteBewegungSpy).toHaveBeenCalledWith(true);
+      expect(setReducedMotionSpy).toHaveBeenCalledWith(true);
     });
   });
 
   describe('Accessibility', () => {
-    it('sollte aria-label auf Accessibility-Button haben', () => {
+    it('should have aria-label on accessibility button', () => {
       const a11yButton = fixture.nativeElement.querySelector('.header__a11y-button');
       expect(a11yButton.getAttribute('aria-label')).toBeTruthy();
     });
 
-    it('sollte role="banner" auf header haben', () => {
+    it('should have role="banner" on header', () => {
       const header = fixture.nativeElement.querySelector('.header');
       expect(header.getAttribute('role')).toBe('banner');
     });

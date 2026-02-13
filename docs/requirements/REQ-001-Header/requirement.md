@@ -17,6 +17,7 @@ Wiederverwendbarer Application Header mit Firmenlogo und Accessibility-Einstellu
 **Included:**
 - Firmenlogo mit Name
 - Accessibility-Dropdown mit Font-Size, High-Contrast, Reduced-Motion
+- Warenkorb-Icon mit Badge (Anzahl Items) und Dropdown
 - Responsive Design (Mobile/Desktop)
 - Persistierung der Accessibility-Einstellungen (LocalStorage)
 
@@ -24,6 +25,7 @@ Wiederverwendbarer Application Header mit Firmenlogo und Accessibility-Einstellu
 - Navigation Menu (separate REQ)
 - User Menu / Login (separate REQ)
 - Breadcrumbs (separate REQ)
+- Warenkorb-Detail-Seite (separate REQ)
 
 ### 1.3 Related Requirements
 - REQ-002-Homescreen: Nutzt diesen Header
@@ -33,8 +35,8 @@ Wiederverwendbarer Application Header mit Firmenlogo und Accessibility-Einstellu
 ## 2. User Story
 
 **As a** Benutzer
-**I want** einen Header mit Logo und Accessibility-Einstellungen
-**So that** ich die Darstellung der Anwendung nach meinen Bedürfnissen anpassen kann
+**I want** einen Header mit Logo, Warenkorb und Accessibility-Einstellungen
+**So that** ich jederzeit meinen Warenkorb sehe und die Darstellung anpassen kann
 
 **Acceptance Criteria:**
 - [ ] AC-1: Logo und Firmenname werden links im Header angezeigt
@@ -46,6 +48,11 @@ Wiederverwendbarer Application Header mit Firmenlogo und Accessibility-Einstellu
 - [ ] AC-7: System-Präferenz für reduced-motion wird initial respektiert
 - [ ] AC-8: Header ist responsive (Mobile + Desktop)
 - [ ] AC-9: WCAG 2.1 AA konform
+- [ ] AC-10: Warenkorb-Icon mit Badge wird rechts im Header angezeigt
+- [ ] AC-11: Badge zeigt aktuelle Anzahl der Items im Warenkorb
+- [ ] AC-12: Badge wird bei 0 Items ausgeblendet
+- [ ] AC-13: Klick auf Warenkorb-Icon öffnet Dropdown
+- [ ] AC-14: Warenkorb-Dropdown zeigt Platzhalter-Inhalt (wird später ausgebaut)
 
 ---
 
@@ -95,6 +102,16 @@ Wiederverwendbarer Application Header mit Firmenlogo und Accessibility-Einstellu
 - **User:** Klickt außerhalb oder drückt ESC
 - **System:** Schließt Dropdown
 - **Expected:** Einstellungen bleiben erhalten
+
+**Step 6:** Benutzer klickt auf Warenkorb-Icon
+- **User:** Klickt auf Warenkorb-Icon
+- **System:** Öffnet Warenkorb-Dropdown
+- **Expected:** Dropdown mit Platzhalter-Inhalt ist sichtbar
+
+**Step 7:** Benutzer schließt Warenkorb-Dropdown
+- **User:** Klickt außerhalb oder drückt ESC
+- **System:** Schließt Warenkorb-Dropdown
+- **Expected:** Badge-Zähler bleibt sichtbar
 
 ---
 
@@ -154,6 +171,9 @@ Wiederverwendbarer Application Header mit Firmenlogo und Accessibility-Einstellu
 - **BR-2:** Font-Size unterstützt 4 Stufen: small (14px), normal (16px), large (18px), x-large (20px)
 - **BR-3:** System-Präferenz `prefers-reduced-motion` wird nur initial berücksichtigt, nicht bei jedem Reload
 - **BR-4:** Logo verlinkt immer auf die Startseite (/)
+- **BR-5:** Warenkorb-Badge zeigt Gesamtanzahl der Items (Summe aller Positionen)
+- **BR-6:** Badge wird bei 0 Items ausgeblendet (nicht "0" anzeigen)
+- **BR-7:** Badge-Zähler maximal "99+" (bei > 99 Items)
 
 ---
 
@@ -187,6 +207,16 @@ interface AccessibilityState {
 
 type FontSize = 'small' | 'normal' | 'large' | 'x-large';
 
+// Warenkorb State (wird von WarenkorbStore bereitgestellt)
+interface WarenkorbBadgeState {
+  anzahlItems: number;    // Gesamtanzahl Items
+}
+
+// Badge Display Logic
+// anzahlItems === 0 → Badge hidden
+// anzahlItems 1–99 → Badge zeigt Zahl
+// anzahlItems > 99 → Badge zeigt "99+"
+
 // LocalStorage Schema
 interface AccessibilityStorageData {
   fontSize: FontSize;
@@ -210,31 +240,32 @@ const FONT_SIZE_LABELS: Record<FontSize, { de: string; en: string }> = {
 
 ### Mockup
 
-**Icon:** `accessibility_new` (Material Icons Standard)
+**Icons:** `accessibility_new`, `shopping_cart` (Material Icons Standard)
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ [🏢]  Gottfried Schultz                    [accessibility] │
-│       Automobilhandels SE                                   │
-└─────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│ [🏢]  Gottfried Schultz              [🛒³]  [accessibility] │
+│       Automobilhandels SE                                            │
+└──────────────────────────────────────────────────────────────────────┘
 
-Dropdown geöffnet:
-┌─────────────────────────────────────────────────────────────┐
-│ [🏢]  Gottfried Schultz                    [accessibility] │
-│       Automobilhandels SE                      ┌───────────┐│
-│                                                │Schriftgröße││
-│                                                │ ○ Klein    ││
-│                                                │ ● Normal   ││
-│                                                │ ○ Groß     ││
-│                                                │ ○ Sehr groß││
-│                                                │───────────││
-│                                                │Hoher       ││
-│                                                │Kontrast [○]││
-│                                                │───────────││
-│                                                │Reduzierte  ││
-│                                                │Bewegung [○]││
-│                                                └───────────┘│
-└─────────────────────────────────────────────────────────────┘
+Warenkorb-Dropdown geöffnet:
+┌──────────────────────────────────────────────────────────────────────┐
+│ [🏢]  Gottfried Schultz              [🛒³]  [accessibility] │
+│       Automobilhandels SE        ┌──────────────┐                    │
+│                                  │ Warenkorb (3) │                    │
+│                                  │               │                    │
+│                                  │  (Platzhalter │                    │
+│                                  │   Inhalt wird │                    │
+│                                  │   später       │                    │
+│                                  │   ausgebaut)   │                    │
+│                                  │               │                    │
+│                                  └──────────────┘                    │
+└──────────────────────────────────────────────────────────────────────┘
+
+Reihenfolge rechts: Warenkorb → Accessibility
+Badge bei 0 Items: nicht sichtbar
+Badge bei 1-99: Zahl anzeigen
+Badge bei >99: "99+" anzeigen
 ```
 
 ### UI Elements
@@ -244,9 +275,14 @@ Dropdown geöffnet:
 | Logo Container | Link | `<a routerLink="/">` | - |
 | Logo Image | Bild | `<img>` | `alt="Firmenlogo"` |
 | Company Name | Text | `<span>` | - |
+| Warenkorb Button | Icon Button | `mat-icon-button` | `aria-label="Warenkorb"` |
+| Warenkorb Icon | Icon | `<mat-icon>shopping_cart</mat-icon>` | `aria-hidden="true"` |
+| Warenkorb Badge | Badge | `matBadge` | `aria-label="X Artikel im Warenkorb"` |
+| Warenkorb Dropdown | Menu | `mat-menu` | `role="menu"` |
+| Warenkorb Inhalt | Platzhalter | `<div>` | Wird später ausgebaut |
 | A11y Button | Icon Button | `mat-icon-button` | `aria-label="Barrierefreiheit Einstellungen"` |
 | A11y Icon | Icon | `<mat-icon>accessibility_new</mat-icon>` | `aria-hidden="true"` |
-| Dropdown | Menu | `mat-menu` | `role="menu"` |
+| A11y Dropdown | Menu | `mat-menu` | `role="menu"` |
 | Font-Size Group | Radio | `mat-radio-group` | `aria-label="Schriftgröße"` |
 | Font-Size Option | Radio | `mat-radio-button` | - |
 | Contrast Toggle | Toggle | `mat-slide-toggle` | - |
@@ -254,11 +290,11 @@ Dropdown geöffnet:
 
 ### Responsive Behavior
 
-| Viewport | Logo | Company Name | A11y Button |
-|----------|------|--------------|-------------|
-| Mobile (<48em) | Sichtbar, kleiner | Versteckt | Sichtbar |
-| Tablet (≥48em) | Sichtbar | Sichtbar, 1 Zeile | Sichtbar |
-| Desktop (≥64em) | Sichtbar | Sichtbar, 2 Zeilen | Sichtbar |
+| Viewport | Logo | Company Name | Warenkorb | A11y Button |
+|----------|------|--------------|-----------|-------------|
+| Mobile (<48em) | Sichtbar, kleiner | Versteckt | Sichtbar | Sichtbar |
+| Tablet (≥48em) | Sichtbar | Sichtbar, 1 Zeile | Sichtbar | Sichtbar |
+| Desktop (≥64em) | Sichtbar | Sichtbar, 2 Zeilen | Sichtbar | Sichtbar |
 
 ---
 
@@ -316,6 +352,31 @@ localStorage.setItem('accessibility-settings', JSON.stringify(settings));
 - **When:** Header wird angezeigt
 - **Then:** Firmenname ist versteckt, Logo und Button sichtbar
 
+### TC-8: Warenkorb Badge anzeigen
+- **Given:** Warenkorb enthält 3 Items
+- **When:** Header wird angezeigt
+- **Then:** Badge zeigt "3" am Warenkorb-Icon
+
+### TC-9: Warenkorb Badge ausblenden bei 0
+- **Given:** Warenkorb ist leer
+- **When:** Header wird angezeigt
+- **Then:** Kein Badge sichtbar
+
+### TC-10: Warenkorb Badge bei >99
+- **Given:** Warenkorb enthält 150 Items
+- **When:** Header wird angezeigt
+- **Then:** Badge zeigt "99+"
+
+### TC-11: Warenkorb Dropdown öffnen
+- **Given:** Header ist sichtbar
+- **When:** User klickt auf Warenkorb-Icon
+- **Then:** Dropdown öffnet sich mit Platzhalter-Inhalt
+
+### TC-12: Warenkorb ARIA
+- **Given:** Screen Reader aktiv, 3 Items im Warenkorb
+- **When:** User navigiert zum Warenkorb-Button
+- **Then:** "Warenkorb, 3 Artikel" wird angesagt
+
 ---
 
 ## 14. Implementation
@@ -323,12 +384,14 @@ localStorage.setItem('accessibility-settings', JSON.stringify(settings));
 ### Components
 - [ ] `HeaderContainerComponent` (Shared, Container)
 - [ ] `AccessibilityMenuComponent` (Shared, Presentational)
+- [ ] `WarenkorbIconComponent` (Shared, Presentational)
 
 ### Services
 - [ ] `AccessibilityService` (Business Logic, LocalStorage)
 
 ### Stores
 - [ ] `AccessibilityStore` (Signal Store, Global State)
+- [ ] `WarenkorbStore` (Signal Store, Global State — Grundstruktur, wird später ausgebaut)
 
 ### File Structure
 ```
@@ -339,14 +402,19 @@ src/app/shared/
 │       ├── header-container.component.html
 │       ├── header-container.component.scss
 │       └── components/
-│           └── accessibility-menu/
-│               ├── accessibility-menu.component.ts
-│               ├── accessibility-menu.component.html
-│               └── accessibility-menu.component.scss
+│           ├── accessibility-menu/
+│           │   ├── accessibility-menu.component.ts
+│           │   ├── accessibility-menu.component.html
+│           │   └── accessibility-menu.component.scss
+│           └── warenkorb-icon/
+│               ├── warenkorb-icon.component.ts
+│               ├── warenkorb-icon.component.html
+│               └── warenkorb-icon.component.scss
 ├── services/
 │   └── accessibility.service.ts
 └── stores/
-    └── accessibility.store.ts
+    ├── accessibility.store.ts
+    └── warenkorb.store.ts
 ```
 
 ### Effort
@@ -358,7 +426,7 @@ src/app/shared/
 ## 15. Dependencies
 
 **Requires:**
-- Angular Material (mat-menu, mat-icon, mat-radio, mat-slide-toggle)
+- Angular Material (mat-menu, mat-icon, mat-radio, mat-slide-toggle, matBadge)
 - ngx-translate (i18n)
 
 **Blocks:**
@@ -372,8 +440,9 @@ src/app/shared/
 ### Container Methods (Deutsch)
 - `beimMenuOeffnen()` - Menu öffnen Event
 - `beimMenuSchliessen()` - Menu schließen Event
+- `beimWarenkorbOeffnen()` - Warenkorb-Dropdown öffnen Event
 
-### Presentational Inputs/Outputs
+### Presentational: AccessibilityMenu Inputs/Outputs
 - `schriftgroesse: input<FontSize>()` - Aktuelle Schriftgröße
 - `hoherKontrast: input<boolean>()` - High Contrast Status
 - `reduzierteBewegung: input<boolean>()` - Reduced Motion Status
@@ -381,15 +450,24 @@ src/app/shared/
 - `hoherKontrastGeaendert: output<boolean>()` - Contrast Change Event
 - `reduzierteBewegungGeaendert: output<boolean>()` - Motion Change Event
 
+### Presentational: WarenkorbIcon Inputs/Outputs
+- `anzahlItems: input<number>()` - Anzahl Items für Badge
+- `warenkorbGeklickt: output<void>()` - Klick Event
+
 ### Service Methods
 - `getSettings(): AccessibilityState` - Lade Einstellungen
 - `saveSettings(state: AccessibilityState): void` - Speichere Einstellungen
 - `applyToDocument(state: AccessibilityState): void` - Wende auf DOM an
 
-### Signal Store
+### AccessibilityStore
 - `state: fontSize, highContrast, reducedMotion`
 - `computed: -`
 - `methods: setFontSize(), setHighContrast(), setReducedMotion(), loadFromStorage()`
+
+### WarenkorbStore (Grundstruktur)
+- `state: items[]`
+- `computed: anzahlItems (Summe), badgeText ('99+' bei >99, '' bei 0)`
+- `methods: -` (wird später ausgebaut)
 
 ---
 
@@ -418,6 +496,11 @@ src/app/shared/
 'header.accessibility.fontSize.xLarge': 'Sehr groß',
 'header.accessibility.highContrast': 'Hoher Kontrast',
 'header.accessibility.reducedMotion': 'Reduzierte Bewegung',
+'header.warenkorb.button': 'Warenkorb',
+'header.warenkorb.badge.ariaLabel': '{count} Artikel im Warenkorb',
+'header.warenkorb.titel': 'Warenkorb',
+'header.warenkorb.leer': 'Ihr Warenkorb ist leer',
+'header.warenkorb.platzhalter': 'Inhalt wird bald verfügbar',
 
 // EN
 'header.accessibility.button': 'Accessibility',
@@ -428,6 +511,11 @@ src/app/shared/
 'header.accessibility.fontSize.xLarge': 'Extra Large',
 'header.accessibility.highContrast': 'High Contrast',
 'header.accessibility.reducedMotion': 'Reduced Motion',
+'header.warenkorb.button': 'Shopping Cart',
+'header.warenkorb.badge.ariaLabel': '{count} items in cart',
+'header.warenkorb.titel': 'Shopping Cart',
+'header.warenkorb.leer': 'Your cart is empty',
+'header.warenkorb.platzhalter': 'Content coming soon',
 ```
 
 ### Styling

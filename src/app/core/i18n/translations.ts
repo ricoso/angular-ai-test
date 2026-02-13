@@ -1,9 +1,10 @@
 /**
  * Type-safe Translations (TypeScript-only, NO JSON!)
- * Alle UI-Texte sind bilingual (DE + EN)
+ * All UI texts are bilingual (DE + EN)
  *
- * Format: Verschachtelte Objekte (nested) für bessere Typsicherheit
- * Zugriff: translate.instant('app.title') oder translate.instant('header.accessibility.fontSize')
+ * Format: Nested objects for better type safety
+ * Template: {{ header.warenkorb.button | translate }} (via i18nKeys + TranslatePipe)
+ * TypeScript: translateService.instant(i18nKeys.header.warenkorb.button)
  */
 export const translations = {
   de: {
@@ -29,6 +30,15 @@ export const translations = {
       },
       logo: {
         alt: 'Firmenlogo'
+      },
+      warenkorb: {
+        button: 'Warenkorb',
+        titel: 'Warenkorb',
+        leer: 'Ihr Warenkorb ist leer',
+        platzhalter: 'Inhalt wird bald verfügbar',
+        badge: {
+          ariaLabel: 'Artikel im Warenkorb'
+        }
       }
     }
   },
@@ -56,12 +66,21 @@ export const translations = {
       },
       logo: {
         alt: 'Company Logo'
+      },
+      warenkorb: {
+        button: 'Shopping Cart',
+        titel: 'Shopping Cart',
+        leer: 'Your cart is empty',
+        platzhalter: 'Content coming soon',
+        badge: {
+          ariaLabel: 'items in cart'
+        }
       }
     }
   }
 } as const;
 
-// Hilfstypes für verschachtelte Keys
+// Helper types for nested keys
 type NestedKeyOf<T> = T extends object
   ? {
       [K in keyof T]: K extends string
@@ -76,14 +95,30 @@ export type TranslationKey = NestedKeyOf<typeof translations.de>;
 export type Language = keyof typeof translations;
 
 /**
- * Konvertiert alle String-Literals in der Struktur zu `string`
- * Ermöglicht reaktiven Language-Switch ohne Type-Konflikte
+ * Key tree: Mirrors the translation structure, but leaf values are dot-separated key paths
+ * Enables object-oriented access: i18nKeys.header.warenkorb.button → 'header.warenkorb.button'
  */
-type DeepStringify<T> = T extends string
-  ? string
-  : T extends object
-    ? { [K in keyof T]: DeepStringify<T[K]> }
-    : T;
+type KeyTree<T, P extends string = ''> = {
+  readonly [K in keyof T]: T[K] extends Record<string, unknown>
+    ? KeyTree<T[K], P extends '' ? K & string : `${P}.${K & string}`>
+    : P extends '' ? K & string : `${P}.${K & string}`;
+};
 
-/** Type für das Translations-Objekt (für objektorientieren Template-Zugriff) */
-export type Translations = DeepStringify<typeof translations.de>;
+function createKeyTree<T extends Record<string, unknown>>(
+  obj: T, prefix = ''
+): KeyTree<T> {
+  const result = {} as Record<string, unknown>;
+  for (const key of Object.keys(obj)) {
+    const path = prefix ? `${prefix}.${key}` : key;
+    const value = obj[key];
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      result[key] = createKeyTree(value as Record<string, unknown>, path);
+    } else {
+      result[key] = path;
+    }
+  }
+  return result as KeyTree<T>;
+}
+
+/** Object-oriented key access: i18nKeys.header.warenkorb.button → 'header.warenkorb.button' */
+export const i18nKeys = createKeyTree(translations.de);

@@ -1,12 +1,13 @@
-# i18n Type-Safe Translations Skill
+# i18n Type-Safe Translations
 
-**Wann:** Bei mehrsprachigen Features
+## Projekt-Vorgabe
+<!-- SETUP:VORGABE -->
 
-**Regel:** UI IMMER bilingual (DE + EN), unabhängig von Code-Sprache!
+ALLE konfigurierten Sprachen PFLICHT bei jedem Feature.
 
 ---
 
-## Pattern: TypeScript-only (NO JSON!) - Objektorientiert
+## Pattern: TypeScript-only (NO JSON!) - i18nKeys + TranslatePipe
 
 ```typescript
 // src/app/core/i18n/translations.ts
@@ -33,10 +34,24 @@ export const translations = {
       errors: { notFound: 'User not found' }
     }
   }
+  // weitere Sprachen je nach Setup (fr, es)
 } as const;
 
-export type Translations = DeepStringify<typeof translations.de>;
+export type TranslationKey = NestedKeyOf<typeof translations.de>;
 export type Language = keyof typeof translations;
+
+/** Object-oriented key access: i18nKeys.header.warenkorb.button → 'header.warenkorb.button' */
+export const i18nKeys = createKeyTree(translations.de);
+```
+
+### i18nKeys (KeyTree)
+
+Spiegelt die Translations-Struktur, aber Blätter sind dot-separated Key-Pfade:
+
+```typescript
+i18nKeys.app.title           // → 'app.title' (TranslationKey)
+i18nKeys.header.warenkorb.button  // → 'header.warenkorb.button'
+i18nKeys.user.form.name      // → 'user.form.name'
 ```
 
 ---
@@ -47,24 +62,39 @@ export type Language = keyof typeof translations;
 // src/app/core/i18n/translate.service.ts
 @Injectable({ providedIn: 'root' })
 export class TranslateService {
-  private readonly aktuelleSprache = signal<Language>('de');
+  private readonly currentLanguage = signal<Language>(this.loadLanguageFromStorage());
 
-  private readonly aktuelleUebersetzungen = computed(() =>
-    translations[this.aktuelleSprache()]
+  private readonly currentTranslations = computed(() =>
+    translations[this.currentLanguage()]
   );
 
-  /**
-   * Reaktives Translations-Objekt für Templates
-   * Proxy ermöglicht direkten Zugriff: t.app.title
-   */
-  readonly t: Translations = new Proxy({} as Translations, {
-    get: (_, prop: string) =>
-      (this.aktuelleUebersetzungen() as Record<string, unknown>)[prop]
-  });
+  /** Resolves a dot-separated key to the translated string */
+  instant(key: TranslationKey): string { ... }
 
-  use(sprache: Language): void {
-    this.aktuelleSprache.set(sprache);
-    localStorage.setItem('app-language', sprache);
+  /** Returns a computed signal for reactive templates */
+  get(key: TranslationKey): () => string { ... }
+
+  /** Switches the language */
+  use(language: Language): void { ... }
+
+  /** Returns the current language */
+  getCurrentLanguage(): Language { ... }
+
+  /** Returns the current language as a signal */
+  getLanguageSignal(): () => Language { ... }
+}
+```
+
+---
+
+## TranslatePipe
+
+```typescript
+// src/app/core/i18n/translate.pipe.ts
+@Pipe({ name: 'translate', standalone: true, pure: false })
+export class TranslatePipe implements PipeTransform {
+  transform(key: TranslationKey): string {
+    return this.translateService.instant(key);
   }
 }
 ```
@@ -76,43 +106,63 @@ export class TranslateService {
 ### Component Setup
 
 ```typescript
-import { Component, inject } from '@angular/core';
-import { TranslateService } from '@core/i18n';
+import { Component } from '@angular/core';
+import { TranslatePipe, i18nKeys } from '@core/i18n';
 
 @Component({
   selector: 'app-my-component',
-  templateUrl: './my.component.html'
+  templateUrl: './my.component.html',
+  imports: [TranslatePipe]  // TranslatePipe importieren!
 })
 export class MyComponent {
-  // Direkt vom Service - fertig!
-  protected readonly t = inject(TranslateService).t;
+  // i18nKeys-Teilbaum als Property (Type-safe!)
+  protected readonly user = i18nKeys.user;
+  protected readonly app = i18nKeys.app;
 }
 ```
 
-### In Templates (Direkter Zugriff - KEIN `()` nötig!)
+### In Templates (i18nKeys + Pipe)
 
 ```html
-<!-- Direkter Objekt-Zugriff - Type-safe! -->
-<h1>{{ t.app.title }}</h1>
-<label>{{ t.user.form.name }}</label>
-<button>{{ t.user.buttons.save }}</button>
+<!-- i18nKeys liefert den Key-String, Pipe löst auf -->
+<h1>{{ app.title | translate }}</h1>
+<label>{{ user.form.name | translate }}</label>
+<button>{{ user.buttons.save | translate }}</button>
 
 <!-- In Attributen -->
-<img [alt]="t.header.logo.alt" />
-<button [attr.aria-label]="t.header.accessibility.buttonLabel">
+<img [alt]="header.logo.alt | translate" />
+<button [attr.aria-label]="header.accessibility.buttonLabel | translate">
 ```
 
-### In Component-Logik
+### In Component-Logik (translateService.instant)
 
 ```typescript
+import { TranslateService, i18nKeys } from '@core/i18n';
+
 export class MyComponent {
-  protected readonly t = inject(TranslateService).t;
+  private readonly translateService = inject(TranslateService);
+  private readonly user = i18nKeys.user;
 
   showMessage(): void {
-    const msg = this.t.user.errors.notFound;
+    const msg = this.translateService.instant(this.user.errors.notFound);
     this.notification.show(msg);
   }
 }
+```
+
+### Computed Signal (reaktiv)
+
+```typescript
+export class MyComponent {
+  private readonly translateService = inject(TranslateService);
+
+  // Reactive — updates on language switch
+  protected readonly label = this.translateService.get(i18nKeys.user.form.name);
+}
+```
+
+```html
+<label>{{ label() }}</label>
 ```
 
 ### Language Switcher
@@ -120,16 +170,17 @@ export class MyComponent {
 ```typescript
 export class LanguageSwitcherComponent {
   private readonly translateService = inject(TranslateService);
+  protected readonly currentLang = this.translateService.getLanguageSignal();
 
-  protected wechsleSprache(sprache: 'de' | 'en'): void {
-    this.translateService.use(sprache);
+  protected switchLanguage(lang: 'de' | 'en'): void {
+    this.translateService.use(lang);
   }
 }
 ```
 
 ---
 
-## Key Naming Convention
+## Key Naming
 
 ```
 {feature}.{type}.{name}
@@ -141,33 +192,19 @@ name: specific identifier
 
 **Zugriff in Templates:**
 ```html
-{{ t.buchung.marke.titel }}
-{{ t.buchung.services.huAu.label }}
-{{ t.buchung.buttons.weiter }}
+{{ buchung.marke.titel | translate }}
+{{ buchung.services.huAu.label | translate }}
+{{ buchung.buttons.weiter | translate }}
 ```
 
 ---
 
-## Migration
+## Exports (index.ts)
 
-### Alt (Pipe)
-```html
-{{ 'user.form.name' | translate }}
-```
-
-### Neu (Objekt)
-```html
-{{ t.user.form.name }}
-```
-
-### Component Migration
 ```typescript
-// Alt
-import { TranslatePipe } from '@core/i18n';
-@Component({ imports: [TranslatePipe] })
-
-// Neu - Kein Import nötig!
-protected readonly t = inject(TranslateService).t;
+export { translations, i18nKeys, TranslationKey, Language } from './translations';
+export { TranslateService } from './translate.service';
+export { TranslatePipe } from './translate.pipe';
 ```
 
 ---
@@ -175,14 +212,17 @@ protected readonly t = inject(TranslateService).t;
 ## Best Practices
 
 ### DO
-- `inject(TranslateService).t` in Components
-- Direkter Zugriff: `t.path.to.key`
-- Type-safe durch TypeScript + Proxy
+- `i18nKeys.feature.key` für Type-safe Key-Zugriff
+- `TranslatePipe` in Template imports
+- `{{ key | translate }}` in Templates
+- `translateService.instant(key)` in Logik
+- `translateService.get(key)` für reaktive Signals
 - Alle UI-Texte via i18n (DE + EN)
 - camelCase für Keys
+- i18nKeys-Teilbaum als Component Property: `protected readonly header = i18nKeys.header;`
 
 ### DON'T
-- ~~Pipe: `{{ 'key' | translate }}`~~
+- ~~Hardcoded strings in Templates~~
+- ~~JSON translation files~~
 - ~~Signal-Aufruf: `t().path`~~
-- Hardcoded strings
-- JSON translation files
+- ~~String-Literal Keys: `{{ 'user.form.name' | translate }}`~~ (nutze `i18nKeys`)

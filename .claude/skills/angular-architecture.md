@@ -1,5 +1,8 @@
 # Angular Architecture (COMPACT)
 
+## Projekt-Vorgabe
+<!-- SETUP:VORGABE -->
+
 **VORHER LESEN:** code-language.md, performance.md
 
 ---
@@ -208,6 +211,7 @@ feature/
 **MANDATORY:**
 - OnPush everywhere
 - Separate HTML + SCSS files
+- `inject()` NUR als Class Property (Anfang der Klasse), NIEMALS in Methoden
 - NO Store in Presentational
 - NO HTTP in Store
 - NO business logic in Container
