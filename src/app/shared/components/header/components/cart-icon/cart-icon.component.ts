@@ -1,8 +1,9 @@
-import { Component, ChangeDetectionStrategy, input, output, computed, inject } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { ChangeDetectionStrategy, Component, computed, inject,input, output } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
-import { TranslateService, i18nKeys } from '@app/core/i18n';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+
+import { i18nKeys,TranslateService } from '@app/core/i18n';
 import { MAX_BADGE_COUNT } from '@app/shared/models/cart.model';
 
 /**
@@ -30,7 +31,7 @@ export class CartIconComponent {
   readonly badgeText = input.required<string>();
 
   // Outputs
-  readonly cartClicked = output<void>();
+  readonly cartClicked = output();
 
   // Computed
   protected readonly badgeVisible = computed(() => this.itemCount() > 0);

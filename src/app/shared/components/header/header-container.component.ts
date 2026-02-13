@@ -1,12 +1,14 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { TranslatePipe, i18nKeys } from '@app/core/i18n';
+import { RouterLink } from '@angular/router';
+
+import { i18nKeys,TranslatePipe } from '@app/core/i18n';
+import type { FontSize } from '@app/shared/models/accessibility.model';
 import { AccessibilityStore } from '@app/shared/stores/accessibility.store';
 import { CartStore } from '@app/shared/stores/cart.store';
-import { FontSize } from '@app/shared/models/accessibility.model';
+
 import { AccessibilityMenuComponent } from './components/accessibility-menu/accessibility-menu.component';
 import { CartIconComponent } from './components/cart-icon/cart-icon.component';
 

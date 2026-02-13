@@ -40,6 +40,13 @@ export const translations = {
           ariaLabel: 'Artikel im Warenkorb'
         }
       }
+    },
+
+    booking: {
+      brand: {
+        title: 'Welche Fahrzeugmarke fahren Sie?',
+        subtitle: 'Bitte wählen Sie die gewünschte Marke aus.'
+      }
     }
   },
 
@@ -75,6 +82,13 @@ export const translations = {
         badge: {
           ariaLabel: 'items in cart'
         }
+      }
+    },
+
+    booking: {
+      brand: {
+        title: 'What vehicle brand do you drive?',
+        subtitle: 'Please select your desired brand.'
       }
     }
   }

@@ -1,9 +1,10 @@
-import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { FormsModule } from '@angular/forms';
-import { TranslatePipe, i18nKeys } from '@app/core/i18n';
-import { FontSize } from '@app/shared/models/accessibility.model';
+
+import { i18nKeys,TranslatePipe } from '@app/core/i18n';
+import type { FontSize } from '@app/shared/models/accessibility.model';
 
 /**
  * Presentational Component for Accessibility Menu

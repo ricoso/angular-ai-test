@@ -1,7 +1,9 @@
 # i18n Type-Safe Translations
 
 ## Projekt-Vorgabe
-<!-- SETUP:VORGABE -->
+- UI-Sprachen: DE, EN
+- Default: DE
+- ALLE Sprachen PFLICHT bei jedem Feature
 
 ALLE konfigurierten Sprachen PFLICHT bei jedem Feature.
 

@@ -1,9 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { AccessibilityService } from './accessibility.service';
-import {
-  ACCESSIBILITY_STORAGE_KEY,
+
+import type {
   AccessibilityState
 } from '../models/accessibility.model';
+import {
+  ACCESSIBILITY_STORAGE_KEY
+} from '../models/accessibility.model';
+
+import { AccessibilityService } from './accessibility.service';
 
 describe('AccessibilityService', () => {
   let service: AccessibilityService;

@@ -1,5 +1,7 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { translations, TranslationKey, Language } from './translations';
+import { computed,Injectable, signal } from '@angular/core';
+
+import type { Language,TranslationKey} from './translations';
+import { translations } from './translations';
 
 const LANGUAGE_STORAGE_KEY = 'app-language';
 

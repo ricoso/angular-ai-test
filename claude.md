@@ -9,6 +9,8 @@
 - **UI**: Angular Material 21
 - **Testing**: Jest 30
 - **i18n**: ngx-translate (TypeScript Typings)
+- **Code-Sprache**: Englisch (FIXIERT)
+- **UI-Sprachen**: DE, EN
 - **Deployment**: Click-Dummy (GitHub Pages, HashLocation)
 
 ---

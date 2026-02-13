@@ -1,7 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import type { ComponentFixture} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+
+import type { FontSize } from '@shared/models/accessibility.model';
+
 import { AccessibilityMenuComponent } from './accessibility-menu.component';
-import { FontSize } from '@shared/models/accessibility.model';
 
 describe('AccessibilityMenuComponent', () => {
   let component: AccessibilityMenuComponent;
@@ -53,7 +56,7 @@ describe('AccessibilityMenuComponent', () => {
       const emitSpy = jest.fn();
       component.fontSizeChanged.subscribe(emitSpy);
 
-      component['onFontSizeChange']('x-large');
+      component.onFontSizeChange('x-large');
 
       expect(emitSpy).toHaveBeenCalledWith('x-large');
     });
@@ -62,7 +65,7 @@ describe('AccessibilityMenuComponent', () => {
       const emitSpy = jest.fn();
       component.highContrastChanged.subscribe(emitSpy);
 
-      component['onHighContrastChange'](true);
+      component.onHighContrastChange(true);
 
       expect(emitSpy).toHaveBeenCalledWith(true);
     });
@@ -71,7 +74,7 @@ describe('AccessibilityMenuComponent', () => {
       const emitSpy = jest.fn();
       component.reducedMotionChanged.subscribe(emitSpy);
 
-      component['onReducedMotionChange'](true);
+      component.onReducedMotionChange(true);
 
       expect(emitSpy).toHaveBeenCalledWith(true);
     });
@@ -104,7 +107,7 @@ describe('AccessibilityMenuComponent', () => {
   describe('Font size options', () => {
     it('should offer all available font sizes', () => {
       const expectedSizes: FontSize[] = ['small', 'normal', 'large', 'x-large'];
-      expect(component['fontSizes']).toEqual(expectedSizes);
+      expect(component.fontSizes).toEqual(expectedSizes);
     });
   });
 });

@@ -1,7 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import type { ComponentFixture} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { CartIconComponent } from './cart-icon.component';
+
 import { TranslateService } from '@app/core/i18n';
+
+import { CartIconComponent } from './cart-icon.component';
 
 describe('CartIconComponent', () => {
   let component: CartIconComponent;
@@ -42,14 +45,14 @@ describe('CartIconComponent', () => {
 
   describe('Badge Visibility', () => {
     it('should hide badge when no items', () => {
-      expect(component['badgeVisible']()).toBe(false);
+      expect(component.badgeVisible()).toBe(false);
     });
 
     it('should show badge when items exist', () => {
       fixture.componentRef.setInput('itemCount', 3);
       fixture.detectChanges();
 
-      expect(component['badgeVisible']()).toBe(true);
+      expect(component.badgeVisible()).toBe(true);
     });
   });
 
@@ -58,7 +61,7 @@ describe('CartIconComponent', () => {
       fixture.componentRef.setInput('itemCount', 0);
       fixture.detectChanges();
 
-      const label = component['ariaLabel']();
+      const label = component.ariaLabel();
       expect(label).toBeTruthy();
       expect(label).not.toContain(',');
     });
@@ -67,7 +70,7 @@ describe('CartIconComponent', () => {
       fixture.componentRef.setInput('itemCount', 5);
       fixture.detectChanges();
 
-      const label = component['ariaLabel']();
+      const label = component.ariaLabel();
       expect(label).toContain('5');
     });
   });

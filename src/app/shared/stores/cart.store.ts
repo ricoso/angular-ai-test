@@ -1,6 +1,9 @@
 import { computed } from '@angular/core';
-import { signalStore, withState, withComputed } from '@ngrx/signals';
-import { CartState, CART_DEFAULTS, MAX_BADGE_COUNT } from '../models/cart.model';
+
+import { signalStore, withComputed,withState } from '@ngrx/signals';
+
+import type { CartState} from '../models/cart.model';
+import { CART_DEFAULTS, MAX_BADGE_COUNT } from '../models/cart.model';
 
 /**
  * Global store for cart

@@ -1,6 +1,8 @@
-import { Pipe, PipeTransform, inject } from '@angular/core';
+import type { PipeTransform} from '@angular/core';
+import { inject,Pipe } from '@angular/core';
+
 import { TranslateService } from './translate.service';
-import { TranslationKey } from './translations';
+import type { TranslationKey } from './translations';
 
 /**
  * Translate Pipe für Templates

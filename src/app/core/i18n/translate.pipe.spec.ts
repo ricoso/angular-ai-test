@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+
 import { TranslatePipe } from './translate.pipe';
 import { TranslateService } from './translate.service';
 

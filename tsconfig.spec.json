@@ -6,7 +6,16 @@
     "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@core/*": ["src/app/core/*"],
+      "@shared/*": ["src/app/shared/*"],
+      "@features/*": ["src/app/features/*"],
+      "@layouts/*": ["src/app/layouts/*"],
+      "@environments/*": ["src/environments/*"],
+      "@ngrx/signals/rxjs-interop": ["node_modules/@ngrx/signals/types/ngrx-signals-rxjs-interop.d.ts"]
+    }
   },
   "include": [
     "src/**/*.spec.ts",

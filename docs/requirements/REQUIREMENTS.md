@@ -24,7 +24,7 @@
 | REQ-ID | Name | Status | Priority | Dependencies | Description |
 |--------|------|--------|----------|--------------|-------------|
 | REQ-001 | Header | 🔍 In Review | High | - | Wiederverwendbarer Header mit Logo und Accessibility-Einstellungen (Font-Size, High-Contrast, Reduced-Motion) |
-| REQ-002 | Homescreen | 📝 Draft | High | REQ-001 | Startseite mit Fahrzeugmarken-Auswahl (Audi, BMW, Mercedes-Benz, MINI, Volkswagen) |
+| REQ-002 | Markenauswahl | ✔️ Implemented | High | REQ-001 | Einstiegsseite Buchungswizard: Fahrzeugmarken-Auswahl (Audi, BMW, Mercedes-Benz, MINI, Volkswagen) |
 
 ---
 
@@ -33,9 +33,9 @@
 ```
 REQ-001-Header
     │
-    └──► REQ-002-Homescreen
+    └──► REQ-002-Markenauswahl
               │
-              └──► (Future: Marken-Pages)
+              └──► REQ-003-Standortwahl
 ```
 
 ---
@@ -45,7 +45,7 @@ REQ-001-Header
 | REQ-ID | Requirement Document |
 |--------|---------------------|
 | REQ-001 | [REQ-001-Header](./REQ-001-Header/requirement.md) |
-| REQ-002 | [REQ-002-Homescreen](./REQ-002-Homescreen/requirement.md) |
+| REQ-002 | [REQ-002-Markenauswahl](./REQ-002-Markenauswahl/requirement.md) |
 
 ---
 
@@ -53,11 +53,11 @@ REQ-001-Header
 
 | Status | Count |
 |--------|-------|
-| 📝 Draft | 2 |
+| 📝 Draft | 1 |
 | 🔍 In Review | 0 |
 | ✅ Approved | 0 |
 | 🚧 In Progress | 0 |
-| ✔️ Implemented | 0 |
+| ✔️ Implemented | 1 |
 | **Total** | **2** |
 
 ---

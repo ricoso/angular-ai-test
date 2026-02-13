@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import {
+
+import type {
   AccessibilityState,
   AccessibilityStorageData,
-  FontSize,
+  FontSize} from '../models/accessibility.model';
+import {
   ACCESSIBILITY_DEFAULTS,
   ACCESSIBILITY_STORAGE_KEY,
-  ACCESSIBILITY_STORAGE_VERSION
-} from '../models/accessibility.model';
+  ACCESSIBILITY_STORAGE_VERSION} from '../models/accessibility.model';
 
 /**
  * Service for accessibility settings
