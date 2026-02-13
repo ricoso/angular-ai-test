@@ -1,75 +1,70 @@
 import { Injectable } from '@angular/core';
 import {
-  BarrierefreiheitZustand,
-  BarrierefreiheitSpeicherDaten,
-  Schriftgroesse,
-  BARRIEREFREIHEIT_STANDARDS,
-  BARRIEREFREIHEIT_STORAGE_KEY,
-  BARRIEREFREIHEIT_STORAGE_VERSION
+  AccessibilityState,
+  AccessibilityStorageData,
+  FontSize,
+  ACCESSIBILITY_DEFAULTS,
+  ACCESSIBILITY_STORAGE_KEY,
+  ACCESSIBILITY_STORAGE_VERSION
 } from '../models/accessibility.model';
 
 /**
- * Service für Accessibility-Einstellungen
- * Kapselt LocalStorage-Zugriffe und DOM-Manipulationen
+ * Service for accessibility settings
+ * Encapsulates LocalStorage access and DOM manipulation
  */
 @Injectable({ providedIn: 'root' })
-export class BarrierefreiheitService {
+export class AccessibilityService {
   /**
-   * Lädt Einstellungen aus LocalStorage
-   * Falls nicht vorhanden, werden Defaults mit System-Präferenz zurückgegeben
+   * Loads settings from LocalStorage
+   * Returns defaults with system preference if not available
    */
-  getEinstellungen(): BarrierefreiheitZustand {
+  getSettings(): AccessibilityState {
     try {
-      const gespeichert = localStorage.getItem(BARRIEREFREIHEIT_STORAGE_KEY);
-      if (gespeichert) {
-        const daten: BarrierefreiheitSpeicherDaten = JSON.parse(gespeichert);
+      const stored = localStorage.getItem(ACCESSIBILITY_STORAGE_KEY);
+      if (stored) {
+        const data: AccessibilityStorageData = JSON.parse(stored);
         return {
-          schriftgroesse: this.validiereSchriftgroesse(daten.schriftgroesse),
-          hoherKontrast: Boolean(daten.hoherKontrast),
-          reduzierteBewegung: Boolean(daten.reduzierteBewegung)
+          fontSize: this.validateFontSize(data.fontSize),
+          highContrast: Boolean(data.highContrast),
+          reducedMotion: Boolean(data.reducedMotion)
         };
       }
     } catch {
-      // LocalStorage nicht verfügbar oder Parsing-Fehler
+      // LocalStorage not available or parsing error
     }
 
-    // Defaults mit System-Präferenz für Reduced Motion
+    // Defaults with system preference for reduced motion
     return {
-      ...BARRIEREFREIHEIT_STANDARDS,
-      reduzierteBewegung: this.pruefeSystemReducedMotion()
+      ...ACCESSIBILITY_DEFAULTS,
+      reducedMotion: this.checkSystemReducedMotion()
     };
   }
 
   /**
-   * Speichert Einstellungen im LocalStorage
+   * Saves settings to LocalStorage
    */
-  speichereEinstellungen(zustand: BarrierefreiheitZustand): void {
+  saveSettings(state: AccessibilityState): void {
     try {
-      const daten: BarrierefreiheitSpeicherDaten = {
-        ...zustand,
-        version: BARRIEREFREIHEIT_STORAGE_VERSION
+      const data: AccessibilityStorageData = {
+        ...state,
+        version: ACCESSIBILITY_STORAGE_VERSION
       };
-      localStorage.setItem(BARRIEREFREIHEIT_STORAGE_KEY, JSON.stringify(daten));
+      localStorage.setItem(ACCESSIBILITY_STORAGE_KEY, JSON.stringify(data));
     } catch {
-      // LocalStorage nicht verfügbar (z.B. Private Mode)
-      // Fehler wird ignoriert - Einstellungen gelten nur für Session
+      // LocalStorage not available (e.g. Private Mode)
     }
   }
 
   /**
-   * Wendet Accessibility-Einstellungen auf das HTML-Element an
+   * Applies accessibility settings to the document element
    */
-  aufDokumentAnwenden(zustand: BarrierefreiheitZustand): void {
+  applyToDocument(state: AccessibilityState): void {
     const html = document.documentElement;
 
-    // Schriftgröße
-    html.setAttribute('data-font-size', zustand.schriftgroesse);
+    html.setAttribute('data-font-size', state.fontSize);
+    html.setAttribute('data-high-contrast', String(state.highContrast));
 
-    // Hoher Kontrast
-    html.setAttribute('data-high-contrast', String(zustand.hoherKontrast));
-
-    // Reduzierte Bewegung
-    if (zustand.reduzierteBewegung) {
+    if (state.reducedMotion) {
       html.classList.add('reduce-motion');
     } else {
       html.classList.remove('reduce-motion');
@@ -77,9 +72,9 @@ export class BarrierefreiheitService {
   }
 
   /**
-   * Prüft System-Präferenz für Reduced Motion
+   * Checks system preference for reduced motion
    */
-  private pruefeSystemReducedMotion(): boolean {
+  private checkSystemReducedMotion(): boolean {
     if (typeof window === 'undefined') {
       return false;
     }
@@ -87,12 +82,12 @@ export class BarrierefreiheitService {
   }
 
   /**
-   * Validiert Schriftgröße und gibt Default zurück bei ungültigem Wert
+   * Validates font size, returns default for invalid values
    */
-  private validiereSchriftgroesse(wert: unknown): Schriftgroesse {
-    const gueltigeWerte: Schriftgroesse[] = ['small', 'normal', 'large', 'x-large'];
-    if (typeof wert === 'string' && gueltigeWerte.includes(wert as Schriftgroesse)) {
-      return wert as Schriftgroesse;
+  private validateFontSize(value: unknown): FontSize {
+    const validValues: FontSize[] = ['small', 'normal', 'large', 'x-large'];
+    if (typeof value === 'string' && validValues.includes(value as FontSize)) {
+      return value as FontSize;
     }
     return 'normal';
   }

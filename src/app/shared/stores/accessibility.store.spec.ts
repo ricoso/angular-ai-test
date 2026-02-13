@@ -1,126 +1,126 @@
 import { TestBed } from '@angular/core/testing';
-import { BarrierefreiheitStore } from './accessibility.store';
-import { BarrierefreiheitService } from '../services/accessibility.service';
-import { BARRIEREFREIHEIT_STANDARDS } from '../models/accessibility.model';
+import { AccessibilityStore } from './accessibility.store';
+import { AccessibilityService } from '../services/accessibility.service';
+import { ACCESSIBILITY_DEFAULTS } from '../models/accessibility.model';
 
-describe('BarrierefreiheitStore', () => {
-  let store: InstanceType<typeof BarrierefreiheitStore>;
-  let serviceMock: jest.Mocked<BarrierefreiheitService>;
+describe('AccessibilityStore', () => {
+  let store: InstanceType<typeof AccessibilityStore>;
+  let serviceMock: jest.Mocked<AccessibilityService>;
 
   beforeEach(() => {
     serviceMock = {
-      getEinstellungen: jest.fn().mockReturnValue({ ...BARRIEREFREIHEIT_STANDARDS }),
-      speichereEinstellungen: jest.fn(),
-      aufDokumentAnwenden: jest.fn()
-    } as unknown as jest.Mocked<BarrierefreiheitService>;
+      getSettings: jest.fn().mockReturnValue({ ...ACCESSIBILITY_DEFAULTS }),
+      saveSettings: jest.fn(),
+      applyToDocument: jest.fn()
+    } as unknown as jest.Mocked<AccessibilityService>;
 
     TestBed.configureTestingModule({
       providers: [
-        BarrierefreiheitStore,
-        { provide: BarrierefreiheitService, useValue: serviceMock }
+        AccessibilityStore,
+        { provide: AccessibilityService, useValue: serviceMock }
       ]
     });
 
-    store = TestBed.inject(BarrierefreiheitStore);
+    store = TestBed.inject(AccessibilityStore);
   });
 
   describe('initial state', () => {
-    it('sollte mit Default-Werten initialisiert werden', () => {
-      expect(store.schriftgroesse()).toBe('normal');
-      expect(store.hoherKontrast()).toBe(false);
-      expect(store.reduzierteBewegung()).toBe(false);
+    it('should be initialized with default values', () => {
+      expect(store.fontSize()).toBe('normal');
+      expect(store.highContrast()).toBe(false);
+      expect(store.reducedMotion()).toBe(false);
     });
   });
 
-  describe('ladeAusSpeicher', () => {
-    it('sollte Einstellungen vom Service laden und anwenden', () => {
-      serviceMock.getEinstellungen.mockReturnValue({
-        schriftgroesse: 'large',
-        hoherKontrast: true,
-        reduzierteBewegung: true
+  describe('loadFromStorage', () => {
+    it('should load settings from service and apply them', () => {
+      serviceMock.getSettings.mockReturnValue({
+        fontSize: 'large',
+        highContrast: true,
+        reducedMotion: true
       });
 
-      store.ladeAusSpeicher();
+      store.loadFromStorage();
 
-      expect(serviceMock.getEinstellungen).toHaveBeenCalled();
-      expect(serviceMock.aufDokumentAnwenden).toHaveBeenCalled();
-      expect(store.schriftgroesse()).toBe('large');
-      expect(store.hoherKontrast()).toBe(true);
-      expect(store.reduzierteBewegung()).toBe(true);
+      expect(serviceMock.getSettings).toHaveBeenCalled();
+      expect(serviceMock.applyToDocument).toHaveBeenCalled();
+      expect(store.fontSize()).toBe('large');
+      expect(store.highContrast()).toBe(true);
+      expect(store.reducedMotion()).toBe(true);
     });
   });
 
-  describe('setzeSchriftgroesse', () => {
-    it('sollte Schriftgröße ändern und speichern', () => {
-      store.setzeSchriftgroesse('x-large');
+  describe('setFontSize', () => {
+    it('should change font size and save', () => {
+      store.setFontSize('x-large');
 
-      expect(store.schriftgroesse()).toBe('x-large');
-      expect(serviceMock.speichereEinstellungen).toHaveBeenCalledWith(
-        expect.objectContaining({ schriftgroesse: 'x-large' })
+      expect(store.fontSize()).toBe('x-large');
+      expect(serviceMock.saveSettings).toHaveBeenCalledWith(
+        expect.objectContaining({ fontSize: 'x-large' })
       );
-      expect(serviceMock.aufDokumentAnwenden).toHaveBeenCalled();
+      expect(serviceMock.applyToDocument).toHaveBeenCalled();
     });
 
-    it('sollte alle Schriftgröße-Werte akzeptieren', () => {
-      const groessen: Array<'small' | 'normal' | 'large' | 'x-large'> = ['small', 'normal', 'large', 'x-large'];
+    it('should accept all font size values', () => {
+      const sizes: Array<'small' | 'normal' | 'large' | 'x-large'> = ['small', 'normal', 'large', 'x-large'];
 
-      for (const groesse of groessen) {
-        store.setzeSchriftgroesse(groesse);
-        expect(store.schriftgroesse()).toBe(groesse);
+      for (const size of sizes) {
+        store.setFontSize(size);
+        expect(store.fontSize()).toBe(size);
       }
     });
   });
 
-  describe('setzeHohenKontrast', () => {
-    it('sollte hohen Kontrast aktivieren und speichern', () => {
-      store.setzeHohenKontrast(true);
+  describe('setHighContrast', () => {
+    it('should enable high contrast and save', () => {
+      store.setHighContrast(true);
 
-      expect(store.hoherKontrast()).toBe(true);
-      expect(serviceMock.speichereEinstellungen).toHaveBeenCalledWith(
-        expect.objectContaining({ hoherKontrast: true })
+      expect(store.highContrast()).toBe(true);
+      expect(serviceMock.saveSettings).toHaveBeenCalledWith(
+        expect.objectContaining({ highContrast: true })
       );
-      expect(serviceMock.aufDokumentAnwenden).toHaveBeenCalled();
+      expect(serviceMock.applyToDocument).toHaveBeenCalled();
     });
 
-    it('sollte hohen Kontrast deaktivieren und speichern', () => {
-      store.setzeHohenKontrast(true);
-      store.setzeHohenKontrast(false);
+    it('should disable high contrast and save', () => {
+      store.setHighContrast(true);
+      store.setHighContrast(false);
 
-      expect(store.hoherKontrast()).toBe(false);
+      expect(store.highContrast()).toBe(false);
     });
   });
 
-  describe('setzeReduzierteBewegung', () => {
-    it('sollte reduzierte Bewegung aktivieren und speichern', () => {
-      store.setzeReduzierteBewegung(true);
+  describe('setReducedMotion', () => {
+    it('should enable reduced motion and save', () => {
+      store.setReducedMotion(true);
 
-      expect(store.reduzierteBewegung()).toBe(true);
-      expect(serviceMock.speichereEinstellungen).toHaveBeenCalledWith(
-        expect.objectContaining({ reduzierteBewegung: true })
+      expect(store.reducedMotion()).toBe(true);
+      expect(serviceMock.saveSettings).toHaveBeenCalledWith(
+        expect.objectContaining({ reducedMotion: true })
       );
-      expect(serviceMock.aufDokumentAnwenden).toHaveBeenCalled();
+      expect(serviceMock.applyToDocument).toHaveBeenCalled();
     });
 
-    it('sollte reduzierte Bewegung deaktivieren und speichern', () => {
-      store.setzeReduzierteBewegung(true);
-      store.setzeReduzierteBewegung(false);
+    it('should disable reduced motion and save', () => {
+      store.setReducedMotion(true);
+      store.setReducedMotion(false);
 
-      expect(store.reduzierteBewegung()).toBe(false);
+      expect(store.reducedMotion()).toBe(false);
     });
   });
 
-  describe('aktuellerZustand', () => {
-    it('sollte den kompletten aktuellen Zustand zurückgeben', () => {
-      store.setzeSchriftgroesse('large');
-      store.setzeHohenKontrast(true);
-      store.setzeReduzierteBewegung(true);
+  describe('currentState', () => {
+    it('should return the complete current state', () => {
+      store.setFontSize('large');
+      store.setHighContrast(true);
+      store.setReducedMotion(true);
 
-      const zustand = store.aktuellerZustand();
+      const state = store.currentState();
 
-      expect(zustand).toEqual({
-        schriftgroesse: 'large',
-        hoherKontrast: true,
-        reduzierteBewegung: true
+      expect(state).toEqual({
+        fontSize: 'large',
+        highContrast: true,
+        reducedMotion: true
       });
     });
   });

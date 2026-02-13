@@ -5,70 +5,80 @@ const LANGUAGE_STORAGE_KEY = 'app-language';
 
 /**
  * Type-safe TranslateService
- * Verwendet Signals für reaktive Language-Switching
+ * Uses signals for reactive language switching
  */
 @Injectable({ providedIn: 'root' })
 export class TranslateService {
-  private readonly aktuelleSprache = signal<Language>(this.ladeSpracheAusSpeicher());
+  private readonly currentLanguage = signal<Language>(this.loadLanguageFromStorage());
 
-  private readonly aktuelleUebersetzungen = computed(() =>
-    translations[this.aktuelleSprache()]
+  private readonly currentTranslations = computed(() =>
+    translations[this.currentLanguage()]
   );
 
   /**
-   * Gibt die Übersetzung für einen Key zurück
+   * Returns the translation for a nested dot-separated key
+   * e.g. instant('header.warenkorb.titel')
    */
   instant(key: TranslationKey): string {
-    return this.aktuelleUebersetzungen()[key] || key;
+    const parts = key.split('.');
+    let value: unknown = this.currentTranslations();
+    for (const part of parts) {
+      if (value && typeof value === 'object') {
+        value = (value as Record<string, unknown>)[part];
+      } else {
+        return key;
+      }
+    }
+    return typeof value === 'string' ? value : key;
   }
 
   /**
-   * Gibt ein computed Signal für reaktive Templates zurück
+   * Returns a computed signal for reactive templates
    */
   get(key: TranslationKey): () => string {
     return computed(() => this.instant(key));
   }
 
   /**
-   * Wechselt die Sprache
+   * Switches the language
    */
-  use(sprache: Language): void {
-    this.aktuelleSprache.set(sprache);
+  use(language: Language): void {
+    this.currentLanguage.set(language);
     try {
-      localStorage.setItem(LANGUAGE_STORAGE_KEY, sprache);
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
     } catch {
-      // LocalStorage nicht verfügbar
+      // LocalStorage not available
     }
   }
 
   /**
-   * Gibt die aktuelle Sprache zurück
+   * Returns the current language
    */
-  getAktuelleSprache(): Language {
-    return this.aktuelleSprache();
+  getCurrentLanguage(): Language {
+    return this.currentLanguage();
   }
 
   /**
-   * Gibt die aktuelle Sprache als Signal zurück
+   * Returns the current language as a signal
    */
-  getSpracheSignal(): () => Language {
-    return this.aktuelleSprache.asReadonly();
+  getLanguageSignal(): () => Language {
+    return this.currentLanguage.asReadonly();
   }
 
   /**
-   * Lädt die Sprache aus dem LocalStorage oder verwendet Default
+   * Loads language from LocalStorage or uses default
    */
-  private ladeSpracheAusSpeicher(): Language {
+  private loadLanguageFromStorage(): Language {
     try {
-      const gespeichert = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-      if (gespeichert === 'de' || gespeichert === 'en') {
-        return gespeichert;
+      const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+      if (stored === 'de' || stored === 'en') {
+        return stored;
       }
     } catch {
-      // LocalStorage nicht verfügbar
+      // LocalStorage not available
     }
-    // Browser-Sprache als Fallback
-    const browserSprache = navigator.language.toLowerCase();
-    return browserSprache.startsWith('de') ? 'de' : 'en';
+    // Browser language as fallback
+    const browserLanguage = navigator.language.toLowerCase();
+    return browserLanguage.startsWith('de') ? 'de' : 'en';
   }
 }

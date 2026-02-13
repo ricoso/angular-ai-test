@@ -1,30 +1,30 @@
 <div class="accessibility-menu">
-  <!-- Schriftgröße -->
+  <!-- Font Size -->
   <section class="accessibility-menu__section">
     <h3 class="accessibility-menu__heading" id="font-size-label">
-      {{ 'header.accessibility.fontSize' | translate }}
+      {{ a11y.fontSize.label | translate }}
     </h3>
     <mat-radio-group
       class="accessibility-menu__radio-group"
-      [value]="schriftgroesse()"
-      (change)="beimSchriftgroesseAendern($event.value)"
+      [value]="fontSize()"
+      (change)="onFontSizeChange($event.value)"
       aria-labelledby="font-size-label">
-      @for (groesse of schriftgroessen; track groesse) {
+      @for (size of fontSizes; track size) {
         <mat-radio-button
           class="accessibility-menu__radio"
-          [value]="groesse">
-          @switch (groesse) {
+          [value]="size">
+          @switch (size) {
             @case ('small') {
-              {{ 'header.accessibility.fontSize.small' | translate }}
+              {{ a11y.fontSize.small | translate }}
             }
             @case ('normal') {
-              {{ 'header.accessibility.fontSize.normal' | translate }}
+              {{ a11y.fontSize.normal | translate }}
             }
             @case ('large') {
-              {{ 'header.accessibility.fontSize.large' | translate }}
+              {{ a11y.fontSize.large | translate }}
             }
             @case ('x-large') {
-              {{ 'header.accessibility.fontSize.xLarge' | translate }}
+              {{ a11y.fontSize.xLarge | translate }}
             }
           }
         </mat-radio-button>
@@ -32,23 +32,23 @@
     </mat-radio-group>
   </section>
 
-  <!-- Hoher Kontrast -->
+  <!-- High Contrast -->
   <section class="accessibility-menu__section">
     <mat-slide-toggle
       class="accessibility-menu__toggle"
-      [checked]="hoherKontrast()"
-      (change)="beimHohenKontrastAendern($event.checked)">
-      {{ 'header.accessibility.highContrast' | translate }}
+      [checked]="highContrast()"
+      (change)="onHighContrastChange($event.checked)">
+      {{ a11y.highContrast | translate }}
     </mat-slide-toggle>
   </section>
 
-  <!-- Reduzierte Bewegung -->
+  <!-- Reduced Motion -->
   <section class="accessibility-menu__section">
     <mat-slide-toggle
       class="accessibility-menu__toggle"
-      [checked]="reduzierteBewegung()"
-      (change)="beimReduzierteBewegungAendern($event.checked)">
-      {{ 'header.accessibility.reducedMotion' | translate }}
+      [checked]="reducedMotion()"
+      (change)="onReducedMotionChange($event.checked)">
+      {{ a11y.reducedMotion | translate }}
     </mat-slide-toggle>
   </section>
 </div>

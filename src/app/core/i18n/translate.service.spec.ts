@@ -15,84 +15,82 @@ describe('TranslateService', () => {
   });
 
   describe('instant', () => {
-    it('sollte deutsche Übersetzung zurückgeben (Default)', () => {
+    it('should return German translation (default)', () => {
       service.use('de');
       const result = service.instant('app.title');
       expect(result).toBe('Gottfried Schultz');
     });
 
-    it('sollte englische Übersetzung zurückgeben', () => {
+    it('should return English translation', () => {
       service.use('en');
       const result = service.instant('app.skipLink');
       expect(result).toBe('Skip to main content');
     });
 
-    it('sollte Key zurückgeben wenn Übersetzung nicht existiert', () => {
-      const result = service.instant('nicht.vorhanden' as never);
-      expect(result).toBe('nicht.vorhanden');
+    it('should return key when translation does not exist', () => {
+      const result = service.instant('not.existing' as never);
+      expect(result).toBe('not.existing');
     });
   });
 
   describe('use', () => {
-    it('sollte Sprache auf Deutsch setzen', () => {
+    it('should set language to German', () => {
       service.use('de');
-      expect(service.getAktuelleSprache()).toBe('de');
+      expect(service.getCurrentLanguage()).toBe('de');
     });
 
-    it('sollte Sprache auf Englisch setzen', () => {
+    it('should set language to English', () => {
       service.use('en');
-      expect(service.getAktuelleSprache()).toBe('en');
+      expect(service.getCurrentLanguage()).toBe('en');
     });
 
-    it('sollte Sprache im LocalStorage speichern', () => {
+    it('should save language to LocalStorage', () => {
       service.use('en');
       expect(localStorage.getItem('app-language')).toBe('en');
     });
   });
 
-  describe('getAktuelleSprache', () => {
-    it('sollte aktuelle Sprache zurückgeben', () => {
+  describe('getCurrentLanguage', () => {
+    it('should return current language', () => {
       service.use('de');
-      expect(service.getAktuelleSprache()).toBe('de');
+      expect(service.getCurrentLanguage()).toBe('de');
 
       service.use('en');
-      expect(service.getAktuelleSprache()).toBe('en');
+      expect(service.getCurrentLanguage()).toBe('en');
     });
   });
 
   describe('get', () => {
-    it('sollte ein Signal für reaktive Übersetzungen zurückgeben', () => {
+    it('should return a signal for reactive translations', () => {
       service.use('de');
       const signalFn = service.get('header.accessibility.button');
 
       expect(signalFn()).toBe('Barrierefreiheit');
 
       service.use('en');
-      // Signal sollte nach Language-Wechsel neuen Wert haben
       expect(signalFn()).toBe('Accessibility');
     });
   });
 
-  describe('getSpracheSignal', () => {
-    it('sollte ein readonly Signal zurückgeben', () => {
+  describe('getLanguageSignal', () => {
+    it('should return a readonly signal', () => {
       service.use('de');
-      const spracheSignal = service.getSpracheSignal();
+      const languageSignal = service.getLanguageSignal();
 
-      expect(spracheSignal()).toBe('de');
+      expect(languageSignal()).toBe('de');
 
       service.use('en');
-      expect(spracheSignal()).toBe('en');
+      expect(languageSignal()).toBe('en');
     });
   });
 
-  describe('LocalStorage Wiederherstellung', () => {
-    it('sollte gespeicherte Sprache aus LocalStorage laden', () => {
+  describe('LocalStorage Recovery', () => {
+    it('should load saved language from LocalStorage', () => {
       localStorage.setItem('app-language', 'en');
 
-      // Neuen Service erstellen um LocalStorage zu laden
-      const neuerService = new TranslateService();
+      const newService = new TranslateService();
 
-      expect(neuerService.getAktuelleSprache()).toBe('en');
+      expect(newService.getCurrentLanguage()).toBe('en');
     });
   });
 });

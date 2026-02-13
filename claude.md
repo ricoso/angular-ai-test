@@ -9,6 +9,131 @@
 - **UI**: Angular Material 21
 - **Testing**: Jest 30
 - **i18n**: ngx-translate (TypeScript Typings)
+- **Deployment**: Click-Dummy (GitHub Pages, HashLocation)
+- **Code-Sprache**: Deutsch _(Setup-fixiert, unabhängig von REQ-Sprache)_
+- **UI-Sprachen**: DE, EN _(Setup-fixiert, alle müssen gepflegt werden)_
+
+---
+
+## 🚀 Projekt Setup (Bei neuem Projekt fragen!)
+
+> **Details:** `.claude/skills/projekt-setup.md`
+
+---
+
+## 🚨 AGENT-GENERIERUNGSREGELN (PFLICHT!)
+
+> **Diese Regeln MÜSSEN bei JEDER Code-Generierung befolgt werden!**
+
+### ❌ VERBOTEN - NIEMALS generieren:
+
+| Verboten | Stattdessen |
+|----------|-------------|
+| `template: \`...\`` (inline) | Separate `.html` Datei |
+| `styles: [\`...\`]` (inline) | Separate `.scss` Datei |
+| `onInit` im Store für Feature-Daten | Route Resolver + `rxMethod` |
+| `ngOnInit()` in Component für Data Loading | Route Resolver |
+| `@for (item of items; track $index)` | `track item.id` (unique ID) |
+| `{{ method() }}` im Template | `computed()` Signal |
+| `any` Type | Interface oder `unknown` |
+| `ngModel` | Reactive Forms |
+| `implements OnInit` für Data Loading | Route Resolver |
+| `inject()` in Methoden/Code-Body | Class Property am Anfang |
+
+### ✅ IMMER generieren:
+
+| Immer | Beispiel |
+|-------|----------|
+| Separate HTML-Datei | `user-container.component.html` |
+| Separate SCSS-Datei | `user-container.component.scss` |
+| Route Resolver für Daten | `user.resolver.ts` → `store.loadUsers()` |
+| OnPush Change Detection | `changeDetection: ChangeDetectionStrategy.OnPush` |
+| Track mit ID | `@for (user of users(); track user.id)` |
+| Computed für Template | `activeUsers = computed(() => ...)` |
+| `inject()` als Class Property | `private readonly store = inject(UserStore);` |
+
+### 🔄 Data Loading Pattern (KRITISCH!)
+
+```typescript
+// ❌ FALSCH #1 - NIEMALS onInit im Store!
+export const UserStore = signalStore(
+  withHooks({
+    onInit(store) {
+      store.loadUsers(); // ❌ Feature-Daten in onInit!
+    }
+  })
+);
+
+// ❌ FALSCH #2 - NIEMALS ngOnInit in Component für Data Loading!
+@Component({...})
+export class UserContainerComponent implements OnInit {
+  private readonly store = inject(UserStore);
+
+  ngOnInit(): void {
+    this.store.loadUsers(); // ❌ Data Loading in Component!
+  }
+}
+
+// ✅ RICHTIG - IMMER Route Resolver verwenden!
+
+// 1. Resolver erstellen
+export const userResolver: ResolveFn<void> = () => {
+  inject(UserStore).loadUsers();
+  return of(void 0);
+};
+
+// 2. Route mit Resolver
+{ path: 'users', component: UserContainerComponent, resolve: { _: userResolver } }
+
+// 3. Store OHNE onInit für Feature-Daten
+export const UserStore = signalStore(
+  { providedIn: 'root' },
+  withState<UserState>({ users: [], loading: false, error: null }),
+  withMethods((store, api = inject(UserApiService)) => ({
+    loadUsers: rxMethod<void>(pipe(...))
+  }))
+);
+
+// 4. Component OHNE ngOnInit für Data Loading
+@Component({...})
+export class UserContainerComponent {
+  // ✅ Nur Store inject, KEIN ngOnInit für Daten!
+  protected readonly store = inject(UserStore);
+
+  // ✅ Event Handler sind OK
+  protected onRefresh(): void {
+    this.store.loadUsers();
+  }
+}
+```
+
+### ⚠️ Wann ist ngOnInit erlaubt?
+
+| Erlaubt in ngOnInit | Verboten in ngOnInit |
+|---------------------|----------------------|
+| Route Params auslesen | API Calls / Data Loading |
+| Event Listener setup | Store-Methoden aufrufen |
+| DOM-Manipulation | HTTP Requests |
+| Timer starten | Service-Methoden für Daten |
+
+### 📁 Component-Generierung (IMMER 3 Dateien!)
+
+```
+user-container/
+├── user-container.component.ts    # Logik
+├── user-container.component.html  # Template (SEPARATE DATEI!)
+└── user-container.component.scss  # Styles (SEPARATE DATEI!)
+```
+
+```typescript
+// ✅ RICHTIG - templateUrl + styleUrls
+@Component({
+  selector: 'app-user-container',
+  templateUrl: './user-container.component.html',
+  styleUrls: ['./user-container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+```
 
 ---
 
@@ -73,12 +198,12 @@
 
 ## 🌐 i18n REGELN
 
-- ✅ ALLE Texte in Templates mit `{{ 'key' | translate }}`
-- ✅ IMMER beide Sprachen: DE + EN (unabhängig von Code-Sprache!)
-- ✅ Type-safe Keys: `TranslationKey` Type verwenden
+- ⚠️ **UI-Sprachen werden im Setup festgelegt** (siehe Projekt-Info)
+- ✅ ALLE Texte in Templates mit `{{ t.feature.key }}`
+- ✅ IMMER ALLE konfigurierten Sprachen pflegen
+- ✅ Type-safe Keys: TypeScript + Proxy (kein Pipe)
 - ✅ Key-Naming: `{feature}.{type}.{name}` (z.B. `user.form.name`, `user.buttons.save`)
 - ✅ TypeScript-only (KEINE JSON files!)
-- ✅ `translate.instant(key)` in Components, Pipe in Templates
 - ❌ KEINE hardcoded Strings in Templates
 > **Beispiele:** `.claude/skills/i18n-typings.md`
 
@@ -123,20 +248,11 @@
 
 ## 🌍 CODE LANGUAGE REGELN
 
-- Code-Sprache = Requirement-Sprache
-- UI IMMER bilingual (i18n DE + EN)
-- **Deutsche REQ:**
-  - Methods: `beimAbsenden()`, `ladeBenutzer()`, `erstelle()`, `loesche()`
-  - Variables: `benutzer[]`, `istLaden`, `gefilterteBenutzer`
-  - Types: `Benutzer`, `BenutzerErstellenDTO`
-  - Computed: `gefilterteBenutzer`, `istLaden`, `hatBenutzer`
-- **Englische REQ:**
-  - Methods: `onSubmit()`, `loadUsers()`, `create()`, `delete()`
-  - Variables: `users[]`, `isLoading`, `filteredUsers`
-  - Types: `User`, `CreateUserDTO`
-  - Computed: `filteredUsers`, `isLoading`, `hasUsers`
+- ⚠️ **Code-Sprache wird im Setup FIXIERT** (siehe Projekt-Info)
+- Requirements können in jeder Sprache kommen → Code IMMER in Setup-Sprache
+- UI IMMER in ALLEN konfigurierten Sprachen (siehe Projekt-Info)
 - Glossar nutzen aus REQ-TEMPLATE Section 16
-> **Glossar:** `.claude/skills/code-language.md`
+> **Details:** `.claude/skills/code-language.md`
 
 ---
 

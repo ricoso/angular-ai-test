@@ -1,5 +1,8 @@
 # Routing Patterns (COMPACT)
 
+## Projekt-Vorgabe
+<!-- SETUP:VORGABE -->
+
 ---
 
 ## Lazy Loading (PFLICHT!)

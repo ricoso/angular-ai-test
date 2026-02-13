@@ -1,48 +1,46 @@
 /**
- * Schriftgröße für Accessibility-Einstellungen
- * - small: 14px (0.875em) - Minimum nach WCAG
- * - normal: 16px (1em) - Standard
+ * Font size for accessibility settings
+ * - small: 14px (0.875em) - Minimum per WCAG
+ * - normal: 16px (1em) - Default
  * - large: 18px (1.125em)
  * - x-large: 20px (1.25em)
  */
-export type Schriftgroesse = 'small' | 'normal' | 'large' | 'x-large';
+export type FontSize = 'small' | 'normal' | 'large' | 'x-large';
 
 /**
  * Accessibility State Interface
- * Wird im AccessibilityStore verwendet
  */
-export interface BarrierefreiheitZustand {
-  schriftgroesse: Schriftgroesse;
-  hoherKontrast: boolean;
-  reduzierteBewegung: boolean;
+export interface AccessibilityState {
+  fontSize: FontSize;
+  highContrast: boolean;
+  reducedMotion: boolean;
 }
 
 /**
- * LocalStorage Schema für Accessibility-Einstellungen
- * Inklusive Versionsnummer für zukünftige Migrationen
+ * LocalStorage schema for accessibility settings
  */
-export interface BarrierefreiheitSpeicherDaten {
-  schriftgroesse: Schriftgroesse;
-  hoherKontrast: boolean;
-  reduzierteBewegung: boolean;
+export interface AccessibilityStorageData {
+  fontSize: FontSize;
+  highContrast: boolean;
+  reducedMotion: boolean;
   version: number;
 }
 
 /**
- * Standard-Werte für Accessibility-Einstellungen
+ * Default values for accessibility settings
  */
-export const BARRIEREFREIHEIT_STANDARDS: BarrierefreiheitZustand = {
-  schriftgroesse: 'normal',
-  hoherKontrast: false,
-  reduzierteBewegung: false
+export const ACCESSIBILITY_DEFAULTS: AccessibilityState = {
+  fontSize: 'normal',
+  highContrast: false,
+  reducedMotion: false
 };
 
 /**
- * LocalStorage Key für Accessibility-Einstellungen
+ * LocalStorage key for accessibility settings
  */
-export const BARRIEREFREIHEIT_STORAGE_KEY = 'accessibility-settings';
+export const ACCESSIBILITY_STORAGE_KEY = 'accessibility-settings';
 
 /**
- * Aktuelle Version des Storage-Schemas
+ * Current storage schema version
  */
-export const BARRIEREFREIHEIT_STORAGE_VERSION = 1;
+export const ACCESSIBILITY_STORAGE_VERSION = 1;

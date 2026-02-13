@@ -1,16 +1,16 @@
 import { TestBed } from '@angular/core/testing';
-import { BarrierefreiheitService } from './accessibility.service';
+import { AccessibilityService } from './accessibility.service';
 import {
-  BARRIEREFREIHEIT_STORAGE_KEY,
-  BarrierefreiheitZustand
+  ACCESSIBILITY_STORAGE_KEY,
+  AccessibilityState
 } from '../models/accessibility.model';
 
-describe('BarrierefreiheitService', () => {
-  let service: BarrierefreiheitService;
+describe('AccessibilityService', () => {
+  let service: AccessibilityService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(BarrierefreiheitService);
+    service = TestBed.inject(AccessibilityService);
     localStorage.clear();
   });
 
@@ -21,117 +21,117 @@ describe('BarrierefreiheitService', () => {
     document.documentElement.classList.remove('reduce-motion');
   });
 
-  describe('getEinstellungen', () => {
-    it('sollte Default-Werte zurückgeben wenn LocalStorage leer ist', () => {
-      const einstellungen = service.getEinstellungen();
+  describe('getSettings', () => {
+    it('should return default values when LocalStorage is empty', () => {
+      const settings = service.getSettings();
 
-      expect(einstellungen.schriftgroesse).toBe('normal');
-      expect(einstellungen.hoherKontrast).toBe(false);
+      expect(settings.fontSize).toBe('normal');
+      expect(settings.highContrast).toBe(false);
     });
 
-    it('sollte gespeicherte Einstellungen aus LocalStorage laden', () => {
-      const gespeichert: BarrierefreiheitZustand = {
-        schriftgroesse: 'large',
-        hoherKontrast: true,
-        reduzierteBewegung: true
+    it('should load saved settings from LocalStorage', () => {
+      const saved: AccessibilityState = {
+        fontSize: 'large',
+        highContrast: true,
+        reducedMotion: true
       };
       localStorage.setItem(
-        BARRIEREFREIHEIT_STORAGE_KEY,
-        JSON.stringify({ ...gespeichert, version: 1 })
+        ACCESSIBILITY_STORAGE_KEY,
+        JSON.stringify({ ...saved, version: 1 })
       );
 
-      const einstellungen = service.getEinstellungen();
+      const settings = service.getSettings();
 
-      expect(einstellungen.schriftgroesse).toBe('large');
-      expect(einstellungen.hoherKontrast).toBe(true);
-      expect(einstellungen.reduzierteBewegung).toBe(true);
+      expect(settings.fontSize).toBe('large');
+      expect(settings.highContrast).toBe(true);
+      expect(settings.reducedMotion).toBe(true);
     });
 
-    it('sollte ungültige Schriftgröße auf normal zurücksetzen', () => {
+    it('should reset invalid font size to normal', () => {
       localStorage.setItem(
-        BARRIEREFREIHEIT_STORAGE_KEY,
-        JSON.stringify({ schriftgroesse: 'invalid', hoherKontrast: false, reduzierteBewegung: false, version: 1 })
+        ACCESSIBILITY_STORAGE_KEY,
+        JSON.stringify({ fontSize: 'invalid', highContrast: false, reducedMotion: false, version: 1 })
       );
 
-      const einstellungen = service.getEinstellungen();
+      const settings = service.getSettings();
 
-      expect(einstellungen.schriftgroesse).toBe('normal');
+      expect(settings.fontSize).toBe('normal');
     });
 
-    it('sollte bei ungültigem JSON Default-Werte zurückgeben', () => {
-      localStorage.setItem(BARRIEREFREIHEIT_STORAGE_KEY, 'invalid-json');
+    it('should return defaults for invalid JSON', () => {
+      localStorage.setItem(ACCESSIBILITY_STORAGE_KEY, 'invalid-json');
 
-      const einstellungen = service.getEinstellungen();
+      const settings = service.getSettings();
 
-      expect(einstellungen.schriftgroesse).toBe('normal');
-      expect(einstellungen.hoherKontrast).toBe(false);
+      expect(settings.fontSize).toBe('normal');
+      expect(settings.highContrast).toBe(false);
     });
   });
 
-  describe('speichereEinstellungen', () => {
-    it('sollte Einstellungen im LocalStorage speichern', () => {
-      const zustand: BarrierefreiheitZustand = {
-        schriftgroesse: 'x-large',
-        hoherKontrast: true,
-        reduzierteBewegung: false
+  describe('saveSettings', () => {
+    it('should save settings to LocalStorage', () => {
+      const state: AccessibilityState = {
+        fontSize: 'x-large',
+        highContrast: true,
+        reducedMotion: false
       };
 
-      service.speichereEinstellungen(zustand);
+      service.saveSettings(state);
 
-      const gespeichert = JSON.parse(localStorage.getItem(BARRIEREFREIHEIT_STORAGE_KEY) || '{}');
-      expect(gespeichert.schriftgroesse).toBe('x-large');
-      expect(gespeichert.hoherKontrast).toBe(true);
-      expect(gespeichert.reduzierteBewegung).toBe(false);
-      expect(gespeichert.version).toBe(1);
+      const saved = JSON.parse(localStorage.getItem(ACCESSIBILITY_STORAGE_KEY) || '{}');
+      expect(saved.fontSize).toBe('x-large');
+      expect(saved.highContrast).toBe(true);
+      expect(saved.reducedMotion).toBe(false);
+      expect(saved.version).toBe(1);
     });
   });
 
-  describe('aufDokumentAnwenden', () => {
-    it('sollte data-font-size Attribut setzen', () => {
-      const zustand: BarrierefreiheitZustand = {
-        schriftgroesse: 'large',
-        hoherKontrast: false,
-        reduzierteBewegung: false
+  describe('applyToDocument', () => {
+    it('should set data-font-size attribute', () => {
+      const state: AccessibilityState = {
+        fontSize: 'large',
+        highContrast: false,
+        reducedMotion: false
       };
 
-      service.aufDokumentAnwenden(zustand);
+      service.applyToDocument(state);
 
       expect(document.documentElement.getAttribute('data-font-size')).toBe('large');
     });
 
-    it('sollte data-high-contrast Attribut setzen', () => {
-      const zustand: BarrierefreiheitZustand = {
-        schriftgroesse: 'normal',
-        hoherKontrast: true,
-        reduzierteBewegung: false
+    it('should set data-high-contrast attribute', () => {
+      const state: AccessibilityState = {
+        fontSize: 'normal',
+        highContrast: true,
+        reducedMotion: false
       };
 
-      service.aufDokumentAnwenden(zustand);
+      service.applyToDocument(state);
 
       expect(document.documentElement.getAttribute('data-high-contrast')).toBe('true');
     });
 
-    it('sollte reduce-motion Klasse hinzufügen wenn aktiviert', () => {
-      const zustand: BarrierefreiheitZustand = {
-        schriftgroesse: 'normal',
-        hoherKontrast: false,
-        reduzierteBewegung: true
+    it('should add reduce-motion class when enabled', () => {
+      const state: AccessibilityState = {
+        fontSize: 'normal',
+        highContrast: false,
+        reducedMotion: true
       };
 
-      service.aufDokumentAnwenden(zustand);
+      service.applyToDocument(state);
 
       expect(document.documentElement.classList.contains('reduce-motion')).toBe(true);
     });
 
-    it('sollte reduce-motion Klasse entfernen wenn deaktiviert', () => {
+    it('should remove reduce-motion class when disabled', () => {
       document.documentElement.classList.add('reduce-motion');
-      const zustand: BarrierefreiheitZustand = {
-        schriftgroesse: 'normal',
-        hoherKontrast: false,
-        reduzierteBewegung: false
+      const state: AccessibilityState = {
+        fontSize: 'normal',
+        highContrast: false,
+        reducedMotion: false
       };
 
-      service.aufDokumentAnwenden(zustand);
+      service.applyToDocument(state);
 
       expect(document.documentElement.classList.contains('reduce-motion')).toBe(false);
     });

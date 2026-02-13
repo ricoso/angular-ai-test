@@ -1,0 +1,12 @@
+.cart-icon {
+  &__button {
+    min-width: var(--touch-target-min);
+    min-height: var(--touch-target-min);
+    position: relative;
+
+    &:focus-visible {
+      outline: 0.125em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+  }
+}

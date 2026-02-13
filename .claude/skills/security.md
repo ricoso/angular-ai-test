@@ -1,5 +1,8 @@
 # Security (COMPACT)
 
+## Projekt-Vorgabe
+<!-- SETUP:VORGABE -->
+
 **Wann:** Bei ALLEN Features - PFLICHT vor jedem Commit!
 
 ---

@@ -78,6 +78,25 @@
       outline-offset: 0.125em;
     }
   }
+
+  &__warenkorb-dropdown {
+    padding: var(--spacing-md);
+    min-width: 15em;
+  }
+
+  &__warenkorb-titel {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 var(--spacing-sm) 0;
+  }
+
+  &__warenkorb-leer,
+  &__warenkorb-platzhalter {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
 }
 
 // Responsive: Mobile-First
