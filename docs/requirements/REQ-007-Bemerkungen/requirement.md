@@ -54,7 +54,8 @@ Der Benutzer kann optionale Bemerkungen/Anmerkungen zur Buchung eingeben. Zusät
 - Benutzer hat `/buchung/bemerkungen` aufgerufen
 
 ### 3.3 Data
-- Hinweise pro Service sind statisch konfiguriert
+- Hinweise pro Service sind statisch konfiguriert.
+- Store-Methode `setzeBemerkungen()` liefert ein console.log und speichert statisch im Store (Click-Dummy).
 
 ### 3.4 Übergabe (Input von REQ-006-Kundendaten)
 | Feld | Typ | Quelle | Pflicht |

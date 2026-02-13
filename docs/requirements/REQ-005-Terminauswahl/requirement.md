@@ -58,7 +58,9 @@ Der Benutzer wählt einen Termin: entweder über Schnellauswahl (4 dynamisch ber
 - Benutzer hat `/buchung/termin` aufgerufen
 
 ### 3.3 Data
-- Termine sind statisch generiert (dynamisch berechnet ab aktuellem Datum)
+- Schnelltermine werden dynamisch berechnet (clientseitig), über den Resolver eingebaut.
+- Kalender-Termine sind statisch konfiguriert und über den Resolver eingebaut.
+- Store-Methode liefert ein console.log und einen statischen Wert zurück (Click-Dummy).
 
 ### 3.4 Übergabe (Input von REQ-004-Serviceauswahl)
 | Feld | Typ | Quelle | Pflicht |

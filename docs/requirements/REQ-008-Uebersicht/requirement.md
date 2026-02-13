@@ -56,7 +56,8 @@ Letzte Seite des Wizard — zeigt eine Zusammenfassung aller Buchungsdaten. Der 
 - Benutzer hat `/buchung/uebersicht` aufgerufen
 
 ### 3.3 Data
-- Alle Wizard-Schritte abgeschlossen
+- Alle Wizard-Schritte abgeschlossen, Daten liegen im BuchungStore.
+- Store-Methode `erstelleBuchung()` liefert ein console.log mit dem kompletten DTO und gibt statische Bestätigung zurück (Click-Dummy).
 
 ### 3.4 Übergabe (Input von REQ-007-Bemerkungen)
 | Feld | Typ | Quelle | Pflicht |

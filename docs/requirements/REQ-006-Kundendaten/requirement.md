@@ -61,7 +61,9 @@ Der Benutzer gibt seine persönlichen Daten und Fahrzeugdaten ein. Das Formular 
 - Benutzer hat `/buchung/kundendaten` aufgerufen
 
 ### 3.3 Data
-- Keine externen Daten benötigt (Formulareingabe)
+- Keine externen Daten benötigt (Formulareingabe).
+- Store-Methode `setzeKundendaten()` liefert ein console.log und speichert statisch im Store (Click-Dummy).
+- "Daten abrufen"-Button: console.log, keine echte Abfrage.
 
 ### 3.4 Übergabe (Input von REQ-005-Terminauswahl)
 | Feld | Typ | Quelle | Pflicht |

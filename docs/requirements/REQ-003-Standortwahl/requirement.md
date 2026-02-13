@@ -57,7 +57,8 @@ Der Benutzer wählt einen Standort (Autohaus) basierend auf der zuvor gewählten
 - Benutzer hat `/buchung/standort` aufgerufen
 
 ### 3.3 Data
-- Standorte pro Marke sind statisch konfiguriert
+- Standorte pro Marke sind statisch konfiguriert und über den Resolver eingebaut.
+- Store-Methode liefert ein console.log und einen statischen Wert zurück (Click-Dummy).
 
 ### 3.4 Übergabe (Input von REQ-002-Markenauswahl)
 | Feld | Typ | Quelle | Pflicht |

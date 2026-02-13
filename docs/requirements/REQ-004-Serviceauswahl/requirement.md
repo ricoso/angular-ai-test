@@ -60,7 +60,9 @@ Der Benutzer wählt einen oder mehrere Werkstatt-Services aus. Services werden a
 - Benutzer hat `/buchung/services` aufgerufen
 
 ### 3.3 Data
-- Services sind statisch konfiguriert (3 Stück)
+- Services sind statisch konfiguriert (3 Stück) und über den Resolver eingebaut.
+- Store-Methode liefert ein console.log und einen statischen Wert zurück (Click-Dummy).
+- Service-Optionen (Räderwechsel) ebenfalls statisch.
 
 ### 3.4 Übergabe (Input von REQ-003-Standortwahl)
 | Feld | Typ | Quelle | Pflicht |

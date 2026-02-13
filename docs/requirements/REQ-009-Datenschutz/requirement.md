@@ -56,7 +56,7 @@ Statische Datenschutz-Seite mit Lorem-Ipsum-Inhalt. Wird aus dem Footer und dem 
 - Keine Authentifizierung erforderlich
 
 ### 3.3 Data
-- Keine (statischer Inhalt)
+- Keine externen Daten (statischer Lorem-Ipsum-Inhalt, kein Store/Resolver nötig).
 
 ### 3.4 Übergabe (Input)
 | Feld | Quelle | Pflicht |
