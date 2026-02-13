@@ -57,7 +57,7 @@ Der Benutzer wählt einen oder mehrere Werkstatt-Services aus. Services werden a
 - Header-Component (REQ-001) aktiv
 
 ### 3.2 User
-- Benutzer hat `/buchung/services` aufgerufen
+- Benutzer hat `/home/services` aufgerufen
 
 ### 3.3 Data
 - Services sind statisch konfiguriert (3 Stück) und über den Resolver eingebaut.

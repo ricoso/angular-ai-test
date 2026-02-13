@@ -51,7 +51,7 @@ Der Benutzer kann optionale Bemerkungen/Anmerkungen zur Buchung eingeben. Zusät
 - BuchungStore verfügbar
 
 ### 3.2 User
-- Benutzer hat `/buchung/bemerkungen` aufgerufen
+- Benutzer hat `/home/bemerkungen` aufgerufen
 
 ### 3.3 Data
 - Hinweise pro Service sind statisch konfiguriert.
@@ -64,7 +64,7 @@ Der Benutzer kann optionale Bemerkungen/Anmerkungen zur Buchung eingeben. Zusät
 | `BuchungStore.gewaehlterStandort` | `Standort` | REQ-003 | **Ja** |
 | `BuchungStore.gewaehlteServices` | `GewaehlterService[]` | REQ-004 | **Ja** (min 1) |
 | `BuchungStore.gewaehlterTermin` | `Termin` | REQ-005 | **Ja** |
-| `BuchungStore.kundendaten` | `Kundendaten` | REQ-006 | **Ja** (validiert) — Guard prüft, redirect zu `/buchung/kundendaten` wenn ungültig |
+| `BuchungStore.kundendaten` | `Kundendaten` | REQ-006 | **Ja** (validiert) — Guard prüft, redirect zu `/home/kundendaten` wenn ungültig |
 
 ---
 
@@ -82,7 +82,7 @@ Der Benutzer kann optionale Bemerkungen/Anmerkungen zur Buchung eingeben. Zusät
 
 **Step 3:** Benutzer klickt "Weiter"
 - **System:** Speichert `bemerkungen` im BuchungStore (auch leer)
-- **System:** Navigiert zu `/buchung/uebersicht` (REQ-008)
+- **System:** Navigiert zu `/home/uebersicht` (REQ-008)
 
 ---
 
@@ -102,7 +102,7 @@ Der Benutzer kann optionale Bemerkungen/Anmerkungen zur Buchung eingeben. Zusät
 
 **Flow:**
 1. Bemerkungen bleiben im Store erhalten
-2. Navigation zu `/buchung/kundendaten`
+2. Navigation zu `/home/kundendaten`
 
 ---
 
@@ -114,7 +114,7 @@ Der Benutzer kann optionale Bemerkungen/Anmerkungen zur Buchung eingeben. Zusät
 
 **Flow:**
 1. Guard prüft `BuchungStore.kundendaten`
-2. Redirect zu `/buchung/kundendaten`
+2. Redirect zu `/home/kundendaten`
 
 ---
 
@@ -200,8 +200,8 @@ Kein API-Call — reine Formulareingabe.
 
 ### TC-4: Guard — keine Kundendaten
 - **Given:** Keine validen Kundendaten
-- **When:** Direktaufruf `/buchung/bemerkungen`
-- **Then:** Redirect zu `/buchung/kundendaten`
+- **When:** Direktaufruf `/home/bemerkungen`
+- **Then:** Redirect zu `/home/kundendaten`
 
 ---
 
@@ -222,7 +222,7 @@ Kein API-Call — reine Formulareingabe.
 
 ### Folder
 ```
-src/app/features/buchung/components/bemerkungen/
+src/app/features/home/components/bemerkungen/
 ├── bemerkungen-container.component.ts
 ├── bemerkungen-container.component.html
 ├── bemerkungen-container.component.scss

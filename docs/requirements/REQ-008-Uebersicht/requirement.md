@@ -53,7 +53,7 @@ Letzte Seite des Wizard — zeigt eine Zusammenfassung aller Buchungsdaten. Der 
 - BuchungStore verfügbar mit komplettem State
 
 ### 3.2 User
-- Benutzer hat `/buchung/uebersicht` aufgerufen
+- Benutzer hat `/home/uebersicht` aufgerufen
 
 ### 3.3 Data
 - Alle Wizard-Schritte abgeschlossen, Daten liegen im BuchungStore.
@@ -107,7 +107,7 @@ Letzte Seite des Wizard — zeigt eine Zusammenfassung aller Buchungsdaten. Der 
 **Trigger:** Benutzer klickt Zurück-Pfeil
 
 **Flow:**
-1. Navigation zu `/buchung/bemerkungen`
+1. Navigation zu `/home/bemerkungen`
 2. Alle Daten bleiben erhalten
 
 ### 5.2 Daten ändern
@@ -248,8 +248,8 @@ Content-Type: application/json
 
 ### TC-4: Guard — nicht komplett
 - **Given:** Keine Kundendaten im Store
-- **When:** Direktaufruf `/buchung/uebersicht`
-- **Then:** Redirect zu `/buchung/kundendaten`
+- **When:** Direktaufruf `/home/uebersicht`
+- **Then:** Redirect zu `/home/kundendaten`
 
 ---
 
@@ -270,7 +270,7 @@ Content-Type: application/json
 
 ### Folder
 ```
-src/app/features/buchung/components/uebersicht/
+src/app/features/home/components/uebersicht/
 ├── uebersicht-container.component.ts
 ├── uebersicht-container.component.html
 ├── uebersicht-container.component.scss

@@ -1,7 +1,8 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy,Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+
+import { i18nKeys,TranslatePipe } from '@core/i18n';
 import { HeaderContainerComponent } from '@shared/components/header/header-container.component';
-import { TranslatePipe, i18nKeys } from '@core/i18n';
 
 @Component({
   selector: 'app-root',

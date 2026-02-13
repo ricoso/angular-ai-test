@@ -41,7 +41,7 @@ Der Benutzer wählt einen Standort (Autohaus) basierend auf der zuvor gewählten
 - [ ] AC-1: Benutzer sieht nur Standorte der gewählten Marke
 - [ ] AC-2: 3-5 Standorte werden als Buttons angezeigt
 - [ ] AC-3: Klick speichert Standort im BuchungStore
-- [ ] AC-4: Navigation zu `/buchung/services` nach Auswahl
+- [ ] AC-4: Navigation zu `/home/services` nach Auswahl
 - [ ] AC-5: Überschrift zeigt "An welchem Standort dürfen wir Sie begrüßen?"
 - [ ] AC-6: Warenkorb-Icon im Header zeigt Marke + Autohaus im Dropdown
 
@@ -54,7 +54,7 @@ Der Benutzer wählt einen Standort (Autohaus) basierend auf der zuvor gewählten
 - Header-Component (REQ-001) aktiv
 
 ### 3.2 User
-- Benutzer hat `/buchung/standort` aufgerufen
+- Benutzer hat `/home/standort` aufgerufen
 
 ### 3.3 Data
 - Standorte pro Marke sind statisch konfiguriert und über den Resolver eingebaut.
@@ -63,7 +63,7 @@ Der Benutzer wählt einen Standort (Autohaus) basierend auf der zuvor gewählten
 ### 3.4 Übergabe (Input von REQ-002-Markenauswahl)
 | Feld | Typ | Quelle | Pflicht |
 |------|-----|--------|---------|
-| `BuchungStore.gewaehlteMarke` | `Marke` | REQ-002 | **Ja** — Guard prüft, redirect zu `/buchung/marke` wenn leer |
+| `BuchungStore.gewaehlteMarke` | `Marke` | REQ-002 | **Ja** — Guard prüft, redirect zu `/home/marke` wenn leer |
 
 ---
 
@@ -79,7 +79,7 @@ Der Benutzer wählt einen Standort (Autohaus) basierend auf der zuvor gewählten
 **Step 2:** Benutzer wählt einen Standort
 - **User:** Klickt auf einen Standort-Button
 - **System:** Speichert `gewaehlterStandort` im BuchungStore
-- **System:** Navigiert zu `/buchung/services` (REQ-004)
+- **System:** Navigiert zu `/home/services` (REQ-004)
 
 ---
 
@@ -90,7 +90,7 @@ Der Benutzer wählt einen Standort (Autohaus) basierend auf der zuvor gewählten
 **Trigger:** Benutzer klickt Zurück-Pfeil
 
 **Flow:**
-1. System navigiert zu `/buchung/marke`
+1. System navigiert zu `/home/marke`
 2. Gewählte Marke bleibt im Store (visuell hervorgehoben)
 
 ### 5.2 Standort ändern
@@ -108,11 +108,11 @@ Der Benutzer wählt einen Standort (Autohaus) basierend auf der zuvor gewählten
 
 ### 6.1 Keine Marke gewählt
 
-**Trigger:** Direktaufruf von `/buchung/standort` ohne Marke
+**Trigger:** Direktaufruf von `/home/standort` ohne Marke
 
 **Flow:**
 1. Guard prüft `BuchungStore.gewaehlteMarke`
-2. Redirect zu `/buchung/marke`
+2. Redirect zu `/home/marke`
 
 ---
 
@@ -211,7 +211,7 @@ GET /api/standorte/:markeId
 
 ### TC-1: Happy Path
 - **Given:** Marke "Audi" gewählt
-- **When:** Seite `/buchung/standort` wird geladen
+- **When:** Seite `/home/standort` wird geladen
 - **Then:** 5 Standorte für Audi werden angezeigt
 
 ### TC-2: Standort auswählen
@@ -221,8 +221,8 @@ GET /api/standorte/:markeId
 
 ### TC-3: Guard — keine Marke
 - **Given:** Kein Marke im Store
-- **When:** Direktaufruf `/buchung/standort`
-- **Then:** Redirect zu `/buchung/marke`
+- **When:** Direktaufruf `/home/standort`
+- **Then:** Redirect zu `/home/marke`
 
 ### TC-4: Marke wechseln → Standorte ändern sich
 - **Given:** Marke "Audi" (5 Standorte), wechselt zu "MINI"
@@ -249,7 +249,7 @@ GET /api/standorte/:markeId
 
 ### Folder
 ```
-src/app/features/buchung/components/standortauswahl/
+src/app/features/home/components/standortauswahl/
 ├── standortauswahl-container.component.ts
 ├── standortauswahl-container.component.html
 ├── standortauswahl-container.component.scss

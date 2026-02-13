@@ -58,7 +58,7 @@ Der Benutzer gibt seine persönlichen Daten und Fahrzeugdaten ein. Das Formular 
 - Reactive Forms importiert
 
 ### 3.2 User
-- Benutzer hat `/buchung/kundendaten` aufgerufen
+- Benutzer hat `/home/kundendaten` aufgerufen
 
 ### 3.3 Data
 - Keine externen Daten benötigt (Formulareingabe).
@@ -71,7 +71,7 @@ Der Benutzer gibt seine persönlichen Daten und Fahrzeugdaten ein. Das Formular 
 | `BuchungStore.gewaehlteMarke` | `Marke` | REQ-002 | **Ja** |
 | `BuchungStore.gewaehlterStandort` | `Standort` | REQ-003 | **Ja** |
 | `BuchungStore.gewaehlteServices` | `GewaehlterService[]` | REQ-004 | **Ja** (min 1) |
-| `BuchungStore.gewaehlterTermin` | `Termin` | REQ-005 | **Ja** — Guard prüft, redirect zu `/buchung/termin` wenn leer |
+| `BuchungStore.gewaehlterTermin` | `Termin` | REQ-005 | **Ja** — Guard prüft, redirect zu `/home/termin` wenn leer |
 
 ---
 
@@ -92,7 +92,7 @@ Der Benutzer gibt seine persönlichen Daten und Fahrzeugdaten ein. Das Formular 
 **Step 3:** Benutzer klickt "Weiter"
 - **System:** Validiert alle Felder
 - **System:** Bei Erfolg: Speichert `kundendaten` im BuchungStore
-- **System:** Navigiert zu `/buchung/bemerkungen` (REQ-007)
+- **System:** Navigiert zu `/home/bemerkungen` (REQ-007)
 
 ---
 
@@ -134,14 +134,14 @@ Der Benutzer gibt seine persönlichen Daten und Fahrzeugdaten ein. Das Formular 
 
 **Flow:**
 1. Guard prüft `BuchungStore.gewaehlterTermin`
-2. Redirect zu `/buchung/termin`
+2. Redirect zu `/home/termin`
 
 ### 6.2 Letzter Service über Warenkorb entfernt
 
 **Trigger:** Benutzer entfernt letzten Service im Header-Warenkorb
 
 **Flow:**
-1. Redirect zu `/buchung/services` (REQ-004, BR-5)
+1. Redirect zu `/home/services` (REQ-004, BR-5)
 
 ---
 
@@ -281,8 +281,8 @@ Kein API-Call — reine Formulareingabe. Daten werden im BuchungStore gespeicher
 
 ### TC-6: Guard — kein Termin
 - **Given:** Kein Termin im Store
-- **When:** Direktaufruf `/buchung/kundendaten`
-- **Then:** Redirect zu `/buchung/termin`
+- **When:** Direktaufruf `/home/kundendaten`
+- **Then:** Redirect zu `/home/termin`
 
 ---
 
@@ -303,7 +303,7 @@ Kein API-Call — reine Formulareingabe. Daten werden im BuchungStore gespeicher
 
 ### Folder
 ```
-src/app/features/buchung/components/kundendaten/
+src/app/features/home/components/kundendaten/
 ├── kundendaten-container.component.ts
 ├── kundendaten-container.component.html
 ├── kundendaten-container.component.scss
@@ -311,7 +311,7 @@ src/app/features/buchung/components/kundendaten/
 ├── kundendaten-formular.component.html
 └── kundendaten-formular.component.scss
 
-src/app/features/buchung/validators/
+src/app/features/home/validators/
 └── kundendaten.validators.ts
 ```
 

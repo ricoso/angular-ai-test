@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { AccessibilityStore } from './accessibility.store';
-import { AccessibilityService } from '../services/accessibility.service';
+
 import { ACCESSIBILITY_DEFAULTS } from '../models/accessibility.model';
+import { AccessibilityService } from '../services/accessibility.service';
+
+import { AccessibilityStore } from './accessibility.store';
 
 describe('AccessibilityStore', () => {
   let store: InstanceType<typeof AccessibilityStore>;
@@ -62,7 +64,7 @@ describe('AccessibilityStore', () => {
     });
 
     it('should accept all font size values', () => {
-      const sizes: Array<'small' | 'normal' | 'large' | 'x-large'> = ['small', 'normal', 'large', 'x-large'];
+      const sizes: ('small' | 'normal' | 'large' | 'x-large')[] = ['small', 'normal', 'large', 'x-large'];
 
       for (const size of sizes) {
         store.setFontSize(size);

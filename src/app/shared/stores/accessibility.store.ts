@@ -1,10 +1,12 @@
 import { inject } from '@angular/core';
-import { signalStore, withState, withMethods, withHooks, patchState } from '@ngrx/signals';
-import {
+
+import { patchState,signalStore, withHooks, withMethods, withState } from '@ngrx/signals';
+
+import type {
   AccessibilityState,
-  FontSize,
-  ACCESSIBILITY_DEFAULTS
-} from '../models/accessibility.model';
+  FontSize} from '../models/accessibility.model';
+import {
+  ACCESSIBILITY_DEFAULTS} from '../models/accessibility.model';
 import { AccessibilityService } from '../services/accessibility.service';
 
 /**

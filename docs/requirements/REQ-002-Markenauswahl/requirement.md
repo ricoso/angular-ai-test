@@ -39,7 +39,7 @@ Einstiegsseite des Buchungsablaufs. Der Benutzer wählt seine Fahrzeugmarke aus 
 **Acceptance Criteria:**
 - [ ] AC-1: Benutzer sieht 5 Marken-Buttons (Audi, BMW, Mercedes-Benz, MINI, Volkswagen)
 - [ ] AC-2: Klick auf Marke speichert Auswahl im BuchungStore
-- [ ] AC-3: Nach Klick wird zu `/buchung/standort` navigiert
+- [ ] AC-3: Nach Klick wird zu `/home/standort` navigiert
 - [ ] AC-4: Überschrift zeigt "Welche Fahrzeugmarke fahren Sie?"
 - [ ] AC-5: Warenkorb-Icon im Header zeigt nach Auswahl die Marke im Dropdown
 
@@ -80,7 +80,7 @@ Einstiegsseite des Buchungsablaufs. Der Benutzer wählt seine Fahrzeugmarke aus 
 **Step 2:** Benutzer wählt eine Marke
 - **User:** Klickt auf einen Marken-Button
 - **System:** Speichert `gewaehlteMarke` im BuchungStore
-- **System:** Navigiert zu `/buchung/standort` (REQ-003)
+- **System:** Navigiert zu `/home/standort` (REQ-003)
 
 ---
 
@@ -201,9 +201,9 @@ GET /api/marken
 ## 13. Test Cases
 
 ### TC-1: Happy Path — Marke auswählen
-- **Given:** Benutzer ist auf `/buchung/marke`
+- **Given:** Benutzer ist auf `/home/marke`
 - **When:** Klickt auf "Audi"
-- **Then:** `BuchungStore.gewaehlteMarke === 'audi'`, Navigation zu `/buchung/standort`
+- **Then:** `BuchungStore.gewaehlteMarke === 'audi'`, Navigation zu `/home/standort`
 
 ### TC-2: Keyboard-Navigation
 - **Given:** Benutzer ist auf Markenauswahl
@@ -234,7 +234,7 @@ GET /api/marken
 
 ### Folder
 ```
-src/app/features/buchung/components/markenauswahl/
+src/app/features/home/components/markenauswahl/
 ├── markenauswahl-container.component.ts
 ├── markenauswahl-container.component.html
 ├── markenauswahl-container.component.scss

@@ -55,7 +55,7 @@ Der Benutzer wählt einen Termin: entweder über Schnellauswahl (4 dynamisch ber
 - Header-Component (REQ-001) aktiv
 
 ### 3.2 User
-- Benutzer hat `/buchung/termin` aufgerufen
+- Benutzer hat `/home/termin` aufgerufen
 
 ### 3.3 Data
 - Schnelltermine werden dynamisch berechnet (clientseitig), über den Resolver eingebaut.
@@ -67,7 +67,7 @@ Der Benutzer wählt einen Termin: entweder über Schnellauswahl (4 dynamisch ber
 |------|-----|--------|---------|
 | `BuchungStore.gewaehlteMarke` | `Marke` | REQ-002 | **Ja** |
 | `BuchungStore.gewaehlterStandort` | `Standort` | REQ-003 | **Ja** |
-| `BuchungStore.gewaehlteServices` | `GewaehlterService[]` | REQ-004 | **Ja** (min 1) — Guard prüft, redirect zu `/buchung/services` wenn leer |
+| `BuchungStore.gewaehlteServices` | `GewaehlterService[]` | REQ-004 | **Ja** (min 1) — Guard prüft, redirect zu `/home/services` wenn leer |
 
 ---
 
@@ -85,7 +85,7 @@ Der Benutzer wählt einen Termin: entweder über Schnellauswahl (4 dynamisch ber
 **Step 2:** Benutzer wählt Schnelltermin
 - **User:** Klickt auf Termin-Karte
 - **System:** Speichert `gewaehlterTermin` im BuchungStore
-- **System:** Navigiert zu `/buchung/kundendaten` (REQ-006)
+- **System:** Navigiert zu `/home/kundendaten` (REQ-006)
 
 ### 4b: Kalender-Auswahl
 
@@ -102,7 +102,7 @@ Der Benutzer wählt einen Termin: entweder über Schnellauswahl (4 dynamisch ber
 **Step 3:** Benutzer wählt Uhrzeit
 - **User:** Klickt auf Uhrzeit-Button
 - **System:** Speichert `gewaehlterTermin` im BuchungStore
-- **System:** Navigiert zu `/buchung/kundendaten` (REQ-006)
+- **System:** Navigiert zu `/home/kundendaten` (REQ-006)
 
 ### Dynamische Berechnung
 
@@ -139,7 +139,7 @@ Schnelltermine: 2 Tage × 2 Uhrzeiten = 4 Termine
 **Trigger:** Benutzer klickt Zurück-Pfeil
 
 **Flow:**
-1. Navigation zu `/buchung/services`
+1. Navigation zu `/home/services`
 2. Gewählte Services bleiben erhalten
 
 ### 5.2 Kalender statt Schnellauswahl
@@ -162,7 +162,7 @@ Schnelltermine: 2 Tage × 2 Uhrzeiten = 4 Termine
 
 **Flow:**
 1. Guard prüft `BuchungStore.gewaehlteServices`
-2. Redirect zu `/buchung/services`
+2. Redirect zu `/home/services`
 
 ---
 
@@ -300,8 +300,8 @@ GET /api/termine/kalender/:standortId/:datum
 
 ### TC-5: Guard — keine Services
 - **Given:** Keine Services im Store
-- **When:** Direktaufruf `/buchung/termin`
-- **Then:** Redirect zu `/buchung/services`
+- **When:** Direktaufruf `/home/termin`
+- **Then:** Redirect zu `/home/services`
 
 ---
 
@@ -325,7 +325,7 @@ GET /api/termine/kalender/:standortId/:datum
 
 ### Folder
 ```
-src/app/features/buchung/components/terminauswahl/
+src/app/features/home/components/terminauswahl/
 ├── terminauswahl-container.component.ts
 ├── terminauswahl-container.component.html
 ├── terminauswahl-container.component.scss

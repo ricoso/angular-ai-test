@@ -1,11 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import type { ComponentFixture} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
-import { HeaderContainerComponent } from './header-container.component';
+
+import { ACCESSIBILITY_DEFAULTS } from '@shared/models/accessibility.model';
+import { AccessibilityService } from '@shared/services/accessibility.service';
 import { AccessibilityStore } from '@shared/stores/accessibility.store';
 import { CartStore } from '@shared/stores/cart.store';
-import { AccessibilityService } from '@shared/services/accessibility.service';
-import { ACCESSIBILITY_DEFAULTS } from '@shared/models/accessibility.model';
+
+import { HeaderContainerComponent } from './header-container.component';
 
 describe('HeaderContainerComponent', () => {
   let component: HeaderContainerComponent;
@@ -67,7 +70,7 @@ describe('HeaderContainerComponent', () => {
     it('should delegate onFontSizeChange to store', () => {
       const setFontSizeSpy = jest.spyOn(accessibilityStore, 'setFontSize');
 
-      component['onFontSizeChange']('large');
+      component.onFontSizeChange('large');
 
       expect(setFontSizeSpy).toHaveBeenCalledWith('large');
     });
@@ -75,7 +78,7 @@ describe('HeaderContainerComponent', () => {
     it('should delegate onHighContrastChange to store', () => {
       const setHighContrastSpy = jest.spyOn(accessibilityStore, 'setHighContrast');
 
-      component['onHighContrastChange'](true);
+      component.onHighContrastChange(true);
 
       expect(setHighContrastSpy).toHaveBeenCalledWith(true);
     });
@@ -83,7 +86,7 @@ describe('HeaderContainerComponent', () => {
     it('should delegate onReducedMotionChange to store', () => {
       const setReducedMotionSpy = jest.spyOn(accessibilityStore, 'setReducedMotion');
 
-      component['onReducedMotionChange'](true);
+      component.onReducedMotionChange(true);
 
       expect(setReducedMotionSpy).toHaveBeenCalledWith(true);
     });

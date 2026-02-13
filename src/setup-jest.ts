@@ -1,10 +1,11 @@
-import 'zone.js';
-import 'zone.js/testing';
 import { TestBed } from '@angular/core/testing';
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
+
+import 'zone.js';
+import 'zone.js/testing';
 
 TestBed.initTestEnvironment(
   BrowserDynamicTestingModule,
@@ -17,12 +18,10 @@ Object.defineProperty(document, 'doctype', {
   value: '<!DOCTYPE html>',
 });
 Object.defineProperty(window, 'getComputedStyle', {
-  value: () => {
-    return {
+  value: () => ({
       display: 'none',
       appearance: ['-webkit-appearance'],
-    };
-  },
+    }),
 });
 
 // Mock window.matchMedia for media query tests
