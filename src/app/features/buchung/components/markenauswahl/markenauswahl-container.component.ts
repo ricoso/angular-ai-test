@@ -1,18 +1,20 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { TranslatePipe, i18nKeys } from '@core/i18n';
+import { i18nKeys,TranslatePipe } from '@core/i18n';
 
-import { Marke } from '../../models/marke.model';
+import type { Marke } from '../../models/marke.model';
 import { BuchungStore } from '../../stores/buchung.store';
+
 import { MarkenButtonsComponent } from './marken-buttons.component';
 
 @Component({
   selector: 'app-markenauswahl-container',
+  standalone: true,
+  imports: [MarkenButtonsComponent, TranslatePipe],
   templateUrl: './markenauswahl-container.component.html',
-  styleUrls: ['./markenauswahl-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, MarkenButtonsComponent]
+  styleUrl: './markenauswahl-container.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MarkenauswahlContainerComponent {
   private readonly store = inject(BuchungStore);

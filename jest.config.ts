@@ -25,6 +25,7 @@ const config: Config = {
   moduleNameMapper: {
     '^@angular/platform-browser/animations/async$': '<rootDir>/node_modules/@angular/platform-browser/fesm2022/animations-async.mjs',
     '^@angular/platform-browser/animations$': '<rootDir>/node_modules/@angular/platform-browser/fesm2022/animations.mjs',
+    '^@ngrx/signals/rxjs-interop$': '<rootDir>/node_modules/@ngrx/signals/fesm2022/ngrx-signals-rxjs-interop.mjs',
     '^@app/(.*)$': '<rootDir>/src/app/$1',
     '^@core/(.*)$': '<rootDir>/src/app/core/$1',
     '^@shared/(.*)$': '<rootDir>/src/app/shared/$1',

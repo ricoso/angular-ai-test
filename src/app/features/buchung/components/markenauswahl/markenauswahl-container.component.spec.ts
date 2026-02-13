@@ -1,42 +1,32 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import type { ComponentFixture} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { signal } from '@angular/core';
 
-import { TranslatePipe } from '@core/i18n';
 import { VERFUEGBARE_MARKEN } from '../../models/marke.model';
+import { BuchungApiService } from '../../services/buchung-api.service';
 import { BuchungStore } from '../../stores/buchung.store';
+
 import { MarkenauswahlContainerComponent } from './markenauswahl-container.component';
-import { MarkenButtonsComponent } from './marken-buttons.component';
 
 describe('MarkenauswahlContainerComponent', () => {
   let component: MarkenauswahlContainerComponent;
   let fixture: ComponentFixture<MarkenauswahlContainerComponent>;
-  let routerMock: jest.Mocked<Router>;
-  let storeMock: Partial<InstanceType<typeof BuchungStore>>;
+  let router: jest.Mocked<Router>;
+  let store: InstanceType<typeof BuchungStore>;
 
   beforeEach(async () => {
-    routerMock = {
-      navigate: jest.fn()
-    } as unknown as jest.Mocked<Router>;
-
-    storeMock = {
-      marken: signal(VERFUEGBARE_MARKEN),
-      gewaehlteMarke: signal(null),
-      setzeMarke: jest.fn()
-    } as unknown as Partial<InstanceType<typeof BuchungStore>>;
+    router = { navigate: jest.fn() } as unknown as jest.Mocked<Router>;
 
     await TestBed.configureTestingModule({
       imports: [MarkenauswahlContainerComponent],
       providers: [
-        { provide: Router, useValue: routerMock },
-        { provide: BuchungStore, useValue: storeMock }
+        BuchungStore,
+        { provide: BuchungApiService, useValue: { holeMarken: jest.fn().mockResolvedValue(VERFUEGBARE_MARKEN) } },
+        { provide: Router, useValue: router }
       ]
-    })
-    .overrideComponent(MarkenauswahlContainerComponent, {
-      set: { imports: [TranslatePipe, MarkenButtonsComponent] }
-    })
-    .compileComponents();
+    }).compileComponents();
 
+    store = TestBed.inject(BuchungStore);
     fixture = TestBed.createComponent(MarkenauswahlContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -46,22 +36,33 @@ describe('MarkenauswahlContainerComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display the title', () => {
+  it('should render title', () => {
     const el: HTMLElement = fixture.nativeElement;
     const title = el.querySelector('.markenauswahl__titel');
-    expect(title).toBeTruthy();
+    expect(title?.textContent).toBeTruthy();
   });
 
-  it('should display the subtitle', () => {
+  it('should render subtitle', () => {
     const el: HTMLElement = fixture.nativeElement;
     const subtitle = el.querySelector('.markenauswahl__untertitel');
-    expect(subtitle).toBeTruthy();
+    expect(subtitle?.textContent).toBeTruthy();
   });
 
-  it('should call store.setzeMarke and navigate on brand selection', () => {
-    (component as unknown as { beimMarkeWaehlen: (m: string) => void }).beimMarkeWaehlen('audi');
+  it('should contain marken-buttons component', () => {
+    const el: HTMLElement = fixture.nativeElement;
+    const buttons = el.querySelector('app-marken-buttons');
+    expect(buttons).toBeTruthy();
+  });
 
-    expect(storeMock.setzeMarke).toHaveBeenCalledWith('audi');
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/buchung/standort']);
+  it('should set marke in store and navigate on selection', () => {
+    // Access protected method via type assertion
+    (component as unknown as { beimMarkeWaehlen: (m: string) => void }).beimMarkeWaehlen('audi');
+    expect(store.gewaehlteMarke()).toBe('audi');
+    expect(router.navigate).toHaveBeenCalledWith(['/buchung/standort']);
+  });
+
+  it('should navigate to standort route', () => {
+    (component as unknown as { beimMarkeWaehlen: (m: string) => void }).beimMarkeWaehlen('bmw');
+    expect(router.navigate).toHaveBeenCalledWith(['/buchung/standort']);
   });
 });

@@ -2,29 +2,30 @@ import { TestBed } from '@angular/core/testing';
 
 import { VERFUEGBARE_MARKEN } from '../models/marke.model';
 import { BuchungApiService } from '../services/buchung-api.service';
+
 import { BuchungStore } from './buchung.store';
 
 describe('BuchungStore', () => {
   let store: InstanceType<typeof BuchungStore>;
-  let apiMock: jest.Mocked<BuchungApiService>;
+  let apiSpy: jest.Mocked<BuchungApiService>;
 
   beforeEach(() => {
-    apiMock = {
-      holeMarken: jest.fn().mockResolvedValue([...VERFUEGBARE_MARKEN])
+    apiSpy = {
+      holeMarken: jest.fn().mockResolvedValue(VERFUEGBARE_MARKEN)
     } as unknown as jest.Mocked<BuchungApiService>;
 
     TestBed.configureTestingModule({
       providers: [
         BuchungStore,
-        { provide: BuchungApiService, useValue: apiMock }
+        { provide: BuchungApiService, useValue: apiSpy }
       ]
     });
 
     store = TestBed.inject(BuchungStore);
   });
 
-  describe('initial state', () => {
-    it('should have empty marken array', () => {
+  describe('Initial State', () => {
+    it('should have empty marken', () => {
       expect(store.marken()).toEqual([]);
     });
 
@@ -41,42 +42,56 @@ describe('BuchungStore', () => {
     });
   });
 
-  describe('computed signals', () => {
+  describe('Computed', () => {
     it('should compute hatMarkeGewaehlt as false initially', () => {
       expect(store.hatMarkeGewaehlt()).toBe(false);
     });
 
-    it('should compute hatMarkeGewaehlt as true after selection', () => {
-      store.setzeMarke('audi');
-      expect(store.hatMarkeGewaehlt()).toBe(true);
-    });
-
-    it('should compute anzahlMarken', () => {
+    it('should compute anzahlMarken as 0 initially', () => {
       expect(store.anzahlMarken()).toBe(0);
     });
   });
 
   describe('setzeMarke', () => {
-    it('should set the selected brand', () => {
+    it('should set gewaehlteMarke', () => {
       store.setzeMarke('bmw');
       expect(store.gewaehlteMarke()).toBe('bmw');
     });
 
-    it('should allow changing the brand', () => {
+    it('should update hatMarkeGewaehlt to true', () => {
       store.setzeMarke('audi');
-      store.setzeMarke('mini');
-      expect(store.gewaehlteMarke()).toBe('mini');
+      expect(store.hatMarkeGewaehlt()).toBe(true);
+    });
+  });
+
+  describe('ladeMarken', () => {
+    it('should call API service', () => {
+      store.ladeMarken();
+      expect(apiSpy.holeMarken).toHaveBeenCalled();
+    });
+
+    it('should load marken from API', async () => {
+      store.ladeMarken();
+      await new Promise(resolve => setTimeout(resolve, 0));
+      expect(store.marken()).toEqual(VERFUEGBARE_MARKEN);
+      expect(store.istLaden()).toBe(false);
+    });
+
+    it('should update anzahlMarken after load', async () => {
+      store.ladeMarken();
+      await new Promise(resolve => setTimeout(resolve, 0));
+      expect(store.anzahlMarken()).toBe(5);
     });
   });
 
   describe('resetBuchung', () => {
-    it('should reset all state to initial values', () => {
-      store.setzeMarke('audi');
+    it('should reset to initial state', () => {
+      store.setzeMarke('bmw');
       store.resetBuchung();
-
       expect(store.gewaehlteMarke()).toBeNull();
       expect(store.marken()).toEqual([]);
       expect(store.istLaden()).toBe(false);
+      expect(store.fehler()).toBeNull();
     });
   });
 });

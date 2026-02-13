@@ -1,6 +1,6 @@
 # REQ-002: Markenauswahl
 
-**Status:** Draft
+**Status:** Implemented
 **Priority:** High
 **Type:** Functional
 **Created:** 2026-02-13
@@ -55,7 +55,7 @@ Einstiegsseite des Buchungsablaufs. Der Benutzer wählt seine Fahrzeugmarke aus 
 
 ### 3.2 User
 - Keine Authentifizierung erforderlich
-- Benutzer hat `/buchung/marke` aufgerufen
+- Benutzer hat `/home` aufgerufen
 
 ### 3.3 Data
 - Marken sind statisch konfiguriert (5 Stück) und über den resolver eingebaut.

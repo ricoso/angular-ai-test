@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import type { Routes } from '@angular/router';
 
 import { markenResolver } from './resolvers/marken.resolver';
 
@@ -10,9 +10,8 @@ export const buchungRoutes: Routes = [
   },
   {
     path: 'marke',
-    loadComponent: () =>
-      import('./components/markenauswahl/markenauswahl-container.component')
-        .then(m => m.MarkenauswahlContainerComponent),
+    loadComponent: () => import('./components/markenauswahl/markenauswahl-container.component')
+      .then(m => m.MarkenauswahlContainerComponent),
     resolve: { _: markenResolver }
   }
 ];
