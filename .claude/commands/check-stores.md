@@ -17,8 +17,47 @@
 3. ✅ Business data only (no UI state)
 4. ✅ withState, withComputed, withMethods, withHooks
 5. ✅ API Service injected in withMethods
-6. ✅ onInit only for global initialization
-7. ❌ NO UI state (tabs, filters, sort)
+6. ⚠️ **KEIN onInit für Feature-Daten!** → Route Resolver verwenden!
+7. ✅ onInit NUR für: App-Config, Auth Session, Feature Flags (globale Daten)
+8. ❌ NO UI state (tabs, filters, sort)
+
+### ⚠️ KRITISCH: onInit vs Resolver
+
+**❌ FALSCH - onInit im Store für Feature-Daten:**
+```typescript
+// ❌ NIEMALS so!
+export const ProductStore = signalStore(
+  withHooks({
+    onInit(store) {
+      store.loadProducts(); // ❌ Feature-Daten in onInit!
+    }
+  })
+);
+```
+
+**✅ RICHTIG - Route Resolver für Feature-Daten:**
+```typescript
+// ✅ Resolver triggert Store
+export const productResolver: ResolveFn<void> = () => {
+  const store = inject(ProductStore);
+  store.loadProducts();
+  return of(void 0);
+};
+
+// ✅ Store ohne onInit für Feature-Daten
+export const ProductStore = signalStore(
+  withState<ProductState>({ products: [], loading: false, error: null }),
+  withMethods((store, api = inject(ProductApiService)) => ({
+    loadProducts: rxMethod<void>(
+      pipe(
+        tap(() => patchState(store, { loading: true })),
+        switchMap(() => from(api.getAll())),
+        tap(products => patchState(store, { products, loading: false }))
+      )
+    )
+  }))
+);
+```
 
 ### Component Store Rules:
 1. ✅ Provided in component's providers array (NOT root!)

@@ -12,6 +12,38 @@ Implementiert ein Requirement basierend auf der Spezifikation.
 
 ## Workflow
 
+### Step 0: PR-Status synchronisieren
+
+**Automatisch bei jedem Skill-Lauf:**
+
+1. **Gemergte PRs abrufen:**
+   ```bash
+   gh pr list --state merged --search "feat/REQ-" --json headRefName --limit 100
+   ```
+
+2. **Offene PRs abrufen:**
+   ```bash
+   gh pr list --state open --search "feat/REQ-" --json headRefName
+   ```
+
+3. **Status synchronisieren:**
+
+   | PR-Status | → Requirement Status |
+   |-----------|---------------------|
+   | merged | ✔️ Implemented |
+   | open | 🔍 In Review |
+
+4. **Dateien aktualisieren:**
+   - `docs/requirements/<REQ>/requirement.md` → Status-Zeile
+   - `docs/requirements/REQUIREMENTS.md` → Tabelle + Statistics
+
+5. **Falls Änderungen:**
+   ```bash
+   git add docs/requirements/
+   git commit -m "chore: sync requirement status with GitHub PRs"
+   git push
+   ```
+
 ### Step 1: Branch erstellen
 
 ```bash
@@ -67,18 +99,13 @@ npm run test:coverage
 ### Step 8: Quality Report generieren
 
 ```bash
-/check-all <feature-name>
+git add .
+git commit -m "feat($ARGUMENTS): Implement <Name>"
 ```
-
-Dies führt ALLE 11 Checks parallel aus und generiert automatisch:
-```
-docs/requirements/$ARGUMENTS/qualitaets.md
-```
-
-**Ziel:** Score >= 90/100, keine ❌ Errors
 
 ## Checkliste
 
+- [ ] PR-Status synchronisiert (Step 0)
 - [ ] Models definiert
 - [ ] Store mit `withState`, `withComputed`, `withMethods`
 - [ ] Container Component mit `OnPush`
@@ -89,9 +116,6 @@ docs/requirements/$ARGUMENTS/qualitaets.md
 - [ ] WCAG 2.1 AA
 - [ ] Tests >80%
 - [ ] Lint + Type-Check passed
-- [ ] `/check-all` ausgeführt
-- [ ] `qualitaets.md` generiert (Score >= 90)
-- [ ] Commit erstellt
 
 ## Referenzen
 

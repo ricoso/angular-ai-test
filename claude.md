@@ -10,14 +10,56 @@
 - **Testing**: Jest 30
 - **i18n**: ngx-translate (TypeScript Typings)
 - **Deployment**: Click-Dummy (GitHub Pages, HashLocation)
-- **Code-Sprache**: Deutsch _(Setup-fixiert, unabhängig von REQ-Sprache)_
-- **UI-Sprachen**: DE, EN _(Setup-fixiert, alle müssen gepflegt werden)_
 
 ---
 
 ## 🚀 Projekt Setup (Bei neuem Projekt fragen!)
 
-> **Details:** `.claude/skills/projekt-setup.md`
+**Frage:** Ist das ein Click-Dummy oder eine Production App?
+
+| Antwort | Konfiguration |
+|---------|---------------|
+| **Click-Dummy** | HashLocation + GitHub Pages |
+| **Production** | SSR + Server Deployment |
+
+### Click-Dummy Setup
+
+```typescript
+// app.config.ts
+import { provideRouter, withHashLocation } from '@angular/router';
+
+providers: [
+  provideRouter(routes, withHashLocation())
+]
+```
+
+**GitHub Actions:** `.github/workflows/deploy-gh-pages.yml`
+**URL:** `https://<user>.github.io/<repo>/#/app`
+
+### Production Setup (SSR)
+
+```bash
+ng add @angular/ssr
+```
+
+```typescript
+// app.config.ts - KEIN HashLocation!
+providers: [
+  provideRouter(routes)
+]
+```
+
+**Deployment:** Node.js Server, Docker, Cloud Run, etc.
+
+### Nach Setup in CLAUDE.md dokumentieren:
+
+```markdown
+- **Deployment**: Click-Dummy (GitHub Pages, HashLocation)
+```
+oder
+```markdown
+- **Deployment**: Production (SSR, Node.js)
+```
 
 ---
 
@@ -38,7 +80,6 @@
 | `any` Type | Interface oder `unknown` |
 | `ngModel` | Reactive Forms |
 | `implements OnInit` für Data Loading | Route Resolver |
-| `inject()` in Methoden/Code-Body | Class Property am Anfang |
 
 ### ✅ IMMER generieren:
 
@@ -50,7 +91,6 @@
 | OnPush Change Detection | `changeDetection: ChangeDetectionStrategy.OnPush` |
 | Track mit ID | `@for (user of users(); track user.id)` |
 | Computed für Template | `activeUsers = computed(() => ...)` |
-| `inject()` als Class Property | `private readonly store = inject(UserStore);` |
 
 ### 🔄 Data Loading Pattern (KRITISCH!)
 

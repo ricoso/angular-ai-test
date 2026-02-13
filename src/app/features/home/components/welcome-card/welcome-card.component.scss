@@ -13,11 +13,13 @@
   }
 
   &__icon {
-    font-size: 3em;
+    // Basis-Styling kommt von .icon-framed
+    // Hier nur zusätzliche Positionierung
     margin-bottom: var(--spacing-md);
+    font-size: 1.5em; // Emoji-Größe im Frame
 
     @include tablet {
-      font-size: 4em;
+      font-size: 1.75em;
     }
   }
 

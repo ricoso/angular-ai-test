@@ -3,6 +3,7 @@ import type { Config } from 'jest';
 const config: Config = {
   preset: 'jest-preset-angular',
   testEnvironment: 'jest-preset-angular/environments/jest-jsdom-env',
+  testEnvironment: 'jest-preset-angular/environments/jest-jsdom-env',
   setupFilesAfterEnv: ['<rootDir>/src/setup-jest.ts'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   coverageDirectory: 'coverage',

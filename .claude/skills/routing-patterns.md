@@ -5,6 +5,57 @@
 
 ---
 
+## App Routes Pattern
+
+```typescript
+// app.routes.ts
+export const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full'
+  },
+  {
+    path: 'home',
+    loadComponent: () => import('./features/home/containers/home-container/home-container.component')
+      .then(m => m.HomeContainerComponent)
+  },
+  {
+    path: '**',
+    redirectTo: 'home'
+  }
+];
+```
+
+**Struktur:**
+- `AppComponent` = Layout (Header + `<router-outlet>`)
+- `''` → Redirect zu `home` (Startpunkt)
+- `home` → Lazy-loaded Home Feature
+- `**` → Wildcard Redirect zu `home`
+
+---
+
+## GitHub Pages (HashLocation)
+
+Für Static Hosting ohne Server-Side Routing:
+
+```typescript
+// app.config.ts
+import { provideRouter, withHashLocation } from '@angular/router';
+
+providers: [
+  provideRouter(routes, withHashLocation())
+]
+```
+
+**URLs:**
+| Route | URL |
+|-------|-----|
+| Home (Start) | `https://user.github.io/repo/#/home` |
+| Users | `https://user.github.io/repo/#/users` |
+
+---
+
 ## Lazy Loading (PFLICHT!)
 
 ```typescript
