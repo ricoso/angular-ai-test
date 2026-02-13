@@ -1,0 +1,97 @@
+import { TestBed } from '@angular/core/testing';
+
+import { AVAILABLE_BRANDS } from '../models/brand.model';
+import { BookingApiService } from '../services/booking-api.service';
+
+import { BookingStore } from './booking.store';
+
+describe('BookingStore', () => {
+  let store: InstanceType<typeof BookingStore>;
+  let apiSpy: jest.Mocked<BookingApiService>;
+
+  beforeEach(() => {
+    apiSpy = {
+      getBrands: jest.fn().mockResolvedValue(AVAILABLE_BRANDS)
+    } as unknown as jest.Mocked<BookingApiService>;
+
+    TestBed.configureTestingModule({
+      providers: [
+        BookingStore,
+        { provide: BookingApiService, useValue: apiSpy }
+      ]
+    });
+
+    store = TestBed.inject(BookingStore);
+  });
+
+  describe('Initial State', () => {
+    it('should have empty brands', () => {
+      expect(store.brands()).toEqual([]);
+    });
+
+    it('should have no selectedBrand', () => {
+      expect(store.selectedBrand()).toBeNull();
+    });
+
+    it('should not be loading', () => {
+      expect(store.isLoading()).toBe(false);
+    });
+
+    it('should have no error', () => {
+      expect(store.error()).toBeNull();
+    });
+  });
+
+  describe('Computed', () => {
+    it('should compute hasBrandSelected as false initially', () => {
+      expect(store.hasBrandSelected()).toBe(false);
+    });
+
+    it('should compute brandCount as 0 initially', () => {
+      expect(store.brandCount()).toBe(0);
+    });
+  });
+
+  describe('setBrand', () => {
+    it('should set selectedBrand', () => {
+      store.setBrand('bmw');
+      expect(store.selectedBrand()).toBe('bmw');
+    });
+
+    it('should update hasBrandSelected to true', () => {
+      store.setBrand('audi');
+      expect(store.hasBrandSelected()).toBe(true);
+    });
+  });
+
+  describe('loadBrands', () => {
+    it('should call API service', () => {
+      store.loadBrands();
+      expect(apiSpy.getBrands).toHaveBeenCalled();
+    });
+
+    it('should load brands from API', async () => {
+      store.loadBrands();
+      await new Promise(resolve => setTimeout(resolve, 0));
+      expect(store.brands()).toEqual(AVAILABLE_BRANDS);
+      expect(store.isLoading()).toBe(false);
+    });
+
+    it('should update brandCount after load', async () => {
+      store.loadBrands();
+      await new Promise(resolve => setTimeout(resolve, 0));
+      expect(store.brandCount()).toBe(5);
+    });
+  });
+
+  describe('resetBooking', () => {
+    it('should reset to initial state', () => {
+      store.setBrand('bmw');
+      store.resetBooking();
+      expect(store.selectedBrand()).toBeNull();
+      expect(store.brands()).toEqual([]);
+      expect(store.isLoading()).toBe(false);
+      expect(store.error()).toBeNull();
+    });
+  });
+});

@@ -2,13 +2,13 @@
  * Vehicle brand type union
  * BR-1: Exactly 5 brands available
  */
-export type Marke = 'audi' | 'bmw' | 'mercedes' | 'mini' | 'volkswagen';
+export type Brand = 'audi' | 'bmw' | 'mercedes' | 'mini' | 'volkswagen';
 
 /**
  * Brand display model with id and display name
  */
-export interface MarkeAnzeige {
-  id: Marke;
+export interface BrandDisplay {
+  id: Brand;
   name: string;
 }
 
@@ -16,7 +16,7 @@ export interface MarkeAnzeige {
  * Static brand data (Click-Dummy)
  * Order matches mockup layout
  */
-export const VERFUEGBARE_MARKEN: MarkeAnzeige[] = [
+export const AVAILABLE_BRANDS: BrandDisplay[] = [
   { id: 'audi', name: 'Audi' },
   { id: 'bmw', name: 'BMW' },
   { id: 'mercedes', name: 'Mercedes-Benz' },

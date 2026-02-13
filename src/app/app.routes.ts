@@ -8,13 +8,8 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    loadComponent: () => import('./features/home/containers/home-container/home-container.component')
-      .then(m => m.HomeContainerComponent)
-  },
-  {
-    path: 'buchung',
-    loadChildren: () => import('./features/buchung/buchung.routes')
-      .then(m => m.buchungRoutes)
+    loadChildren: () => import('./features/booking/booking.routes')
+      .then(m => m.bookingRoutes)
   },
   {
     path: '**',

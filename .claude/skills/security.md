@@ -1,7 +1,9 @@
 # Security (COMPACT)
 
 ## Projekt-Vorgabe
-<!-- SETUP:VORGABE -->
+- Typ: Click-Dummy (Static Hosting)
+- Keine Server-Side Security
+- localStorage OK für Demo-Daten
 
 **Wann:** Bei ALLEN Features - PFLICHT vor jedem Commit!
 

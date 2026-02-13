@@ -88,7 +88,7 @@ Reihenfolge:
 - Jest Unit Tests für Store, Services, Components
 - Ziel: >80% Coverage
 
-### Step 7: Prüfen
+### Step 7: Prüfen (PFLICHT!)
 
 ```bash
 npm run lint:fix
@@ -96,8 +96,38 @@ npm run type-check
 npm run test:coverage
 ```
 
-### Step 8: Quality Report generieren
+**Alle 3 müssen GRÜN sein bevor Step 8 startet!**
 
+### Step 8: Quality Checks (PFLICHT!)
+
+> ⚠️ **NICHT ÜBERSPRINGEN!** Checks sind verbindlich vor jedem Commit.
+
+**Alle 11 Checks parallel ausführen:**
+```
+/check-all <feature-name>
+```
+
+Dies führt aus:
+- `/check-architecture` — Container/Presentational Pattern
+- `/check-stores` — NgRx Signal Store
+- `/check-routing` — Routing Patterns
+- `/check-security` — Security Audit
+- `/check-eslint` — ESLint Rules
+- `/check-typescript` — Type Safety
+- `/check-performance` — Performance
+- `/check-styling` — SCSS & Accessibility
+- `/check-i18n` — Internationalization
+- `/check-forms` — Reactive Forms (falls relevant)
+- `/check-code-language` — Code Language
+
+**Quality Gate:**
+- Ziel: Score >= 90/100
+- Generiert: `docs/requirements/$ARGUMENTS/qualitaets.md`
+- Bei Fehlern: Fixen und erneut prüfen
+
+### Step 9: Commit
+
+**Erst nach bestandenem Quality Gate:**
 ```bash
 git add .
 git commit -m "feat($ARGUMENTS): Implement <Name>"
@@ -116,6 +146,8 @@ git commit -m "feat($ARGUMENTS): Implement <Name>"
 - [ ] WCAG 2.1 AA
 - [ ] Tests >80%
 - [ ] Lint + Type-Check passed
+- [ ] **`/check-all` passed (Score >= 90/100)**
+- [ ] **`qualitaets.md` generiert**
 
 ## Referenzen
 

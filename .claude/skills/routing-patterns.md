@@ -1,7 +1,10 @@
 # Routing Patterns (COMPACT)
 
 ## Projekt-Vorgabe
-<!-- SETUP:VORGABE -->
+- Deployment: Click-Dummy (GitHub Pages)
+- HashLocation: AKTIV (`withHashLocation()`)
+- URL: `https://<user>.github.io/<repo>/#/<route>`
+- CI: `.github/workflows/deploy-gh-pages.yml`
 
 ---
 

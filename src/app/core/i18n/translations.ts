@@ -42,10 +42,10 @@ export const translations = {
       }
     },
 
-    buchung: {
-      marke: {
-        titel: 'Welche Fahrzeugmarke fahren Sie?',
-        untertitel: 'Bitte wählen Sie die gewünschte Marke aus.'
+    booking: {
+      brand: {
+        title: 'Welche Fahrzeugmarke fahren Sie?',
+        subtitle: 'Bitte wählen Sie die gewünschte Marke aus.'
       }
     }
   },
@@ -85,10 +85,10 @@ export const translations = {
       }
     },
 
-    buchung: {
-      marke: {
-        titel: 'What vehicle brand do you drive?',
-        untertitel: 'Please select your desired brand.'
+    booking: {
+      brand: {
+        title: 'What vehicle brand do you drive?',
+        subtitle: 'Please select your desired brand.'
       }
     }
   }

@@ -1,7 +1,8 @@
 # Code Language
 
 ## Projekt-Vorgabe
-<!-- SETUP:VORGABE -->
+- Code-Sprache: Englisch (FIXIERT)
+- REQ-Sprache irrelevant → Code IMMER Englisch
 
 ## Rules
 

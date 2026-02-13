@@ -1,0 +1,10 @@
+<section class="brand-selection">
+  <h1 class="brand-selection__title">{{ booking.brand.title | translate }}</h1>
+  <p class="brand-selection__subtitle">{{ booking.brand.subtitle | translate }}</p>
+
+  <app-brand-buttons
+    [brands]="brands()"
+    [selectedBrand]="selectedBrand()"
+    (brandSelected)="onBrandSelect($event)"
+  />
+</section>

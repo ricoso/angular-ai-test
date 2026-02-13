@@ -1,7 +1,9 @@
 # Angular Architecture (COMPACT)
 
 ## Projekt-Vorgabe
-<!-- SETUP:VORGABE -->
+- Typ: Click-Dummy (kein Backend, kein SSR)
+- API Services: Mock-Daten / lokale JSON
+- Auth: Keine (oder simuliert)
 
 **VORHER LESEN:** code-language.md, performance.md
 

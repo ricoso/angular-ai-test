@@ -1,6 +1,6 @@
 @use 'breakpoints' as *;
 
-.marken-grid {
+.brand-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--spacing-md);
@@ -42,7 +42,7 @@
       outline-offset: 0.125em;
     }
 
-    &--aktiv {
+    &--active {
       background-color: var(--color-primary);
       border-color: var(--color-primary);
       color: var(--color-text-on-primary);
