@@ -179,30 +179,48 @@
 
 ---
 
-## 🧪 E2E Testing (Playwright)
+## 🧪 E2E Testing (Playwright — Lokale Test-Suite)
 
 ### check-e2e
 **Score:** XX/100 [✅|⚠️|❌]
 
-**Test-Szenarien:**
-| # | Szenario | Status | Screenshot |
-|---|----------|--------|------------|
-| 1 | [Main Flow] | ✅❌ | [Screenshot](./screenshots/e2e-step-01-xxx.png) |
+**Playwright Test-Dateien:**
+| Datei | Tests | Status |
+|-------|-------|--------|
+| `playwright/REQ-XXX-feature-name.spec.ts` | X Tests | ✅❌ X/X passed |
+| `playwright/workflow-booking-complete.spec.ts` | X Tests | ✅❌ X/X passed |
+| _Weitere relevante Spec-Dateien..._ | X Tests | ✅❌ X/X passed |
 
-**Sprachumschaltung:**
-| Sprache | Status | Screenshot |
-|---------|--------|------------|
-| DE | ✅❌ | [Screenshot](./screenshots/e2e-lang-de.png) |
-| EN | ✅❌ | [Screenshot](./screenshots/e2e-lang-en.png) |
+**REQ-XXX Test-Szenarien (X Tests):**
 
-**Responsive Tests:**
-| Viewport | Status | Screenshot |
-|----------|--------|------------|
-| Desktop (1280x720) | ✅❌ | [Link](./screenshots/e2e-responsive-desktop.png) |
-| Tablet (768x1024)  | ✅❌ | [Link](./screenshots/e2e-responsive-tablet.png) |
-| Mobile (375x667)   | ✅❌ | [Link](./screenshots/e2e-responsive-mobile.png) |
+| Kategorie | Tests | Status |
+|-----------|-------|--------|
+| Main Flow (Section 4) | TC-1, TC-2, ... | ✅❌ X/X |
+| Test Cases (Section 13) | TC-3, TC-4, ... | ✅❌ X/X |
+| Alternative Flows (Section 5) | 5.1, 5.2, ... | ✅❌ X/X |
+| Exception Flows (Section 6) | 6.1, 6.2, ... | ✅❌ X/X |
+| i18n | DE Title, EN Title, Switch, ... | ✅❌ X/X |
+| Accessibility | Roles, aria-*, Keyboard, ... | ✅❌ X/X |
+| Responsive | Buttons visible on all viewports | ✅❌ X/X |
 
-**Accessibility Snapshot:** ✅❌
+**Workflow-Tests (X Tests):**
+
+| Kategorie | Tests | Status |
+|-----------|-------|--------|
+| Happy Path | Complete flow, Brand flows | ✅❌ X/X |
+| Alternative Flows | Back nav, Reselect, ... | ✅❌ X/X |
+| Guards & Redirects | No brand, Unknown route, ... | ✅❌ X/X |
+| i18n through flow | EN flow, Mid-switch, Persist | ✅❌ X/X |
+| Header persistence | Visible, A11y, Cart | ✅❌ X/X |
+
+**Viewports:**
+| Viewport | Tests | Status |
+|----------|-------|--------|
+| Desktop (1280x720) | X passed | ✅❌ |
+| Tablet (768x1024)  | X passed | ✅❌ |
+| Mobile (375x667)   | X passed | ✅❌ |
+
+**Screenshots:** [Link](./screenshots/)
 
 **Issues:**
 - _Keine Issues gefunden_ / Liste der Issues

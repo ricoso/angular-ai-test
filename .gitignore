@@ -92,6 +92,11 @@ Thumbs.db
 *.temp
 .temp/
 
+# Playwright
+/playwright/test-results/
+/playwright/reports/
+/playwright/.cache/
+
 # Claude Code
 .claude/history/
 .claude/logs/

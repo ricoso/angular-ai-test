@@ -19,6 +19,10 @@
     "feature:create": "bash scripts/create-feature.sh",
     "component:create": "bash scripts/create-component.sh",
     "requirement:create": "bash scripts/create-requirement.sh",
+    "e2e": "npx playwright test",
+    "e2e:ui": "npx playwright test --ui",
+    "e2e:headed": "npx playwright test --headed",
+    "e2e:report": "npx playwright show-report playwright/reports",
     "help": "cat COMMANDS.md"
   },
   "private": true,
@@ -45,6 +49,7 @@
     "@angular/cli": "^21.0.0",
     "@angular/compiler-cli": "^21.0.0",
     "@eslint/js": "^9.0.0",
+    "@playwright/test": "^1.58.2",
     "@types/jest": "^30.0.0",
     "angular-eslint": "^19.0.0",
     "eslint": "^9.0.0",

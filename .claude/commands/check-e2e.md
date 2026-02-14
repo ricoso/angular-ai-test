@@ -1,6 +1,7 @@
-# Check E2E Command (Playwright MCP)
+# Check E2E Command (Lokaler Playwright)
 
-Testet ein Feature im Browser via Playwright MCP Server.
+Testet ein Feature via lokaler Playwright Test-Suite und erstellt/erweitert persistente Test-Dateien.
+Playwright MCP dient NUR zur Dokumentation (Screenshots für `docs/requirements/`).
 
 ## Usage
 
@@ -14,157 +15,231 @@ Example: `booking`
 
 ## Voraussetzungen
 
-1. **Dev Server** muss laufen auf `http://localhost:4200`
-   ```bash
-   npm start
-   ```
-2. **Playwright MCP** muss konfiguriert sein in `.claude/mcp-config.json`
-3. **Chromium** muss installiert sein:
+1. **@playwright/test** als devDependency installiert (package.json)
+2. **Chromium** installiert:
    ```bash
    npx playwright install chromium
    ```
+3. **Dev Server** wird automatisch via `playwright.config.ts` gestartet
 
 ---
 
 ## Ablauf
 
-### Schritt 1: Feature-Route ermitteln
+### Schritt 1: Requirement + Testszenarien lesen
 
-1. Suche die Route-Definition in `src/app/features/$ARGUMENTS/**/*.routes.ts`
-2. Ermittle die Feature-URL: `http://localhost:4200/#/<route>`
-3. Falls keine Route gefunden: Prüfe `src/app/app.routes.ts` für die Feature-Route
-
----
-
-### Schritt 2: Requirement lesen
-
-1. Ermittle REQ-ID aus Feature-Name:
-   - Feature `booking` → suche in `docs/requirements/REQ-*-*`
-   - Lese `requirement.md`
-2. Extrahiere Test-Szenarien aus:
-   - **Section 4:** Main Flow (Hauptablauf)
-   - **Section 13:** Test Cases (falls vorhanden)
-   - **Section 11:** UI/UX (Responsive-Anforderungen)
+1. Ermittle REQ-ID aus Feature-Name
+2. Lese `docs/requirements/<REQ-ID>/requirement.md`
+3. Extrahiere Testszenarien aus:
+   - **Section 4:** Main Flow
+   - **Section 5:** Alternative Flows
+   - **Section 6:** Exception Flows
+   - **Section 13:** Test Cases
 
 ---
 
-### Schritt 3: Initiale Navigation + Screenshot
+### Schritt 2: Bestehende Tests pruefen
 
+1. Pruefe ob bereits Playwright-Tests existieren:
+   ```
+   playwright/REQ-XXX-*.spec.ts
+   playwright/workflow-*.spec.ts
+   ```
+2. Falls ja: Tests ERWEITERN (nicht ueberschreiben!)
+3. Falls nein: Neue Test-Datei erstellen
+
+---
+
+### Schritt 3: Test-Datei erstellen/erweitern
+
+**Datei-Konvention:**
 ```
-1. browser_navigate → Feature-URL (http://localhost:4200/#/<route>)
-2. browser_screenshot → Initialzustand dokumentieren
-   → Speichern als: e2e-step-01-initial.png
-3. browser_snapshot → Accessibility-Tree prüfen
+playwright/
+├── helpers/
+│   ├── app.helpers.ts          # Shared: Navigation, Language, Screenshots
+│   └── booking.helpers.ts      # Feature-spezifische Helpers
+├── REQ-001-header.spec.ts      # REQ-001 Tests
+├── REQ-002-brand-selection.spec.ts  # REQ-002 Tests
+├── REQ-003-location-selection.spec.ts # REQ-003 Tests
+└── workflow-booking-complete.spec.ts  # Gesamtworkflow
+```
+
+**Jede REQ-Testdatei MUSS enthalten:**
+
+```typescript
+test.describe('REQ-XXX: Feature Name', () => {
+
+  // 1. Main Flow (Section 4)
+  test.describe('Main Flow', () => {
+    // Tests fuer jeden Step des Main Flow
+  });
+
+  // 2. Test Cases (Section 13)
+  test.describe('Test Cases', () => {
+    // TC-1, TC-2, TC-3, etc.
+  });
+
+  // 3. Alternative Flows (Section 5)
+  test.describe('Alternative Flows', () => {
+    // 5.1, 5.2, etc.
+  });
+
+  // 4. Exception Flows (Section 6)
+  test.describe('Exception Flows', () => {
+    // 6.1, 6.2, etc.
+  });
+
+  // 5. i18n (Sprachumschaltung)
+  test.describe('i18n', () => {
+    // DE + EN Tests
+  });
+
+  // 6. Accessibility
+  test.describe('Accessibility', () => {
+    // WCAG 2.1 AA Tests
+  });
+
+  // 7. Responsive
+  test.describe('Responsive Layout', () => {
+    // Desktop, Tablet, Mobile
+  });
+
+});
+```
+
+**Workflow-Testdatei erweitern bei jedem neuen REQ:**
+```typescript
+test.describe('Complete Booking Workflow', () => {
+  // Happy Path (Start -> Brand -> Location -> Services -> ...)
+  // Alternative Flows (Back navigation, brand switch)
+  // Exception Flows & Guards
+  // i18n through complete flow
+  // Header persistence across pages (REQ-001)
+});
 ```
 
 ---
 
-### Schritt 4: Test-Szenarien durchspielen
+### Schritt 4: Helpers erweitern
 
-Für JEDES Szenario aus dem Requirement:
+Wenn neue Features neue Aktionen erfordern:
+1. Pruefe `playwright/helpers/booking.helpers.ts`
+2. Fuege neue Helper-Funktionen hinzu (z.B. `selectService()`, `goToServiceSelection()`)
+3. Exportiere sie fuer Nutzung in Tests und Workflow
 
-```
-1. browser_navigate → Feature-URL (falls nötig)
-2. browser_screenshot → Zustand VOR Interaktion
-3. browser_click / browser_type → Interaktion ausführen
-4. browser_screenshot → Zustand NACH Interaktion
-   → Speichern als: e2e-step-XX-<description>.png
-5. browser_snapshot → Accessibility-Tree verifizieren
-```
-
-**Namenskonvention Screenshots:**
-- `e2e-step-01-initial.png`
-- `e2e-step-02-<action>.png`
-- `e2e-step-03-<result>.png`
+**Wichtig bei Language-Tests:**
+- App-Default ist Browser-Language (meist EN im Test)
+- `setLanguage(page, 'de')` IMMER VOR `selectBrand()` aufrufen wenn DE erwartet wird
+- `setLanguage()` macht Reload -> Store-State geht verloren -> danach Brand neu waehlen
 
 ---
 
-### Schritt 5: Sprachumschaltung testen
+### Schritt 5: Tests ausfuehren
 
-Für JEDE konfigurierte UI-Sprache (DE, EN):
+```bash
+# Alle Tests (3 Viewports: Desktop, Tablet, Mobile)
+npm run e2e
 
+# Nur Desktop
+npx playwright test --project=chromium-desktop
+
+# Einzelne Datei
+npx playwright test --project=chromium-desktop playwright/REQ-003-location-selection.spec.ts
+
+# Mit UI
+npm run e2e:ui
+
+# Report anzeigen
+npm run e2e:report
 ```
-1. browser_evaluate → localStorage.setItem('app-language', '<lang>')
-2. browser_navigate → Feature-URL (Reload)
-3. browser_screenshot → UI in dieser Sprache
-   → Speichern als: e2e-lang-<lang>.png
-4. Verifiziere: Alle sichtbaren Texte in korrekter Sprache
-```
 
-**localStorage Key:** `app-language` (siehe `.claude/skills/i18n-typings.md`)
+Falls Tests fehlschlagen: Issues dokumentieren und fixen.
 
 ---
 
-### Schritt 6: Responsive Tests
+### Schritt 6: Screenshots fuer Dokumentation (Optional, via Playwright MCP)
 
-Teste drei Viewports:
+> **NUR fuer Dokumentation!** Kein Ersatz fuer die lokalen Tests.
 
-| Viewport | Breite | Höhe | Screenshot |
-|----------|--------|------|------------|
-| Desktop | 1280 | 720 | `e2e-responsive-desktop.png` |
-| Tablet | 768 | 1024 | `e2e-responsive-tablet.png` |
-| Mobile | 375 | 667 | `e2e-responsive-mobile.png` |
+Falls Playwright MCP konfiguriert ist, koennen zusaetzliche Screenshots erstellt werden:
 
-Für jeden Viewport:
-```
-1. browser_resize → Viewport setzen
-2. browser_navigate → Feature-URL
-3. browser_screenshot → Layout dokumentieren
-4. browser_snapshot → Accessibility bei diesem Viewport prüfen
-```
-
----
-
-### Schritt 7: Screenshots speichern
-
-Alle Screenshots werden gespeichert in:
 ```
 docs/requirements/<REQ-ID>/screenshots/
-├── e2e-step-01-initial.png
-├── e2e-step-02-<action>.png
-├── e2e-step-XX-<description>.png
-├── e2e-lang-de.png
-├── e2e-lang-en.png
 ├── e2e-responsive-desktop.png
 ├── e2e-responsive-tablet.png
 └── e2e-responsive-mobile.png
 ```
 
-Falls der `screenshots/` Ordner nicht existiert, erstelle ihn:
-```bash
-mkdir -p docs/requirements/<REQ-ID>/screenshots
+---
+
+### Schritt 7: Ergebnisse in qualitaets.md eintragen (PFLICHT!)
+
+> ⛔ **IMMER ausfuehren!** Playwright-Ergebnisse MUESSEN in `qualitaets.md` dokumentiert werden.
+
+1. **Ermittle REQ-ID** aus Feature-Name (z.B. `location-selection` → `REQ-003-Standortwahl`)
+2. **Lese/Erstelle:** `docs/requirements/<REQ-ID>/qualitaets.md`
+   - Falls Datei existiert: NUR die E2E-Sektion aktualisieren
+   - Falls Datei nicht existiert: Aus `QUALITAETS-TEMPLATE.md` erstellen (andere Sektionen leer lassen)
+3. **Fuege ein/aktualisiere die Sektion `## 🧪 E2E Testing (Playwright — Lokale Test-Suite)`:**
+
+   Pflichtinhalte:
+   - **Playwright Test-Dateien:** Tabelle mit allen Spec-Dateien, Anzahl Tests, Status (passed/failed)
+   - **REQ-XXX Test-Szenarien:** Aufschluesselung nach Kategorie (Main Flow, Test Cases, Alternative Flows, Exception Flows, i18n, Accessibility, Responsive)
+   - **Workflow-Tests:** Falls `workflow-*.spec.ts` existiert — Aufschluesselung nach Kategorie
+   - **Viewports:** Desktop, Tablet, Mobile mit Anzahl Tests und Status
+   - **Issues:** Alle fehlgeschlagenen Tests oder bekannte Probleme
+
+4. **Aktualisiere den Changelog** am Ende der `qualitaets.md`
+5. **Aktualisiere die Uebersicht-Tabelle** (Kategorie E2E Testing Score + Status)
+
+**Beispiel-Eintrag fuer qualitaets.md:**
+```markdown
+## 🧪 E2E Testing (Playwright — Lokale Test-Suite)
+
+### check-e2e
+**Score:** 98/100 ✅
+
+**Playwright Test-Dateien:**
+| Datei | Tests | Status |
+|-------|-------|--------|
+| `playwright/REQ-003-location-selection.spec.ts` | 24 Tests | ✅ 24/24 passed |
+| `playwright/workflow-booking-complete.spec.ts` | 14 Tests | ✅ 14/14 passed |
+
+**REQ-003 Test-Szenarien (24 Tests):**
+| Kategorie | Tests | Status |
+|-----------|-------|--------|
+| Main Flow (Section 4) | TC-1, TC-1b, TC-1c, TC-2, TC-2b | ✅ 5/5 |
+| Test Cases (Section 13) | TC-3, TC-4, TC-4b, TC-4c, TC-4d | ✅ 5/5 |
+| ...
+
+**Viewports:**
+| Viewport | Tests | Status |
+|----------|-------|--------|
+| Desktop (1280x720) | 73 passed | ✅ |
 ```
 
 ---
 
-### Schritt 8: Ergebnis-Report
-
-Gib den Report in folgendem Format aus:
+### Schritt 8: Ergebnis-Report (Konsole)
 
 ```
 E2E_RESULT:
 check-e2e: <score>/100 [✅|⚠️|❌]
 
-Test-Szenarien:
-| # | Szenario | Status | Screenshot |
-|---|----------|--------|------------|
-| 1 | <Main Flow Step> | ✅❌ | e2e-step-01-xxx.png |
-| 2 | <Nächster Step> | ✅❌ | e2e-step-02-xxx.png |
+Playwright Test Files:
+| Datei | Tests | Status |
+|-------|-------|--------|
+| REQ-XXX-*.spec.ts | X tests | ✅❌ |
+| workflow-*.spec.ts | X tests | ✅❌ |
 
-Sprachumschaltung:
-| Sprache | Status | Screenshot |
-|---------|--------|------------|
-| DE | ✅❌ | e2e-lang-de.png |
-| EN | ✅❌ | e2e-lang-en.png |
+Viewports:
+| Viewport | Tests | Status |
+|----------|-------|--------|
+| Desktop (1280x720) | X passed | ✅❌ |
+| Tablet (768x1024) | X passed | ✅❌ |
+| Mobile (375x667) | X passed | ✅❌ |
 
-Responsive:
-| Viewport | Status | Screenshot |
-|----------|--------|------------|
-| Desktop (1280x720) | ✅❌ | e2e-responsive-desktop.png |
-| Tablet (768x1024) | ✅❌ | e2e-responsive-tablet.png |
-| Mobile (375x667) | ✅❌ | e2e-responsive-mobile.png |
-
-Accessibility Snapshot: ✅❌
+qualitaets.md: ✅ aktualisiert (docs/requirements/<REQ-ID>/qualitaets.md)
 
 Issues:
 - <issue1>
@@ -179,10 +254,10 @@ CATEGORY_SCORE: <score>/100
 
 | Kriterium | Gewichtung |
 |-----------|------------|
-| Main Flow funktioniert | 40% |
-| Sprachumschaltung korrekt | 15% |
-| Responsive korrekt | 25% |
-| Accessibility Snapshot OK | 20% |
+| Test-Dateien erstellt/erweitert | 30% |
+| Alle Tests bestanden (Desktop) | 30% |
+| Alle Tests bestanden (Tablet + Mobile) | 20% |
+| Test Coverage (Main Flow + Alt Flows + Exceptions) | 20% |
 
 | Score | Status |
 |-------|--------|
@@ -194,8 +269,7 @@ CATEGORY_SCORE: <score>/100
 
 ## Fehlerbehandlung
 
-- **Dev Server nicht erreichbar:** Fehler melden, Score = 0
-- **Playwright MCP nicht verfügbar:** Fehler melden, Score = 0
-- **Screenshot fehlgeschlagen:** Issue dokumentieren, Szenario als ❌
-- **Element nicht gefunden:** Issue dokumentieren mit Selector
-- **Timeout:** Issue dokumentieren, Szenario als ⚠️
+- **Dev Server nicht erreichbar:** playwright.config.ts startet ihn automatisch
+- **Test fehlschlagen:** Fehler im Report dokumentieren, fixen, erneut ausfuehren
+- **Timeout:** Timeouts in playwright.config.ts anpassen
+- **localStorage SecurityError:** Sicherstellen dass Seite geladen ist bevor setLanguage()

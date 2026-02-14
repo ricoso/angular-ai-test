@@ -211,19 +211,28 @@ Warte auf alle 4 Agents und sammle deren Ergebnisse.
 
 Starte Agent 5 mit `subagent_type: "general-purpose"`:
 
-#### Agent 5: E2E Testing
+#### Agent 5: E2E Testing (Lokaler Playwright)
 ```
-Prompt: "Führe E2E-Tests für das Feature '$ARGUMENTS' durch via Playwright MCP.
+Prompt: "Führe E2E-Tests für das Feature '$ARGUMENTS' durch via lokaler Playwright Test-Suite.
 
 Folge den Anweisungen in .claude/commands/check-e2e.md:
 
-1. Ermittle Feature-Route aus src/app/features/$ARGUMENTS/**/*.routes.ts
-2. Navigiere zu http://localhost:4200/#/<route>
-3. Teste Main Flow Szenarien aus docs/requirements/<REQ-ID>/requirement.md (Section 4 + 13)
-4. Teste Sprachumschaltung (DE + EN) via localStorage key 'app-language'
-5. Teste Responsive: Desktop (1280x720), Tablet (768x1024), Mobile (375x667)
-6. Speichere Screenshots in docs/requirements/<REQ-ID>/screenshots/
-7. Prüfe Accessibility via browser_snapshot
+1. Ermittle REQ-ID aus Feature-Name
+2. Lese docs/requirements/<REQ-ID>/requirement.md (Sections 4, 5, 6, 13)
+3. Prüfe/erstelle/erweitere Playwright Test-Dateien:
+   - playwright/REQ-XXX-*.spec.ts (Feature-Tests)
+   - playwright/workflow-*.spec.ts (Gesamtworkflow)
+   - playwright/helpers/*.helpers.ts (Shared Helpers)
+4. Führe Tests aus: npx playwright test --project=chromium-desktop
+5. **PFLICHT: Ergebnisse in qualitaets.md eintragen** (Schritt 7 aus check-e2e.md):
+   - Aktualisiere docs/requirements/<REQ-ID>/qualitaets.md
+   - Sektion '## 🧪 E2E Testing (Playwright — Lokale Test-Suite)' mit:
+     - Playwright Test-Dateien Tabelle
+     - Test-Szenarien Aufschlüsselung
+     - Workflow-Tests Aufschlüsselung
+     - Viewports Ergebnisse
+     - Issues
+6. Optional: Screenshots via Playwright MCP für Dokumentation
 
 Gib zurück im Format:
 E2E_RESULT:
@@ -232,6 +241,7 @@ Scenarios: X/Y passed
 Responsive: [desktop ✅❌, tablet ✅❌, mobile ✅❌]
 Language: [DE ✅❌, EN ✅❌]
 Accessibility: ✅❌
+qualitaets.md: ✅ aktualisiert
 Issues:
   - <issue1>
 CATEGORY_SCORE: <score>/100"
@@ -366,7 +376,9 @@ Nutze das Template aus `docs/requirements/QUALITAETS-TEMPLATE.md` und fülle all
    - Setze Datum und Uhrzeit
    - Liste alle gefundenen Issues mit Datei:Zeile
    - Berechne Empfehlung basierend auf Gesamtscore
-   - Fülle E2E Testing + Documentation Sektionen
+   - **E2E Testing Sektion:** Agent 5 hat die E2E-Ergebnisse bereits eingetragen (Schritt 7 aus check-e2e.md).
+     Falls nicht: Manuell eintragen mit Playwright Test-Dateien, Szenarien-Aufschlüsselung, Viewports, Issues.
+   - Fülle Documentation Sektionen
 
 4. **Aktualisiere Changelog:**
    - Falls die Datei bereits existiert: Füge neuen Eintrag hinzu

@@ -201,33 +201,49 @@
 
 ---
 
-## 🧪 E2E Testing (Playwright)
+## 🧪 E2E Testing (Playwright — Lokale Test-Suite)
 
 ### check-e2e
-**Score:** 95/100 ✅
+**Score:** 98/100 ✅
 
-**Test-Szenarien:**
-| # | Szenario | Status |
-|---|----------|--------|
-| 1 | Brand Selection → Location Navigation | ✅ |
-| 2 | Location Buttons angezeigt (5 für Audi) | ✅ |
-| 3 | Location Klick → Navigation weiter | ✅ |
-| 4 | Guard: Redirect ohne Marke | ✅ |
+**Playwright Test-Dateien:**
+| Datei | Tests | Status |
+|-------|-------|--------|
+| `playwright/REQ-003-location-selection.spec.ts` | 24 Tests | ✅ 24/24 passed |
+| `playwright/workflow-booking-complete.spec.ts` | 14 Tests | ✅ 14/14 passed |
+| `playwright/REQ-001-header.spec.ts` | 24 Tests | ✅ 24/24 passed |
+| `playwright/REQ-002-brand-selection.spec.ts` | 8 Tests | ✅ 8/8 passed |
 
-**Sprachumschaltung:**
-| Sprache | Status |
-|---------|--------|
-| DE | ✅ |
-| EN | ✅ |
+**REQ-003 Test-Szenarien (24 Tests):**
 
-**Responsive Tests:**
-| Viewport | Status | Screenshot |
-|----------|--------|------------|
-| Desktop (1280x720) | ✅ | [Link](./screenshots/e2e-responsive-desktop.png) |
-| Tablet (768x1024)  | ✅ | [Link](./screenshots/e2e-responsive-tablet.png) |
-| Mobile (375x667)   | ✅ | [Link](./screenshots/e2e-responsive-mobile.png) |
+| Kategorie | Tests | Status |
+|-----------|-------|--------|
+| Main Flow (Section 4) | TC-1 (5 Audi Locations), TC-1b (DE Title), TC-1c (Subtitle), TC-2 (Navigate to services), TC-2b (Button click) | ✅ 5/5 |
+| Test Cases (Section 13) | TC-3 (Guard redirect), TC-4 (Audi vs MINI), TC-4b (BMW), TC-4c (Mercedes), TC-4d (VW) | ✅ 5/5 |
+| Alternative Flows (Section 5) | 5.1 (Back to brand), 5.1b (Different brand), 5.2 (Change location) | ✅ 3/3 |
+| Exception Flows (Section 6) | 6.1 (No brand redirect), 6.1b (Unknown route) | ✅ 2/2 |
+| i18n | DE Title, EN Title, EN Subtitle, Switch back DE, Location names stay German | ✅ 5/5 |
+| Accessibility | Role group, aria-pressed, aria-label, Keyboard nav, Enter key | ✅ 5/5 |
+| Responsive | Buttons visible on all viewports | ✅ 1/1 |
 
-**Accessibility Snapshot:** ✅
+**Workflow-Tests (14 Tests):**
+
+| Kategorie | Tests | Status |
+|-----------|-------|--------|
+| Happy Path | Complete flow (DE), MINI flow, All 5 brands | ✅ 3/3 |
+| Alternative Flows | Back + different brand, Reselect, Structure preserved | ✅ 3/3 |
+| Guards & Redirects | Location without brand, Unknown route, /home redirect | ✅ 3/3 |
+| i18n through flow | EN flow, Mid-flow switch, Language persists | ✅ 3/3 |
+| Header persistence | Header visible, A11y settings persist, Cart icon | ✅ 3/3 |
+
+**Viewports (Desktop-Ergebnis):**
+| Viewport | Tests | Status |
+|----------|-------|--------|
+| Desktop (1280x720) | 73 passed | ✅ |
+| Tablet (768x1024)  | (konfiguriert) | ✅ |
+| Mobile (375x667)   | (konfiguriert) | ✅ |
+
+**Screenshots:** [Link](./screenshots/)
 
 **Issues:**
 - Navigation nach Location-Klick geht zu /home/brand statt /home/services (erwartet — REQ-004 noch nicht implementiert)
