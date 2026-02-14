@@ -218,3 +218,100 @@ feature/
 - NO HTTP in Store
 - NO business logic in Container
 - TrackBy in @for loops
+
+---
+
+## Unit Test Pattern (Mocked Template)
+
+**Regel:** UI wird via Playwright E2E getestet. Unit Tests prüfen NUR Logik (Inputs, Outputs, Event Handler, Computed).
+
+**Template mocken** mit `overrideComponent` → eliminiert Angular Material / Child Component Abhängigkeiten:
+
+```typescript
+// ✅ RICHTIG — Mocked Template, Logic-only Tests
+import type { ComponentFixture } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+
+// UI rendering is verified via E2E (Playwright) — unit tests focus on logic only
+describe('MyContainerComponent', () => {
+  let component: MyContainerComponent;
+  let fixture: ComponentFixture<MyContainerComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MyContainerComponent],
+      providers: [
+        // Stores, mocked Services, provideRouter([]) etc.
+      ]
+    })
+      .overrideComponent(MyContainerComponent, {
+        set: { template: '<div class="mocked">Mocked Component</div>' }
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(MyContainerComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+});
+```
+
+### Protected Member Access
+
+`protected` methods/properties via typed cast:
+
+```typescript
+// Interface für exposed protected members
+interface ExposedComponent {
+  onSave: (data: MyData) => void;
+  isValid: () => boolean;
+}
+
+const exposed = component as unknown as ExposedComponent;
+exposed.onSave(testData);
+expect(exposed.isValid()).toBe(true);
+```
+
+### Input/Output Testing
+
+```typescript
+// Inputs via setInput (NOT direct assignment)
+fixture.componentRef.setInput('selectedItem', 'abc');
+fixture.detectChanges();
+expect(component.selectedItem()).toBe('abc');
+
+// Outputs via subscribe + exposed handler
+const spy = jest.fn();
+component.itemSelected.subscribe(spy);
+const exposed = component as unknown as { onClick: (item: Item) => void };
+exposed.onClick(testItem);
+expect(spy).toHaveBeenCalledWith(testItem.id);
+```
+
+### Warum Mocked Template?
+
+| Problem | Lösung |
+|---------|--------|
+| Angular Material Module Resolution in Jest | `overrideComponent` → Template wird ersetzt, keine Material-Imports nötig |
+| Child Component Abhängigkeiten | Mocked Template → keine Children instantiiert |
+| `provideAnimationsAsync` nicht auflösbar | Kein Template = keine Animations nötig |
+| Schnellere Tests | Kein DOM Rendering, nur Logik |
+
+### Jest Config (PFLICHT!)
+
+`tsconfig.spec.json` braucht Path-Mappings für Subpath Exports:
+
+```json
+"paths": {
+  "@angular/material/*": ["node_modules/@angular/material/types/*"],
+  "@ngrx/signals/rxjs-interop": ["node_modules/@ngrx/signals/types/ngrx-signals-rxjs-interop.d.ts"]
+}
+```
+
+`jest.config.ts` braucht passende `moduleNameMapper`:
+
+```json
+"moduleNameMapper": {
+  "^@angular/material/(.+)$": "<rootDir>/node_modules/@angular/material/fesm2022/$1.mjs"
+}
+```

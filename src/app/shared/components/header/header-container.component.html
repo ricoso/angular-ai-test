@@ -27,13 +27,13 @@
       (cartClicked)="onCartOpen()"
     />
 
-    <mat-menu #cartMenu="matMenu" class="header__warenkorb-menu">
-      <div class="header__warenkorb-dropdown" (click)="$event.stopPropagation()">
-        <h3 class="header__warenkorb-titel">{{ header.warenkorb.titel | translate }}</h3>
+    <mat-menu #cartMenu="matMenu" class="header__cart-menu">
+      <div class="header__cart-dropdown" (click)="$event.stopPropagation()">
+        <h3 class="header__cart-title">{{ header.cart.title | translate }}</h3>
         @if (cartStore.hasItems()) {
-          <p class="header__warenkorb-platzhalter">{{ header.warenkorb.platzhalter | translate }}</p>
+          <p class="header__cart-placeholder">{{ header.cart.placeholder | translate }}</p>
         } @else {
-          <p class="header__warenkorb-leer">{{ header.warenkorb.leer | translate }}</p>
+          <p class="header__cart-empty">{{ header.cart.empty | translate }}</p>
         }
       </div>
     </mat-menu>

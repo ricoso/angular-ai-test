@@ -120,6 +120,59 @@ providers: [provideRouter(routes)]
 **Click-Dummy:** `.github/workflows/deploy-gh-pages.yml`
 **Production:** Docker / Cloud Run
 
+## Schritt 6: Auto Memory aufbauen
+
+**Nach dem Setup** eine `MEMORY.md` im Auto-Memory-Verzeichnis anlegen, die die Projekt-Konfiguration und Skill-Zusammenfassungen enthält.
+
+**Pfad:** `.claude/projects/<project-path>/memory/MEMORY.md`
+
+**Inhalt generieren aus allen Skills:**
+
+```markdown
+# Project Memory
+
+## Project Setup (Verified)
+
+- **Code Language:** {Englisch/Deutsch} (FIXED)
+- **UI Languages:** {DE, EN, ...}
+- **Deployment:** {Click-Dummy/Production} ({Details})
+- **Setup placeholders:** All 5 skills have been filled
+
+## Unit Test Pattern (Verified)
+
+- **Mocked Template:** overrideComponent mit `set: { template: '...' }` — UI via Playwright E2E
+- **Protected access:** `component as unknown as { method: ... }` typed cast
+- **Inputs:** Immer via `fixture.componentRef.setInput()`
+
+## Skill Summary
+
+| Skill | Kernregel |
+|-------|-----------|
+| angular-architecture | Container/Presentational, Feature Store + Component Store, Mocked Template Tests |
+| routing-patterns | Lazy Loading, Route Resolver für Data Loading, ResolveFn<void> |
+| code-language | Code-Sprache FIXIERT, REQ-Sprache irrelevant |
+| i18n-typings | TypeScript-only, Proxy-based Keys, localStorage `app-language` |
+| forms | Reactive Forms, Typed Forms, FormGroup via input() |
+| security | {Click-Dummy: localStorage OK / Production: JWT HttpOnly} |
+| eslint | OnPush, sorted imports, no `any`, explicit return types |
+| performance | OnPush, track by ID, computed statt Methoden, Lazy Loading |
+| html-styling | Mobile-First, BEM, em/rem, WCAG 2.1 AA, CSS Variables |
+| ui-design-system | _variables.scss, _utilities.scss, Material Overrides |
+
+## Known Issues
+
+- `jest.config.ts` has duplicate `testEnvironment` key
+- `tsconfig.spec.json` needs path mappings: `@angular/material/*`, `@ngrx/signals/rxjs-interop`
+- `jest.config.ts` needs moduleNameMapper: `@angular/material/*` → fesm2022
+- ESLint flags SignalStore naming + signal reads as call expressions
+```
+
+**Wichtig:**
+- Skill Summary aus **allen** `.claude/skills/*.md` Dateien generieren
+- Nur Kernregeln (1 Satz pro Skill), keine Details
+- Known Issues aus aktuellem Projektzustand befüllen
+- Memory wird bei jedem neuen Projekt-Setup frisch generiert
+
 ## Checklist
 
 - [ ] Q1–Q3 beantwortet
@@ -127,3 +180,4 @@ providers: [provideRouter(routes)]
 - [ ] CLAUDE.md → Projekt-Info gesetzt
 - [ ] `app.config.ts` konfiguriert
 - [ ] CI/CD eingerichtet
+- [ ] Auto Memory (`MEMORY.md`) mit Skill Summary generiert

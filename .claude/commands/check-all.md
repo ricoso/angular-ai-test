@@ -1,6 +1,6 @@
 # Check All Command (Parallel Agent-System)
 
-Orchestriert 4 spezialisierte Agents zur parallelen Ausführung aller 11 Checks.
+Orchestriert 6 spezialisierte Agents zur Ausführung aller 13 Checks (2-Phasen).
 
 ## Usage
 
@@ -16,7 +16,18 @@ Example: `user-management`
 
 Du bist der **Orchestrator**. Führe die folgenden Schritte EXAKT aus:
 
-### Schritt 1: Starte 4 Agents PARALLEL
+### Schritt 1a: Dev Server starten
+
+Prüfe ob der Dev Server bereits läuft. Falls nicht, starte ihn:
+
+```bash
+curl -s http://localhost:4200 > /dev/null 2>&1 || (npm start &)
+timeout 30 bash -c 'until curl -s http://localhost:4200 > /dev/null; do sleep 1; done'
+```
+
+---
+
+### Schritt 1b: Starte 4 Agents PARALLEL (Phase 1 — Statische Checks)
 
 Verwende das `Task`-Tool mit `subagent_type: "general-purpose"` und starte **ALLE 4 Agents in EINEM Tool-Aufruf** (parallel):
 
@@ -188,25 +199,95 @@ CATEGORY_SCORE: <avg>/100"
 
 ---
 
-### Schritt 2: Sammle Ergebnisse
+### Schritt 2: Sammle Phase 1 Ergebnisse
 
 Warte auf alle 4 Agents und sammle deren Ergebnisse.
 
 ---
 
-### Schritt 3: Berechne Gesamtscore
+### Schritt 3: Phase 2 — Agent 5 (E2E Testing via Playwright MCP)
+
+> **NACH Phase 1!** Statische Checks sollten OK sein bevor E2E startet.
+
+Starte Agent 5 mit `subagent_type: "general-purpose"`:
+
+#### Agent 5: E2E Testing
+```
+Prompt: "Führe E2E-Tests für das Feature '$ARGUMENTS' durch via Playwright MCP.
+
+Folge den Anweisungen in .claude/commands/check-e2e.md:
+
+1. Ermittle Feature-Route aus src/app/features/$ARGUMENTS/**/*.routes.ts
+2. Navigiere zu http://localhost:4200/#/<route>
+3. Teste Main Flow Szenarien aus docs/requirements/<REQ-ID>/requirement.md (Section 4 + 13)
+4. Teste Sprachumschaltung (DE + EN) via localStorage key 'app-language'
+5. Teste Responsive: Desktop (1280x720), Tablet (768x1024), Mobile (375x667)
+6. Speichere Screenshots in docs/requirements/<REQ-ID>/screenshots/
+7. Prüfe Accessibility via browser_snapshot
+
+Gib zurück im Format:
+E2E_RESULT:
+check-e2e: <score>/100 [✅|⚠️|❌]
+Scenarios: X/Y passed
+Responsive: [desktop ✅❌, tablet ✅❌, mobile ✅❌]
+Language: [DE ✅❌, EN ✅❌]
+Accessibility: ✅❌
+Issues:
+  - <issue1>
+CATEGORY_SCORE: <score>/100"
+```
+
+---
+
+### Schritt 4: Phase 3 — Agent 6 (Documentation)
+
+> **NACH Agent 5!** Agent 6 nutzt Screenshots von Agent 5.
+
+Starte Agent 6 mit `subagent_type: "general-purpose"`:
+
+#### Agent 6: Documentation
+```
+Prompt: "Generiere Feature-Dokumentation für '$ARGUMENTS' in allen Doc-Sprachen (DE, EN).
+
+Folge den Anweisungen in .claude/commands/check-documentation.md:
+
+1. Lese Template: docs/requirements/DOKU-TEMPLATE.md
+2. Lese Requirement: docs/requirements/<REQ-ID>/requirement.md (Section 1, 2, 4, 11, 14)
+3. Nutze vorhandene Screenshots aus docs/requirements/<REQ-ID>/screenshots/
+4. Für jede Doc-Sprache (DE, EN):
+   a. Setze Sprache via localStorage: localStorage.setItem('app-language', '<lang>')
+   b. Erstelle sprachspezifische Screenshots: doc-overview-<lang>.png, doc-step-XX-<lang>.png
+   c. Generiere feature-documentation-<lang>.md aus Template
+5. Prüfe Qualität: Main Flow vollständig, Screenshots vorhanden, Sprache konsistent
+
+Gib zurück im Format:
+DOCUMENTATION_RESULT:
+check-documentation: <score>/100 [✅|⚠️|❌]
+DE: ✅❌  |  EN: ✅❌
+Main Flow Steps: X/Y documented
+Screenshots: X vorhanden
+Issues:
+  - <issue1>
+CATEGORY_SCORE: <score>/100"
+```
+
+---
+
+### Schritt 5: Berechne Gesamtscore
 
 Gewichtung:
 | Kategorie | Gewichtung |
 |-----------|------------|
-| Architecture | 25% |
-| Security | 25% |
-| Quality | 25% |
-| Feature (i18n, Forms, Language) | 25% |
+| Architecture | 20% |
+| Security | 20% |
+| Quality | 20% |
+| Feature (i18n, Forms, Language) | 20% |
+| E2E Testing | 10% |
+| Documentation | 10% |
 
 ---
 
-### Schritt 4: Erstelle konsolidierten Report
+### Schritt 6: Erstelle konsolidierten Report
 
 Gib den Report in folgendem Format aus:
 
@@ -220,7 +301,7 @@ Nutze das Template aus `docs/requirements/QUALITAETS-TEMPLATE.md` und fülle all
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔍 FULL CHECK: $ARGUMENTS (PARALLEL)
+🔍 FULL CHECK: $ARGUMENTS (6 AGENTS)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📐 ARCHITECTURE (3 checks)
@@ -242,6 +323,15 @@ Nutze das Template aus `docs/requirements/QUALITAETS-TEMPLATE.md` und fülle all
    [status] check-forms: XX/100
    [status] check-code-language: XX/100
 
+🧪 E2E TESTING (Playwright)
+   [status] check-e2e: XX/100
+   Scenarios: X/Y passed
+   Responsive: [desktop ✅, tablet ✅, mobile ✅]
+
+📄 DOCUMENTATION
+   [status] check-documentation: XX/100
+   DE: ✅❌  |  EN: ✅❌
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📊 GESAMT: XX/100
 
@@ -261,7 +351,7 @@ Nutze das Template aus `docs/requirements/QUALITAETS-TEMPLATE.md` und fülle all
 
 ---
 
-### Schritt 5: Generiere qualitaets.md
+### Schritt 7: Generiere qualitaets.md
 
 **WICHTIG:** Nach dem Konsolidieren der Ergebnisse:
 
@@ -276,6 +366,7 @@ Nutze das Template aus `docs/requirements/QUALITAETS-TEMPLATE.md` und fülle all
    - Setze Datum und Uhrzeit
    - Liste alle gefundenen Issues mit Datei:Zeile
    - Berechne Empfehlung basierend auf Gesamtscore
+   - Fülle E2E Testing + Documentation Sektionen
 
 4. **Aktualisiere Changelog:**
    - Falls die Datei bereits existiert: Füge neuen Eintrag hinzu
@@ -285,6 +376,17 @@ Nutze das Template aus `docs/requirements/QUALITAETS-TEMPLATE.md` und fülle all
 ```
 📄 qualitaets.md erstellt/aktualisiert:
    docs/requirements/REQ-XXX-Name/qualitaets.md
+📄 Feature-Dokumentation generiert:
+   docs/requirements/REQ-XXX-Name/feature-documentation-de.md
+   docs/requirements/REQ-XXX-Name/feature-documentation-en.md
+```
+
+---
+
+### Schritt 8: Dev Server stoppen
+
+```bash
+kill $(lsof -t -i:4200) 2>/dev/null || true
 ```
 
 ---
@@ -307,6 +409,11 @@ Falls ein Agent fehlschlägt:
 3. Berechne Gesamtscore ohne fehlgeschlagene Kategorie
 4. Empfehle manuelle Prüfung
 
+Falls Playwright MCP nicht verfügbar:
+1. Phase 2+3 (Agent 5+6) überspringen
+2. Gewichtung auf Phase 1 umverteilen (je 25%)
+3. Warnung ausgeben: "E2E + Documentation übersprungen (Playwright MCP nicht verfügbar)"
+
 ---
 
 ## Einzelne Checks
@@ -317,6 +424,8 @@ Für granulare Kontrolle können einzelne Checks separat ausgeführt werden:
 /check-architecture <feature>
 /check-security <feature>
 /check-eslint <feature>
+/check-e2e <feature>
+/check-documentation <feature>
 ... etc.
 ```
 
