@@ -1,7 +1,7 @@
 
 # REQ-003: Standortwahl
 
-**Status:** Draft
+**Status:** In Progress
 **Priority:** High
 **Type:** Functional
 **Created:** 2026-02-13
