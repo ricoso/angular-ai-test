@@ -382,6 +382,9 @@ user-container/
 - ✅ **Breakpoints in em**: `48em` (768px), `64em` (1024px)
 - ❌ KEINE Pixel-Werte (außer border: 0.0625em statt 1px)
 - ❌ KEINE hardcoded Farben - IMMER CSS Variables!
+- ✅ **Modals & Dropdowns: IMMER heller Hintergrund** (`var(--color-background-surface)`)
+  - Gilt für: mat-dialog, mat-menu, mat-select, custom Dropdowns, Tooltips
+  - ❌ KEIN dunkler/transparenter Hintergrund für Overlays!
 > **Design System:** `src/styles/_variables.scss`, `.claude/skills/ui-design-system.md`
 
 ### Layout Utilities

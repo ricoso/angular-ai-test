@@ -7,10 +7,13 @@
 // 2. Accessibility
 @use 'styles/accessibility';
 
-// 3. Utilities
+// 3. Material Overrides
+@use 'styles/material-overrides';
+
+// 4. Utilities
 @use 'styles/utilities';
 
-// 4. Base Styles
+// 5. Base Styles
 *,
 *::before,
 *::after {
