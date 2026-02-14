@@ -3,8 +3,8 @@
  * All UI texts are bilingual (DE + EN)
  *
  * Format: Nested objects for better type safety
- * Template: {{ header.warenkorb.button | translate }} (via i18nKeys + TranslatePipe)
- * TypeScript: translateService.instant(i18nKeys.header.warenkorb.button)
+ * Template: {{ header.cart.button | translate }} (via i18nKeys + TranslatePipe)
+ * TypeScript: translateService.instant(i18nKeys.header.cart.button)
  */
 export const translations = {
   de: {
@@ -31,11 +31,11 @@ export const translations = {
       logo: {
         alt: 'Firmenlogo'
       },
-      warenkorb: {
+      cart: {
         button: 'Warenkorb',
-        titel: 'Warenkorb',
-        leer: 'Ihr Warenkorb ist leer',
-        platzhalter: 'Inhalt wird bald verfügbar',
+        title: 'Warenkorb',
+        empty: 'Ihr Warenkorb ist leer',
+        placeholder: 'Inhalt wird bald verfügbar',
         badge: {
           ariaLabel: 'Artikel im Warenkorb'
         }
@@ -74,11 +74,11 @@ export const translations = {
       logo: {
         alt: 'Company Logo'
       },
-      warenkorb: {
+      cart: {
         button: 'Shopping Cart',
-        titel: 'Shopping Cart',
-        leer: 'Your cart is empty',
-        platzhalter: 'Content coming soon',
+        title: 'Shopping Cart',
+        empty: 'Your cart is empty',
+        placeholder: 'Content coming soon',
         badge: {
           ariaLabel: 'items in cart'
         }

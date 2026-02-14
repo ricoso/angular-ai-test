@@ -228,3 +228,23 @@ export { TranslatePipe } from './translate.pipe';
 - ~~JSON translation files~~
 - ~~Signal-Aufruf: `t().path`~~
 - ~~String-Literal Keys: `{{ 'user.form.name' | translate }}`~~ (nutze `i18nKeys`)
+
+---
+
+## Sprachumschaltung (für E2E & Documentation Agents)
+
+Die aktuelle Sprache wird in **localStorage** gespeichert:
+- **Key:** `app-language`
+- **Werte:** `'de'` | `'en'`
+- **Service:** `TranslateService.use(language)` (src/app/core/i18n/translate.service.ts)
+
+**Playwright MCP Sprachumschaltung:**
+```
+1. localStorage.setItem('app-language', '<sprache>') via browser_evaluate
+2. Page reload → App lädt mit neuer Sprache
+3. Screenshot erstellen
+```
+
+**Reihenfolge für Doku-Screenshots:**
+1. Sprache auf DE setzen → Screenshots erstellen
+2. Sprache auf EN setzen → Screenshots erstellen

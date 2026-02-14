@@ -24,7 +24,7 @@ import { MAX_BADGE_COUNT } from '@app/shared/models/cart.model';
 })
 export class CartIconComponent {
   private readonly translateService = inject(TranslateService);
-  private readonly cart = i18nKeys.header.warenkorb;
+  private readonly cart = i18nKeys.header.cart;
 
   // Inputs (Presentational: input/output only, NO Store!)
   readonly itemCount = input.required<number>();

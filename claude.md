@@ -7,8 +7,9 @@
 - **Framework**: Angular 21 Standalone Components
 - **State**: NgRx Signal Store (**NUR Feature Store Pattern!**)
 - **UI**: Angular Material 21
-- **Testing**: Jest 30
+- **Testing**: Jest 30 (Unit) + Playwright MCP (E2E)
 - **i18n**: ngx-translate (TypeScript Typings)
+- **Doc-Sprachen**: DE, EN
 - **Code-Sprache**: Englisch (FIXIERT)
 - **UI-Sprachen**: DE, EN
 - **Deployment**: Click-Dummy (GitHub Pages, HashLocation)
@@ -61,6 +62,39 @@ providers: [
 oder
 ```markdown
 - **Deployment**: Production (SSR, Node.js)
+```
+
+### E2E & Dokumentation Setup (Bei neuem Projekt fragen!)
+
+**Frage:** In welchen Sprachen soll die Feature-Dokumentation erstellt werden?
+
+| Antwort | Konfiguration |
+|---------|---------------|
+| **Gleich wie UI-Sprachen** (Empfohlen) | Doc-Sprachen = UI-Sprachen (DE, EN) |
+| **Nur eine Sprache** | z.B. nur DE oder nur EN |
+| **Andere Sprachen** | z.B. DE, EN, FR |
+
+### Nach Setup in CLAUDE.md dokumentieren:
+
+```markdown
+- **Doc-Sprachen**: DE, EN
+```
+
+### Playwright MCP
+- Konfiguriert in `.claude/mcp-config.json` unter `"playwright"`
+- Läuft via `npx` (keine Projekt-Dependency nötig)
+- Lokales Playwright Setup: `npx playwright install chromium`
+
+### Dokumentations-Output:
+
+```
+docs/requirements/REQ-XXX-Name/
+├── feature-documentation-de.md    # Doku Deutsch
+├── feature-documentation-en.md    # Doku Englisch
+└── screenshots/                    # E2E + Doku Screenshots
+    ├── e2e-step-01-*.png
+    ├── e2e-responsive-*.png
+    └── doc-*-de.png / doc-*-en.png
 ```
 
 ---
@@ -421,6 +455,7 @@ npm run mcp:setup  # Einmalig nach Clone
 | **ngrx-signalstore** | `get_pattern`, `get_best_practice` | "Zeig mir das feature-store Pattern" |
 | **angular-material** | `get_component`, `list_components` | "Wie verwende ich Material Dialog?" |
 | **angular-cli** | `search_documentation` | "Angular Best Practices" |
+| **playwright** | `browser_navigate`, `browser_screenshot`, `browser_click` | E2E Tests + Feature Screenshots |
 
 ---
 
@@ -486,8 +521,9 @@ npm run mcp:setup  # Einmalig nach Clone
    → Tests + Lint + Type-Check
 
 4. /check-all user-notifications
-   → Führt 11 Checks parallel aus
+   → Führt 13 Checks aus (11 statisch + E2E + Documentation)
    → Generiert: docs/requirements/REQ-042-UserNotifications/qualitaets.md
+   → Generiert: feature-documentation-de.md + feature-documentation-en.md
    → Ziel: Score >= 90/100
    → Bei ✅: Commit + PR erstellen
 ```
@@ -501,7 +537,7 @@ npm run mcp:setup  # Einmalig nach Clone
 
 **Code prüfen (nach /implement-requirement):**
 ```
-/check-all <feature>            # EMPFOHLEN: Alle 11 Checks + qualitaets.md
+/check-all <feature>            # EMPFOHLEN: Alle 13 Checks + qualitaets.md
 ```
 
 **Einzelne Checks (optional):**
@@ -517,6 +553,8 @@ npm run mcp:setup  # Einmalig nach Clone
 /check-i18n <feature>           # Internationalization
 /check-forms <feature>          # Reactive Forms
 /check-code-language <feature>  # Code Language
+/check-e2e <feature>            # E2E Tests (Playwright MCP)
+/check-documentation <feature>  # Feature Documentation (DE + EN)
 ```
 
 **Gruppierte Checks:**
@@ -591,8 +629,12 @@ docs/requirements/
 ├── REQUIREMENTS.md            # Übersicht aller Requirements
 ├── REQ-TEMPLATE.md            # Template für neue Requirements
 ├── QUALITAETS-TEMPLATE.md     # Template für Quality Reports
+├── DOKU-TEMPLATE.md           # Template für Feature-Dokumentation
 └── REQ-XXX-FeatureName/
     ├── requirement.md         # Spezifikation
     ├── mockup.png             # Optional: Design
-    └── qualitaets.md          # Quality Report (nach /check-all)
+    ├── qualitaets.md          # Quality Report (nach /check-all)
+    ├── feature-documentation-de.md  # Doku DE (nach /check-documentation)
+    ├── feature-documentation-en.md  # Doku EN (nach /check-documentation)
+    └── screenshots/           # E2E + Doku Screenshots
 ```

@@ -14,6 +14,8 @@
 | Security | XX/100 | ✅⚠️❌ |
 | Quality | XX/100 | ✅⚠️❌ |
 | Feature Checks | XX/100 | ✅⚠️❌ |
+| E2E Testing | XX/100 | ✅⚠️❌ |
+| Documentation | XX/100 | ✅⚠️❌ |
 
 ---
 
@@ -174,6 +176,58 @@
 | Branches | XX% | 80% | ✅⚠️❌ |
 | Functions | XX% | 80% | ✅⚠️❌ |
 | Lines | XX% | 80% | ✅⚠️❌ |
+
+---
+
+## 🧪 E2E Testing (Playwright)
+
+### check-e2e
+**Score:** XX/100 [✅|⚠️|❌]
+
+**Test-Szenarien:**
+| # | Szenario | Status | Screenshot |
+|---|----------|--------|------------|
+| 1 | [Main Flow] | ✅❌ | [Screenshot](./screenshots/e2e-step-01-xxx.png) |
+
+**Sprachumschaltung:**
+| Sprache | Status | Screenshot |
+|---------|--------|------------|
+| DE | ✅❌ | [Screenshot](./screenshots/e2e-lang-de.png) |
+| EN | ✅❌ | [Screenshot](./screenshots/e2e-lang-en.png) |
+
+**Responsive Tests:**
+| Viewport | Status | Screenshot |
+|----------|--------|------------|
+| Desktop (1280x720) | ✅❌ | [Link](./screenshots/e2e-responsive-desktop.png) |
+| Tablet (768x1024)  | ✅❌ | [Link](./screenshots/e2e-responsive-tablet.png) |
+| Mobile (375x667)   | ✅❌ | [Link](./screenshots/e2e-responsive-mobile.png) |
+
+**Accessibility Snapshot:** ✅❌
+
+**Issues:**
+- _Keine Issues gefunden_ / Liste der Issues
+
+---
+
+## 📄 Feature Documentation
+
+### check-documentation
+**Score:** XX/100 [✅|⚠️|❌]
+
+**Generierte Dokumente:**
+| Sprache | Datei | Status |
+|---------|-------|--------|
+| DE | [feature-documentation-de.md](./feature-documentation-de.md) | ✅❌ |
+| EN | [feature-documentation-en.md](./feature-documentation-en.md) | ✅❌ |
+
+**Dokumentations-Qualität:**
+- Alle UI-States dokumentiert: ✅❌
+- Screenshots vorhanden: ✅❌
+- Responsive Screenshots: ✅❌
+- Barrierefreiheit dokumentiert: ✅❌
+
+**Issues:**
+- _Keine Issues gefunden_ / Liste der Issues
 
 ---
 

@@ -25,6 +25,7 @@ Jeder Step hat ein **GATE** — eine Bedingung die erfüllt sein MUSS bevor der 
 |------|------|
 | Step 0 | PR-Status synchronisiert |
 | Step 1 | Branch existiert |
+| Step 1.5 | Requirement-Status auf "In Progress" gesetzt |
 | Step 2 | Requirement gelesen, Feature-Name + Sprache extrahiert |
 | **Step 3** | **ALLE 5 Skills gelesen, Code-Sprache bestätigt** |
 | Step 4 | Code implementiert |
@@ -33,6 +34,7 @@ Jeder Step hat ein **GATE** — eine Bedingung die erfüllt sein MUSS bevor der 
 | **Step 7** | **lint ✅ + type-check ✅ + tests ✅** |
 | **Step 8** | **`/check-all` Score >= 90 + qualitaets.md generiert** |
 | Step 9 | Commit erstellt |
+| Step 10 | Requirement-Status auf "In Review" gesetzt |
 
 ---
 
@@ -81,6 +83,28 @@ git checkout -b feat/$ARGUMENTS
 ```
 
 **GATE 1:** ✅ Branch `feat/$ARGUMENTS` existiert
+
+---
+
+### Step 1.5: Status auf "In Progress" setzen
+
+1. **`docs/requirements/REQUIREMENTS.md`** — Tabelle aktualisieren:
+   - Zeile des aktuellen Requirements finden
+   - Status ändern auf `🚧 In Progress`
+
+2. **`docs/requirements/REQUIREMENTS.md`** — Statistics aktualisieren:
+   - Zähler entsprechend anpassen (alten Status -1, `🚧 In Progress` +1)
+
+3. **`docs/requirements/$ARGUMENTS/requirement.md`** — Status-Zeile aktualisieren:
+   - `**Status:** In Progress`
+
+4. **Commit:**
+   ```bash
+   git add docs/requirements/REQUIREMENTS.md docs/requirements/$ARGUMENTS/requirement.md
+   git commit -m "chore($ARGUMENTS): set requirement status to In Progress"
+   ```
+
+**GATE 1.5:** ✅ Requirement-Status auf "In Progress" gesetzt
 
 ---
 
@@ -226,7 +250,7 @@ npm run test:coverage
 /check-all <feature-name>
 ```
 
-Dies führt 11 Checks parallel aus:
+Dies führt 13 Checks aus (11 statisch + E2E + Documentation):
 - `/check-architecture` — Container/Presentational Pattern
 - `/check-stores` — NgRx Signal Store
 - `/check-routing` — Routing Patterns
@@ -238,10 +262,13 @@ Dies führt 11 Checks parallel aus:
 - `/check-i18n` — Internationalization
 - `/check-forms` — Reactive Forms (falls relevant)
 - `/check-code-language` — Code Language
+- `/check-e2e` — E2E Tests (Playwright MCP)
+- `/check-documentation` — Feature Documentation (DE + EN)
 
 **Quality Gate:**
 - Ziel: Score >= 90/100
 - Generiert: `docs/requirements/$ARGUMENTS/qualitaets.md`
+- Generiert: `feature-documentation-de.md` + `feature-documentation-en.md`
 
 **Bei Score < 90:**
 1. Issues aus dem Report lesen
@@ -270,10 +297,35 @@ git commit -m "feat($ARGUMENTS): implement <Feature-Name>"
 
 ---
 
+### Step 10: Status in REQUIREMENTS.md auf "In Review" setzen
+
+**Nach dem Commit — Requirement-Status aktualisieren:**
+
+1. **`docs/requirements/REQUIREMENTS.md`** — Tabelle aktualisieren:
+   - Zeile des aktuellen Requirements finden
+   - Status ändern auf `🔍 In Review`
+
+2. **`docs/requirements/REQUIREMENTS.md`** — Statistics aktualisieren:
+   - Zähler entsprechend anpassen (alten Status -1, `🔍 In Review` +1)
+
+3. **`docs/requirements/$ARGUMENTS/requirement.md`** — Status-Zeile aktualisieren:
+   - `**Status:** In Review`
+
+4. **Commit:**
+   ```bash
+   git add docs/requirements/REQUIREMENTS.md docs/requirements/$ARGUMENTS/requirement.md
+   git commit -m "chore($ARGUMENTS): set requirement status to In Review"
+   ```
+
+**GATE 10:** ✅ Requirement-Status auf "In Review" gesetzt
+
+---
+
 ## Checkliste (ALLE Punkte PFLICHT!)
 
 - [ ] Step 0: PR-Status synchronisiert
 - [ ] Step 1: Branch erstellt
+- [ ] **Step 1.5: Requirement-Status in REQUIREMENTS.md auf "In Progress" gesetzt**
 - [ ] Step 2: Requirement gelesen
 - [ ] **Step 3: ALLE 5 Skills gelesen (code-language, architecture, i18n, routing, forms)**
 - [ ] **Step 3: Code-Sprache bestätigt**
@@ -290,7 +342,11 @@ git commit -m "feat($ARGUMENTS): implement <Feature-Name>"
 - [ ] **Step 7: `npm run test:coverage` ✅**
 - [ ] **Step 8: `/check-all` ausgeführt (Score >= 90/100)**
 - [ ] **Step 8: `qualitaets.md` generiert**
+- [ ] **Step 8: E2E Tests bestanden (check-e2e)**
+- [ ] **Step 8: Feature-Dokumentation in DE + EN generiert (check-documentation)**
 - [ ] Step 9: Commit erstellt
+- [ ] **Step 10: Requirement-Status in REQUIREMENTS.md auf "In Review" gesetzt**
+- [ ] **Step 10: Requirement-Status in requirement.md auf "In Review" gesetzt**
 
 ---
 
