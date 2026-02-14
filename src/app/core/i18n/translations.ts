@@ -46,6 +46,11 @@ export const translations = {
       brand: {
         title: 'Welche Fahrzeugmarke fahren Sie?',
         subtitle: 'Bitte wählen Sie die gewünschte Marke aus.'
+      },
+      location: {
+        title: 'An welchem Standort dürfen wir Sie begrüßen?',
+        subtitle: 'Bitte wählen Sie den gewünschten Standort aus.',
+        ariaGroupLabel: 'Standorte'
       }
     }
   },
@@ -89,6 +94,11 @@ export const translations = {
       brand: {
         title: 'What vehicle brand do you drive?',
         subtitle: 'Please select your desired brand.'
+      },
+      location: {
+        title: 'At which location may we welcome you?',
+        subtitle: 'Please select your desired location.',
+        ariaGroupLabel: 'Locations'
       }
     }
   }

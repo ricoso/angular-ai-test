@@ -6,11 +6,14 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { from, pipe, switchMap, tap } from 'rxjs';
 
 import type { Brand, BrandDisplay } from '../models/brand.model';
+import type { LocationDisplay } from '../models/location.model';
 import { BookingApiService } from '../services/booking-api.service';
 
 interface BookingState {
   brands: BrandDisplay[];
   selectedBrand: Brand | null;
+  locations: LocationDisplay[];
+  selectedLocation: LocationDisplay | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -18,6 +21,8 @@ interface BookingState {
 const INITIAL_STATE: BookingState = {
   brands: [],
   selectedBrand: null,
+  locations: [],
+  selectedLocation: null,
   isLoading: false,
   error: null
 };
@@ -27,9 +32,12 @@ export const BookingStore = signalStore(
 
   withState<BookingState>(INITIAL_STATE),
 
-  withComputed(({ brands, selectedBrand }) => ({
+  withComputed(({ brands, selectedBrand, locations, selectedLocation }) => ({
     hasBrandSelected: computed(() => selectedBrand() !== null),
-    brandCount: computed(() => brands().length)
+    brandCount: computed(() => brands().length),
+    filteredLocations: computed(() => locations()),
+    locationCount: computed(() => locations().length),
+    hasLocationSelected: computed(() => selectedLocation() !== null)
   })),
 
   withMethods((store, api = inject(BookingApiService)) => ({
@@ -47,9 +55,35 @@ export const BookingStore = signalStore(
       )
     ),
 
+    loadLocations: rxMethod<void>(
+      pipe(
+        tap(() => { patchState(store, { isLoading: true, error: null }); }),
+        switchMap(() => {
+          const brand = store.selectedBrand();
+          if (!brand) {
+            patchState(store, { locations: [], isLoading: false });
+            return [];
+          }
+          return from(api.getLocations(brand));
+        }),
+        tap({
+          next: (locations) => {
+            console.log('[BookingStore] Locations loaded:', locations);
+            patchState(store, { locations, isLoading: false });
+          },
+          error: (error) => { patchState(store, { error: error.message, isLoading: false }); }
+        })
+      )
+    ),
+
     setBrand(brand: Brand): void {
       console.log('[BookingStore] setBrand:', brand);
       patchState(store, { selectedBrand: brand });
+    },
+
+    setLocation(location: LocationDisplay): void {
+      console.log('[BookingStore] setLocation:', location);
+      patchState(store, { selectedLocation: location });
     },
 
     resetBooking(): void {
