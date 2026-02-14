@@ -1,6 +1,8 @@
 .accessibility-menu {
   padding: var(--spacing-md);
   min-width: 15em;
+  background: var(--color-background-surface);
+  color: var(--color-text-primary);
 
   &__section {
     padding: var(--spacing-sm) 0;

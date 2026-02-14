@@ -14,34 +14,29 @@ npm start                  # http://localhost:4200
 
 ## Feature Development
 
-### Create Feature
-
-```bash
-./scripts/create-feature.sh product
-# Or: npm run feature:create product
-```
-
-Creates: Container, Services (API + Business), **Store (with RxMethod)**, **Resolver (triggers Store)**, Routes
-
-**Pattern:** Resolver → Store RxMethod → Container subscribes
-
-### Create Component
-
-```bash
-./scripts/create-component.sh product product-card
-# Or: npm run component:create product product-card
-```
-
-Creates: Presentational component with OnPush
-
 ### Create Requirement
 
-```bash
-./scripts/create-requirement.sh "UserNotifications" 42
-# Or: npm run requirement:create "UserNotifications" 42
+```
+/create-requirement REQ-042-UserNotifications
 ```
 
-Creates: requirement.md in REQ-042-UserNotifications/
+Creates: `docs/requirements/REQ-042-UserNotifications/requirement.md`
+
+### Implement Requirement
+
+```
+/implement-requirement REQ-042-UserNotifications
+```
+
+Implements: Store, Container, Components, Tests, i18n
+
+### Quality Check
+
+```
+/check-all <feature-name>
+```
+
+Runs 13 checks, generates `qualitaets.md`
 
 ---
 
@@ -51,6 +46,10 @@ Creates: requirement.md in REQ-042-UserNotifications/
 npm test                   # Watch mode
 npm run test:ci            # CI mode
 npm run test:coverage      # With coverage
+
+# E2E Tests (Playwright)
+npm run e2e                # All viewports
+npm run e2e:ui             # With UI
 
 # Test specific file
 npm test -- user.component.spec.ts
@@ -66,7 +65,6 @@ npm test -- user.component.spec.ts
 npm run lint               # Check
 npm run lint:fix           # Auto-fix
 npm run type-check         # TypeScript
-npm run format             # Prettier
 ```
 
 ---
@@ -84,7 +82,7 @@ npm run watch              # Watch mode
 ## Angular CLI
 
 ```bash
-# Component (if not using scripts)
+# Component
 ng g c features/user/containers/user-container --change-detection=OnPush
 
 # Service
@@ -115,38 +113,24 @@ Locations: `mcp/ngrx-signalstore`, `mcp/angular-material`, `mcp/angular-cli`
 
 ```bash
 # 1. Create requirement
-./scripts/create-requirement.sh "ProductManagement" 10
+/create-requirement REQ-010-ProductManagement
 
-# 2. Create feature
-./scripts/create-feature.sh product
+# 2. Implement requirement (creates everything)
+/implement-requirement REQ-010-ProductManagement
 
-# 3. Create components
-./scripts/create-component.sh product product-list
-./scripts/create-component.sh product product-card
+# 3. Quality check
+/check-all product-management
 
-# 4. Add route to app.routes.ts
-# { path: 'products', loadChildren: () => import('./features/product/product.routes') }
-
-# 5. Implement
-# - services/product-api.service.ts (HTTP)
-# - services/product-business.service.ts (Logic)
-# - stores/product.store.ts (State)
-# - containers/product-container/* (UI)
-
-# 6. Test
-npm run test:coverage
-
-# 7. Update requirement.md
+# 4. Commit + PR
 ```
 
 ### Before Commit
 
 ```bash
 npm run lint:fix
-npm run format
 npm run type-check
-npm run test:ci
-npm run build
+npm run test:coverage
+npm run e2e
 ```
 
 ---
@@ -182,7 +166,6 @@ npm run build -- --configuration=production
 ```bash
 ng help                    # Angular CLI
 npm run                    # Show scripts
-npm run help               # Show this file
 ```
 
 ---
@@ -190,20 +173,23 @@ npm run help               # Show this file
 ## Cheat Sheet
 
 ```bash
-# Feature
-./scripts/create-feature.sh <n>
+# Requirement erstellen
+/create-requirement REQ-XXX-Name
 
-# Component
-./scripts/create-component.sh <feature> <n>
+# Implementieren
+/implement-requirement REQ-XXX-Name
 
-# Requirement
-./scripts/create-requirement.sh "<n>" <num>
+# Qualität prüfen
+/check-all <feature-name>
 
 # Test
 npm test
 
 # Quality
 npm run lint:fix && npm run test:ci
+
+# E2E
+npm run e2e
 
 # Build
 npm run build

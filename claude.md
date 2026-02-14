@@ -1,589 +1,119 @@
 # Angular 21 Projekt - Claude Code Anweisungen
 
-> 📖 **Projekt-Vision:** [`docs/VISION.md`](docs/VISION.md) - Langfristige Ziele, Qualitätsstandards, Roadmap
-
 ## Projekt-Info
 
 - **Framework**: Angular 21 Standalone Components
-- **State**: NgRx Signal Store (**NUR Feature Store Pattern!**)
+- **State**: NgRx Signal Store (Feature Store Pattern)
 - **UI**: Angular Material 21
-- **Testing**: Jest 30 (Unit) + Playwright MCP (E2E)
-- **i18n**: ngx-translate (TypeScript Typings)
-- **Doc-Sprachen**: DE, EN
+- **Testing**: Jest 30 (Unit) + Playwright (E2E lokal)
+- **i18n**: ngx-translate (TypeScript Typings, Proxy-basiert)
 - **Code-Sprache**: Englisch (FIXIERT)
 - **UI-Sprachen**: DE, EN
-- **Deployment**: Click-Dummy (GitHub Pages, HashLocation)
-
----
-
-## 🚀 Projekt Setup (Bei neuem Projekt fragen!)
-
-**Frage:** Ist das ein Click-Dummy oder eine Production App?
-
-| Antwort | Konfiguration |
-|---------|---------------|
-| **Click-Dummy** | HashLocation + GitHub Pages |
-| **Production** | SSR + Server Deployment |
-
-### Click-Dummy Setup
-
-```typescript
-// app.config.ts
-import { provideRouter, withHashLocation } from '@angular/router';
-
-providers: [
-  provideRouter(routes, withHashLocation())
-]
-```
-
-**GitHub Actions:** `.github/workflows/deploy-gh-pages.yml`
-**URL:** `https://<user>.github.io/<repo>/#/app`
-
-### Production Setup (SSR)
-
-```bash
-ng add @angular/ssr
-```
-
-```typescript
-// app.config.ts - KEIN HashLocation!
-providers: [
-  provideRouter(routes)
-]
-```
-
-**Deployment:** Node.js Server, Docker, Cloud Run, etc.
-
-### Nach Setup in CLAUDE.md dokumentieren:
-
-```markdown
-- **Deployment**: Click-Dummy (GitHub Pages, HashLocation)
-```
-oder
-```markdown
-- **Deployment**: Production (SSR, Node.js)
-```
-
-### E2E & Dokumentation Setup (Bei neuem Projekt fragen!)
-
-**Frage:** In welchen Sprachen soll die Feature-Dokumentation erstellt werden?
-
-| Antwort | Konfiguration |
-|---------|---------------|
-| **Gleich wie UI-Sprachen** (Empfohlen) | Doc-Sprachen = UI-Sprachen (DE, EN) |
-| **Nur eine Sprache** | z.B. nur DE oder nur EN |
-| **Andere Sprachen** | z.B. DE, EN, FR |
-
-### Nach Setup in CLAUDE.md dokumentieren:
-
-```markdown
 - **Doc-Sprachen**: DE, EN
-```
-
-### Playwright MCP
-- Konfiguriert in `.claude/mcp-config.json` unter `"playwright"`
-- Läuft via `npx` (keine Projekt-Dependency nötig)
-- Lokales Playwright Setup: `npx playwright install chromium`
-
-### Dokumentations-Output:
-
-```
-docs/requirements/REQ-XXX-Name/
-├── feature-documentation-de.md    # Doku Deutsch
-├── feature-documentation-en.md    # Doku Englisch
-└── screenshots/                    # E2E + Doku Screenshots
-    ├── e2e-step-01-*.png
-    ├── e2e-responsive-*.png
-    └── doc-*-de.png / doc-*-en.png
-```
+- **Deployment**: Click-Dummy (GitHub Pages, HashLocation)
 
 ---
 
-## 🚨 AGENT-GENERIERUNGSREGELN (PFLICHT!)
+## VERBOTEN / PFLICHT Kurzreferenz
 
-> **Diese Regeln MÜSSEN bei JEDER Code-Generierung befolgt werden!**
-
-### ❌ VERBOTEN - NIEMALS generieren:
-
-| Verboten | Stattdessen |
+| VERBOTEN | STATTDESSEN |
 |----------|-------------|
-| `template: \`...\`` (inline) | Separate `.html` Datei |
-| `styles: [\`...\`]` (inline) | Separate `.scss` Datei |
+| Inline `template`/`styles` | Separate `.html` + `.scss` Dateien |
 | `onInit` im Store für Feature-Daten | Route Resolver + `rxMethod` |
-| `ngOnInit()` in Component für Data Loading | Route Resolver |
-| `@for (item of items; track $index)` | `track item.id` (unique ID) |
+| `ngOnInit` für Data Loading | Route Resolver |
+| `@for` mit `track $index` | `track item.id` |
 | `{{ method() }}` im Template | `computed()` Signal |
 | `any` Type | Interface oder `unknown` |
 | `ngModel` | Reactive Forms |
-| `implements OnInit` für Data Loading | Route Resolver |
-
-### ✅ IMMER generieren:
-
-| Immer | Beispiel |
-|-------|----------|
-| Separate HTML-Datei | `user-container.component.html` |
-| Separate SCSS-Datei | `user-container.component.scss` |
-| Route Resolver für Daten | `user.resolver.ts` → `store.loadUsers()` |
-| OnPush Change Detection | `changeDetection: ChangeDetectionStrategy.OnPush` |
-| Track mit ID | `@for (user of users(); track user.id)` |
-| Computed für Template | `activeUsers = computed(() => ...)` |
-
-### 🔄 Data Loading Pattern (KRITISCH!)
-
-```typescript
-// ❌ FALSCH #1 - NIEMALS onInit im Store!
-export const UserStore = signalStore(
-  withHooks({
-    onInit(store) {
-      store.loadUsers(); // ❌ Feature-Daten in onInit!
-    }
-  })
-);
-
-// ❌ FALSCH #2 - NIEMALS ngOnInit in Component für Data Loading!
-@Component({...})
-export class UserContainerComponent implements OnInit {
-  private readonly store = inject(UserStore);
-
-  ngOnInit(): void {
-    this.store.loadUsers(); // ❌ Data Loading in Component!
-  }
-}
-
-// ✅ RICHTIG - IMMER Route Resolver verwenden!
-
-// 1. Resolver erstellen
-export const userResolver: ResolveFn<void> = () => {
-  inject(UserStore).loadUsers();
-  return of(void 0);
-};
-
-// 2. Route mit Resolver
-{ path: 'users', component: UserContainerComponent, resolve: { _: userResolver } }
-
-// 3. Store OHNE onInit für Feature-Daten
-export const UserStore = signalStore(
-  { providedIn: 'root' },
-  withState<UserState>({ users: [], loading: false, error: null }),
-  withMethods((store, api = inject(UserApiService)) => ({
-    loadUsers: rxMethod<void>(pipe(...))
-  }))
-);
-
-// 4. Component OHNE ngOnInit für Data Loading
-@Component({...})
-export class UserContainerComponent {
-  // ✅ Nur Store inject, KEIN ngOnInit für Daten!
-  protected readonly store = inject(UserStore);
-
-  // ✅ Event Handler sind OK
-  protected onRefresh(): void {
-    this.store.loadUsers();
-  }
-}
-```
-
-### ⚠️ Wann ist ngOnInit erlaubt?
-
-| Erlaubt in ngOnInit | Verboten in ngOnInit |
-|---------------------|----------------------|
-| Route Params auslesen | API Calls / Data Loading |
-| Event Listener setup | Store-Methoden aufrufen |
-| DOM-Manipulation | HTTP Requests |
-| Timer starten | Service-Methoden für Daten |
-
-### 📁 Component-Generierung (IMMER 3 Dateien!)
-
-```
-user-container/
-├── user-container.component.ts    # Logik
-├── user-container.component.html  # Template (SEPARATE DATEI!)
-└── user-container.component.scss  # Styles (SEPARATE DATEI!)
-```
-
-```typescript
-// ✅ RICHTIG - templateUrl + styleUrls
-@Component({
-  selector: 'app-user-container',
-  templateUrl: './user-container.component.html',
-  styleUrls: ['./user-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-```
+| Hardcoded Farben/px | CSS Variables aus `_variables.scss`, em/rem |
+| Dunkler Hintergrund bei Overlays | `var(--color-background-surface)` (weiß) |
+| `[innerHTML]` ohne Sanitizer | Angular Template Escaping |
+| Hardcoded Strings in Templates | i18n Keys (`{{ t.feature.key }}`) |
 
 ---
 
-## 🔴 ARCHITEKTUR-REGELN
+## Architektur (Kurzform)
 
-### Container/Presentational Pattern
-- 1 Route = 1 Container Component + Presentational Children
-- Container: `inject(Store)`, OnPush, Event Handler (`onXxx()`)
-- Presentational: `input()`, `output()` only, KEIN Store, KEINE Services
+- **Container/Presentational**: 1 Route = 1 Container (`inject(Store)`, OnPush) + Presentational Children (`input()`/`output()` only)
+- **Feature Store**: `withState`, `withComputed`, `withMethods` — `providedIn: 'root'` — KEIN `onInit` für Feature-Daten
+- **Component Store**: UI-State (tabs, filters) — provided im Component `providers` Array
+- **Services**: API (`Promise<T>`) + Business (Logik) — Store nutzt API in `withMethods`
+- **Routing**: Lazy Loading, `ResolveFn<void>`, Functional Guards, `input()` für Route Params
+- **Data Loading**: Resolver → Store.rxMethod → Component subscribes Store
 
-### Feature Store Pattern (PFLICHT!)
-- IMMER: `withState`, `withComputed`, `withMethods`, `withHooks`
-- State: `items[]`, `loading`, `error`
-- Computed: `filteredItems`, `itemCount`, `hasItems`
-- Methods: `loadItems()`, `addItem()`, `updateItem()`, `removeItem()`
-- ⚠️ **KEIN `onInit` im Store** für Feature-Daten → Route Resolver verwenden!
-- ✅ `onInit` NUR für: App-Config, Auth Session, Feature Flags (globale Daten)
-- ✅ **Public Interface** für Feature Stores definieren (Type Safety)
-- ✅ `providedIn: 'root'` für Feature Stores (global)
-> **Beispiele:** `.claude/skills/angular-architecture.md`
-
-### Component Store Pattern (für UI State)
-- ✅ Separater Store für UI-State (tabs, modals, filters, sort)
-- ✅ Provided in `providers` Array des Components (NICHT root!)
-- ✅ Automatisch destroyed mit Component
-- ✅ KEIN `withHooks` (nur lokaler State)
-- ✅ Container kombiniert Feature Store (Business) + Component Store (UI)
-- ❌ KEINE Business-Daten im Component Store
-- ❌ KEIN UI-State im Feature Store
-> **Beispiele:** `.claude/skills/angular-architecture.md`
-
-### Service Layers
-- **API Service** (`xxx-api.service.ts`): NUR HTTP calls, return `Promise<T>`
-- **Business Service** (`xxx-business.service.ts`): Validation, Logik, nutzt API Service
-- **Store**: State only, nutzt API Service in `withMethods`
-
-### Performance (PFLICHT!)
-- ✅ `ChangeDetectionStrategy.OnPush` bei ALLEN Components
-- ✅ `@for` mit `track item.id` (NICHT `$index`)
-- ✅ `computed()` statt Methoden im Template
-- ✅ Lazy Loading für alle Features
-- ✅ Image lazy loading: `<img loading="lazy" />`
-- ✅ Virtual Scroll für Listen >100 Items
-- ✅ Debounce bei Input Events (300ms)
-- ✅ `takeUntil(destroy$)` für Unsubscribe
-- ❌ KEINE Methoden-Aufrufe im Template (`{{ method() }}`)
-- ❌ KEINE Berechnungen im Template (`{{ a * b }}`)
-- ❌ KEINE Array-Operationen im Template (`{{ arr.filter() }}`)
-
-### TypeScript
-- ❌ KEIN `any` - immer Interfaces/Types (nutze `unknown` wenn nötig)
-- ✅ Interfaces für Models in `models/` Ordner (extensible objects)
-- ✅ Types für Unions/Utilities (`type Status = 'active' | 'inactive'`)
-- ✅ DTOs für API Requests/Responses
-- ✅ Explicit Return Types bei Methoden
-- ✅ Utility Types nutzen: `Partial<T>`, `Required<T>`, `Pick<T>`, `Omit<T>`, `Record<K,V>`
-- ✅ Type Guards für Runtime-Checks (`obj is User`)
-- ✅ Union Types statt Enums
-- ✅ PascalCase für Interfaces/Types, camelCase für Variablen
+> Details: `.claude/skills/angular-architecture.md`, `.claude/skills/routing-patterns.md`
 
 ---
 
-## 🌐 i18n REGELN
+## Styling (Kurzform)
 
-- ⚠️ **UI-Sprachen werden im Setup festgelegt** (siehe Projekt-Info)
-- ✅ ALLE Texte in Templates mit `{{ t.feature.key }}`
-- ✅ IMMER ALLE konfigurierten Sprachen pflegen
-- ✅ Type-safe Keys: TypeScript + Proxy (kein Pipe)
-- ✅ Key-Naming: `{feature}.{type}.{name}` (z.B. `user.form.name`, `user.buttons.save`)
-- ✅ TypeScript-only (KEINE JSON files!)
-- ❌ KEINE hardcoded Strings in Templates
-> **Beispiele:** `.claude/skills/i18n-typings.md`
+- **SCSS**: `_variables.scss` für alles, BEM Nesting, em/rem, Mobile-First
+- **Material Overrides**: `_material-overrides.scss` (zentral)
+- **Overlays**: Modals, Dropdowns, Menus IMMER `var(--color-background-surface)` (weiß)
+- **A11y**: WCAG 2.1 AA, Focus-Styles (`:focus-visible`), Touch 2.75em, Kontrast 4.5:1
+- **Responsive**: Mobile < 48em, Tablet >= 48em, Desktop >= 64em
+- **Icons**: IMMER mit `.icon-framed` Rahmen
 
----
-
-## 📝 FORMS REGELN
-
-- ✅ Reactive Forms (`FormGroup`, `FormControl`)
-- ✅ Typed Forms mit Generics
-- ✅ FormGroup als Signal in Container
-- ✅ FormGroup via `input()` an Presentational weitergeben
-- ✅ Validators im Component, NICHT im Template
-- ✅ Custom Validators in `validators/` Ordner (separate file)
-- ✅ `valueChanges` mit `debounceTime(300)` für Auto-Save
-- ✅ `takeUntil(destroy$)` für Unsubscribe
-- ✅ `form.markAllAsTouched()` bei Submit-Fehler
-- ✅ Error Handling in Presentational Component
-- ❌ KEIN `ngModel` (Template-Driven)
-- ❌ KEINE Form-Logik in Presentational Components
-> **Beispiele:** `.claude/skills/forms.md`
+> Details: `.claude/skills/ui-design-system.md`, `.claude/skills/html-styling.md`
 
 ---
 
-## 🛤️ ROUTING REGELN
+## i18n / Forms / Security (Kurzform)
 
-- ✅ Lazy Loading für alle Features (`loadChildren`)
-- ✅ Route Resolver mit RxMethod für Data Loading
-- ✅ Resolver triggert Store → Store lädt Daten → Component abonniert Store
-- ✅ `ResolveFn<void>` (return void, KEINE Daten zurückgeben!)
-- ✅ Functional Guards (`CanActivateFn`)
-- ✅ Route Params mit `input()` (nicht ActivatedRoute)
-- ✅ Container Component als Route Target
-- ✅ Store mit `rxMethod<void>(pipe(...))` für Resolver
-- ✅ `from()` für Promise → Observable conversion
-- ✅ `tap` → `patchState` für loading/data/error
-- ❌ KEINE Class-based Guards
-- ❌ KEIN ActivatedRoute injection (nutze `input()`)
-- ❌ KEINE Daten-Rückgabe aus Resolver
-> **Beispiele:** `.claude/skills/routing-patterns.md`
+- **i18n**: Type-safe Keys via Proxy (`{{ t.feature.key }}`), TypeScript-only, DE + EN
+- **Forms**: Reactive Forms, Typed, Validators im Component, KEIN ngModel
+- **Security**: Kein eval/innerHTML, JWT in HttpOnly Cookies, Route Guards, `.env` für Secrets
+
+> Details: `.claude/skills/i18n-typings.md`, `.claude/skills/forms.md`, `.claude/skills/security.md`
 
 ---
 
-## 🌍 CODE LANGUAGE REGELN
+## Code Quality
 
-- ⚠️ **Code-Sprache wird im Setup FIXIERT** (siehe Projekt-Info)
-- Requirements können in jeder Sprache kommen → Code IMMER in Setup-Sprache
-- UI IMMER in ALLEN konfigurierten Sprachen (siehe Projekt-Info)
-- Glossar nutzen aus REQ-TEMPLATE Section 16
-> **Details:** `.claude/skills/code-language.md`
+- ESLint: Imports sortiert, OnPush, kein `any`, `npm run lint:fix` vor Commit
+- TypeScript: Explicit Return Types, Interfaces in `models/`, Union Types statt Enums
+- Performance: OnPush, `track item.id`, `computed()`, Lazy Loading
 
----
-
-## 🔧 ESLINT REGELN
-
-- ✅ `npm run lint:fix` vor Commit
-- ✅ Imports sortiert (Angular → Third Party → Local)
-- ✅ Component Selectors mit Prefix: `app-user-card` (kebab-case)
-- ✅ OnPush Change Detection (PFLICHT!)
-- ✅ Explicit Return Types bei Methoden
-- ✅ KEIN `any` Type
-- ✅ Unused Imports entfernen
-- ✅ camelCase für Variablen, PascalCase für Klassen
-- ✅ UPPER_SNAKE_CASE für Konstanten
-- ✅ Underscore-Prefix für intentionally unused: `_unusedVar`
-> **Details:** `.claude/skills/eslint.md`
+> Details: `.claude/skills/eslint.md`
 
 ---
 
-## 🎨 HTML & STYLING REGELN
+## Workflow (STRIKT EINHALTEN!)
 
-### HTML
-- ❌ KEINE Inline Styles (`style=""`) - IMMER CSS Classes verwenden!
-- ✅ Semantic HTML (header, nav, main, article, section, footer)
-- ✅ Skip Link: `<a href="#main-content" class="skip-link">`
-- ✅ ARIA labels für Icon-Buttons
-- ✅ ARIA live regions für dynamische Updates (`role="status"`, `aria-live="polite"`)
-- ✅ Alt text für Images mit `loading="lazy"` (leer für dekorative)
-- ✅ Labels mit Inputs verknüpft (`for`/`id`)
+**Jeder Step ist PFLICHT. Kein Step darf übersprungen werden.**
 
-### Accessibility (PFLICHT! WCAG 2.1 AA)
-- ✅ **Schriftgröße**: Min 1em (16px), nie unter 0.875em (14px)
-- ✅ **Line-height**: Min 1.5 für Fließtext
-- ✅ **Farbkontrast**: Min 4.5:1 (Text auf Hintergrund)
-- ✅ **Focus-Styles**: Sichtbar mit `:focus-visible`, NIEMALS `outline: none`!
-- ✅ **Keyboard-Navigation**: Tab, Enter, Space, Arrow Keys
-- ✅ **Reduced Motion**: `@media (prefers-reduced-motion: reduce)` respektieren
-- ✅ **High Contrast**: `@media (forced-colors: active)` unterstützen
-- ✅ **Screen Reader**: `.sr-only` Klasse für visuell versteckten Text
-- ❌ KEINE Animationen ohne `prefers-reduced-motion` Check
-- ❌ KEINE Focus-Styles entfernen
+### /implement-requirement — Pflicht-Ablauf:
 
-### SCSS (PFLICHT!)
-- ✅ **IMMER `src/styles/_variables.scss`** für Farben, Abstände, etc.
-- ✅ **em/rem statt px** für Responsive Design (1em = 16px)
-- ✅ **BEM mit Nesting** (`&__element`, `&--modifier`)
-- ✅ **@extend** für Wiederverwendung (Placeholders in `_placeholders.scss`)
-- ✅ **Spacing Utilities**: `m-4` (1em), `p-8` (2em), `gap-2` (0.5em) → siehe `src/styles/_utilities.scss`
-- ✅ **CSS Flexbox + Grid** (KEIN Angular Flex Layout!)
-- ✅ **Material Overrides** in `_material-overrides.scss` (zentral!)
-- ✅ **Breakpoints in em**: `48em` (768px), `64em` (1024px)
-- ❌ KEINE Pixel-Werte (außer border: 0.0625em statt 1px)
-- ❌ KEINE hardcoded Farben - IMMER CSS Variables!
-> **Design System:** `src/styles/_variables.scss`, `.claude/skills/ui-design-system.md`
+| Step | Gate | Beschreibung |
+|------|------|--------------|
+| 0 | PR-Status sync | `gh pr list` → Status in REQUIREMENTS.md |
+| 1 | Branch | `git checkout -b feat/REQ-XXX` |
+| 1.5 | Status | REQUIREMENTS.md → "In Progress" |
+| 2 | REQ lesen | requirement.md → Feature-Name, Sections 10/11/14/16 |
+| **3** | **5 Skills lesen** | **ALLE: code-language, architecture, i18n, routing, forms** |
+| 4 | Implementieren | Models → Store → Services → Container → Components → i18n → Routes |
+| 5 | Styling | `_variables.scss`, Mobile-First, WCAG 2.1 AA |
+| 6 | Tests | Jest >80% Coverage |
+| **7** | **Tech-Check** | **`lint:fix` ✅ + `type-check` ✅ + `test:coverage` ✅** |
+| **8** | **Quality Gate** | **`/check-all` Score >= 90 + qualitaets.md generiert** |
+| 9 | Commit | `feat(REQ-XXX): implement <Feature>` |
+| 10 | Status | REQUIREMENTS.md → "In Review" |
 
-### Layout Utilities
-- ✅ Flexbox: `.flex`, `.items-center`, `.justify-between`, `.gap-4`
-- ✅ Grid: `.grid`, `.grid-cols-4`, `.gap-4`, `.col-span-2`
-- ✅ Spacing: `.m-4`, `.p-8`, `.mt-2`, `.px-6`, `.py-4`
-- ✅ Display: `.d-flex`, `.d-grid`, `.d-none`
+> **STOP bei Step 7 FAIL!** Erst fixen, dann weiter.
+> **STOP bei Step 8 Score < 90!** Erst fixen, Step 7+8 wiederholen.
+> Details: `.claude/commands/implement-requirement.md`
 
-### Responsive Design (PFLICHT!)
-- ✅ **Mobile-First**: Mobile Layout als Default, dann `@media (min-width)` für Tablet/Desktop
-- ✅ **Touch-friendly**: Min 2.75em (44px) für Buttons/Links
-- ✅ **Navigation**: Hamburger Menu auf Mobile
-- ✅ **Forms**: Full-width Inputs auf Mobile
-- ✅ **Tables**: Card-View auf Mobile, Table auf Desktop
-- ✅ **Grid**: 1 Spalte (Mobile) → 2 Spalten (Tablet) → 4 Spalten (Desktop)
-- ❌ KEIN `max-width` in Media Queries (nur `min-width`!)
-- ❌ KEIN Desktop-First Design
-> **Beispiele:** `.claude/skills/html-styling.md`
-
----
-
-## 🔒 SECURITY REGELN (PFLICHT!)
-
-### XSS Prevention
-- ❌ KEIN `[innerHTML]` ohne DomSanitizer
-- ❌ KEIN `bypassSecurityTrustHtml()` mit User-Input
-- ❌ KEINE `eval()` oder `Function()` Aufrufe
-- ✅ Angular Template Escaping nutzen (automatisch)
-
-### Authentication & Authorization
-- ✅ **JWT in HttpOnly Cookies** (NICHT localStorage!)
-- ✅ **Route Guards** für geschützte Routes
-- ✅ **Role-Based Access Control** implementieren
-- ✅ Token-Expiration prüfen
-
-### Sensitive Data
-- ❌ KEINE Passwörter/Tokens in localStorage
-- ❌ KEINE sensiblen Daten in URL-Parametern
-- ❌ KEINE `console.log()` mit sensiblen Daten in Production
-- ❌ KEINE Credentials im Source Code
-- ✅ Alle Secrets in `.env` (NIEMALS committen!)
-- ✅ `.env` in `.gitignore`
-- ✅ `environment.ts`: nur `import.meta.env` Referenzen
-
-### Input Validation
-- ✅ Client-Side Validators (UX, nicht Security!)
-- ✅ Server-Side Validation (PFLICHT für Security!)
-- ✅ Sanitization für HTML-Content
-
-### HTTP Security
-- ✅ HTTPS only (keine HTTP Calls)
-- ✅ CSRF Token via HttpClient XSRF
-- ✅ Security Headers (CSP, X-Frame-Options, etc.)
-
-### Dependencies
-- ✅ `npm audit` vor jedem Release
-- ✅ Keine bekannten Vulnerabilities
-- ✅ Regelmäßige Updates
-> **Details:** `.claude/commands/check-security.md`
-
----
-
-## MCP Server
-
-```bash
-npm run mcp:setup  # Einmalig nach Clone
-```
-
-| Server | Tools | Beispiel |
-|--------|-------|----------|
-| **ngrx-signalstore** | `get_pattern`, `get_best_practice` | "Zeig mir das feature-store Pattern" |
-| **angular-material** | `get_component`, `list_components` | "Wie verwende ich Material Dialog?" |
-| **angular-cli** | `search_documentation` | "Angular Best Practices" |
-| **playwright** | `browser_navigate`, `browser_screenshot`, `browser_click` | E2E Tests + Feature Screenshots |
-
----
-
-## 🚀 Workflow Commands
-
-### Neues Requirement erstellen
-
-| Trigger | Beispiel |
-|---------|----------|
-| `/create-requirement` | `/create-requirement REQ-003-UserProfile` |
-| `Erstelle Requirement` | `Erstelle Requirement REQ-003-UserProfile` |
-| `Create requirement` | `Create requirement REQ-003-UserProfile` |
-
-→ Branch `req/...`, Ordner, Template, Screenshot-Analyse, PR
-
-### Requirement prüfen
-
-| Trigger | Beispiel |
-|---------|----------|
-| `/check-requirement` | `/check-requirement REQ-001-Header` |
-| `Prüfe Requirement` | `Prüfe Requirement REQ-001-Header` |
-| `Check requirement` | `Check requirement REQ-001-Header` |
-
-→ Prüft Vollständigkeit, Design System, i18n
-
-### Requirement implementieren
-
-| Trigger | Beispiel |
-|---------|----------|
-| `/implement-requirement` | `/implement-requirement REQ-001-Header` |
-| `Implementiere` | `Implementiere REQ-001-Header` |
-| `Implement` | `Implement REQ-001-Header` |
-
-→ Liest Spec, erstellt Code, Tests, Commit
-
-> **Details:** `.claude/commands/create-requirement.md`, `.claude/commands/check-requirement.md`, `.claude/commands/implement-requirement.md`
-
----
-
-## Workflow: Spec-Driven Development
-
-**Erstellen:** `/create-requirement REQ-XXX-Name`
-**Prüfen:** `/check-requirement REQ-XXX-Name`
-**Implementieren:** `/implement-requirement REQ-XXX-Name`
-**Qualität prüfen:** `/check-all <feature>` → generiert `qualitaets.md`
+### Weitere Commands
 
 ```
-1. /create-requirement REQ-042-UserNotifications
-   → Branch: req/REQ-042-UserNotifications
-   → Ordner + Template erstellt
-   → Screenshot analysiert (falls vorhanden)
-
-2. /check-requirement REQ-042-UserNotifications
-   → Prüft Pflicht-Sections
-   → Prüft Design System (keine hardcoded Farben)
-   → Prüft i18n Keys (DE + EN)
-   → PR erstellt
-
-3. /implement-requirement REQ-042-UserNotifications
-   → Branch: feat/REQ-042-UserNotifications
-   → Liest Spec aus docs/requirements/
-   → Implementiert: Store + Container + Children
-   → Tests + Lint + Type-Check
-
-4. /check-all user-notifications
-   → Führt 13 Checks aus (11 statisch + E2E + Documentation)
-   → Generiert: docs/requirements/REQ-042-UserNotifications/qualitaets.md
-   → Generiert: feature-documentation-de.md + feature-documentation-en.md
-   → Ziel: Score >= 90/100
-   → Bei ✅: Commit + PR erstellen
+/create-requirement REQ-XXX-Name     → Branch, Template, PR
+/check-requirement REQ-XXX-Name      → Prüft Vollständigkeit
+/check-all <feature>                 → 13 Checks, qualitaets.md
 ```
 
-### Prüf-Commands
+**Checks:** `/check-architecture`, `/check-stores`, `/check-routing`, `/check-security`, `/check-eslint`, `/check-typescript`, `/check-performance`, `/check-styling`, `/check-i18n`, `/check-forms`, `/check-code-language`, `/check-e2e`, `/check-documentation`
 
-**Requirement prüfen:**
-```
-/check-requirement <REQ-ID>     # Nach /create-requirement
-```
-
-**Code prüfen (nach /implement-requirement):**
-```
-/check-all <feature>            # EMPFOHLEN: Alle 13 Checks + qualitaets.md
-```
-
-**Einzelne Checks (optional):**
-```
-/check-architecture <feature>   # Container/Presentational
-/check-stores <feature>         # NgRx Signal Store
-/check-routing <feature>        # Routing Patterns
-/check-security <feature>       # Security Audit
-/check-eslint <feature>         # ESLint Rules
-/check-typescript <feature>     # Type Safety
-/check-performance <feature>    # Performance
-/check-styling <feature>        # SCSS & Accessibility
-/check-i18n <feature>           # Internationalization
-/check-forms <feature>          # Reactive Forms
-/check-code-language <feature>  # Code Language
-/check-e2e <feature>            # E2E Tests (Playwright MCP)
-/check-documentation <feature>  # Feature Documentation (DE + EN)
-```
-
-**Gruppierte Checks:**
-```
-/check-arch <feature>           # Architecture + Stores + Routing
-/check-quality <feature>        # ESLint + TypeScript + Performance + Styling
-```
-
----
-
-## Naming Conventions
-
-```
-user-container.component.ts    # Container
-user-list.component.ts         # Presentational
-user-api.service.ts            # API Service
-user-business.service.ts       # Business Service
-user.store.ts                  # Feature Store
-```
-
----
-
-## Git Commits
-
-```
-feat(REQ-XXX): Add user feature store and container
-fix(REQ-XXX): Fix validation in business service
-test(REQ-XXX): Add 85% coverage
-```
+**Gruppiert:** `/check-arch`, `/check-quality`
 
 ---
 
@@ -595,46 +125,49 @@ npm test               # Jest Watch
 npm run test:coverage  # Coverage Report
 npm run lint:fix       # ESLint Auto-fix
 npm run type-check     # TypeScript Check
+npm run e2e            # Playwright E2E (3 Viewports)
+```
+
+---
+
+## Naming & Commits
+
+```
+user-container.component.ts/.html/.scss  # Container (3 Dateien!)
+user-list.component.ts                   # Presentational
+user-api.service.ts                      # API Service
+user.store.ts                            # Feature Store
+```
+
+```
+feat(REQ-XXX): Add user feature
+fix(REQ-XXX): Fix validation
+test(REQ-XXX): Add 85% coverage
 ```
 
 ---
 
 ## Project Structure
 
-### Code
 ```
 src/app/
-├── core/                      # Singletons (Guards, Interceptors)
-├── shared/                    # Wiederverwendbare Components
-├── features/                  # Feature Module
-│   └── user/
-│       ├── user-container.component.ts
-│       ├── user-container.component.html
-│       ├── components/
-│       │   ├── user-list.component.ts
-│       │   └── user-form.component.ts
-│       ├── services/
-│       │   ├── user-api.service.ts
-│       │   └── user-business.service.ts
-│       ├── store/
-│       │   └── user.store.ts
-│       └── models/
-│           └── user.model.ts
+├── core/           # Guards, Interceptors
+├── shared/         # Reusable Components
+├── features/       # Feature Modules
+│   └── <feature>/
+│       ├── <feature>-container.component.ts/.html/.scss
+│       ├── components/    # Presentational
+│       ├── services/      # API + Business
+│       ├── store/         # NgRx Signal Store
+│       └── models/        # Interfaces
 └── app.routes.ts
-```
 
-### Requirements & Qualität
-```
 docs/requirements/
-├── REQUIREMENTS.md            # Übersicht aller Requirements
-├── REQ-TEMPLATE.md            # Template für neue Requirements
-├── QUALITAETS-TEMPLATE.md     # Template für Quality Reports
-├── DOKU-TEMPLATE.md           # Template für Feature-Dokumentation
-└── REQ-XXX-FeatureName/
-    ├── requirement.md         # Spezifikation
-    ├── mockup.png             # Optional: Design
-    ├── qualitaets.md          # Quality Report (nach /check-all)
-    ├── feature-documentation-de.md  # Doku DE (nach /check-documentation)
-    ├── feature-documentation-en.md  # Doku EN (nach /check-documentation)
-    └── screenshots/           # E2E + Doku Screenshots
+├── REQUIREMENTS.md
+├── REQ-XXX-Name/
+│   ├── requirement.md
+│   ├── qualitaets.md          # /check-all Report
+│   ├── feature-documentation-de.md
+│   ├── feature-documentation-en.md
+│   └── screenshots/
 ```

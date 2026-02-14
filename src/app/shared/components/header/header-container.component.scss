@@ -82,6 +82,8 @@
   &__cart-dropdown {
     padding: var(--spacing-md);
     min-width: 15em;
+    background: var(--color-background-surface);
+    color: var(--color-text-primary);
   }
 
   &__cart-title {

@@ -23,8 +23,8 @@ docs/requirements/
 
 ### 1. Create Requirement
 
-```bash
-./scripts/create-requirement.sh "UserNotifications" 42
+```
+/create-requirement REQ-042-UserNotifications
 ```
 
 Creates: `REQ-042-UserNotifications/requirement.md`

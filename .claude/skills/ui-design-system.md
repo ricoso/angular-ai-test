@@ -48,7 +48,41 @@ Jede Page nutzt `<app-header>` aus REQ-001 mit:
 
 **Touch-Targets:** `min-height: var(--touch-target-min)` (44px)
 
-### 5. Icons IMMER mit Rahmen
+### 5. Modals & Dropdowns IMMER heller Hintergrund
+
+**Alle Overlays (Modals, Dialogs, Dropdowns, Menus, Tooltips) MÜSSEN einen hellen/weißen Hintergrund haben.**
+
+```scss
+// RICHTIG
+.modal, .dropdown, .menu {
+  background: var(--color-background-surface); // #ffffff
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-medium);
+}
+
+// FALSCH - Kein dunkler/transparenter Hintergrund für Overlays!
+.modal {
+  background: rgba(0, 0, 0, 0.8);
+  background: var(--color-primary);
+}
+```
+
+**Gilt für:**
+- `mat-dialog` / `mat-bottom-sheet`
+- `mat-menu` / `mat-select` Panel
+- Custom Dropdowns / Popover
+- Accessibility-Menu
+- Tooltips mit Inhalt
+
+**Material Override (falls nötig):**
+```scss
+// src/styles/_material-overrides.scss
+.mat-mdc-dialog-container { background: var(--color-background-surface) !important; }
+.mat-mdc-menu-panel { background: var(--color-background-surface) !important; }
+.mat-mdc-select-panel { background: var(--color-background-surface) !important; }
+```
+
+### 6. Icons IMMER mit Rahmen
 
 **Standard:** Abgerundetes Quadrat mit leichtem Schatten
 
@@ -79,6 +113,13 @@ Jede Page nutzt `<app-header>` aus REQ-001 mit:
 - `.icon-framed--sm` - Kleinere Version (2em)
 
 **Styling:** `src/styles/_utilities.scss`
+
+### 7. Varianten-Referenz
+
+| # | Regel | Variable |
+|---|-------|----------|
+| 5 | Modals/Dropdowns hell | `--color-background-surface` |
+| 6 | Icons mit Rahmen | `.icon-framed` |
 
 ---
 

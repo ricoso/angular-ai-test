@@ -1,0 +1,10 @@
+<section class="location-selection">
+  <h1 class="location-selection__title">{{ booking.location.title | translate }}</h1>
+  <p class="location-selection__subtitle">{{ booking.location.subtitle | translate }}</p>
+
+  <app-location-buttons
+    [locations]="locations()"
+    [selectedLocation]="selectedLocation()"
+    (locationSelected)="onLocationSelect($event)"
+  />
+</section>
