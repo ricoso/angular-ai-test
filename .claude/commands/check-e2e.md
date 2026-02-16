@@ -1,7 +1,11 @@
 # Check E2E Command (Lokaler Playwright)
 
 Testet ein Feature via lokaler Playwright Test-Suite und erstellt/erweitert persistente Test-Dateien.
-Playwright MCP dient NUR zur Dokumentation (Screenshots für `docs/requirements/`).
+
+> ⛔ **NIEMALS ÜBERSPRINGEN!** Dieser Check nutzt die **lokale Playwright CLI** (`npx playwright test`).
+> Er ist NICHT abhängig vom Playwright MCP-Server. Auch wenn kein MCP konfiguriert ist,
+> MUSS dieser Check vollständig ausgeführt werden (Schritte 1–5, 7–8 sind PFLICHT).
+> Nur Schritt 6 (Screenshots für Doku) ist optional und benötigt den MCP.
 
 ## Usage
 
