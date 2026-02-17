@@ -161,18 +161,38 @@ Falls Tests fehlschlagen: Issues dokumentieren und fixen.
 
 ---
 
-### Schritt 6: Screenshots fuer Dokumentation (Optional, via Playwright MCP)
+### Schritt 6: Screenshots fuer Dokumentation (PFLICHT — nur Playwright!)
 
-> **NUR fuer Dokumentation!** Kein Ersatz fuer die lokalen Tests.
+> ⛔ **PFLICHT!** Screenshots werden AUSSCHLIESSLICH via Playwright erstellt.
+> **KEINE alten Mockups** oder manuell erstellte Bilder in der Dokumentation verwenden!
+> Alle Screenshots muessen den tatsaechlichen, aktuellen Stand der Anwendung zeigen.
 
-Falls Playwright MCP konfiguriert ist, koennen zusaetzliche Screenshots erstellt werden:
+**Alle 3 Viewports sind PFLICHT:**
 
 ```
 docs/requirements/<REQ-ID>/screenshots/
-├── e2e-responsive-desktop.png
-├── e2e-responsive-tablet.png
-└── e2e-responsive-mobile.png
+├── e2e-responsive-desktop.png    # PFLICHT (1280x720)
+├── e2e-responsive-tablet.png     # PFLICHT (768x1024)
+└── e2e-responsive-mobile.png     # PFLICHT (375x667)
 ```
+
+**Vorgehen:**
+1. Dev Server muss laufen (`http://localhost:4200`)
+2. Feature-Route ermitteln aus Requirement
+3. Fuer JEDEN Viewport (Desktop, Tablet, Mobile):
+   a. Viewport-Groesse setzen
+   b. Feature-Route navigieren
+   c. Screenshot erstellen und speichern
+4. Zusaetzliche Step-Screenshots bei Bedarf:
+   ```
+   ├── e2e-step-01-desktop.png
+   ├── e2e-step-01-tablet.png
+   ├── e2e-step-01-mobile.png
+   └── ...
+   ```
+
+> ⛔ **KEINE Mockups!** Nur echte Playwright-Screenshots sind in der Doku erlaubt.
+> Falls alte Mockup-Dateien im Screenshots-Ordner liegen, diese NICHT referenzieren.
 
 ---
 
