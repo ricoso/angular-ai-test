@@ -4,8 +4,8 @@ Testet ein Feature via lokaler Playwright Test-Suite und erstellt/erweitert pers
 
 > ⛔ **NIEMALS ÜBERSPRINGEN!** Dieser Check nutzt die **lokale Playwright CLI** (`npx playwright test`).
 > Er ist NICHT abhängig vom Playwright MCP-Server. Auch wenn kein MCP konfiguriert ist,
-> MUSS dieser Check vollständig ausgeführt werden (ALLE Schritte 1–8 sind PFLICHT).
-> Screenshots werden via Playwright Test-Suite (`page.screenshot()`) erstellt — KEIN MCP noetig!
+> MUSS dieser Check vollständig ausgeführt werden (ALLE Schritte 1–9 sind PFLICHT).
+> Screenshots werden via **`node playwright/take-screenshots.js`** erstellt — KEIN MCP noetig!
 
 ## Usage
 
@@ -111,16 +111,28 @@ test.describe('REQ-XXX: Feature Name', () => {
 });
 ```
 
-**Workflow-Testdatei erweitern bei jedem neuen REQ:**
+**Workflow-Testdatei (`workflow-booking-complete.spec.ts`) erweitern bei JEDEM neuen REQ — PFLICHT!**
+
+> ⛔ **Bei jeder neuen Feature-Implementierung MUSS `playwright/workflow-booking-complete.spec.ts` erweitert werden!**
+> Der Gesamtworkflow testet die komplette User-Journey ueber alle implementierten Steps hinweg.
+> Neue Steps muessen in den Happy Path, Alternative Flows, Exception Flows und i18n-Tests integriert werden.
+
 ```typescript
 test.describe('Complete Booking Workflow', () => {
-  // Happy Path (Start -> Brand -> Location -> Services -> ...)
-  // Alternative Flows (Back navigation, brand switch)
-  // Exception Flows & Guards
-  // i18n through complete flow
-  // Header persistence across pages (REQ-001)
+  // Happy Path — erweitern: Start -> Brand -> Location -> [NEUER STEP] -> ...
+  // Alternative Flows — erweitern: Back navigation, Step-Wechsel
+  // Exception Flows & Guards — erweitern: Direkt-Zugriff auf neuen Step ohne Vorbedingung
+  // i18n through complete flow — erweitern: DE + EN durch neuen Step
+  // Header persistence across pages (REQ-001) — erweitern: Header auf neuem Step sichtbar
 });
 ```
+
+**Checkliste fuer Workflow-Erweiterung:**
+- [ ] Happy Path um neuen Step erweitert (z.B. Brand -> Location -> **Services**)
+- [ ] Alternative Flow: Zurueck-Navigation vom neuen Step
+- [ ] Exception Flow: Guard-Redirect bei Direkt-Zugriff ohne Vorbedingung
+- [ ] i18n: DE + EN Titel auf neuem Step geprueft
+- [ ] Header: Sichtbarkeit auf neuem Step geprueft
 
 ---
 
@@ -161,11 +173,11 @@ Falls Tests fehlschlagen: Issues dokumentieren und fixen.
 
 ---
 
-### Schritt 6: Screenshots fuer Dokumentation (PFLICHT — via Playwright Test-Suite!)
+### Schritt 6: Screenshots fuer Dokumentation (PFLICHT — via Node-Script!)
 
-> ⛔ **PFLICHT!** Screenshots werden via `page.screenshot()` in der Playwright Test-Suite erstellt.
-> **KEIN MCP-Server noetig!** Der `saveScreenshot()` Helper in `playwright/helpers/app.helpers.ts` wird genutzt.
-> **KEINE alten Mockups** oder manuell erstellte Bilder in der Dokumentation verwenden!
+> ⛔ **PFLICHT!** Screenshots werden via **`node playwright/take-screenshots.js`** erstellt.
+> Das Script nutzt die Playwright API direkt — unabhaengig von Test-Specs.
+> **KEIN MCP-Server noetig!** **KEINE alten Mockups** in der Dokumentation verwenden!
 > Alle Screenshots muessen den tatsaechlichen, aktuellen Stand der Anwendung zeigen.
 
 **Alle 3 Viewports sind PFLICHT:**
@@ -177,62 +189,49 @@ docs/requirements/<REQ-ID>/screenshots/
 └── e2e-responsive-mobile.png     # PFLICHT (375x667)
 ```
 
-**Vorgehen — Screenshot-Test erstellen/erweitern:**
+**Vorgehen:**
 
-1. In der REQ-Testdatei (z.B. `playwright/REQ-003-location-selection.spec.ts`) eine eigene Test-Describe-Section fuer Screenshots hinzufuegen:
+1. **Screenshot-Config erweitern** (bei neuem Feature):
+   Oeffne `playwright/take-screenshots.js` und fuege einen Eintrag in `SCREENSHOT_CONFIG` hinzu:
 
-```typescript
-import { saveScreenshot } from './helpers/app.helpers';
+   ```javascript
+   'REQ-004-Servicewahl': {
+     route: '/home/services',
+     setup: async (page) => {
+       // Vorbedingungen erfuellen (z.B. Brand + Location waehlen)
+       await page.goto(`${HASH}/home/brand`);
+       await page.waitForLoadState('networkidle');
+       await page.locator('button', { hasText: 'Audi' }).click();
+       await page.waitForLoadState('networkidle');
+       await page.locator('button', { hasText: 'München' }).click();
+       await page.waitForLoadState('networkidle');
+     },
+   },
+   ```
 
-test.describe('Screenshots', () => {
-  const REQ_ID = 'REQ-003-Standortwahl';
+   - `route`: Ziel-Route (nur relevant wenn KEIN `setup` definiert)
+   - `setup`: Optionale async-Funktion die VOR dem Screenshot ausgefuehrt wird
+     (z.B. Brand waehlen damit Guard durchlaesst). Navigiert selbst zur Ziel-Seite.
 
-  test('responsive screenshots', async ({ page }) => {
-    // Setup: Navigate to feature page (ggf. Vorbedingungen erfuellen)
-    await selectBrand(page, 'Audi');
-    await waitForAngular(page);
+2. **Screenshots erstellen:**
+   ```bash
+   # Alle REQs (auto-discover aus docs/requirements/REQ-*)
+   node playwright/take-screenshots.js
 
-    // Desktop (1280x720) — Default Viewport
-    await page.setViewportSize({ width: 1280, height: 720 });
-    await saveScreenshot(page, REQ_ID, 'e2e-responsive-desktop');
+   # Einzelnes REQ
+   node playwright/take-screenshots.js REQ-003-Standortwahl
+   ```
 
-    // Tablet (768x1024)
-    await page.setViewportSize({ width: 768, height: 1024 });
-    await saveScreenshot(page, REQ_ID, 'e2e-responsive-tablet');
+   > Dev Server muss laufen (`npm start`). Das Script prueft dies automatisch.
 
-    // Mobile (375x667)
-    await page.setViewportSize({ width: 375, height: 667 });
-    await saveScreenshot(page, REQ_ID, 'e2e-responsive-mobile');
-  });
+3. **Automatisches Verhalten:**
+   - Discovert alle `REQ-*` Ordner unter `docs/requirements/`
+   - Erstellt `screenshots/` Unterordner falls nicht vorhanden
+   - Setzt Sprache auf DE
+   - Erstellt 3 Screenshots pro REQ (Desktop, Tablet, Mobile)
+   - Warnt bei REQs ohne Config-Eintrag
 
-  test('step screenshots', async ({ page }) => {
-    // Step 1: Ausgangszustand (z.B. Standortauswahl geladen)
-    await selectBrand(page, 'Audi');
-    await waitForAngular(page);
-    await saveScreenshot(page, REQ_ID, 'e2e-step-01-overview');
-
-    // Step 2: Aktion ausgefuehrt (z.B. Standort gewaehlt)
-    await selectLocation(page, 'München');
-    await waitForAngular(page);
-    await saveScreenshot(page, REQ_ID, 'e2e-step-02-selected');
-  });
-});
-```
-
-2. **Screenshots werden beim Testlauf automatisch gespeichert** unter:
-   `docs/requirements/<REQ-ID>/screenshots/`
-
-3. **Screenshot-Helper** (bereits in `playwright/helpers/app.helpers.ts`):
-```typescript
-export async function saveScreenshot(page, reqId, name): Promise<void> {
-  await page.screenshot({
-    path: `docs/requirements/${reqId}/screenshots/${name}.png`,
-    fullPage: true,
-  });
-}
-```
-
-4. Nach dem Testlauf: Screenshots in Feature-Dokumentation referenzieren:
+4. Nach dem Lauf: Screenshots in Feature-Dokumentation referenzieren:
    - `feature-documentation-de.md` und `feature-documentation-en.md`
 
 > ⛔ **KEINE Mockups!** Nur echte Playwright-Screenshots sind in der Doku erlaubt.
@@ -288,7 +287,36 @@ export async function saveScreenshot(page, reqId, name): Promise<void> {
 
 ---
 
-### Schritt 8: Ergebnis-Report (Konsole)
+### Schritt 8: Workflow-Testdatei erweitern (PFLICHT bei neuem Feature!)
+
+> ⛔ **Bei JEDER neuen Feature-Implementierung PFLICHT!**
+> `playwright/workflow-booking-complete.spec.ts` muss den neuen Step im Gesamtworkflow abbilden.
+
+**Pruefe und erweitere:**
+
+1. **Happy Path:** Neuen Step in den End-to-End-Flow einbauen
+   ```typescript
+   test('complete flow: Start -> Brand -> Location -> [NEUER STEP]', async ({ page }) => {
+     // ... bestehende Steps ...
+     // Step N: Neuen Step ausfuehren
+     await selectNewStep(page, 'value');
+     const route = await getCurrentRoute(page);
+     expect(route).toBe('/home/new-step');
+   });
+   ```
+
+2. **Alternative Flows:** Zurueck-Navigation vom neuen Step testen
+3. **Exception Flows:** Guard-Redirect bei Direkt-Zugriff ohne Vorbedingung
+4. **i18n:** DE + EN Titel auf neuem Step
+5. **Header Persistence:** Header-Sichtbarkeit auf neuem Step
+
+**Helpers erweitern:**
+- Neue Aktionen in `playwright/helpers/booking.helpers.ts` hinzufuegen
+  (z.B. `selectService()`, `goToServiceSelection()`, `getServiceButtonTexts()`)
+
+---
+
+### Schritt 9: Ergebnis-Report (Konsole)
 
 ```
 E2E_RESULT:

@@ -23,6 +23,7 @@
     "e2e:ui": "npx playwright test --ui",
     "e2e:headed": "npx playwright test --headed",
     "e2e:report": "npx playwright show-report playwright/reports",
+    "e2e:screenshots": "node playwright/take-screenshots.js",
     "help": "cat COMMANDS.md"
   },
   "private": true,
