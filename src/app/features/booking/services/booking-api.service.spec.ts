@@ -28,5 +28,34 @@ describe('BookingApiService', () => {
     });
   });
 
+  describe('getLocations', () => {
+    it('should return locations for audi', async () => {
+      const result = await service.getLocations('audi');
+      expect(result).toEqual(LOCATIONS_BY_BRAND.audi);
+    });
 
+    it('should return 5 locations for audi', async () => {
+      const result = await service.getLocations('audi');
+      expect(result).toHaveLength(5);
+    });
+
+    it('should return 3 locations for mini', async () => {
+      const result = await service.getLocations('mini');
+      expect(result).toHaveLength(3);
+    });
+
+    it('should return locations with id and name', async () => {
+      const result = await service.getLocations('bmw');
+      result.forEach(loc => {
+        expect(loc).toHaveProperty('id');
+        expect(loc).toHaveProperty('name');
+      });
+    });
+
+    it('should return different locations per brand', async () => {
+      const audiLocations = await service.getLocations('audi');
+      const miniLocations = await service.getLocations('mini');
+      expect(audiLocations).not.toEqual(miniLocations);
+    });
+  });
 });
