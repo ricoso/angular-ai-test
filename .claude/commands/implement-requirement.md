@@ -213,26 +213,40 @@ npm run test:coverage
 
 ---
 
-### Step 7: Technische Prüfung (PFLICHT! BLOCKER!)
+### Step 7: Technische Prüfung (PFLICHT! BLOCKER! PARALLEL AGENTS!)
 
-> ⛔ **ALLE 3 Befehle MÜSSEN ausgeführt werden!**
-> **Bei Fehler: Fixen und erneut ausführen bis GRÜN!**
+> ⛔ **ALLE 3 Prüfungen MÜSSEN ausgeführt werden!**
+> ⚡ **ALLE 3 als parallele Agents starten** (3 Task-Tool-Aufrufe mit `subagent_type: "Bash"` in EINER Nachricht)!
+> **Bei Fehler: Fixen und erneut ALLE 3 parallel als Agents ausführen bis GRÜN!**
 
-```bash
-npm run lint:fix
-npm run type-check
-npm run test:coverage
+**3 parallele Agents starten (EINE Nachricht, 3 Task-Tool-Aufrufe):**
+
+| # | Agent Description | Command | Prüft |
+|---|-------------------|---------|-------|
+| 1 | `"Run lint:fix"` | `npm run lint:fix` | ESLint Regeln + Auto-Fix |
+| 2 | `"Run type-check"` | `npm run type-check` | TypeScript Typen |
+| 3 | `"Run test:coverage"` | `npm run test:coverage` | Jest Tests + Coverage >80% |
+
+**Jeder Agent-Aufruf sieht so aus:**
+```
+Task tool:
+  subagent_type: "Bash"
+  description: "Run lint:fix" / "Run type-check" / "Run test:coverage"
+  prompt: "Führe `npm run <command>` aus und berichte das Ergebnis: PASS oder FAIL mit Details."
 ```
 
-**Ergebnis dokumentieren:**
+> ⚡ **WICHTIG:** Die 3 Agents sind voneinander UNABHÄNGIG und MÜSSEN parallel gestartet werden!
+> **NICHT sequenziell ausführen — das verschwendet Zeit!**
+
+**Ergebnis dokumentieren (erst wenn ALLE 3 Agents fertig):**
 ```
-🔧 TECHNISCHE PRÜFUNG:
-- lint:fix    → [✅ PASS / ❌ FAIL + Fehler]
-- type-check  → [✅ PASS / ❌ FAIL + Fehler]
+🔧 TECHNISCHE PRÜFUNG (3 parallele Agents):
+- lint:fix     → [✅ PASS / ❌ FAIL + Fehler]
+- type-check   → [✅ PASS / ❌ FAIL + Fehler]
 - test:coverage → [✅ PASS (XX%) / ❌ FAIL + fehlgeschlagene Tests]
 ```
 
-> ⛔ **STOP bei FAIL!** Erst fixen, dann erneut prüfen.
+> ⛔ **STOP bei FAIL!** Erst fixen, dann erneut ALLE 3 parallel als Agents prüfen.
 > **Step 8 darf NICHT starten wenn Step 7 nicht GRÜN ist!**
 
 **GATE 7:** ✅ lint ✅ + type-check ✅ + tests ✅
