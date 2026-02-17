@@ -1,0 +1,17 @@
+{
+    "mcpServers": {
+      "playwright": {
+        "command": "npx",
+        "args": ["@playwright/mcp@latest"]
+      },
+      "ngrx-signalstore": {
+        "command": "node",
+        "args": ["mcp/ngrx-signalstore/index.js"]
+      },
+      "angular-material": {
+        "command": "node",
+        "args": ["mcp/angular-material/index.js"]
+      }
+    }
+  }
+  
