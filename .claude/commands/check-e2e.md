@@ -4,8 +4,8 @@ Testet ein Feature via lokaler Playwright Test-Suite und erstellt/erweitert pers
 
 > ⛔ **NIEMALS ÜBERSPRINGEN!** Dieser Check nutzt die **lokale Playwright CLI** (`npx playwright test`).
 > Er ist NICHT abhängig vom Playwright MCP-Server. Auch wenn kein MCP konfiguriert ist,
-> MUSS dieser Check vollständig ausgeführt werden (Schritte 1–5, 7–8 sind PFLICHT).
-> Nur Schritt 6 (Screenshots für Doku) ist optional und benötigt den MCP.
+> MUSS dieser Check vollständig ausgeführt werden (ALLE Schritte 1–8 sind PFLICHT).
+> Screenshots werden via Playwright Test-Suite (`page.screenshot()`) erstellt — KEIN MCP noetig!
 
 ## Usage
 
@@ -161,9 +161,10 @@ Falls Tests fehlschlagen: Issues dokumentieren und fixen.
 
 ---
 
-### Schritt 6: Screenshots fuer Dokumentation (PFLICHT — nur Playwright!)
+### Schritt 6: Screenshots fuer Dokumentation (PFLICHT — via Playwright Test-Suite!)
 
-> ⛔ **PFLICHT!** Screenshots werden AUSSCHLIESSLICH via Playwright erstellt.
+> ⛔ **PFLICHT!** Screenshots werden via `page.screenshot()` in der Playwright Test-Suite erstellt.
+> **KEIN MCP-Server noetig!** Der `saveScreenshot()` Helper in `playwright/helpers/app.helpers.ts` wird genutzt.
 > **KEINE alten Mockups** oder manuell erstellte Bilder in der Dokumentation verwenden!
 > Alle Screenshots muessen den tatsaechlichen, aktuellen Stand der Anwendung zeigen.
 
@@ -176,20 +177,63 @@ docs/requirements/<REQ-ID>/screenshots/
 └── e2e-responsive-mobile.png     # PFLICHT (375x667)
 ```
 
-**Vorgehen:**
-1. Dev Server muss laufen (`http://localhost:4200`)
-2. Feature-Route ermitteln aus Requirement
-3. Fuer JEDEN Viewport (Desktop, Tablet, Mobile):
-   a. Viewport-Groesse setzen
-   b. Feature-Route navigieren
-   c. Screenshot erstellen und speichern
-4. Zusaetzliche Step-Screenshots bei Bedarf:
-   ```
-   ├── e2e-step-01-desktop.png
-   ├── e2e-step-01-tablet.png
-   ├── e2e-step-01-mobile.png
-   └── ...
-   ```
+**Vorgehen — Screenshot-Test erstellen/erweitern:**
+
+1. In der REQ-Testdatei (z.B. `playwright/REQ-003-location-selection.spec.ts`) eine eigene Test-Describe-Section fuer Screenshots hinzufuegen:
+
+```typescript
+import { saveScreenshot } from './helpers/app.helpers';
+
+test.describe('Screenshots', () => {
+  const REQ_ID = 'REQ-003-Standortwahl';
+
+  test('responsive screenshots', async ({ page }) => {
+    // Setup: Navigate to feature page (ggf. Vorbedingungen erfuellen)
+    await selectBrand(page, 'Audi');
+    await waitForAngular(page);
+
+    // Desktop (1280x720) — Default Viewport
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await saveScreenshot(page, REQ_ID, 'e2e-responsive-desktop');
+
+    // Tablet (768x1024)
+    await page.setViewportSize({ width: 768, height: 1024 });
+    await saveScreenshot(page, REQ_ID, 'e2e-responsive-tablet');
+
+    // Mobile (375x667)
+    await page.setViewportSize({ width: 375, height: 667 });
+    await saveScreenshot(page, REQ_ID, 'e2e-responsive-mobile');
+  });
+
+  test('step screenshots', async ({ page }) => {
+    // Step 1: Ausgangszustand (z.B. Standortauswahl geladen)
+    await selectBrand(page, 'Audi');
+    await waitForAngular(page);
+    await saveScreenshot(page, REQ_ID, 'e2e-step-01-overview');
+
+    // Step 2: Aktion ausgefuehrt (z.B. Standort gewaehlt)
+    await selectLocation(page, 'München');
+    await waitForAngular(page);
+    await saveScreenshot(page, REQ_ID, 'e2e-step-02-selected');
+  });
+});
+```
+
+2. **Screenshots werden beim Testlauf automatisch gespeichert** unter:
+   `docs/requirements/<REQ-ID>/screenshots/`
+
+3. **Screenshot-Helper** (bereits in `playwright/helpers/app.helpers.ts`):
+```typescript
+export async function saveScreenshot(page, reqId, name): Promise<void> {
+  await page.screenshot({
+    path: `docs/requirements/${reqId}/screenshots/${name}.png`,
+    fullPage: true,
+  });
+}
+```
+
+4. Nach dem Testlauf: Screenshots in Feature-Dokumentation referenzieren:
+   - `feature-documentation-de.md` und `feature-documentation-en.md`
 
 > ⛔ **KEINE Mockups!** Nur echte Playwright-Screenshots sind in der Doku erlaubt.
 > Falls alte Mockup-Dateien im Screenshots-Ordner liegen, diese NICHT referenzieren.
