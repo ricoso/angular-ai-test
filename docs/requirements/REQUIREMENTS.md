@@ -23,7 +23,7 @@
 
 | REQ-ID | Name | Status | Priority | Dependencies | Description |
 |--------|------|--------|----------|--------------|-------------|
-| REQ-001 | Header | 🔍 In Review | High | - | Wiederverwendbarer Header mit Logo und Accessibility-Einstellungen (Font-Size, High-Contrast, Reduced-Motion) |
+| REQ-001 | Header | ✔️ Implemented | High | - | Wiederverwendbarer Header mit Logo und Accessibility-Einstellungen (Font-Size, High-Contrast, Reduced-Motion) |
 | REQ-002 | Markenauswahl | ✔️ Implemented | High | REQ-001 | Einstiegsseite Buchungswizard: Fahrzeugmarken-Auswahl (Audi, BMW, Mercedes-Benz, MINI, Volkswagen) |
 | REQ-003 | Standortwahl | 🔍 In Review | High | REQ-002 | Standortwahl basierend auf gewählter Fahrzeugmarke (Wizard-Schritt 2) |
 
@@ -59,8 +59,8 @@ REQ-001-Header
 | 🔍 In Review | 1 |
 | ✅ Approved | 0 |
 | 🚧 In Progress | 0 |
-| ✔️ Implemented | 1 |
-| **Total** | **2** |
+| ✔️ Implemented | 2 |
+| **Total** | **3** |
 
 ---
 
