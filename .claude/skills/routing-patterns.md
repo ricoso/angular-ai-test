@@ -3,8 +3,6 @@
 ## Projekt-Vorgabe
 - Deployment: Click-Dummy (GitHub Pages)
 - HashLocation: AKTIV (`withHashLocation()`)
-- URL: `https://<user>.github.io/<repo>/#/<route>`
-- CI: `.github/workflows/deploy-gh-pages.yml`
 
 ---
 
@@ -13,49 +11,28 @@
 ```typescript
 // app.routes.ts
 export const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
-  },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   {
     path: 'home',
     loadComponent: () => import('./features/home/containers/home-container/home-container.component')
       .then(m => m.HomeContainerComponent)
   },
-  {
-    path: '**',
-    redirectTo: 'home'
-  }
+  { path: '**', redirectTo: 'home' }
 ];
 ```
 
-**Struktur:**
-- `AppComponent` = Layout (Header + `<router-outlet>`)
-- `''` → Redirect zu `home` (Startpunkt)
-- `home` → Lazy-loaded Home Feature
-- `**` → Wildcard Redirect zu `home`
+**Struktur:** `AppComponent` = Layout (Header + `<router-outlet>`), `''` → home, `**` → home
 
 ---
 
 ## GitHub Pages (HashLocation)
 
-Für Static Hosting ohne Server-Side Routing:
-
 ```typescript
 // app.config.ts
-import { provideRouter, withHashLocation } from '@angular/router';
-
 providers: [
   provideRouter(routes, withHashLocation())
 ]
 ```
-
-**URLs:**
-| Route | URL |
-|-------|-----|
-| Home (Start) | `https://user.github.io/repo/#/home` |
-| Users | `https://user.github.io/repo/#/users` |
 
 ---
 
@@ -73,7 +50,7 @@ providers: [
 
 ## Resolver Pattern
 
-**Pattern:** Resolver → Store → Component subscribes
+**Pattern:** Resolver → Store.rxMethod → Component subscribes Store
 
 ### Store with RxMethod
 
@@ -82,7 +59,6 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 
 export const UserStore = signalStore(
   { providedIn: 'root' },
-
   withState({ users: [], isLoading: false, error: null }),
 
   withMethods((store, userApi = inject(UserApiService)) => ({
@@ -95,19 +71,40 @@ export const UserStore = signalStore(
           error: (err: unknown) => patchState(store, { error: err instanceof Error ? err.message : 'Unknown error', isLoading: false })
         })
       )
+    ),
+    // With params variant:
+    loadUser: rxMethod<string>(
+      pipe(
+        tap(() => patchState(store, { isLoading: true })),
+        switchMap((id) => from(userApi.getById(id))),
+        tap({ next: (user) => patchState(store, { selectedUser: user, isLoading: false }) })
+      )
     )
   }))
 );
 ```
 
-### Resolver
+### Resolvers
 
 ```typescript
+// Without params
 export const usersResolver: ResolveFn<void> = () => {
-  const store = inject(UserStore);
-  store.loadUsers();
-  return;  // Return void!
+  inject(UserStore).loadUsers();
+  return;
 };
+
+// With params
+export const userDetailResolver: ResolveFn<void> = (route) => {
+  inject(UserStore).loadUser(route.paramMap.get('id')!);
+  return;
+};
+```
+
+### Routes
+
+```typescript
+{ path: '', component: UserContainerComponent, resolve: { _: usersResolver } }
+{ path: ':id', component: UserDetailComponent, resolve: { _: userDetailResolver } }
 ```
 
 ### Container
@@ -115,38 +112,10 @@ export const usersResolver: ResolveFn<void> = () => {
 ```typescript
 export class UserContainerComponent {
   protected userStore = inject(UserStore);
-
   protected readonly users = this.userStore.users;
   protected readonly isLoading = this.userStore.isLoading;
-
   // NO ngOnInit for loading!
 }
-```
-
----
-
-## Resolver with Params
-
-```typescript
-// Store
-loadUser: rxMethod<string>(
-  pipe(
-    tap(() => patchState(store, { isLoading: true })),
-    switchMap((id) => from(userApi.getById(id))),
-    tap({ next: (user) => patchState(store, { selectedUser: user, isLoading: false }) })
-  )
-)
-
-// Resolver
-export const userDetailResolver: ResolveFn<void> = (route) => {
-  const store = inject(UserStore);
-  const id = route.paramMap.get('id')!;
-  store.loadUser(id);
-  return;
-};
-
-// Routes
-{ path: ':id', component: UserDetailComponent, resolve: { _: userDetailResolver } }
 ```
 
 ---
@@ -183,21 +152,7 @@ void router.navigate(['/users'], { queryParams: { filter: 'active' } });
 
 ## Checklist
 
-**Store:**
-- [ ] `rxMethod<void>(pipe(...))` for Resolver
-- [ ] `tap → patchState` (loading, data, error)
-- [ ] `from()` for Promise → Observable
-
-**Resolver:**
-- [ ] `ResolveFn<void>`
-- [ ] Call `store.rxMethod()`
-- [ ] Return void
-
-**Container:**
-- [ ] Signals from Store
-- [ ] NO ngOnInit for loading
-
-**Routes:**
-- [ ] `resolve: { _: resolver }`
-- [ ] Lazy loading
-- [ ] Guards (optional)
+**Store:** `rxMethod<void>(pipe(...))`, `tap → patchState` (loading, data, error), `from()` for Promise → Observable
+**Resolver:** `ResolveFn<void>`, call `store.rxMethod()`, return void
+**Container:** Signals from Store, NO ngOnInit for loading
+**Routes:** `resolve: { _: resolver }`, Lazy loading, Guards (optional)

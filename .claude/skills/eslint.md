@@ -187,13 +187,4 @@ npm run lint:fix && npm run type-check
 
 ## Troubleshooting
 
-```bash
-# Cache löschen
-rm -rf .angular/cache
-
-# Effective Config für eine Datei prüfen
-npx eslint --print-config src/app/path/file.ts | jq '.rules["rule-name"]'
-
-# Nur Errors anzeigen (Warnings ignorieren)
-npx eslint . --quiet
-```
+Cache löschen: `rm -rf .angular/cache` — Effective Config prüfen: `npx eslint --print-config src/app/path/file.ts`
