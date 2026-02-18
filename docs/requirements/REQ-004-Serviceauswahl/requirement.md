@@ -12,16 +12,18 @@
 ## 1. Overview
 
 ### 1.1 Purpose
-Der Benutzer wählt einen oder mehrere Services (HU/AU, Inspektion, Räderwechsel) aus. Manche Services bieten Untervarianten an (z.B. Räderwechsel mit/ohne Einlagerung), die über ein Modal auswählbar sind. Eine Zusammenfassungsleiste am unteren Bildschirmrand zeigt die gewählten Services mit Anzahl und ermöglicht die Navigation zum nächsten Schritt.
+Der Benutzer wählt einen oder mehrere Services (HU/AU, Inspektion, Räderwechsel) aus. Manche Services bieten Untervarianten an (z.B. Räderwechsel mit/ohne Einlagerung) der Service kann nach anwahl einer Optione und mit klick auf bestätigungsschaltflächen ausgewählt werden. 
 
 ### 1.2 Scope
 **Included:**
 - Anzeige der 3 Service-Karten (HU/AU, Inspektion, Räderwechsel) mit Icon (siehe mockups /docs/requirments/REQ-004...) 
 - Mehrfachauswahl (Multi-Select) der Services
-- Card expand für Service-Untervarianten (Räderwechsel)
+- für Service-Untervarianten (Räderwechsel) hier werden die varianten im radio button mode ausgewählt
 - Zusammenfassungsleiste (Bottom-Bar) mit gewählten Services
-- Speichern der gewählten Services im BookingStore
+- Speichern der gewählten Services und Variante im BookingStore
 - Navigation zu REQ-005 (nächster Wizard-Schritt)
+- zurück und weiter schaltflächen auf der Service auswahlseite
+
 
 **Excluded:**
 - Standortwahl (→ REQ-003)
@@ -45,10 +47,10 @@ Der Benutzer wählt einen oder mehrere Services (HU/AU, Inspektion, Räderwechse
 - [ ] AC-2: Jede Karte zeigt Titel, Icon und Beschreibungstext
 - [ ] AC-3: Klick auf eine Karte selektiert/deselektiert den Service (Toggle)
 - [ ] AC-4: Selektierte Karten zeigen ein Häkchen-Icon oben rechts und umrandet
-- [ ] AC-6: Bei Räderwechsel öffnet sich ein Modal mit Untervarianten (mit/ohne Einlagerung radio) und bestätigung oder abwahl über button  
-- [ ] AC-7: Header warenkorb Anzahl-Badge erscheint sobald mindestens 1 Service gewählt ist, es wird auch marke uns standort angezeigt innerhalb des warenkorbs
-- [ ] AC-8: Header warenkorb zeigt Warenkorb-Icon mit Anzahl-Badge und Text "Sie haben X Services ausgewählt"
-- [ ] AC-9: Header warenkorb zeigt gewählte Services als Chips mit Icon
+- [ ] AC-6: Räderwechsel-Karte zeigt Radio-Buttons (mit/ohne Einlagerung) und Bestätigen/Abwählen-Button direkt auf der Karte
+- [ ] AC-7: Header warenkorb Anzahl-Badge erscheint sobald mindestens 1 Service gewählt ist, es wird auch die marken-auswahl und standort-auswahl angezeigt innerhalb des warenkorbs
+- [ ] AC-8: Header warenkorb zeigt Warenkorb-Icon mit Anzahl-Badge 
+- [ ] AC-9: Header warenkorb zeigt gewählte Services mit variante als Chips mit Icon
 - [ ] AC-10: unter service card auswahl wird eine row angezeigt mit zurück und weiter button, auf jeder vorherigen und nachfolgenden seite
 - [ ] AC-11: Klick auf "weiter" speichert im BookingStore und navigiert zum nächsten Schritt, zurück löscht aus bookingstore und navigiert zur vorherigen seite
 - [ ] AC-12: Überschrift zeigt "Welche Services möchten Sie buchen?"
@@ -95,11 +97,9 @@ Der Benutzer wählt einen oder mehrere Services (HU/AU, Inspektion, Räderwechse
 - **System:** Header Warenkorb aktualisiert Anzahl und Chips
 
 **Step 4:** Benutzer wählt Räderwechsel
-- **User:** Klickt auf Räderwechsel-Karte
-- **System:** expand card mit Untervarianten
-- **User:** Wählt eine oder mehrere Untervarianten (Checkboxen)
-- **User:** Klickt "Bestätigen" wenn nicht angewählt, "Abwählen" wenn service schon ausgewählt war
-- **System:** Räderwechsel als selektiert markiert
+- **User:** Wählt eine Variante per Radio-Button auf der Räderwechsel-Karte (mit/ohne Einlagerung)
+- **User:** Klickt "Bestätigen"-Button auf der Karte
+- **System:** Räderwechsel als selektiert markiert, Button wechselt zu "Abwählen"
 
 **Step 5:** Benutzer klickt "weiter"
 - **User:** Klickt "weiter"-Button unterhalb der auswahl felder rechts selbe höhe(row) wie zurück
@@ -122,20 +122,29 @@ Der Benutzer wählt einen oder mehrere Services (HU/AU, Inspektion, Räderwechse
 
 ### 5.2 Zurück zur Standortwahl und Marken auswahl
 
-**Trigger:** Benutzer klickt Zurück-Pfeil-Button (< unter Auswahlfelder links selbe höhe(row) wie weiter)
+**Trigger:** Benutzer klickt Zurück-Button
 
 **Flow:**
 1. System navigiert zu `/home/location`
 2. Gewählter Standort bleibt im Store
 
-### 5.3 Räderwechsel-Modal abbrechen
+### 5.3 Räderwechsel abwählen
 
-**Trigger:** Benutzer schließt card expand ohne Bestätigung (Klick außerhalb oder X)
+**Trigger:** Benutzer klickt "Abwählen"-Button auf der Räderwechsel-Karte (Service ist selektiert)
 
 **Flow:**
-1. Card auf normal grösse
-2. Räderwechsel wird NICHT selektiert
-3. Zustand bleibt unverändert
+1. Räderwechsel wird deselektiert
+2. Service wird aus BookingStore entfernt
+3. Button wechselt zurück zu "Bestätigen"
+
+### 5.4 Räderwechsel — Variantenwechsel
+
+**Trigger:** Benutzer ändert Radio-Auswahl auf der Räderwechsel-Karte (Service bereits selektiert)
+
+**Flow:**
+1. Button wechselt von "Abwählen" zu "Bestätigen"
+2. User klickt "Bestätigen"-Button
+3. Neue Variante wird im BookingStore gespeichert
 
 ---
 
@@ -177,7 +186,7 @@ Der Benutzer wählt einen oder mehrere Services (HU/AU, Inspektion, Räderwechse
 
 - **BR-1:** Multi-Select — Benutzer kann mehrere Services gleichzeitig wählen
 - **BR-2:** Mindestens 1 Service muss gewählt sein um fortzufahren
-- **BR-3:** Räderwechsel hat Untervarianten (mit/ohne Einlagerung), die über ein Modal gewählt werden
+- **BR-3:** Räderwechsel hat Untervarianten (mit/ohne Einlagerung), die per Radio-Button direkt auf der Karte gewählt werden
 - **BR-4:** Servicewechsel (bei Rücknavigation) setzt nachfolgende Wizard-Schritte zurück
 - **BR-5:** Services sind statisch konfiguriert (Click-Dummy, kein API-Call)
 
@@ -187,7 +196,6 @@ Der Benutzer wählt einen oder mehrere Services (HU/AU, Inspektion, Räderwechse
 
 ### Performance
 - Seitenaufbau < 300ms (statische Daten)
-- Modal-Öffnung < 100ms
 
 ### Security
 - HTTPS only
@@ -198,7 +206,7 @@ Der Benutzer wählt einen oder mehrere Services (HU/AU, Inspektion, Räderwechse
 - Mobile-First: Karten stacken vertikal
 - Touch-friendly: Min 2.75em (44px)
 - WCAG 2.1 AA
-- Keyboard-Navigation für Kartenauswahl und Modal
+- Keyboard-Navigation für Kartenauswahl und Radio-Buttons
 
 ---
 
@@ -271,26 +279,24 @@ interface SelectedService {
 | Element | Typ | Beschreibung |
 |---------|-----|--------------|
 | Warenkorb-Icon | Icon + Badge | Icon mit Anzahl-Badge (z.B. "2") |
-| Zusammenfassungstext | `span` | "Sie haben X Services ausgewählt" |
 | Service-Chips | Chip-Liste | Gewählte Services mit kleinem Icon und Häkchen |
-| Weiter-Button | Button (Primary) | "weiter" — rechts unten |
+| Zurück und Weiter-Button | Button (Primary) |"zurück" - links unten /  "weiter" — rechts unten |
 
-### Layout — Räderwechsel-Modal
+### Layout — Räderwechsel-Karte (erweitert)
 
 | Element | Typ | Beschreibung |
 |---------|-----|--------------|
-| Modal-Titel | `h2` | "Räderwechsel" |
-| Modal-Icon | Icon/SVG | Rad-Icon (zentriert, mit `.icon-framed` Rahmen) |
-| Modal-Text | `p` | "Kommen Sie zu uns für Ihren Räderwechsel – inkl. optionaler Einlagerung!" |
-| Checkbox 1 | Checkbox (Material) | "Räderwechsel ohne Einlagerung" |
-| Checkbox 2 | Checkbox (Material) | "Räderwechsel mit Einlagerung" |
-| Bestätigen-Button | Button (Primary) | "Bestätigen" |
+| Karten-Titel | `h2` | "Räderwechsel" |
+| Karten-Icon | Icon/SVG | Rad-Icon (zentriert, mit `.icon-framed` Rahmen) |
+| Karten-Text | `p` | "Kommen Sie zu uns für Ihren Räderwechsel – inkl. optionaler Einlagerung!" |
+| Radio 1 | Radio (Material) | "Räderwechsel ohne Einlagerung" |
+| Radio 2 | Radio (Material) | "Räderwechsel mit Einlagerung" |
+| Bestätigen/Abwählen-Button | Button (Primary) | "Bestätigen" (wenn nicht selektiert) / "Abwählen" (wenn selektiert) |
 
 ### Material Components
 - `mat-card` — Service-Karten
 - `mat-icon` — Icons (Häkchen, Warenkorb, Schließen)
-- `mat-checkbox` — Räderwechsel-Untervarianten
-- `mat-dialog` — Räderwechsel-Modal (Overlay, `var(--color-background-surface)`)
+- `mat-radio-group` / `mat-radio-button` — Räderwechsel-Untervarianten
 - `mat-chip-listbox` / `mat-chip` — Service-Chips in Bottom-Bar
 - `mat-badge` — Anzahl-Badge am Warenkorb-Icon
 
@@ -303,7 +309,6 @@ interface SelectedService {
 Screenshots zeigen dunkles Theme → Implementierung mit **hellem Theme** aus `_variables.scss`!
 - Hintergrund: `var(--color-background-page)` (hell)
 - Karten: `var(--color-background-surface)` (weiß)
-- Modal: `var(--color-background-surface)` (weiß)
 - Text: `var(--color-text-primary)` / `var(--color-text-secondary)`
 - Buttons: `var(--color-primary)`
 - Häkchen/Selected: `var(--color-primary)`
@@ -352,65 +357,89 @@ GET /api/services
 
 ## 13. Test Cases
 
-### TC-1: Happy Path — Seite laden
+### TC-1: Seite laden (AC-1, AC-2, AC-12)
 - **Given:** Marke + Standort gewählt
 - **When:** Seite `/home/services` wird geladen
-- **Then:** 3 Service-Karten werden angezeigt, Überschrift sichtbar
+- **Then:** 3 Service-Karten werden angezeigt, Überschrift "Welche Services möchten Sie buchen?" sichtbar
 
-### TC-2: Service selektieren
+### TC-2: HU/AU selektieren (AC-3, AC-4)
 - **Given:** Service-Karten angezeigt
 - **When:** Klick auf "HU/AU"-Karte
-- **Then:** Karte zeigt Häkchen, Header-Warenkorb erscheint mit "1 Service"
+- **Then:** Karte zeigt Häkchen oben rechts + Umrandung, Header-Warenkorb erscheint
 
-### TC-3: Multi-Select
+### TC-3: Multi-Select (BR-1)
 - **Given:** HU/AU bereits selektiert
 - **When:** Klick auf "Inspektion"-Karte
 - **Then:** Beide Karten haben Häkchen, Header-Warenkorb zeigt "2 Services"
 
-### TC-4: Service deselektieren
+### TC-4: Service deselektieren (AC-3, 5.1)
 - **Given:** HU/AU selektiert
 - **When:** Erneuter Klick auf "HU/AU"-Karte
-- **Then:** Häkchen verschwindet, Header-Warenkorb verschwindet (0 Services)
+- **Then:** Häkchen verschwindet, Karte im Originalzustand
 
-### TC-5: Räderwechsel-Modal
-- **Given:** Service-Karten angezeigt
-- **When:** Klick auf "Räderwechsel"
-- **Then:** Card expand sich mit 2 Checkboxen
+### TC-5: Räderwechsel — Radio sichtbar (AC-6)
+- **Given:** Seite geladen
+- **When:** Räderwechsel-Karte wird angezeigt
+- **Then:** Radio-Buttons "ohne Einlagerung" und "mit Einlagerung" + "Bestätigen"-Button sind direkt auf der Karte sichtbar
 
-### TC-6: Räderwechsel bestätigen
-- **Given:** card expand, "ohne Einlagerung" angehakt
-- **When:** Klick auf "Bestätigen"
-- **Then:** Modal schließt, Räderwechsel als selektiert, Variant "without-storage" gespeichert
+### TC-6: Räderwechsel — Bestätigen (AC-6)
+- **Given:** Radio "ohne Einlagerung" gewählt
+- **When:** Klick auf "Bestätigen"-Button auf der Karte
+- **Then:** Räderwechsel als selektiert markiert, Variante "without-storage" im BookingStore gespeichert, Button wechselt zu "Abwählen"
 
-### TC-7: Weiter-Navigation
+### TC-7: Räderwechsel — Abwählen (AC-6, 5.3)
+- **Given:** Räderwechsel selektiert (Button zeigt "Abwählen")
+- **When:** Klick auf "Abwählen"-Button
+- **Then:** Räderwechsel deselektiert, Service aus BookingStore entfernt, Button wechselt zu "Bestätigen"
+
+### TC-7a: Räderwechsel — Variantenwechsel (AC-6, 5.4)
+- **Given:** Räderwechsel selektiert mit "ohne Einlagerung"
+- **When:** Radio-Auswahl auf "mit Einlagerung" ändern
+- **Then:** Button wechselt zu "Bestätigen", Klick auf "Bestätigen" speichert neue Variante "with-storage" im BookingStore
+
+### TC-8: Header-Warenkorb — Badge zählt (AC-7, AC-8)
+- **Given:** Keine Services gewählt
+- **When:** Services nacheinander selektieren/deselektieren (1→2→1→0)
+- **Then:** Badge zeigt immer aktuelle Anzahl, verschwindet bei 0
+
+### TC-8a: Header-Warenkorb — Inhalt (AC-8, AC-9)
+- **Given:** 2 Services gewählt
+- **When:** Warenkorb-Header wird angezeigt
+- **Then:** Text "Sie haben X Services ausgewählt" + Chips mit Icons + Marke + Standort sichtbar
+
+### TC-9: Weiter-Navigation (AC-10, AC-11)
 - **Given:** Mindestens 1 Service gewählt
-- **When:** Klick auf "weiter"
+- **When:** Klick auf "weiter"-Button
 - **Then:** Services im BookingStore gespeichert, Navigation zum nächsten Schritt
 
-### TC-8: Guard — kein Standort
+### TC-10: Zurück-Navigation (AC-10, AC-11, 5.2)
+- **Given:** Services gewählt
+- **When:** Klick auf "zurück"-Button
+- **Then:** Store-Reset, Navigation zur vorherigen Seite
+
+### TC-11: Weiter disabled (BR-2)
+- **Given:** Keine Services gewählt
+- **When:** "weiter"-Button wird angezeigt
+- **Then:** Button ist nicht klickbar (disabled)
+
+### TC-12: Guard — kein Standort (6.1)
 - **Given:** Kein Standort im Store
 - **When:** Direktaufruf `/home/services`
 - **Then:** Redirect zu `/home/location`
 
-### TC-9: Guard — keine Marke
+### TC-13: Guard — keine Marke (6.2)
 - **Given:** Keine Marke im Store
 - **When:** Direktaufruf `/home/services`
 - **Then:** Redirect zu `/home/brand`
-
-### TC-10: Bottom-Bar Chips
-- **Given:** 2 Services gewählt
-- **When:** warenkorb header 
-- **Then:** 2 Chips mit Service-Icon und Name angezeigt und Standort und Marke (welche ausgewählt wurden)
-
+/
 ---
 
 ## 14. Implementation
 
 ### Components
 - [ ] `ServiceSelectionContainerComponent` — Container, `inject(BookingStore)`, OnPush
-- [ ] `ServiceCardComponent` — Presentational, `input(service)`, `input(isSelected)`, `output(serviceClicked)`
+- [ ] `ServiceCardComponent` — Presentational, `input(service)`, `input(isSelected)`, `output(serviceClicked)`, `output(tireChangeConfirmed)`, `output(tireChangeDeselected)` — enthält Radio-Buttons + Bestätigen/Abwählen für Räderwechsel
 - [ ] `ServiceSummaryBarComponent` — Presentational, `input(selectedServices)`, `output(continueClicked)`, `output(barClosed)`
-- [ ] `TireChangeDialogComponent` — Dialog/Modal für Räderwechsel-Untervarianten
 
 ### Services
 - [ ] `ServiceApiService` — API Service (Click-Dummy: statische Daten)
@@ -446,10 +475,7 @@ src/app/features/booking/components/service-selection/
 ├── service-card.component.scss
 ├── service-summary-bar.component.ts
 ├── service-summary-bar.component.html
-├── service-summary-bar.component.scss
-├── tire-change-dialog.component.ts
-├── tire-change-dialog.component.html
-└── tire-change-dialog.component.scss
+└── service-summary-bar.component.scss
 ```
 
 ---
@@ -471,10 +497,11 @@ src/app/features/booking/components/service-selection/
 ### Container Methods
 | Methode | Beschreibung |
 |---------|--------------|
-| `onServiceClick(service)` | Service-Karte geklickt → Toggle oder Modal |
+| `onServiceClick(service)` | Service-Karte geklickt → Toggle (HU/AU, Inspektion) |
 | `onContinue()` | Weiter-Button → Store + Navigation |
-| `onBarClose()` | Bottom-Bar X-Button → Bar einklappen |
-| `onTireChangeConfirm(variants)` | Modal bestätigt → Räderwechsel selektiert |
+| `onBack()` | Zurück-Button → Store-Reset + Navigation |
+| `onTireChangeConfirm(variantId)` | Bestätigen-Button auf Räderwechsel-Karte → Service selektiert |
+| `onTireChangeDeselect()` | Abwählen-Button auf Räderwechsel-Karte → Service deselektiert |
 
 ### API Service
 | Methode | Beschreibung |
@@ -507,7 +534,6 @@ booking: {
   services: {
     title: 'Welche Services möchten Sie buchen?',
     subtitle: 'Wählen Sie die gewünschten Services aus.',
-    selectedText: 'Sie haben diesen Service ausgewählt',
     summaryText: 'Sie haben {{count}} Services ausgewählt',
     summaryTextSingular: 'Sie haben 1 Service ausgewählt',
     continueButton: 'weiter',
@@ -524,7 +550,8 @@ booking: {
       description: 'Kommen Sie zu uns für Ihren Räderwechsel – inkl. optionaler Einlagerung!',
       withoutStorage: 'Räderwechsel ohne Einlagerung',
       withStorage: 'Räderwechsel mit Einlagerung',
-      confirmButton: 'Bestätigen'
+      confirmButton: 'Bestätigen',
+      deselectButton: 'Abwählen'
     }
   }
 }
@@ -534,7 +561,6 @@ booking: {
   services: {
     title: 'Which services would you like to book?',
     subtitle: 'Select the desired services.',
-    selectedText: 'You have selected this service',
     summaryText: 'You have selected {{count}} services',
     summaryTextSingular: 'You have selected 1 service',
     continueButton: 'continue',
@@ -551,7 +577,8 @@ booking: {
       description: 'Come to us for your tire change – including optional storage!',
       withoutStorage: 'Tire change without storage',
       withStorage: 'Tire change with storage',
-      confirmButton: 'Confirm'
+      confirmButton: 'Confirm',
+      deselectButton: 'Deselect'
     }
   }
 }
@@ -582,5 +609,5 @@ Siehe `.claude/skills/bilingual-code.md` für Details:
 - KEINE Farben aus Screenshots!
 - IMMER `_variables.scss` verwenden
 - Helles Theme (nicht dunkel wie in Screenshots)
-- Overlays/Modals: `var(--color-background-surface)` (weiß)
+- Karten: `var(--color-background-surface)` (weiß)
 - Icons: IMMER mit `.icon-framed` Rahmen
