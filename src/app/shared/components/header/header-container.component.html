@@ -31,7 +31,46 @@
       <div class="header__cart-dropdown" role="group" tabindex="-1" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
         <h3 class="header__cart-title">{{ header.cart.title | translate }}</h3>
         @if (cartStore.hasItems()) {
-          <p class="header__cart-placeholder">{{ header.cart.placeholder | translate }}</p>
+          <p class="header__cart-summary">{{ cartSummaryText() }}</p>
+
+          @if (selectedBrandName()) {
+            <div class="header__cart-row">
+              <span class="header__cart-label">{{ header.cart.brandLabel | translate }}:</span>
+              <mat-chip-set class="header__cart-chips">
+                <mat-chip class="header__cart-chip">
+                  <mat-icon matChipAvatar>directions_car</mat-icon>
+                  {{ selectedBrandName() }}
+                </mat-chip>
+              </mat-chip-set>
+            </div>
+          }
+
+          @if (selectedLocationName()) {
+            <div class="header__cart-row">
+              <span class="header__cart-label">{{ header.cart.locationLabel | translate }}:</span>
+              <mat-chip-set class="header__cart-chips">
+                <mat-chip class="header__cart-chip">
+                  <mat-icon matChipAvatar>location_on</mat-icon>
+                  {{ selectedLocationName() }}
+                </mat-chip>
+              </mat-chip-set>
+            </div>
+          }
+
+          <div class="header__cart-row">
+            <span class="header__cart-label">{{ header.cart.servicesLabel | translate }}:</span>
+            <mat-chip-set class="header__cart-chips">
+              @for (chip of cartServiceChips(); track chip.title) {
+                <mat-chip class="header__cart-chip">
+                  <mat-icon matChipAvatar>{{ chip.icon }}</mat-icon>
+                  {{ chip.title }}
+                  @if (chip.variantLabel) {
+                    <span class="header__cart-variant">({{ chip.variantLabel }})</span>
+                  }
+                </mat-chip>
+              }
+            </mat-chip-set>
+          </div>
         } @else {
           <p class="header__cart-empty">{{ header.cart.empty | translate }}</p>
         }

@@ -233,6 +233,68 @@ test.describe('REQ-004: Service Selection', () => {
       await expect(continueButton).toBeDisabled();
     });
 
+    test('TC-8: header cart badge counts selected services', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToServiceSelection(page);
+
+      const badge = page.locator('.cart-icon__button .mat-badge-content');
+
+      // Initially no badge visible (0 services)
+      await expect(badge).toBeHidden();
+
+      // Select HU/AU -> badge shows 1
+      await selectService(page, 'HU/AU');
+      await expect(badge).toBeVisible();
+      await expect(badge).toHaveText('1');
+
+      // Select Inspektion -> badge shows 2
+      await selectService(page, 'Inspektion');
+      await expect(badge).toHaveText('2');
+
+      // Deselect HU/AU -> badge shows 1
+      await selectService(page, 'HU/AU');
+      await expect(badge).toHaveText('1');
+
+      // Deselect Inspektion -> badge hidden (0)
+      await selectService(page, 'Inspektion');
+      await expect(badge).toBeHidden();
+    });
+
+    test('TC-8a: header cart dropdown shows brand, location and service chips', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToServiceSelection(page);
+
+      // Select a service
+      await selectService(page, 'HU/AU');
+
+      // Open cart dropdown
+      const cartButton = page.locator('.cart-icon__button');
+      await cartButton.click();
+      await waitForAngular(page);
+
+      // Cart dropdown should show summary, brand, location, service chips
+      const dropdown = page.locator('.header__cart-dropdown');
+      await expect(dropdown).toBeVisible();
+
+      // Summary text visible
+      const summary = dropdown.locator('.header__cart-summary');
+      await expect(summary).toBeVisible();
+
+      // Brand chip
+      const brandChip = dropdown.locator('.header__cart-row', { hasText: /Marke/ });
+      await expect(brandChip).toBeVisible();
+      await expect(brandChip).toContainText('Audi');
+
+      // Location chip
+      const locationChip = dropdown.locator('.header__cart-row', { hasText: /Standort/ });
+      await expect(locationChip).toBeVisible();
+
+      // Service chip
+      const serviceChips = dropdown.locator('.header__cart-row', { hasText: /Services/ });
+      await expect(serviceChips).toBeVisible();
+      await expect(serviceChips).toContainText('HU/AU');
+    });
+
   });
 
   // =============================================

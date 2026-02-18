@@ -36,6 +36,10 @@ export const translations = {
         title: 'Warenkorb',
         empty: 'Ihr Warenkorb ist leer',
         placeholder: 'Inhalt wird bald verfügbar',
+        summary: 'Sie haben {count} Service(s) ausgewählt',
+        brandLabel: 'Marke',
+        locationLabel: 'Standort',
+        servicesLabel: 'Services',
         badge: {
           ariaLabel: 'Artikel im Warenkorb'
         }
@@ -107,6 +111,10 @@ export const translations = {
         title: 'Shopping Cart',
         empty: 'Your cart is empty',
         placeholder: 'Content coming soon',
+        summary: 'You have selected {count} service(s)',
+        brandLabel: 'Brand',
+        locationLabel: 'Location',
+        servicesLabel: 'Services',
         badge: {
           ariaLabel: 'items in cart'
         }
