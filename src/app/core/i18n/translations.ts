@@ -51,6 +51,29 @@ export const translations = {
         title: 'An welchem Standort dürfen wir Sie begrüßen?',
         subtitle: 'Bitte wählen Sie den gewünschten Standort aus.',
         ariaGroupLabel: 'Standorte'
+      },
+      services: {
+        title: 'Welche Services möchten Sie buchen?',
+        subtitle: 'Wählen Sie die gewünschten Services aus.',
+        ariaGroupLabel: 'Verfügbare Services',
+        continueButton: 'Weiter',
+        backButton: 'Zurück',
+        huau: {
+          title: 'HU/AU',
+          description: 'Jetzt Ihren Termin für eine gesetzliche HU/AU vereinbaren!'
+        },
+        inspection: {
+          title: 'Inspektion',
+          description: 'Lassen Sie Ihre fällige Inspektion hier durchführen! Buchen Sie jetzt einen Termin.'
+        },
+        tireChange: {
+          title: 'Räderwechsel',
+          description: 'Kommen Sie zu uns für Ihren Räderwechsel – inkl. optionaler Einlagerung!',
+          withoutStorage: 'Räderwechsel ohne Einlagerung',
+          withStorage: 'Räderwechsel mit Einlagerung',
+          confirmButton: 'Bestätigen',
+          deselectButton: 'Abwählen'
+        }
       }
     }
   },
@@ -99,6 +122,29 @@ export const translations = {
         title: 'At which location may we welcome you?',
         subtitle: 'Please select your desired location.',
         ariaGroupLabel: 'Locations'
+      },
+      services: {
+        title: 'Which services would you like to book?',
+        subtitle: 'Select the desired services.',
+        ariaGroupLabel: 'Available services',
+        continueButton: 'Continue',
+        backButton: 'Back',
+        huau: {
+          title: 'HU/AU',
+          description: 'Book your appointment for a mandatory HU/AU inspection now!'
+        },
+        inspection: {
+          title: 'Inspection',
+          description: 'Have your due inspection carried out here! Book an appointment now.'
+        },
+        tireChange: {
+          title: 'Tire Change',
+          description: 'Come to us for your tire change – including optional storage!',
+          withoutStorage: 'Tire change without storage',
+          withStorage: 'Tire change with storage',
+          confirmButton: 'Confirm',
+          deselectButton: 'Deselect'
+        }
       }
     }
   }

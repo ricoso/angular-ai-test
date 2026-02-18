@@ -64,18 +64,19 @@ const SCREENSHOT_CONFIG = {
     },
   },
 
-  // --- Add new features here ---
-  // 'REQ-004-Servicewahl': {
-  //   route: '/home/services',
-  //   setup: async (page) => {
-  //     await page.goto(`${HASH}/home/brand`);
-  //     await page.waitForLoadState('networkidle');
-  //     await page.locator('button', { hasText: 'Audi' }).click();
-  //     await page.waitForLoadState('networkidle');
-  //     await page.locator('button', { hasText: 'München' }).click();
-  //     await page.waitForLoadState('networkidle');
-  //   },
-  // },
+  'REQ-004-Serviceauswahl': {
+    route: '/home/services',
+    setup: async (page) => {
+      await page.goto(`${HASH}/home/brand`);
+      await page.waitForLoadState('networkidle');
+      await page.locator('button', { hasText: 'Audi' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      await page.locator('button', { hasText: 'München' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
+    },
+  },
 };
 
 // ---------------------------------------------------------------------------

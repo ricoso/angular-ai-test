@@ -1,5 +1,6 @@
 import { AVAILABLE_BRANDS } from '../models/brand.model';
 import { LOCATIONS_BY_BRAND } from '../models/location.model';
+import { AVAILABLE_SERVICES } from '../models/service.model';
 
 import { BookingApiService } from './booking-api.service';
 
@@ -54,6 +55,24 @@ describe('BookingApiService', () => {
         expect(location.name).toBeDefined();
         expect(location.city).toBeDefined();
       }
+    });
+  });
+
+  describe('getServices', () => {
+    it('should return available services', async () => {
+      const result = await service.getServices();
+      expect(result).toEqual(AVAILABLE_SERVICES);
+    });
+
+    it('should return 3 services', async () => {
+      const result = await service.getServices();
+      expect(result).toHaveLength(3);
+    });
+
+    it('should include tire-change with variants', async () => {
+      const result = await service.getServices();
+      const tireChange = result.find(s => s.id === 'tire-change');
+      expect(tireChange?.variants).toHaveLength(2);
     });
   });
 });

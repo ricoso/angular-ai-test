@@ -1,0 +1,108 @@
+@use 'breakpoints' as *;
+
+.service-card {
+  position: relative;
+  background-color: var(--color-background-surface);
+  border: 0.125em solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  text-align: center;
+  padding: var(--spacing-lg);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+  &--clickable {
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-medium);
+    }
+
+    &:focus-visible {
+      outline: 0.1875em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+  }
+
+  &--selected {
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-medium);
+  }
+
+  &__check {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    color: var(--color-primary);
+    font-size: var(--font-size-xl);
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 0;
+  }
+
+  &__icon {
+    font-size: var(--font-size-2xl);
+    color: var(--color-primary);
+  }
+
+  &__title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  &__description {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  &__variants {
+    width: 100%;
+    margin-top: var(--spacing-md);
+    text-align: left;
+  }
+
+  &__radio-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    min-height: var(--touch-target-min);
+    cursor: pointer;
+    padding: var(--spacing-xs) 0;
+  }
+
+  &__radio-input {
+    accent-color: var(--color-primary);
+    width: 1.25em;
+    height: 1.25em;
+    cursor: pointer;
+  }
+
+  &__radio-text {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--spacing-md);
+  }
+
+  &__confirm-button,
+  &__deselect-button {
+    min-height: var(--touch-target-min);
+    min-width: 10em;
+  }
+}

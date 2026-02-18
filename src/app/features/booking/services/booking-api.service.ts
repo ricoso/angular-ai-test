@@ -4,6 +4,8 @@ import type { Brand, BrandDisplay } from '../models/brand.model';
 import { AVAILABLE_BRANDS } from '../models/brand.model';
 import type { LocationDisplay } from '../models/location.model';
 import { LOCATIONS_BY_BRAND } from '../models/location.model';
+import type { ServiceDisplay } from '../models/service.model';
+import { AVAILABLE_SERVICES } from '../models/service.model';
 
 /**
  * API Service for booking data
@@ -19,5 +21,10 @@ export class BookingApiService {
   public getLocations(brand: Brand): Promise<LocationDisplay[]> {
     console.debug('[BookingApiService] getLocations() called for brand:', brand);
     return Promise.resolve(LOCATIONS_BY_BRAND[brand]);
+  }
+
+  public getServices(): Promise<ServiceDisplay[]> {
+    console.debug('[BookingApiService] getServices() called');
+    return Promise.resolve(AVAILABLE_SERVICES);
   }
 }

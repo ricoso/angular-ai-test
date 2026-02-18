@@ -6,20 +6,23 @@ import {
   getBrandButtonTexts,
   getLocationButtonTexts,
   getPageTitle,
+  getServiceCardTitles,
   goToBrandSelection,
+  goToServiceSelection,
   selectBrand,
   selectLocation,
+  selectService,
 } from './helpers/booking.helpers';
 
 /**
  * COMPLETE BOOKING WORKFLOW
  *
  * End-to-End flow through all implemented wizard steps:
- *   REQ-001 (Header) -> REQ-002 (Brand Selection) -> REQ-003 (Location Selection)
+ *   REQ-001 (Header) -> REQ-002 (Brand Selection) -> REQ-003 (Location Selection) -> REQ-004 (Service Selection)
  *
  * Tests the full user journey including:
  * - Header always visible
- * - Brand selection -> Location selection -> (Services — not yet implemented)
+ * - Brand selection -> Location selection -> Service selection
  * - Language switching during the flow
  * - Alternative flows (back navigation, brand change)
  * - Guards and redirects
@@ -33,7 +36,7 @@ test.describe('Complete Booking Workflow', () => {
 
   test.describe('Happy Path', () => {
 
-    test('complete flow: Start -> Brand -> Location', async ({ page }) => {
+    test('complete flow: Start -> Brand -> Location -> Services', async ({ page }) => {
       await setLanguage(page, 'de');
 
       // Step 1: Navigate to app root -> should redirect to /home/brand
@@ -77,8 +80,27 @@ test.describe('Complete Booking Workflow', () => {
       await selectLocation(page, 'München');
       await waitForAngular(page);
 
-      const finalRoute = await getCurrentRoute(page);
-      expect(finalRoute).toBeTruthy();
+      // Step 7: REQ-004 — Verify services page loaded
+      const servicesRoute = await getCurrentRoute(page);
+      expect(servicesRoute).toBe('/home/services');
+
+      const servicesTitle = await getPageTitle(page);
+      expect(servicesTitle).toBe('Welche Services möchten Sie buchen?');
+
+      // Step 8: Verify 3 service cards
+      const serviceCards = await getServiceCardTitles(page);
+      expect(serviceCards).toHaveLength(3);
+      expect(serviceCards).toEqual(
+        expect.arrayContaining(['HU/AU', 'Inspektion', 'Räderwechsel'])
+      );
+
+      // Step 9: Select HU/AU service
+      await selectService(page, 'HU/AU');
+      const huauCard = page.locator('.service-card', { hasText: 'HU/AU' });
+      await expect(huauCard).toHaveClass(/service-card--selected/);
+
+      // Step 10: Header still visible on services page
+      await expect(header).toBeVisible();
     });
 
     test('complete flow: MINI brand with 3 locations', async ({ page }) => {
@@ -180,6 +202,25 @@ test.describe('Complete Booking Workflow', () => {
       }
     });
 
+    test('flow: Services -> Back to Location', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToServiceSelection(page);
+
+      const servicesRoute = await getCurrentRoute(page);
+      expect(servicesRoute).toBe('/home/services');
+
+      // Click back button
+      const backButton = page.locator('.summary-bar__back-button');
+      await backButton.click();
+      await waitForAngular(page);
+
+      const locationRoute = await getCurrentRoute(page);
+      expect(locationRoute).toBe('/home/location');
+
+      const locationTitle = await getPageTitle(page);
+      expect(locationTitle).toBe('An welchem Standort dürfen wir Sie begrüßen?');
+    });
+
   });
 
   // =============================================
@@ -211,6 +252,15 @@ test.describe('Complete Booking Workflow', () => {
       expect(route).toBe('/home/brand');
     });
 
+    test('direct access to /home/services without brand/location -> redirect', async ({ page }) => {
+      await navigateTo(page, '/home/services');
+      await waitForAngular(page);
+
+      const route = await getCurrentRoute(page);
+      // Guard redirects to /home/brand (no brand) or /home/location (no location)
+      expect(route).toMatch(/\/home\/(brand|location)/);
+    });
+
   });
 
   // =============================================
@@ -219,7 +269,7 @@ test.describe('Complete Booking Workflow', () => {
 
   test.describe('i18n — Language through flow', () => {
 
-    test('EN: complete flow with English language', async ({ page }) => {
+    test('EN: complete flow with English language including services', async ({ page }) => {
       await setLanguage(page, 'en');
       await navigateTo(page, '/home/brand');
 
@@ -233,6 +283,17 @@ test.describe('Complete Booking Workflow', () => {
 
       const locations = await getLocationButtonTexts(page);
       expect(locations).toContain('München');
+
+      await selectLocation(page, 'München');
+      await waitForAngular(page);
+
+      const servicesTitle = await getPageTitle(page);
+      expect(servicesTitle).toBe('Which services would you like to book?');
+
+      const cardTitles = await getServiceCardTitles(page);
+      expect(cardTitles).toEqual(
+        expect.arrayContaining(['HU/AU', 'Inspection', 'Tire Change'])
+      );
     });
 
     test('language switch mid-flow: DE brand -> EN location', async ({ page }) => {
@@ -282,7 +343,7 @@ test.describe('Complete Booking Workflow', () => {
 
   test.describe('Header persistence (REQ-001)', () => {
 
-    test('header stays visible through brand -> location flow', async ({ page }) => {
+    test('header stays visible through brand -> location -> services flow', async ({ page }) => {
       const header = page.locator('header[role="banner"]');
       const companyName = page.locator('.header__company-name');
 
@@ -291,6 +352,13 @@ test.describe('Complete Booking Workflow', () => {
       await expect(companyName).toContainText('Gottfried Schultz');
 
       await selectBrand(page, 'Audi');
+      await expect(header).toBeVisible();
+      await expect(companyName).toContainText('Gottfried Schultz');
+
+      await selectLocation(page, 'München');
+      await waitForAngular(page);
+
+      // Header visible on services page
       await expect(header).toBeVisible();
       await expect(companyName).toContainText('Gottfried Schultz');
     });
@@ -313,13 +381,17 @@ test.describe('Complete Booking Workflow', () => {
       expect(settings).toBeTruthy();
     });
 
-    test('cart icon visible on all pages', async ({ page }) => {
+    test('cart icon visible on all pages including services', async ({ page }) => {
       const cartButton = page.locator('.cart-icon__button');
 
       await navigateTo(page, '/home/brand');
       await expect(cartButton).toBeVisible();
 
       await selectBrand(page, 'Audi');
+      await expect(cartButton).toBeVisible();
+
+      await selectLocation(page, 'München');
+      await waitForAngular(page);
       await expect(cartButton).toBeVisible();
     });
 

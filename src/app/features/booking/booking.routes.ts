@@ -1,8 +1,10 @@
 import type { Routes } from '@angular/router';
 
 import { brandSelectedGuard } from './guards/brand-selected.guard';
+import { locationSelectedGuard } from './guards/location-selected.guard';
 import { brandsResolver } from './resolvers/brands.resolver';
 import { locationsResolver } from './resolvers/locations.resolver';
+import { servicesResolver } from './resolvers/services.resolver';
 
 export const bookingRoutes: Routes = [
   {
@@ -22,5 +24,12 @@ export const bookingRoutes: Routes = [
       .then(m => m.LocationSelectionContainerComponent),
     canActivate: [brandSelectedGuard],
     resolve: { _: locationsResolver }
+  },
+  {
+    path: 'services',
+    loadComponent: () => import('./components/service-selection/service-selection-container.component')
+      .then(m => m.ServiceSelectionContainerComponent),
+    canActivate: [locationSelectedGuard],
+    resolve: { _: servicesResolver }
   }
 ];
