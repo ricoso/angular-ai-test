@@ -75,4 +75,13 @@ describe('LocationSelectionContainerComponent', () => {
       expect(router.navigate).toHaveBeenCalledWith(['/home/services']);
     });
   });
+
+  describe('Back Navigation', () => {
+    it('should navigate to brand selection on back', () => {
+      const exposed = component as unknown as { onBack: () => void };
+      exposed.onBack();
+
+      expect(router.navigate).toHaveBeenCalledWith(['/home/brand']);
+    });
+  });
 });

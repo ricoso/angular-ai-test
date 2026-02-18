@@ -49,12 +49,14 @@ export const translations = {
     booking: {
       brand: {
         title: 'Welche Fahrzeugmarke fahren Sie?',
-        subtitle: 'Bitte wählen Sie die gewünschte Marke aus.'
+        subtitle: 'Bitte wählen Sie die gewünschte Marke aus.',
+        backButton: 'Zurück'
       },
       location: {
         title: 'An welchem Standort dürfen wir Sie begrüßen?',
         subtitle: 'Bitte wählen Sie den gewünschten Standort aus.',
-        ariaGroupLabel: 'Standorte'
+        ariaGroupLabel: 'Standorte',
+        backButton: 'Zurück'
       },
       services: {
         title: 'Welche Services möchten Sie buchen?',
@@ -124,12 +126,14 @@ export const translations = {
     booking: {
       brand: {
         title: 'What vehicle brand do you drive?',
-        subtitle: 'Please select your desired brand.'
+        subtitle: 'Please select your desired brand.',
+        backButton: 'Back'
       },
       location: {
         title: 'At which location may we welcome you?',
         subtitle: 'Please select your desired location.',
-        ariaGroupLabel: 'Locations'
+        ariaGroupLabel: 'Locations',
+        backButton: 'Back'
       },
       services: {
         title: 'Which services would you like to book?',

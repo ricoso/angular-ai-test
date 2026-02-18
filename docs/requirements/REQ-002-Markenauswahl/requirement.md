@@ -42,6 +42,7 @@ Einstiegsseite des Buchungsablaufs. Der Benutzer wählt seine Fahrzeugmarke aus 
 - [ ] AC-3: Nach Klick wird zu `/home/standort` navigiert
 - [ ] AC-4: Überschrift zeigt "Welche Fahrzeugmarke fahren Sie?"
 - [ ] AC-5: Warenkorb-Icon im Header zeigt nach Auswahl die Marke im Dropdown
+- [ ] AC-6: Zurück-Button unter den Marken-Buttons navigiert zur Startseite
 
 ---
 

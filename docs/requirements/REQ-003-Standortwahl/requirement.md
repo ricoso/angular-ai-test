@@ -45,6 +45,7 @@ Der Benutzer wählt einen Standort (Autohaus) basierend auf der zuvor gewählten
 - [ ] AC-4: Navigation zu `/home/services` nach Auswahl
 - [ ] AC-5: Überschrift zeigt "An welchem Standort dürfen wir Sie begrüßen?"
 - [ ] AC-6: Warenkorb-Icon im Header zeigt Marke + Autohaus im Dropdown
+- [ ] AC-7: Zurück-Button unter den Standort-Buttons navigiert zur Markenauswahl (`/home/brand`)
 
 ---
 
