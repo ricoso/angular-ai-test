@@ -59,7 +59,7 @@ Einstiegsseite des Buchungsablaufs. Der Benutzer wählt seine Fahrzeugmarke aus 
 
 ### 3.3 Data
 - Marken sind statisch konfiguriert (5 Stück) und über den resolver eingebaut.
-- es in der store MXMehtode ein console.log zurück liefern und eine stattischen wert zurückliefert
+- es in der store MXMehtode ein console.debug schreiben und eine stattischen wert zurückliefert
  
 ### 3.4 Übergabe (Input von vorheriger Seite)
 | Feld | Quelle | Pflicht |

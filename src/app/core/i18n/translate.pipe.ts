@@ -16,7 +16,7 @@ import type { TranslationKey } from './translations';
 export class TranslatePipe implements PipeTransform {
   private readonly translateService = inject(TranslateService);
 
-  transform(key: TranslationKey): string {
+  public transform(key: TranslationKey): string {
     return this.translateService.instant(key);
   }
 }

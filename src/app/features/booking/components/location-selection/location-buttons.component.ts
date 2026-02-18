@@ -13,9 +13,9 @@ import type { LocationDisplay } from '../../models/location.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LocationButtonsComponent {
-  locations = input.required<LocationDisplay[]>();
-  selectedLocation = input<LocationDisplay | null>(null);
-  locationSelected = output<LocationDisplay>();
+  public readonly locations = input.required<LocationDisplay[]>();
+  public readonly selectedLocation = input<LocationDisplay | null>(null);
+  public readonly locationSelected = output<LocationDisplay>();
 
   protected readonly booking = i18nKeys.booking;
 

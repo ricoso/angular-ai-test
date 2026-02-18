@@ -10,9 +10,9 @@ import type { Brand, BrandDisplay } from '../../models/brand.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BrandButtonsComponent {
-  brands = input.required<BrandDisplay[]>();
-  selectedBrand = input<Brand | null>(null);
-  brandSelected = output<Brand>();
+  public readonly brands = input.required<BrandDisplay[]>();
+  public readonly selectedBrand = input<Brand | null>(null);
+  public readonly brandSelected = output<Brand>();
 
   protected onClick(brand: BrandDisplay): void {
     this.brandSelected.emit(brand.id);

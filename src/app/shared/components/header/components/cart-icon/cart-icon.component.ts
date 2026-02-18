@@ -27,11 +27,11 @@ export class CartIconComponent {
   private readonly cart = i18nKeys.header.cart;
 
   // Inputs (Presentational: input/output only, NO Store!)
-  readonly itemCount = input.required<number>();
-  readonly badgeText = input.required<string>();
+  public readonly itemCount = input.required<number>();
+  public readonly badgeText = input.required<string>();
 
   // Outputs
-  readonly cartClicked = output();
+  public readonly cartClicked = output();
 
   // Computed
   protected readonly badgeVisible = computed(() => this.itemCount() > 0);

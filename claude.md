@@ -29,6 +29,7 @@
 | Dunkler Hintergrund bei Overlays | `var(--color-background-surface)` (weiß) |
 | `[innerHTML]` ohne Sanitizer | Angular Template Escaping |
 | Hardcoded Strings in Templates | i18n Keys (`{{ t.feature.key }}`) |
+| Coverage-Thresholds ändern | Coverage-Config ist TABU — nie anfassen! |
 
 ---
 

@@ -44,7 +44,10 @@ localStorage.setItem('token', jwt);
 export const authGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
-  return auth.isAuthenticated() || router.createUrlTree(['/login']);
+  if (auth.isAuthenticated()) {
+    return true;
+  }
+  return router.createUrlTree(['/login']);
 };
 
 export const roleGuard = (role: string): CanActivateFn => () => {
@@ -81,7 +84,7 @@ const apiKey = 'sk-xxx-hardcoded';
 const url = `/api/user?password=${password}`;
 
 // ✅ RICHTIG
-console.log('Login attempt for user:', email);  // Keine sensiblen Daten
+console.debug('Login attempt for user:', email);  // Keine sensiblen Daten
 const apiKey = environment.apiKey;              // Environment Variable
 const url = `/api/user`;                        // POST Body für sensible Daten
 ```
@@ -116,7 +119,7 @@ export function noScriptValidator(): ValidatorFn {
 catchError((error) => throwError(() => error))
 
 // ✅ RICHTIG - Generische Fehlermeldung
-catchError((error) => {
+catchError((error: unknown) => {
   console.error('Internal:', error);  // Nur intern
   return throwError(() => new Error('Ein Fehler ist aufgetreten.'));
 })

@@ -85,17 +85,17 @@
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FontSizeToggleComponent {
-  sizes = ['small', 'normal', 'large', 'x-large'];  // 14px, 16px, 18px, 20px
-  currentSize = signal(1);  // Default: normal (16px)
+  protected readonly sizes = ['small', 'normal', 'large', 'x-large'];  // 14px, 16px, 18px, 20px
+  protected readonly currentSize = signal(1);  // Default: normal (16px)
 
-  increase(): void {
+  protected increase(): void {
     if (this.currentSize() < this.sizes.length - 1) {
       this.currentSize.update(s => s + 1);
       this.applySize();
     }
   }
 
-  decrease(): void {
+  protected decrease(): void {
     if (this.currentSize() > 0) {
       this.currentSize.update(s => s - 1);
       this.applySize();

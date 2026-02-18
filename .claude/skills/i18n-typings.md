@@ -145,7 +145,7 @@ export class MyComponent {
   private readonly translateService = inject(TranslateService);
   private readonly user = i18nKeys.user;
 
-  showMessage(): void {
+  protected showMessage(): void {
     const msg = this.translateService.instant(this.user.errors.notFound);
     this.notification.show(msg);
   }

@@ -92,7 +92,7 @@ export const UserStore = signalStore(
         switchMap(() => from(userApi.getAll())),
         tap({
           next: (users) => patchState(store, { users, isLoading: false }),
-          error: (error) => patchState(store, { error: error.message, isLoading: false })
+          error: (err: unknown) => patchState(store, { error: err instanceof Error ? err.message : 'Unknown error', isLoading: false })
         })
       )
     )
@@ -116,8 +116,8 @@ export const usersResolver: ResolveFn<void> = () => {
 export class UserContainerComponent {
   protected userStore = inject(UserStore);
 
-  users = this.userStore.users;
-  isLoading = this.userStore.isLoading;
+  protected readonly users = this.userStore.users;
+  protected readonly isLoading = this.userStore.isLoading;
 
   // NO ngOnInit for loading!
 }
@@ -159,7 +159,7 @@ export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
 
   if (!auth.isAuthenticated()) {
-    router.navigate(['/login']);
+    void router.navigate(['/login']);
     return false;
   }
   return true;
@@ -174,9 +174,9 @@ export const authGuard: CanActivateFn = () => {
 ## Navigation
 
 ```typescript
-router.navigate(['/users']);
-router.navigate(['/users', id]);
-router.navigate(['/users'], { queryParams: { filter: 'active' } });
+void router.navigate(['/users']);
+void router.navigate(['/users', id]);
+void router.navigate(['/users'], { queryParams: { filter: 'active' } });
 ```
 
 ---

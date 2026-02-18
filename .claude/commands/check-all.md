@@ -175,9 +175,10 @@ Prompt: "Analysiere das Feature '$ARGUMENTS' und führe folgende Feature-Checks 
    - KEIN ngModel
 
 3. **check-code-language**: Code Language
-   - Prüfe ob Requirement in DE oder EN
-   - Deutsche REQ: beimAbsenden(), ladeBenutzer()
-   - Englische REQ: onSubmit(), loadUsers()
+   - Code-Sprache ist FIXIERT auf Englisch (unabhängig von REQ-Sprache!)
+   - ALLE Variablen, Methoden, Klassen, CSS-Klassen MÜSSEN Englisch sein
+   - Korrekt: onSubmit(), loadUsers(), isLoading, User
+   - FALSCH: beimAbsenden(), ladeBenutzer(), istLaden, Benutzer
 
 Suche nach Dateien in src/app/features/$ARGUMENTS/**/*
 

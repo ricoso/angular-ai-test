@@ -12,13 +12,13 @@ WANN NUTZEN: Bei ALLEN Form-Implementierungen (Login, Registration, User Edit, e
 export class UserEditContainerComponent {
   private fb = inject(FormBuilder);
   
-  form = signal<FormGroup>(this.fb.group({
+  protected readonly form = signal<FormGroup>(this.fb.group({
     firstName: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
     age: [null, [Validators.required, Validators.min(18)]]
   }));
   
-  ngOnInit() {
+  public ngOnInit(): void {
     // Value Changes
     this.form().valueChanges
       .pipe(debounceTime(300))
@@ -27,7 +27,7 @@ export class UserEditContainerComponent {
       });
   }
   
-  async onSubmit() {
+  protected async onSubmit(): Promise<void> {
     if (this.form().invalid) {
       this.form().markAllAsTouched();
       return;
@@ -42,15 +42,15 @@ export class UserEditContainerComponent {
 
 ```typescript
 export class UserFormComponent {
-  form = input.required<FormGroup>();
-  submit = output<void>();
-  
-  hasError(field: string): boolean {
+  public readonly form = input.required<FormGroup>();
+  public readonly submit = output<void>();
+
+  protected hasError(field: string): boolean {
     const control = this.form().get(field);
     return !!(control && control.invalid && control.touched);
   }
   
-  getErrorMessage(field: string): string {
+  protected getErrorMessage(field: string): string {
     const control = this.form().get(field);
     if (!control?.errors || !control.touched) return '';
     
@@ -119,7 +119,7 @@ this.form = this.fb.group({
 export class FormContainerComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   
-  ngOnInit() {
+  public ngOnInit(): void {
     // Value changes with debounce
     this.form().valueChanges
       .pipe(
@@ -144,7 +144,7 @@ export class FormContainerComponent implements OnInit, OnDestroy {
       });
   }
   
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }

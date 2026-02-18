@@ -48,7 +48,7 @@ export const UserStore = signalStore(
       try {
         const users = await userApi.getAll();
         patchState(store, { users, isLoading: false });
-      } catch (error) {
+      } catch (error: unknown) {
         patchState(store, { error: 'Failed to load', isLoading: false });
       }
     },
@@ -119,14 +119,14 @@ export class ProductListContainerComponent {
   protected uiStore = inject(ProductListUiStore);
 
   // Combine stores
-  filteredProducts = computed(() => {
+  protected readonly filteredProducts = computed(() => {
     let result = this.productStore.products();
     const tab = this.uiStore.selectedTab();
     return tab === 'featured' ? result.filter(p => p.featured) : result;
   });
 
   // Event handlers
-  onTabChange(tab: 'all' | 'featured'): void {
+  protected onTabChange(tab: 'all' | 'featured'): void {
     this.uiStore.selectTab(tab);
   }
 
