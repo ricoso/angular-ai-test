@@ -16,9 +16,9 @@ Der Benutzer wählt einen oder mehrere Services (HU/AU, Inspektion, Räderwechse
 
 ### 1.2 Scope
 **Included:**
-- Anzeige der 3 Service-Karten (HU/AU, Inspektion, Räderwechsel)
+- Anzeige der 3 Service-Karten (HU/AU, Inspektion, Räderwechsel) mit Icon (siehe mockups /docs/requirments/REQ-004...) 
 - Mehrfachauswahl (Multi-Select) der Services
-- Modal/Overlay für Service-Untervarianten (Räderwechsel)
+- Card expand für Service-Untervarianten (Räderwechsel)
 - Zusammenfassungsleiste (Bottom-Bar) mit gewählten Services
 - Speichern der gewählten Services im BookingStore
 - Navigation zu REQ-005 (nächster Wizard-Schritt)
@@ -44,14 +44,13 @@ Der Benutzer wählt einen oder mehrere Services (HU/AU, Inspektion, Räderwechse
 - [ ] AC-1: Benutzer sieht 3 Service-Karten: HU/AU, Inspektion, Räderwechsel
 - [ ] AC-2: Jede Karte zeigt Titel, Icon und Beschreibungstext
 - [ ] AC-3: Klick auf eine Karte selektiert/deselektiert den Service (Toggle)
-- [ ] AC-4: Selektierte Karten zeigen ein Häkchen-Icon oben rechts
-- [ ] AC-5: Selektierte Karten zeigen "Sie haben diesen Service ausgewählt" als Text
-- [ ] AC-6: Bei Räderwechsel öffnet sich ein Modal mit Untervarianten (mit/ohne Einlagerung)
-- [ ] AC-7: Bottom-Bar erscheint sobald mindestens 1 Service gewählt ist
-- [ ] AC-8: Bottom-Bar zeigt Warenkorb-Icon mit Anzahl-Badge und Text "Sie haben X Services ausgewählt"
-- [ ] AC-9: Bottom-Bar zeigt gewählte Services als Chips mit Icon
-- [ ] AC-10: Bottom-Bar hat "weiter"-Button (rechts unten) und X-Button zum Schließen
-- [ ] AC-11: Klick auf "weiter" speichert im BookingStore und navigiert zum nächsten Schritt
+- [ ] AC-4: Selektierte Karten zeigen ein Häkchen-Icon oben rechts und umrandet
+- [ ] AC-6: Bei Räderwechsel öffnet sich ein Modal mit Untervarianten (mit/ohne Einlagerung radio) und bestätigung oder abwahl über button  
+- [ ] AC-7: Header warenkorb Anzahl-Badge erscheint sobald mindestens 1 Service gewählt ist, es wird auch marke uns standort angezeigt innerhalb des warenkorbs
+- [ ] AC-8: Header warenkorb zeigt Warenkorb-Icon mit Anzahl-Badge und Text "Sie haben X Services ausgewählt"
+- [ ] AC-9: Header warenkorb zeigt gewählte Services als Chips mit Icon
+- [ ] AC-10: unter service card auswahl wird eine row angezeigt mit zurück und weiter button, auf jeder vorherigen und nachfolgenden seite
+- [ ] AC-11: Klick auf "weiter" speichert im BookingStore und navigiert zum nächsten Schritt, zurück löscht aus bookingstore und navigiert zur vorherigen seite
 - [ ] AC-12: Überschrift zeigt "Welche Services möchten Sie buchen?"
 
 ---
@@ -67,7 +66,7 @@ Der Benutzer wählt einen oder mehrere Services (HU/AU, Inspektion, Räderwechse
 
 ### 3.3 Data
 - Services sind statisch konfiguriert (Click-Dummy)
-- Store-Methode liefert ein console.log und statische Werte zurück
+- Store-Methode liefert ein console.debug und statische Werte zurück
 
 ### 3.4 Übergabe (Input von REQ-003-Standortwahl)
 | Feld | Typ | Quelle | Pflicht |
@@ -88,22 +87,22 @@ Der Benutzer wählt einen oder mehrere Services (HU/AU, Inspektion, Räderwechse
 - **User:** Klickt auf Service-Karte
 - **System:** Togglet den Auswahlstatus der Karte
 - **System:** Zeigt Häkchen-Icon und "ausgewählt"-Text auf der Karte
-- **System:** Zeigt Bottom-Bar mit gewähltem Service
+- **System:** Zeigt im Header Warenkorb einen oder mehrer ausgewählte services
 
 **Step 3:** Benutzer wählt weiteren Service (z.B. Inspektion)
 - **User:** Klickt auf weitere Service-Karte
 - **System:** Fügt Service zur Auswahl hinzu
-- **System:** Bottom-Bar aktualisiert Anzahl und Chips
+- **System:** Header Warenkorb aktualisiert Anzahl und Chips
 
 **Step 4:** Benutzer wählt Räderwechsel
 - **User:** Klickt auf Räderwechsel-Karte
-- **System:** Öffnet Modal mit Untervarianten
+- **System:** expand card mit Untervarianten
 - **User:** Wählt eine oder mehrere Untervarianten (Checkboxen)
-- **User:** Klickt "Bestätigen"
-- **System:** Schließt Modal, Räderwechsel als selektiert markiert
+- **User:** Klickt "Bestätigen" wenn nicht angewählt, "Abwählen" wenn service schon ausgewählt war
+- **System:** Räderwechsel als selektiert markiert
 
 **Step 5:** Benutzer klickt "weiter"
-- **User:** Klickt "weiter"-Button in Bottom-Bar
+- **User:** Klickt "weiter"-Button unterhalb der auswahl felder rechts selbe höhe(row) wie zurück
 - **System:** Speichert `selectedServices` im BookingStore
 - **System:** Navigiert zu `/home/...` (REQ-005, nächster Schritt)
 
@@ -118,12 +117,12 @@ Der Benutzer wählt einen oder mehrere Services (HU/AU, Inspektion, Räderwechse
 **Flow:**
 1. System entfernt Service aus der Auswahl
 2. Häkchen verschwindet, Originaltext erscheint wieder
-3. Bottom-Bar aktualisiert Anzahl und Chips
+3. Header Warenkorb aktualisiert Anzahl und Chips
 4. Falls kein Service mehr gewählt: Bottom-Bar verschwindet
 
-### 5.2 Zurück zur Standortwahl
+### 5.2 Zurück zur Standortwahl und Marken auswahl
 
-**Trigger:** Benutzer klickt Zurück-Pfeil (< im Header)
+**Trigger:** Benutzer klickt Zurück-Pfeil-Button (< unter Auswahlfelder links selbe höhe(row) wie weiter)
 
 **Flow:**
 1. System navigiert zu `/home/location`
@@ -131,20 +130,12 @@ Der Benutzer wählt einen oder mehrere Services (HU/AU, Inspektion, Räderwechse
 
 ### 5.3 Räderwechsel-Modal abbrechen
 
-**Trigger:** Benutzer schließt Modal ohne Bestätigung (Klick außerhalb oder X)
+**Trigger:** Benutzer schließt card expand ohne Bestätigung (Klick außerhalb oder X)
 
 **Flow:**
-1. Modal schließt sich
+1. Card auf normal grösse
 2. Räderwechsel wird NICHT selektiert
 3. Zustand bleibt unverändert
-
-### 5.4 Bottom-Bar schließen
-
-**Trigger:** Benutzer klickt X-Button in der Bottom-Bar
-
-**Flow:**
-1. Bottom-Bar wird eingeklappt/geschlossen
-2. Services bleiben weiterhin selektiert (nur UI-Collapse)
 
 ---
 
@@ -281,7 +272,6 @@ interface SelectedService {
 |---------|-----|--------------|
 | Warenkorb-Icon | Icon + Badge | Icon mit Anzahl-Badge (z.B. "2") |
 | Zusammenfassungstext | `span` | "Sie haben X Services ausgewählt" |
-| X-Button | Icon-Button | Schließt Bottom-Bar (rechts) |
 | Service-Chips | Chip-Liste | Gewählte Services mit kleinem Icon und Häkchen |
 | Weiter-Button | Button (Primary) | "weiter" — rechts unten |
 
@@ -370,25 +360,25 @@ GET /api/services
 ### TC-2: Service selektieren
 - **Given:** Service-Karten angezeigt
 - **When:** Klick auf "HU/AU"-Karte
-- **Then:** Karte zeigt Häkchen, Bottom-Bar erscheint mit "1 Service"
+- **Then:** Karte zeigt Häkchen, Header-Warenkorb erscheint mit "1 Service"
 
 ### TC-3: Multi-Select
 - **Given:** HU/AU bereits selektiert
 - **When:** Klick auf "Inspektion"-Karte
-- **Then:** Beide Karten haben Häkchen, Bottom-Bar zeigt "2 Services"
+- **Then:** Beide Karten haben Häkchen, Header-Warenkorb zeigt "2 Services"
 
 ### TC-4: Service deselektieren
 - **Given:** HU/AU selektiert
 - **When:** Erneuter Klick auf "HU/AU"-Karte
-- **Then:** Häkchen verschwindet, Bottom-Bar verschwindet (0 Services)
+- **Then:** Häkchen verschwindet, Header-Warenkorb verschwindet (0 Services)
 
 ### TC-5: Räderwechsel-Modal
 - **Given:** Service-Karten angezeigt
 - **When:** Klick auf "Räderwechsel"
-- **Then:** Modal öffnet sich mit 2 Checkboxen
+- **Then:** Card expand sich mit 2 Checkboxen
 
 ### TC-6: Räderwechsel bestätigen
-- **Given:** Modal offen, "ohne Einlagerung" angehakt
+- **Given:** card expand, "ohne Einlagerung" angehakt
 - **When:** Klick auf "Bestätigen"
 - **Then:** Modal schließt, Räderwechsel als selektiert, Variant "without-storage" gespeichert
 
@@ -409,8 +399,8 @@ GET /api/services
 
 ### TC-10: Bottom-Bar Chips
 - **Given:** 2 Services gewählt
-- **When:** Bottom-Bar sichtbar
-- **Then:** 2 Chips mit Service-Icon und Name angezeigt
+- **When:** warenkorb header 
+- **Then:** 2 Chips mit Service-Icon und Name angezeigt und Standort und Marke (welche ausgewählt wurden)
 
 ---
 
