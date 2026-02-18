@@ -59,29 +59,33 @@ Prompt: "Erstelle ein HTML-Mockup für das Requirement '$ARGUMENTS'.
 
 **PFLICHT-LEKTÜRE — Bestehenden Kontext verstehen (vor dem Generieren!):**
 
-1. **Design-System:**
+1. **Vision (ZUERST lesen!):**
+   - Lese `docs/VISION.md` — Kernwerte (User First, Security First, Quality First), Qualitätsziele, Definition of Done
+   - Accessibility-Ziel: WCAG AA, Lighthouse > 95 — BINDEND für Mockup!
+
+3. **Design-System:**
    - Lese `src/styles/_variables.scss` — ALLE CSS-Variablen (Farben, Spacing, Fonts, Radii, Shadows)
    - Lese `src/styles/_utilities.scss` — `.icon-framed` Klassen und Varianten
    - Lese `src/styles/_breakpoints.scss` — Responsive Breakpoints
 
-2. **Bestehende UI analysieren (PFLICHT!):**
+4. **Bestehende UI analysieren (PFLICHT!):**
    - Lese `src/app/shared/components/header/header-container.component.html` + `.scss` — Header-Layout
    - Lese `src/app/app.component.html` + `.scss` — App-Shell (Header/Content/Footer)
    - Lese bestehende E2E-Screenshots: `docs/requirements/REQ-*/screenshots/e2e-responsive-desktop.png`
 
-3. **Bestehende Mockups konsultieren (falls vorhanden):**
+5. **Bestehende Mockups konsultieren (falls vorhanden):**
    - Lese `docs/requirements/REQ-*/mockup.html` — Design-Konsistenz sicherstellen!
    - Übernimm Header, Footer, Navigation, Card-Styles EXAKT wie in bestehenden Mockups
 
-4. **Bestehende Feature-Templates für Patterns:**
+6. **Bestehende Feature-Templates für Patterns:**
    - Lese 1-2 implementierte Component-Templates: `src/app/features/booking/components/*/`
    - Übernimm Card-Layout, Button-Styles, Grid-Patterns aus echtem Code
 
-5. **Bestehende Requirements für Wizard-Kontext:**
+7. **Bestehende Requirements für Wizard-Kontext:**
    - Lese `docs/requirements/REQUIREMENTS.md` — Wizard-Schritte verstehen
    - Prüfe welcher Wizard-Schritt das neue REQ ist (für Zurück/Weiter-Navigation)
 
-6. **Hochgeladenes Bild (falls vorhanden):**
+8. **Hochgeladenes Bild (falls vorhanden):**
    - `docs/requirements/$ARGUMENTS/mockup-original.png`
    - NUR Struktur/Layout extrahieren, KEINE Farben/Styling aus dem Bild!
 
@@ -129,30 +133,35 @@ Prompt: "Fülle das Requirement-Template für '$ARGUMENTS' aus.
 
 **PFLICHT-LEKTÜRE — Bestehenden Kontext verstehen (vor dem Schreiben!):**
 
-1. **Template + bestehende Requirements (Stil + Detailtiefe übernehmen!):**
+1. **Vision (ZUERST lesen!):**
+   - Lese `docs/VISION.md` — Kernwerte (User First, Security First, Quality First), Qualitätsziele, Roadmap
+   - Das Requirement MUSS zur Vision passen: Accessibility (WCAG AA), Security (OWASP), Performance, Testbarkeit
+   - Definition of Done aus Vision als Referenz für Acceptance Criteria!
+
+2. **Template + bestehende Requirements (Stil + Detailtiefe übernehmen!):**
    - Lese `docs/requirements/REQ-TEMPLATE.md` — Template-Struktur
    - Lese ALLE bestehenden Requirements als Referenz:
      `docs/requirements/REQ-*/requirement.md`
    - Übernimm Schreibstil, Detailtiefe, Tabellenformate, AC-Formulierungen EXAKT
    - Prüfe Wizard-Reihenfolge: Welcher Schritt kommt davor/danach?
 
-2. **Bestehende Architektur verstehen:**
+3. **Bestehende Architektur verstehen:**
    - Lese `docs/requirements/REQUIREMENTS.md` — Gesamtübersicht + Dependencies
    - Lese `.claude/skills/angular-architecture.md` — Container/Presentational, Store Pattern
    - Lese `.claude/skills/routing-patterns.md` — Resolver, Guards, Lazy Loading
 
-3. **Bestehende Implementierung konsultieren (Naming + Patterns!):**
+4. **Bestehende Implementierung konsultieren (Naming + Patterns!):**
    - Lese `src/app/features/booking/stores/booking.store.ts` — bestehende Store-Methoden + State
    - Lese `src/app/features/booking/models/*.model.ts` — bestehende Types/Interfaces
    - Lese `src/app/features/booking/services/*.service.ts` — bestehende API-Services
    - Lese 1-2 bestehende Container-Components für Patterns:
      `src/app/features/booking/components/*/`
 
-4. **i18n-Kontext:**
+5. **i18n-Kontext:**
    - Lese `src/app/core/i18n/translations.ts` — bestehende Keys, Namensschema, Struktur
    - Neues Feature MUSS zum bestehenden Key-Schema passen (z.B. `booking.feature.key`)
 
-5. **Hochgeladenes Bild (falls vorhanden):**
+6. **Hochgeladenes Bild (falls vorhanden):**
    - `docs/requirements/$ARGUMENTS/mockup-original.png`
    - Analysiere für UI-Elemente, Flow, Texte
 
@@ -195,6 +204,7 @@ Prompt: "Fülle das Requirement-Template für '$ARGUMENTS' aus.
 Gib zurück:
 REQUIREMENT_RESULT:
 - requirement.md: ✅ ausgefüllt
+- Vision berücksichtigt: ✅ (Kernwerte + Qualitätsziele)
 - Sections: X/17 komplett
 - Konsultierte REQs: [REQ-002, REQ-003, ...]
 - Bestehende Store-Felder berücksichtigt: ✅|❌
@@ -332,6 +342,7 @@ Der Orchestrator MUSS diese Checkliste am Ende der Ausgabe ausfüllen:
 - [ ] Template kopiert
 
 🎨 MOCKUP (Agent 1)
+- [ ] `docs/VISION.md` gelesen (Accessibility + Qualitätsziele)
 - [ ] `mockup.html` erstellt
 - [ ] Kein `<script>` Tag
 - [ ] CSS-Variablen aus `_variables.scss` verwendet
@@ -344,6 +355,7 @@ Der Orchestrator MUSS diese Checkliste am Ende der Ausgabe ausfüllen:
 - [ ] em/rem statt px
 
 📝 REQUIREMENT (Agent 2)
+- [ ] `docs/VISION.md` gelesen (Kernwerte + Definition of Done)
 - [ ] Alle 17 Sections ausgefüllt
 - [ ] Keine Platzhalter `[...]` übrig
 - [ ] Bestehende Requirements konsultiert (Stil + Detailtiefe)
@@ -380,6 +392,7 @@ Falls ein Agent fehlschlägt:
 
 ## Referenzen
 
+- **Vision: `docs/VISION.md` (Kernwerte, Qualitätsziele, Definition of Done)**
 - Template: `docs/requirements/REQ-TEMPLATE.md`
 - Design System: `.claude/skills/ui-design-system.md`
 - Farben: `src/styles/_variables.scss`

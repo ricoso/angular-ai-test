@@ -27,7 +27,7 @@ Jeder Step hat ein **GATE** — eine Bedingung die erfüllt sein MUSS bevor der 
 | Step 1 | Branch existiert |
 | Step 1.5 | Requirement-Status auf "In Progress" gesetzt |
 | Step 2 | Requirement gelesen, Feature-Name + Sprache extrahiert |
-| **Step 3** | **ALLE 5 Skills gelesen, Code-Sprache bestätigt** |
+| **Step 3** | **Vision + ALLE 5 Skills gelesen, Code-Sprache bestätigt** |
 | Step 4 | Code implementiert |
 | Step 5 | Styling angewendet |
 | Step 6 | Tests geschrieben + >80% |
@@ -122,25 +122,27 @@ git checkout -b feat/$ARGUMENTS
 
 ---
 
-### Step 3: Skills lesen (ALLE PFLICHT!)
+### Step 3: Skills + Vision lesen (ALLE PFLICHT!)
 
-> ⛔ **NICHT "bei Bedarf" — ALLE Skills MÜSSEN gelesen werden!**
-> **Kein Code darf generiert werden bevor ALLE 5 Skills gelesen wurden!**
+> ⛔ **NICHT "bei Bedarf" — ALLE Skills + Vision MÜSSEN gelesen werden!**
+> **Kein Code darf generiert werden bevor ALLE 6 Dokumente gelesen wurden!**
 
-**Lese ALLE 5 Skills in dieser Reihenfolge:**
+**Lese ALLE 6 Dokumente in dieser Reihenfolge:**
 
-| # | Skill | Datei | Warum |
-|---|-------|-------|-------|
-| 1 | **Code Language** | `.claude/skills/code-language.md` | **Bestimmt Sprache ALLER Variablen, Methoden, Klassen, CSS-Klassen** |
-| 2 | **Architecture** | `.claude/skills/angular-architecture.md` | Container/Presentational, Store Pattern, Deployment-Typ |
-| 3 | **i18n** | `.claude/skills/i18n-typings.md` | UI-Sprachen (DE/EN/etc.), Translation Pattern |
-| 4 | **Routing** | `.claude/skills/routing-patterns.md` | Resolver, Guards, Lazy Loading, HashLocation |
-| 5 | **Forms** | `.claude/skills/forms.md` | Reactive Forms (auch wenn Feature keine Forms hat → bestätigen!) |
+| # | Dokument | Datei | Warum |
+|---|----------|-------|-------|
+| 1 | **Vision** | `docs/VISION.md` | **Kernwerte, Qualitätsziele, Definition of Done — LEITPLANKE für alle Entscheidungen!** |
+| 2 | **Code Language** | `.claude/skills/code-language.md` | **Bestimmt Sprache ALLER Variablen, Methoden, Klassen, CSS-Klassen** |
+| 3 | **Architecture** | `.claude/skills/angular-architecture.md` | Container/Presentational, Store Pattern, Deployment-Typ |
+| 4 | **i18n** | `.claude/skills/i18n-typings.md` | UI-Sprachen (DE/EN/etc.), Translation Pattern |
+| 5 | **Routing** | `.claude/skills/routing-patterns.md` | Resolver, Guards, Lazy Loading, HashLocation |
+| 6 | **Forms** | `.claude/skills/forms.md` | Reactive Forms (auch wenn Feature keine Forms hat → bestätigen!) |
 
 **Nach dem Lesen — Bestätige explizit:**
 
 ```
 📋 SKILL-CHECK BESTÄTIGT:
+- Vision: Kernwerte + Qualitätsziele gelesen (aus VISION.md)
 - Code-Sprache: [Englisch/Deutsch] (aus code-language.md)
 - UI-Sprachen: [DE, EN] (aus i18n-typings.md)
 - Deployment: [Click-Dummy/Production] (aus angular-architecture.md)
@@ -154,8 +156,14 @@ git checkout -b feat/$ARGUMENTS
 > - CSS-Klassen, i18n Key-Pfade
 > - Dateinamen, Ordnernamen
 > - Comments (optional, aber empfohlen in Code-Sprache)
+>
+> ⛔ **Vision-Qualitätsziele sind BINDEND:**
+> - Accessibility: WCAG AA, Lighthouse > 95
+> - Performance: Lighthouse > 90
+> - Security: OWASP-konform
+> - Test Coverage: > 80%
 
-**GATE 3:** ✅ ALLE 5 Skills gelesen, Code-Sprache + UI-Sprachen + Deployment bestätigt
+**GATE 3:** ✅ Vision gelesen + ALLE 5 Skills gelesen, Code-Sprache + UI-Sprachen + Deployment bestätigt
 
 ---
 
@@ -341,6 +349,7 @@ git commit -m "feat($ARGUMENTS): implement <Feature-Name>"
 - [ ] Step 1: Branch erstellt
 - [ ] **Step 1.5: Requirement-Status in REQUIREMENTS.md auf "In Progress" gesetzt**
 - [ ] Step 2: Requirement gelesen
+- [ ] **Step 3: Vision gelesen (docs/VISION.md) — Kernwerte + Qualitätsziele bekannt**
 - [ ] **Step 3: ALLE 5 Skills gelesen (code-language, architecture, i18n, routing, forms)**
 - [ ] **Step 3: Code-Sprache bestätigt**
 - [ ] Step 4: Models definiert
@@ -366,6 +375,7 @@ git commit -m "feat($ARGUMENTS): implement <Feature-Name>"
 
 ## Referenzen
 
+- **Vision: `docs/VISION.md` (Kernwerte, Qualitätsziele, Definition of Done)**
 - Requirement: `docs/requirements/$ARGUMENTS/requirement.md`
 - Skills: `.claude/skills/*.md` (ALLE 5 lesen!)
 - Styling: `src/styles/_variables.scss`
