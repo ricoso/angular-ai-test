@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REQ-004 Serviceauswahl - Mockup</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================================================
+       CSS Custom Properties - Design System (from _variables.scss)
+       ========================================================================= */
+    :root {
+      /* Brand Colors */
+      --color-primary: #667eea;
+      --color-primary-hover: #5a67d8;
+      --color-secondary: #764ba2;
+      --color-accent: #ed8936;
+
+      /* Text Colors (WCAG AA) */
+      --color-text-primary: #1a1a1a;
+      --color-text-secondary: #595959;
+      --color-text-muted: #767676;
+      --color-text-on-primary: #ffffff;
+      --color-text-on-dark: #ffffff;
+
+      /* Background Colors */
+      --color-background-page: #f8f9fa;
+      --color-background-surface: #ffffff;
+      --color-background-hover: #f5f5f5;
+
+      /* Border & Divider */
+      --color-border: #e0e0e0;
+      --color-divider: #eeeeee;
+
+      /* Semantic Colors */
+      --color-error: #c62828;
+      --color-success: #2e7d32;
+      --color-warning: #e65100;
+      --color-info: #1565c0;
+
+      /* Focus */
+      --color-focus-ring: #005fcc;
+
+      /* Shadows */
+      --shadow-small: 0 0.0625em 0.125em rgba(0, 0, 0, 0.1);
+      --shadow-medium: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
+      --shadow-large: 0 0.5em 1em rgba(0, 0, 0, 0.15);
+
+      /* Typography */
+      --font-size-base: 1em;
+      --font-size-xs: 0.875em;
+      --font-size-sm: 1em;
+      --font-size-md: 1.125em;
+      --font-size-lg: 1.25em;
+      --font-size-xl: 1.5em;
+      --font-size-2xl: 2em;
+
+      --line-height-tight: 1.25;
+      --line-height-normal: 1.5;
+      --line-height-relaxed: 1.75;
+
+      /* Spacing */
+      --spacing-xs: 0.25em;
+      --spacing-sm: 0.5em;
+      --spacing-md: 1em;
+      --spacing-lg: 1.5em;
+      --spacing-xl: 2em;
+
+      /* Border Radius */
+      --radius-sm: 0.25em;
+      --radius-md: 0.5em;
+      --radius-lg: 0.75em;
+      --radius-xl: 1em;
+      --radius-full: 50%;
+
+      /* Touch Targets */
+      --touch-target-min: 2.75em;
+    }
+
+    /* =========================================================================
+       Reset & Base
+       ========================================================================= */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      line-height: var(--line-height-normal);
+      color: var(--color-text-primary);
+      background-color: var(--color-background-page);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* =========================================================================
+       App Layout
+       ========================================================================= */
+    .app-layout {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--color-background-page);
+    }
+
+    .app-main {
+      flex: 1;
+      padding: var(--spacing-md);
+      width: 100%;
+      max-width: 80em;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 48em) {
+      .app-main {
+        padding: var(--spacing-xl);
+      }
+    }
+
+    /* =========================================================================
+       Icon Framed (from _utilities.scss)
+       ========================================================================= */
+    .icon-framed {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5em;
+      height: 2.5em;
+      background: var(--color-background-surface);
+      border: 0.0625em solid var(--color-border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-small);
+    }
+
+    .icon-framed--sm {
+      width: 2em;
+      height: 2em;
+    }
+
+    .icon-framed--primary {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .icon-framed--lg {
+      width: 3em;
+      height: 3em;
+    }
+
+    /* =========================================================================
+       Header (from header-container.component.scss)
+       ========================================================================= */
+    .header {
+      background-color: var(--color-background-surface);
+      border-bottom: 0.0625em solid var(--color-border);
+      box-shadow: var(--shadow-small);
+    }
+
+    .header__content {
+      display: flex;
+      align-items: center;
+      padding: var(--spacing-sm) var(--spacing-md);
+      max-width: 80em;
+      margin: 0 auto;
+      min-height: 3.5em;
+    }
+
+    .header__logo-link {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      text-decoration: none;
+      color: inherit;
+      min-height: var(--touch-target-min);
+      padding: var(--spacing-xs);
+      border-radius: var(--radius-sm);
+      transition: background-color 0.2s ease;
+    }
+
+    .header__logo-link:hover {
+      background-color: var(--color-background-hover);
+    }
+
+    .header__logo-link:focus-visible {
+      outline: 0.125em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+
+    .header__logo-container {
+      width: 2.5em;
+      height: 2.5em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .header__logo-circle {
+      width: 2.5em;
+      height: 2.5em;
+      border-radius: var(--radius-full);
+      background-color: var(--color-primary);
+      color: var(--color-text-on-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: var(--font-size-sm);
+      letter-spacing: 0.05em;
+    }
+
+    .header__company {
+      display: flex;
+      flex-direction: column;
+      line-height: var(--line-height-tight);
+    }
+
+    .header__company-name {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .header__company-subtitle {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+    }
+
+    .header__spacer {
+      flex: 1;
+    }
+
+    .header__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .header__icon-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      min-width: var(--touch-target-min);
+      min-height: var(--touch-target-min);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      position: relative;
+      padding: 0;
+      color: var(--color-text-primary);
+    }
+
+    .header__icon-button:hover {
+      background-color: var(--color-background-hover);
+    }
+
+    .header__icon-button:focus-visible {
+      outline: 0.125em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+
+    /* Cart Badge */
+    .cart-badge {
+      position: absolute;
+      top: 0.125em;
+      right: -0.125em;
+      background-color: var(--color-accent);
+      color: var(--color-text-on-primary);
+      font-size: 0.6875em;
+      font-weight: 700;
+      min-width: 1.25em;
+      height: 1.25em;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      padding: 0 0.25em;
+    }
+
+    /* Header responsive */
+    @media (max-width: 47.9375em) {
+      .header__company {
+        display: none;
+      }
+
+      .header__content {
+        padding: var(--spacing-xs) var(--spacing-sm);
+      }
+    }
+
+    @media (min-width: 48em) and (max-width: 63.9375em) {
+      .header__company-subtitle {
+        display: none;
+      }
+    }
+
+    @media (min-width: 64em) {
+      .header__content {
+        padding: var(--spacing-md) var(--spacing-lg);
+      }
+
+      .header__logo-container {
+        width: 3em;
+        height: 3em;
+      }
+
+      .header__logo-circle {
+        width: 3em;
+        height: 3em;
+        font-size: var(--font-size-md);
+      }
+    }
+
+    /* =========================================================================
+       Service Selection (from service-selection-container.component.scss)
+       ========================================================================= */
+    .service-selection {
+      max-width: 70em;
+      margin: 0 auto;
+      padding: var(--spacing-xl) var(--spacing-md);
+      text-align: center;
+    }
+
+    .service-selection__title {
+      font-size: var(--font-size-2xl);
+      line-height: var(--line-height-tight);
+      color: var(--color-text-primary);
+      margin: 0 0 var(--spacing-sm);
+      font-weight: 700;
+    }
+
+    .service-selection__subtitle {
+      font-size: var(--font-size-md);
+      line-height: var(--line-height-normal);
+      color: var(--color-text-secondary);
+      margin: 0 0 var(--spacing-xl);
+    }
+
+    .service-selection__grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-lg);
+    }
+
+    @media (min-width: 48em) {
+      .service-selection__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 64em) {
+      .service-selection__grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* =========================================================================
+       Service Card (from service-card.component.scss)
+       ========================================================================= */
+    .service-card {
+      position: relative;
+      background-color: var(--color-background-surface);
+      border: 0.125em solid var(--color-border);
+      border-radius: var(--radius-lg);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      text-align: center;
+      padding: var(--spacing-lg);
+    }
+
+    .service-card__content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: 0;
+    }
+
+    .service-card__icon {
+      font-size: var(--font-size-2xl);
+      color: var(--color-primary);
+    }
+
+    .service-card__title {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin: 0;
+    }
+
+    .service-card__description {
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-normal);
+      color: var(--color-text-secondary);
+      margin: 0;
+    }
+
+    /* Check icon (hidden by default, shown via CSS when card is selected) */
+    .service-card__check {
+      position: absolute;
+      top: var(--spacing-sm);
+      right: var(--spacing-sm);
+      color: var(--color-primary);
+      font-size: var(--font-size-xl);
+      display: none;
+    }
+
+    /* =========================================================================
+       CSS-Only Card Selection via Hidden Checkboxes
+       Using <input type="checkbox"> + <label> + sibling selectors
+
+       Structure per toggleable card:
+         <input type="checkbox" class="card-toggle" id="toggle-X">
+         <label class="service-card service-card--clickable" for="toggle-X">
+           ...card content...
+         </label>
+
+       When :checked, the adjacent label gets selected styles.
+       ========================================================================= */
+    .card-toggle {
+      /* Visually hidden but accessible */
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Clickable card (label) base styles */
+    .service-card--clickable {
+      cursor: pointer;
+      display: block;
+    }
+
+    .service-card--clickable:hover {
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-medium);
+    }
+
+    /* Focus-visible on the hidden checkbox transfers to the label */
+    .card-toggle:focus-visible + .service-card--clickable {
+      outline: 0.1875em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+
+    /* Selected state: checkbox is :checked */
+    .card-toggle:checked + .service-card--clickable {
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-medium);
+    }
+
+    /* Show check_circle icon when card is selected */
+    .card-toggle:checked + .service-card--clickable .service-card__check {
+      display: block;
+    }
+
+    /* =========================================================================
+       Tire Change Card - Variant Selection (Radio Buttons, CSS-only)
+
+       The tire-change card uses native radio inputs.
+       A hidden checkbox controls the "confirmed" state.
+       When a radio is selected AND the confirm checkbox is checked,
+       the card shows as selected.
+       ========================================================================= */
+    .service-card__variants {
+      width: 100%;
+      margin-top: var(--spacing-md);
+      text-align: left;
+    }
+
+    .service-card__radio-label {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      min-height: var(--touch-target-min);
+      cursor: pointer;
+      padding: var(--spacing-xs) 0;
+    }
+
+    .service-card__radio-label:focus-within {
+      outline: 0.125em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+      border-radius: var(--radius-sm);
+    }
+
+    .service-card__radio-input {
+      accent-color: var(--color-primary);
+      width: 1.25em;
+      height: 1.25em;
+      cursor: pointer;
+    }
+
+    .service-card__radio-input:focus-visible {
+      outline: 0.125em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+
+    .service-card__radio-text {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-primary);
+    }
+
+    .service-card__actions {
+      display: flex;
+      justify-content: center;
+      margin-top: var(--spacing-md);
+    }
+
+    /* =========================================================================
+       Tire Change Card - CSS-Only Confirm/Deselect Toggle
+
+       Structure:
+         <input type="checkbox" class="tire-confirm-toggle" id="tire-confirm">
+         <div class="service-card tire-change-card">
+           ...radio inputs...
+           <div class="service-card__actions">
+             <label for="tire-confirm" class="btn btn--confirm">Bestätigen</label>
+             <label for="tire-confirm" class="btn btn--deselect">Abwählen</label>
+           </div>
+         </div>
+
+       - Confirm button visible by default, Deselect hidden
+       - When tire-confirm is :checked, swap visibility and add selected state
+       ========================================================================= */
+    .tire-confirm-toggle {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Default: show confirm, hide deselect */
+    .tire-change-card .btn--deselect {
+      display: none;
+    }
+
+    .tire-change-card .btn--confirm {
+      display: inline-flex;
+    }
+
+    /* When confirmed: show deselect, hide confirm, show selected card state */
+    .tire-confirm-toggle:checked ~ .tire-change-card {
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .tire-confirm-toggle:checked ~ .tire-change-card .service-card__check {
+      display: block;
+    }
+
+    .tire-confirm-toggle:checked ~ .tire-change-card .btn--confirm {
+      display: none;
+    }
+
+    .tire-confirm-toggle:checked ~ .tire-change-card .btn--deselect {
+      display: inline-flex;
+    }
+
+    /* Focus-visible on the tire-confirm toggle transfers to the label button */
+    .tire-confirm-toggle:focus-visible ~ .tire-change-card .btn--confirm,
+    .tire-confirm-toggle:focus-visible ~ .tire-change-card .btn--deselect {
+      outline: 0.1875em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+
+    /* Wrapper for tire change card to contain the hidden checkbox + card */
+    .tire-change-wrapper {
+      position: relative;
+      display: contents;
+    }
+
+    /* =========================================================================
+       Buttons (from Material-style button system)
+       ========================================================================= */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-xs);
+      min-height: var(--touch-target-min);
+      padding: 0.625em 1.5em;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      line-height: 1;
+    }
+
+    .btn:focus-visible {
+      outline: 0.1875em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+
+    .btn--primary {
+      background-color: var(--color-primary);
+      color: var(--color-text-on-primary);
+    }
+
+    .btn--primary:hover {
+      background-color: var(--color-primary-hover);
+    }
+
+    .btn--primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn--primary:disabled:hover {
+      background-color: var(--color-primary);
+    }
+
+    .btn--flat {
+      background-color: var(--color-background-hover);
+      color: var(--color-text-primary);
+    }
+
+    .btn--flat:hover {
+      background-color: var(--color-border);
+    }
+
+    .btn--confirm {
+      background-color: var(--color-primary);
+      color: var(--color-text-on-primary);
+      min-width: 10em;
+    }
+
+    .btn--confirm:hover {
+      background-color: var(--color-primary-hover);
+    }
+
+    .btn--deselect {
+      background-color: var(--color-background-hover);
+      color: var(--color-text-primary);
+      min-width: 10em;
+    }
+
+    .btn--deselect:hover {
+      background-color: var(--color-border);
+    }
+
+    /* Label styled as button - remove default label text selection */
+    label.btn {
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .material-icons {
+      font-size: 1.5em;
+      vertical-align: middle;
+    }
+
+    .material-icons.check-icon {
+      font-size: var(--font-size-xl);
+    }
+
+    /* =========================================================================
+       Summary Bar / Navigation Bar (from service-summary-bar.component.scss)
+       ========================================================================= */
+    .summary-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: var(--spacing-xl);
+      padding: var(--spacing-md) 0;
+    }
+
+    /* =========================================================================
+       Footer (from app.component.scss)
+       ========================================================================= */
+    .app-footer {
+      background: var(--color-background-surface);
+      padding: var(--spacing-md);
+      text-align: center;
+      border-top: 0.0625em solid var(--color-border);
+    }
+
+    @media (min-width: 48em) {
+      .app-footer {
+        padding: var(--spacing-lg);
+      }
+    }
+
+    .app-footer p {
+      margin: 0;
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-xs);
+    }
+
+    /* =========================================================================
+       Reduced Motion
+       ========================================================================= */
+    @media (prefers-reduced-motion: reduce) {
+      .service-card,
+      .header__logo-link,
+      .btn {
+        transition: none;
+      }
+    }
+
+    /* =========================================================================
+       Accessibility: High Contrast Mode
+       ========================================================================= */
+    html[data-high-contrast="true"] {
+      --color-text-primary: #000000;
+      --color-text-secondary: #000000;
+      --color-background-page: #ffffff;
+      --color-border: #000000;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+
+    <!-- ===================================================================
+         HEADER (matches header-container.component.html)
+         =================================================================== -->
+    <header class="header" role="banner">
+      <div class="header__content">
+        <!-- Logo & Company Name -->
+        <a href="#" class="header__logo-link" aria-label="Zur Startseite">
+          <div class="header__logo-container">
+            <div class="header__logo-circle" aria-hidden="true">GS</div>
+          </div>
+          <div class="header__company">
+            <span class="header__company-name">Gottfried Schultz</span>
+            <span class="header__company-subtitle">Automobilhandels SE</span>
+          </div>
+        </a>
+
+        <!-- Spacer -->
+        <div class="header__spacer"></div>
+
+        <!-- Cart Icon with Badge -->
+        <button
+          class="header__icon-button"
+          type="button"
+          aria-label="Warenkorb: 1 Service ausgewählt">
+          <span class="icon-framed icon-framed--sm" style="overflow: visible; position: relative;">
+            <span class="material-icons" aria-hidden="true">shopping_cart</span>
+            <span class="cart-badge" aria-hidden="true">1</span>
+          </span>
+        </button>
+
+        <!-- Accessibility Button -->
+        <button
+          class="header__icon-button"
+          type="button"
+          aria-label="Barrierefreiheit-Einstellungen">
+          <span class="icon-framed icon-framed--sm">
+            <span class="material-icons" aria-hidden="true">accessibility_new</span>
+          </span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ===================================================================
+         MAIN CONTENT
+         =================================================================== -->
+    <main id="main-content" class="app-main" role="main">
+      <section class="service-selection" aria-labelledby="service-title">
+        <h1 id="service-title" class="service-selection__title">Welche Services möchten Sie buchen?</h1>
+        <p class="service-selection__subtitle">Wählen Sie die gewünschten Services aus.</p>
+
+        <div class="service-selection__grid" role="group" aria-label="Verfügbare Services">
+
+          <!-- ===============================================================
+               Card 1: HU/AU (SELECTED by default via checked checkbox)
+               CSS-only toggle: hidden checkbox + label as card
+               =============================================================== -->
+          <input
+            type="checkbox"
+            class="card-toggle"
+            id="toggle-huau"
+            checked
+            aria-label="HU/AU Service auswählen"
+          />
+          <label
+            class="service-card service-card--clickable"
+            for="toggle-huau"
+            role="button"
+            aria-pressed="true"
+            tabindex="0">
+            <span class="service-card__check material-icons check-icon" aria-hidden="true">check_circle</span>
+            <div class="service-card__content">
+              <span class="icon-framed service-card__icon">
+                <span class="material-icons" aria-hidden="true">verified</span>
+              </span>
+              <h2 class="service-card__title">HU/AU</h2>
+              <p class="service-card__description">Jetzt Ihren Termin für eine gesetzliche HU/AU vereinbaren!</p>
+            </div>
+          </label>
+
+          <!-- ===============================================================
+               Card 2: Inspektion (UNSELECTED by default)
+               CSS-only toggle: hidden checkbox + label as card
+               =============================================================== -->
+          <input
+            type="checkbox"
+            class="card-toggle"
+            id="toggle-inspection"
+            aria-label="Inspektion Service auswählen"
+          />
+          <label
+            class="service-card service-card--clickable"
+            for="toggle-inspection"
+            role="button"
+            aria-pressed="false"
+            tabindex="0">
+            <span class="service-card__check material-icons check-icon" aria-hidden="true">check_circle</span>
+            <div class="service-card__content">
+              <span class="icon-framed service-card__icon">
+                <span class="material-icons" aria-hidden="true">build</span>
+              </span>
+              <h2 class="service-card__title">Inspektion</h2>
+              <p class="service-card__description">Lassen Sie Ihre fällige Inspektion hier durchführen! Buchen Sie jetzt einen Termin.</p>
+            </div>
+          </label>
+
+          <!-- ===============================================================
+               Card 3: Räderwechsel (with radio variant selection)
+               CSS-only: hidden checkbox for confirm/deselect toggle
+               Native radio inputs for variant selection
+               =============================================================== -->
+          <input
+            type="checkbox"
+            class="tire-confirm-toggle"
+            id="tire-confirm"
+            aria-label="Räderwechsel Service bestätigen"
+          />
+          <div
+            class="service-card tire-change-card"
+            role="region"
+            aria-label="Räderwechsel Service">
+            <span class="service-card__check material-icons check-icon" aria-hidden="true">check_circle</span>
+            <div class="service-card__content">
+              <span class="icon-framed service-card__icon">
+                <span class="material-icons" aria-hidden="true">tire_repair</span>
+              </span>
+              <h2 class="service-card__title">Räderwechsel</h2>
+              <p class="service-card__description">Kommen Sie zu uns für Ihren Räderwechsel &ndash; inkl. optionaler Einlagerung!</p>
+
+              <div class="service-card__variants" role="radiogroup" aria-label="Räderwechsel Variante wählen">
+                <label class="service-card__radio-label">
+                  <input
+                    type="radio"
+                    name="tire-change-variant"
+                    value="without-storage"
+                    class="service-card__radio-input"
+                    aria-label="Räderwechsel ohne Einlagerung"
+                  />
+                  <span class="service-card__radio-text">Räderwechsel ohne Einlagerung</span>
+                </label>
+                <label class="service-card__radio-label">
+                  <input
+                    type="radio"
+                    name="tire-change-variant"
+                    value="with-storage"
+                    class="service-card__radio-input"
+                    aria-label="Räderwechsel mit Einlagerung"
+                  />
+                  <span class="service-card__radio-text">Räderwechsel mit Einlagerung</span>
+                </label>
+
+                <div class="service-card__actions">
+                  <!-- Confirm button (visible when NOT confirmed) -->
+                  <label
+                    for="tire-confirm"
+                    class="btn btn--confirm"
+                    role="button"
+                    tabindex="0"
+                    aria-label="Räderwechsel bestätigen">
+                    Bestätigen
+                  </label>
+                  <!-- Deselect button (visible when confirmed) -->
+                  <label
+                    for="tire-confirm"
+                    class="btn btn--deselect"
+                    role="button"
+                    tabindex="0"
+                    aria-label="Räderwechsel abwählen">
+                    Abwählen
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ===============================================================
+             Navigation Bar (Summary Bar)
+             =============================================================== -->
+        <nav class="summary-bar" aria-label="Seitennavigation">
+          <button class="btn btn--flat" type="button" aria-label="Zurück zur vorherigen Seite">
+            <span class="material-icons" aria-hidden="true">arrow_back</span>
+            Zurück
+          </button>
+
+          <button class="btn btn--primary" type="button" aria-label="Weiter zur nächsten Seite">
+            Weiter
+            <span class="material-icons" aria-hidden="true">arrow_forward</span>
+          </button>
+        </nav>
+      </section>
+    </main>
+
+    <!-- ===================================================================
+         FOOTER (matches app.component.html)
+         =================================================================== -->
+    <footer class="app-footer" role="contentinfo">
+      <p>Gottfried Schultz Automobilhandels SE</p>
+    </footer>
+
+  </div>
+</body>
+</html>
