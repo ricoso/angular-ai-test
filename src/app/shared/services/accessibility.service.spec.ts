@@ -82,7 +82,7 @@ describe('AccessibilityService', () => {
 
       service.saveSettings(state);
 
-      const saved = JSON.parse(localStorage.getItem(ACCESSIBILITY_STORAGE_KEY) || '{}');
+      const saved = JSON.parse(localStorage.getItem(ACCESSIBILITY_STORAGE_KEY) ?? '{}');
       expect(saved.fontSize).toBe('x-large');
       expect(saved.highContrast).toBe(true);
       expect(saved.reducedMotion).toBe(false);

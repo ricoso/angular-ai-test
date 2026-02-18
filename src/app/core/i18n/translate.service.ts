@@ -21,7 +21,7 @@ export class TranslateService {
    * Returns the translation for a nested dot-separated key
    * e.g. instant('header.warenkorb.titel')
    */
-  instant(key: TranslationKey): string {
+  public instant(key: TranslationKey): string {
     const parts = key.split('.');
     let value: unknown = this.currentTranslations();
     for (const part of parts) {
@@ -37,14 +37,14 @@ export class TranslateService {
   /**
    * Returns a computed signal for reactive templates
    */
-  get(key: TranslationKey): () => string {
+  public get(key: TranslationKey): () => string {
     return computed(() => this.instant(key));
   }
 
   /**
    * Switches the language
    */
-  use(language: Language): void {
+  public use(language: Language): void {
     this.currentLanguage.set(language);
     try {
       localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
@@ -56,14 +56,14 @@ export class TranslateService {
   /**
    * Returns the current language
    */
-  getCurrentLanguage(): Language {
+  public getCurrentLanguage(): Language {
     return this.currentLanguage();
   }
 
   /**
    * Returns the current language as a signal
    */
-  getLanguageSignal(): () => Language {
+  public getLanguageSignal(): () => Language {
     return this.currentLanguage.asReadonly();
   }
 

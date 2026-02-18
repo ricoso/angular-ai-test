@@ -12,6 +12,6 @@ export const brandSelectedGuard: CanActivateFn = () => {
     return true;
   }
 
-  router.navigate(['/home/brand']);
+  void router.navigate(['/home/brand']);
   return false;
 };

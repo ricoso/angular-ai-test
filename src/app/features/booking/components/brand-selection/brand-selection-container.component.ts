@@ -26,6 +26,6 @@ export class BrandSelectionContainerComponent {
 
   protected onBrandSelect(brand: Brand): void {
     this.store.setBrand(brand);
-    this.router.navigate(['/home/location']);
+    void this.router.navigate(['/home/location']);
   }
 }

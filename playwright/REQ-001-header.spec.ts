@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { ensureGermanLanguage, navigateTo, setLanguage, waitForAngular } from './helpers/app.helpers';
+import { navigateTo, setLanguage, waitForAngular } from './helpers/app.helpers';
 
 /**
  * REQ-001: Header

@@ -19,15 +19,15 @@ export class AccessibilityService {
    * Loads settings from LocalStorage
    * Returns defaults with system preference if not available
    */
-  getSettings(): AccessibilityState {
+  public getSettings(): AccessibilityState {
     try {
       const stored = localStorage.getItem(ACCESSIBILITY_STORAGE_KEY);
       if (stored) {
-        const data: AccessibilityStorageData = JSON.parse(stored);
+        const data = JSON.parse(stored) as AccessibilityStorageData;
         return {
           fontSize: this.validateFontSize(data.fontSize),
-          highContrast: Boolean(data.highContrast),
-          reducedMotion: Boolean(data.reducedMotion)
+          highContrast: data.highContrast,
+          reducedMotion: data.reducedMotion
         };
       }
     } catch {
@@ -44,7 +44,7 @@ export class AccessibilityService {
   /**
    * Saves settings to LocalStorage
    */
-  saveSettings(state: AccessibilityState): void {
+  public saveSettings(state: AccessibilityState): void {
     try {
       const data: AccessibilityStorageData = {
         ...state,
@@ -59,7 +59,7 @@ export class AccessibilityService {
   /**
    * Applies accessibility settings to the document element
    */
-  applyToDocument(state: AccessibilityState): void {
+  public applyToDocument(state: AccessibilityState): void {
     const html = document.documentElement;
 
     html.setAttribute('data-font-size', state.fontSize);

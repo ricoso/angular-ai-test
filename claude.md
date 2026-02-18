@@ -29,6 +29,7 @@
 | Dunkler Hintergrund bei Overlays | `var(--color-background-surface)` (weiß) |
 | `[innerHTML]` ohne Sanitizer | Angular Template Escaping |
 | Hardcoded Strings in Templates | i18n Keys (`{{ t.feature.key }}`) |
+| Coverage-Thresholds ändern | Coverage-Config ist TABU — nie anfassen! |
 
 ---
 
@@ -94,7 +95,7 @@
 | 4 | Implementieren | Models → Store → Services → Container → Components → i18n → Routes |
 | 5 | Styling | `_variables.scss`, Mobile-First, WCAG 2.1 AA |
 | 6 | Tests | Jest >80% Coverage |
-| **7** | **Tech-Check** | **`lint:fix` ✅ + `type-check` ✅ + `test:coverage` ✅** |
+| **7** | **Tech-Check (⚡ 3 PARALLEL AGENTS)** | **`lint:fix` ✅ + `type-check` ✅ + `test:coverage` ✅ — 3 parallele Task-Agents!** |
 | **8** | **Quality Gate** | **`/check-all` Score >= 90 + qualitaets.md generiert** |
 | 9 | Commit | `feat(REQ-XXX): implement <Feature>` |
 | 10 | Status | REQUIREMENTS.md → "In Review" |

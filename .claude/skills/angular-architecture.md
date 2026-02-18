@@ -48,7 +48,7 @@ export const UserStore = signalStore(
       try {
         const users = await userApi.getAll();
         patchState(store, { users, isLoading: false });
-      } catch (error) {
+      } catch (error: unknown) {
         patchState(store, { error: 'Failed to load', isLoading: false });
       }
     },
@@ -60,11 +60,7 @@ export const UserStore = signalStore(
 );
 ```
 
-**Wann Feature Store:**
-- Business Data (Users, Products, Orders)
-- API Data
-- Shared across routes
-- Auth state
+**Wann Feature Store:** Business Data (Users, Products, Orders), API Data, Shared across routes, Auth state
 
 ---
 
@@ -88,19 +84,12 @@ export const ProductListUiStore = signalStore(
     },
     setSortBy(sortBy: 'name' | 'price'): void {
       patchState(store, { sortBy });
-    },
-    setPage(page: number): void {
-      patchState(store, { currentPage: page });
     }
   }))
-  // NO withHooks needed
 );
 ```
 
-**Wann Component Store:**
-- UI State (tabs, filters, sort, view mode)
-- Component-specific state
-- Destroyed with component
+**Wann Component Store:** UI State (tabs, filters, sort, view mode), Component-specific, Destroyed with component
 
 ---
 
@@ -112,23 +101,15 @@ export const ProductListUiStore = signalStore(
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductListContainerComponent {
-  // Feature Store (global)
   protected productStore = inject(ProductStore);
-
-  // Component Store (local)
   protected uiStore = inject(ProductListUiStore);
 
-  // Combine stores
-  filteredProducts = computed(() => {
-    let result = this.productStore.products();
+  protected readonly filteredProducts = computed(() => {
     const tab = this.uiStore.selectedTab();
-    return tab === 'featured' ? result.filter(p => p.featured) : result;
+    return tab === 'featured'
+      ? this.productStore.products().filter(p => p.featured)
+      : this.productStore.products();
   });
-
-  // Event handlers
-  onTabChange(tab: 'all' | 'featured'): void {
-    this.uiStore.selectTab(tab);
-  }
 
   // NO ngOnInit for data loading - Resolver does this!
 }
@@ -139,7 +120,6 @@ export class ProductListContainerComponent {
 ## Router Resolver (Data Loading)
 
 ```typescript
-// user.resolver.ts
 export const usersResolver: ResolveFn<void> = () => {
   const store = inject(UserStore);
   store.loadUsers();
@@ -167,13 +147,8 @@ export const UserStore = signalStore(
 );
 ```
 
-**onInit erlaubt für:**
-- App-Config
-- Auth Session
-- Feature Flags
-
-**onInit VERBOTEN für:**
-- Users, Products, Orders (→ Resolver!)
+**onInit erlaubt für:** App-Config, Auth Session, Feature Flags
+**onInit VERBOTEN für:** Users, Products, Orders (→ Resolver!)
 
 ---
 
@@ -228,11 +203,6 @@ feature/
 **Template mocken** mit `overrideComponent` → eliminiert Angular Material / Child Component Abhängigkeiten:
 
 ```typescript
-// ✅ RICHTIG — Mocked Template, Logic-only Tests
-import type { ComponentFixture } from '@angular/core/testing';
-import { TestBed } from '@angular/core/testing';
-
-// UI rendering is verified via E2E (Playwright) — unit tests focus on logic only
 describe('MyContainerComponent', () => {
   let component: MyContainerComponent;
   let fixture: ComponentFixture<MyContainerComponent>;
@@ -240,9 +210,7 @@ describe('MyContainerComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MyContainerComponent],
-      providers: [
-        // Stores, mocked Services, provideRouter([]) etc.
-      ]
+      providers: [/* Stores, mocked Services, provideRouter([]) etc. */]
     })
       .overrideComponent(MyContainerComponent, {
         set: { template: '<div class="mocked">Mocked Component</div>' }
@@ -256,62 +224,21 @@ describe('MyContainerComponent', () => {
 });
 ```
 
-### Protected Member Access
-
-`protected` methods/properties via typed cast:
+### Protected Member Access + Input/Output Testing
 
 ```typescript
-// Interface für exposed protected members
-interface ExposedComponent {
-  onSave: (data: MyData) => void;
-  isValid: () => boolean;
-}
-
-const exposed = component as unknown as ExposedComponent;
+// Protected access via typed cast
+const exposed = component as unknown as { onSave: (data: MyData) => void };
 exposed.onSave(testData);
-expect(exposed.isValid()).toBe(true);
-```
 
-### Input/Output Testing
-
-```typescript
 // Inputs via setInput (NOT direct assignment)
 fixture.componentRef.setInput('selectedItem', 'abc');
 fixture.detectChanges();
-expect(component.selectedItem()).toBe('abc');
 
 // Outputs via subscribe + exposed handler
 const spy = jest.fn();
 component.itemSelected.subscribe(spy);
-const exposed = component as unknown as { onClick: (item: Item) => void };
-exposed.onClick(testItem);
+const exp = component as unknown as { onClick: (item: Item) => void };
+exp.onClick(testItem);
 expect(spy).toHaveBeenCalledWith(testItem.id);
-```
-
-### Warum Mocked Template?
-
-| Problem | Lösung |
-|---------|--------|
-| Angular Material Module Resolution in Jest | `overrideComponent` → Template wird ersetzt, keine Material-Imports nötig |
-| Child Component Abhängigkeiten | Mocked Template → keine Children instantiiert |
-| `provideAnimationsAsync` nicht auflösbar | Kein Template = keine Animations nötig |
-| Schnellere Tests | Kein DOM Rendering, nur Logik |
-
-### Jest Config (PFLICHT!)
-
-`tsconfig.spec.json` braucht Path-Mappings für Subpath Exports:
-
-```json
-"paths": {
-  "@angular/material/*": ["node_modules/@angular/material/types/*"],
-  "@ngrx/signals/rxjs-interop": ["node_modules/@ngrx/signals/types/ngrx-signals-rxjs-interop.d.ts"]
-}
-```
-
-`jest.config.ts` braucht passende `moduleNameMapper`:
-
-```json
-"moduleNameMapper": {
-  "^@angular/material/(.+)$": "<rootDir>/node_modules/@angular/material/fesm2022/$1.mjs"
-}
 ```

@@ -59,7 +59,7 @@ Der Benutzer wählt einen Standort (Autohaus) basierend auf der zuvor gewählten
 
 ### 3.3 Data
 - Standorte pro Marke sind statisch konfiguriert und über den Resolver eingebaut.
-- Store-Methode liefert ein console.log und einen statischen Wert zurück (Click-Dummy).
+- Store-Methode einen console.debug schreiben und einen statischen Wert zurück liefert (Click-Dummy).
 
 ### 3.4 Übergabe (Input von REQ-002-Markenauswahl)
 | Feld | Typ | Quelle | Pflicht |

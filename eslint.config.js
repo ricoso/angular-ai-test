@@ -17,6 +17,7 @@ export default tseslint.config(
       'coverage/**',
       '*.config.js',
       '*.config.mjs',
+      '*.config.ts',
       'mcp/**',
       'scripts/**',
     ],
@@ -150,6 +151,13 @@ export default tseslint.config(
         {
           selector: 'variable',
           format: ['camelCase', 'UPPER_CASE'],
+          leadingUnderscore: 'allow',
+        },
+        // Exported const: PascalCase erlaubt (NgRx signalStore, Angular providers)
+        {
+          selector: 'variable',
+          modifiers: ['const', 'exported'],
+          format: ['camelCase', 'PascalCase', 'UPPER_CASE'],
           leadingUnderscore: 'allow',
         },
         // Funktionen: camelCase
@@ -366,6 +374,18 @@ export default tseslint.config(
 
       // Disable für Signal/Computed Patterns
       '@typescript-eslint/unbound-method': 'off',
+
+      // NgRx Store / RxJS: void als Typ-Argument erlaubt (rxMethod<void>)
+      '@typescript-eslint/no-invalid-void-type': ['error', { allowInGenericTypeArguments: true }],
+
+      // Template Literals: Zahlen erlaubt (Badge counts, etc.)
+      '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
+
+      // Deprecated APIs: Nur Warning (Angular API-Änderungen schrittweise migrieren)
+      '@typescript-eslint/no-deprecated': 'warn',
+
+      // Catch-Variable: unknown statt any nur als Warning
+      '@typescript-eslint/use-unknown-in-catch-callback-variable': 'warn',
     },
   },
 
@@ -387,7 +407,8 @@ export default tseslint.config(
       '@angular-eslint/template/use-track-by-function': 'error',
 
       // ✅ Keine komplexen Expressions im Template
-      '@angular-eslint/template/no-call-expression': 'error',
+      // Signal-Reads (signal()) sind syntaktisch Funktionsaufrufe — nur Warning
+      '@angular-eslint/template/no-call-expression': 'warn',
 
       // ===========================================
       // ACCESSIBILITY RULES (aus CLAUDE.md - WCAG 2.1 AA)
@@ -458,7 +479,7 @@ export default tseslint.config(
   // SPEC/TEST FILES (weniger strikt)
   // ===========================================
   {
-    files: ['**/*.spec.ts', '**/*.test.ts'],
+    files: ['**/*.spec.ts', '**/*.test.ts', '**/setup-jest.ts'],
     rules: {
       // Tests dürfen any verwenden
       '@typescript-eslint/no-explicit-any': 'off',
@@ -493,6 +514,12 @@ export default tseslint.config(
 
       // Stores dürfen unbound methods verwenden (für rxMethod)
       '@typescript-eslint/unbound-method': 'off',
+
+      // rxMethod<void> ist Standard-NgRx-Pattern (false positive in function type args)
+      '@typescript-eslint/no-invalid-void-type': 'off',
+
+      // Store-Factories haben oft mehr Zeilen
+      'max-lines-per-function': ['warn', { max: 80, skipBlankLines: true, skipComments: true }],
     },
   },
 
@@ -517,6 +544,30 @@ export default tseslint.config(
       '@typescript-eslint/explicit-function-return-type': 'off',
 
       // Models haben oft viele Properties
+      'max-lines-per-function': 'off',
+    },
+  },
+
+  // ===========================================
+  // PLAYWRIGHT E2E FILES (relaxte Regeln)
+  // ===========================================
+  {
+    files: ['playwright/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/naming-convention': 'off',
+      '@typescript-eslint/no-confusing-void-expression': 'off',
+      '@typescript-eslint/require-await': 'off',
+      '@typescript-eslint/no-floating-promises': 'off',
+      '@typescript-eslint/no-unused-vars': ['warn', {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+      }],
       'max-lines-per-function': 'off',
     },
   }

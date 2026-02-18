@@ -47,10 +47,13 @@ export const BookingStore = signalStore(
         switchMap(() => from(api.getBrands())),
         tap({
           next: (brands) => {
-            console.log('[BookingStore] Brands loaded:', brands);
+            console.debug('[BookingStore] Brands loaded:', brands);
             patchState(store, { brands, isLoading: false });
           },
-          error: (error) => { patchState(store, { error: error.message, isLoading: false }); }
+          error: (err: unknown) => {
+            const message = err instanceof Error ? err.message : 'Unknown error';
+            patchState(store, { error: message, isLoading: false });
+          }
         })
       )
     ),
@@ -68,21 +71,24 @@ export const BookingStore = signalStore(
         }),
         tap({
           next: (locations) => {
-            console.log('[BookingStore] Locations loaded:', locations);
+            console.debug('[BookingStore] Locations loaded:', locations);
             patchState(store, { locations, isLoading: false });
           },
-          error: (error) => { patchState(store, { error: error.message, isLoading: false }); }
+          error: (err: unknown) => {
+            const message = err instanceof Error ? err.message : 'Unknown error';
+            patchState(store, { error: message, isLoading: false });
+          }
         })
       )
     ),
 
     setBrand(brand: Brand): void {
-      console.log('[BookingStore] setBrand:', brand);
+      console.debug('[BookingStore] setBrand:', brand);
       patchState(store, { selectedBrand: brand });
     },
 
     setLocation(location: LocationDisplay): void {
-      console.log('[BookingStore] setLocation:', location);
+      console.debug('[BookingStore] setLocation:', location);
       patchState(store, { selectedLocation: location });
     },
 

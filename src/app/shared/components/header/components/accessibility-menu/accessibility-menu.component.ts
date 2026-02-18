@@ -27,14 +27,14 @@ export class AccessibilityMenuComponent {
   protected readonly a11y = i18nKeys.header.accessibility;
 
   // Inputs (Presentational: input/output only, NO Store!)
-  readonly fontSize = input.required<FontSize>();
-  readonly highContrast = input.required<boolean>();
-  readonly reducedMotion = input.required<boolean>();
+  public readonly fontSize = input.required<FontSize>();
+  public readonly highContrast = input.required<boolean>();
+  public readonly reducedMotion = input.required<boolean>();
 
   // Outputs
-  readonly fontSizeChanged = output<FontSize>();
-  readonly highContrastChanged = output<boolean>();
-  readonly reducedMotionChanged = output<boolean>();
+  public readonly fontSizeChanged = output<FontSize>();
+  public readonly highContrastChanged = output<boolean>();
+  public readonly reducedMotionChanged = output<boolean>();
 
   // Available font sizes
   protected readonly fontSizes: FontSize[] = ['small', 'normal', 'large', 'x-large'];

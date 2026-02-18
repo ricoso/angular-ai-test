@@ -11,13 +11,13 @@ import { LOCATIONS_BY_BRAND } from '../models/location.model';
  */
 @Injectable({ providedIn: 'root' })
 export class BookingApiService {
-  async getBrands(): Promise<BrandDisplay[]> {
-    console.log('[BookingApiService] getBrands() called');
-    return AVAILABLE_BRANDS;
+  public getBrands(): Promise<BrandDisplay[]> {
+    console.debug('[BookingApiService] getBrands() called');
+    return Promise.resolve(AVAILABLE_BRANDS);
   }
 
-  async getLocations(brand: Brand): Promise<LocationDisplay[]> {
-    console.log('[BookingApiService] getLocations() called for brand:', brand);
-    return LOCATIONS_BY_BRAND[brand] ?? [];
+  public getLocations(brand: Brand): Promise<LocationDisplay[]> {
+    console.debug('[BookingApiService] getLocations() called for brand:', brand);
+    return Promise.resolve(LOCATIONS_BY_BRAND[brand]);
   }
 }

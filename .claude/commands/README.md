@@ -1,33 +1,42 @@
-# Claude Commands
+# Claude Code Commands
 
-Diese Commands können in Claude Code verwendet werden.
+## Requirement Workflow
 
-## Verfügbare Commands
+| Command | Description |
+|---------|-------------|
+| `/create-requirement REQ-XXX-Name` | Branch, Template, PR erstellen |
+| `/implement-requirement REQ-XXX-Name` | Vollstaendige Implementierung (10 Steps) |
+| `/check-requirement REQ-XXX-Name` | Requirement-Vollstaendigkeit pruefen |
 
-### Feature Development
-- `/create-feature <name>` - Erstellt Feature-Struktur
-- `/create-component <feature> <name>` - Erstellt Component
-- `/create-requirement <name> <number>` - Erstellt Requirement
+## Quality Checks (Einzeln)
 
-### Implementation
-- `/implement-spec <req-id>` - Implementiert Requirement nach Workflow
+| Command | Description |
+|---------|-------------|
+| `/check-architecture` | Container/Presentational, Store Pattern |
+| `/check-stores` | NgRx Signal Store Conventions |
+| `/check-routing` | Lazy Loading, Guards, Resolvers |
+| `/check-security` | OWASP, Sanitization, Guards |
+| `/check-eslint` | ESLint Flat Config Rules |
+| `/check-typescript` | Strict Types, no `any` |
+| `/check-performance` | OnPush, Lazy Loading, Signals |
+| `/check-styling` | SCSS Variables, BEM, WCAG 2.1 AA |
+| `/check-i18n` | Type-safe Keys, DE + EN |
+| `/check-forms` | Reactive Forms, Validators |
+| `/check-code-language` | English Code Language |
+| `/check-e2e` | Playwright E2E Tests |
+| `/check-documentation` | Feature Docs, Screenshots |
 
-### Testing
-- `/test` - Run tests
-- `/test-ci` - CI mode
-- `/coverage` - Coverage report
+## Quality Checks (Gruppiert)
 
-### Quality
-- `/quality lint` - Lint code
-- `/quality format` - Format code
-- `/quality type-check` - TypeScript check
-- `/quality all` - All checks
+| Command | Description |
+|---------|-------------|
+| `/check-arch` | Architecture + Stores + Routing |
+| `/check-quality` | ESLint + TypeScript + Performance |
+| `/check-all <feature>` | Alle 13 Checks + `qualitaets.md` |
 
-## Usage
+## Utilities
 
-```
-/create-feature product
-/create-component product product-card
-/implement-spec REQ-001-UserLogin
-/quality all
-```
+| Command | Description |
+|---------|-------------|
+| `/pre-generation-check` | Skill-Validierung vor Code-Generierung |
+| `/fix-performance` | Performance-Probleme automatisch fixen |
