@@ -49,7 +49,7 @@
           }
           @if (showDeselectButton()) {
             <button
-              mat-stroked-button
+              mat-flat-button
               class="service-card__deselect-button"
               (click)="onDeselect(); $event.stopPropagation()">
               {{ tireChange.deselectButton | translate }}

@@ -261,6 +261,26 @@
 
 ---
 
+## ✅ Akzeptanzkriterien (Acceptance Criteria)
+
+| AC | Beschreibung | Status | Nachweis (Test / Code) |
+|----|-------------|--------|------------------------|
+| AC-1 | 3 Service-Karten: HU/AU, Inspektion, Räderwechsel | ✅ Erfüllt | TC-1 (E2E), service.model.ts |
+| AC-2 | Jede Karte zeigt Titel, Icon und Beschreibungstext | ✅ Erfüllt | TC-1 (E2E), service-card.component.html |
+| AC-3 | Klick auf Karte selektiert/deselektiert (Toggle) | ✅ Erfüllt | TC-2, TC-4, 5.1 (E2E) |
+| AC-4 | Selektierte Karten zeigen Häkchen + Umrandung | ✅ Erfüllt | TC-2 (E2E), service-card--selected CSS |
+| AC-6 | Räderwechsel: Radio-Buttons + Bestätigen/Abwählen | ✅ Erfüllt | TC-5, TC-6, TC-7, TC-7a (E2E) |
+| AC-7 | Header-Warenkorb: Badge + Marke + Standort | ✅ Erfüllt | TC-8, TC-8a (E2E), header-container.component.ts |
+| AC-8 | Header-Warenkorb: Icon mit Anzahl-Badge | ✅ Erfüllt | TC-8 (E2E), cart-icon.component.html |
+| AC-9 | Header-Warenkorb: Service-Chips mit Icons + Variante | ✅ Erfüllt | TC-8a (E2E), header-container.component.html |
+| AC-10 | Zurück/Weiter-Buttons unter Service-Karten | ✅ Erfüllt | TC-9, TC-10 (E2E), summary-bar.component.html |
+| AC-11 | Weiter speichert im Store + navigiert; Zurück löscht + navigiert | ✅ Erfüllt | TC-9, TC-10 (E2E), service-selection-container.component.ts |
+| AC-12 | Überschrift "Welche Services möchten Sie buchen?" | ✅ Erfüllt | TC-1 (E2E), i18n DE title test |
+
+**Ergebnis:** 11/11 Akzeptanzkriterien erfüllt ✅
+
+---
+
 ## Zusammenfassung
 
 ### Bestanden (✅)
@@ -292,10 +312,12 @@
 
 **Begründung:**
 - Gesamtscore 98/100 (Ziel: >= 90)
+- **11/11 Akzeptanzkriterien erfüllt**
 - Alle 13 Checks bestanden
-- 190 Unit Tests, >90% Coverage
-- 34 E2E-Tests (REQ-004) + 21 Workflow-Tests auf allen 3 Viewports bestanden
+- 201 Unit Tests, >91% Coverage (Branches)
+- 36 E2E-Tests (REQ-004) + 21 Workflow-Tests auf allen 3 Viewports bestanden
 - Feature Documentation in DE + EN generiert
+- Warenkorb-Integration (AC-7, AC-8, AC-9) vollständig
 - Keine kritischen Issues
 
 **Nächste Schritte:**
@@ -310,3 +332,4 @@
 | Datum | Score | Änderungen |
 |-------|-------|------------|
 | 2026-02-18 | 98/100 | Initiale Prüfung — alle Checks bestanden |
+| 2026-02-18 | 98/100 | Warenkorb-Integration (AC-7/8/9), AC-Matrix hinzugefügt, 36 E2E-Tests |

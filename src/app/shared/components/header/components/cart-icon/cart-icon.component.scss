@@ -9,4 +9,9 @@
       outline-offset: 0.125em;
     }
   }
+
+  &__frame {
+    overflow: visible;
+    position: relative;
+  }
 }

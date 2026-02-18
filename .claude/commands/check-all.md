@@ -92,6 +92,7 @@ Prompt: "Analysiere das Feature '$ARGUMENTS' und führe folgende Quality-Checks 
    - BEM Naming
    - WCAG 2.1 AA Compliance
    - Focus-Styles, Kontrast
+   - Buttons: IMMER mat-flat-button (filled), KEIN mat-stroked-button
 
 Suche nach Dateien in src/app/features/$ARGUMENTS/**/*
 
@@ -298,6 +299,32 @@ Gewichtung:
 
 ---
 
+### Schritt 5b: Akzeptanzkriterien prüfen (PFLICHT!)
+
+> ⛔ **BLOCKER! Kein "Ready for PR" ohne 100% AC-Erfüllung!**
+
+1. **Ermittle REQ-ID** aus dem Feature-Namen (z.B. `booking` → `REQ-004-Serviceauswahl`)
+2. **Lese requirement.md Section 2** ("Acceptance Criteria") — extrahiere ALLE ACs
+3. **Prüfe JEDES AC** gegen Code + Tests:
+   - Ist das AC im Code implementiert? (Datei:Zeile als Nachweis)
+   - Wird das AC durch einen E2E-Test (TC-X) abgedeckt?
+   - Wird das AC durch einen Unit-Test abgedeckt?
+4. **Erstelle AC-Matrix:**
+
+```
+| AC | Beschreibung | Status | Nachweis (Test / Code) |
+|----|-------------|--------|------------------------|
+| AC-1 | [Text aus requirement.md] | ✅ Erfüllt / ❌ Nicht erfüllt | [TC-X (E2E), datei.ts] |
+| AC-2 | ... | ... | ... |
+```
+
+5. **Ergebnis:** X/Y Akzeptanzkriterien erfüllt
+
+> ⛔ **STOP bei nicht erfüllten ACs!** Alle ACs MÜSSEN erfüllt sein für "Ready for PR".
+> Falls ACs fehlen → Issues auflisten und Status auf ❌ setzen.
+
+---
+
 ### Schritt 6: Erstelle konsolidierten Report
 
 Gib den Report in folgendem Format aus:
@@ -343,6 +370,10 @@ Nutze das Template aus `docs/requirements/QUALITAETS-TEMPLATE.md` und fülle all
    [status] check-documentation: XX/100
    DE: ✅❌  |  EN: ✅❌
 
+✅ AKZEPTANZKRITERIEN
+   X/Y erfüllt [✅|❌]
+   [AC-Matrix Tabelle]
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📊 GESAMT: XX/100
 
@@ -354,9 +385,9 @@ Nutze das Template aus `docs/requirements/QUALITAETS-TEMPLATE.md` und fülle all
    - datei:zeile - Issue description
 
 [Status basierend auf Score:]
-✅ Ready for PR          (Score >= 90, keine ❌)
+✅ Ready for PR          (Score >= 90, keine ❌, ALLE ACs erfüllt)
 ⚠️ Review empfohlen      (Score 70-89)
-❌ Nicht bereit          (Score < 70 oder kritische Fehler)
+❌ Nicht bereit          (Score < 70 oder kritische Fehler oder ACs nicht erfüllt)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -377,6 +408,7 @@ Nutze das Template aus `docs/requirements/QUALITAETS-TEMPLATE.md` und fülle all
    - Setze Datum und Uhrzeit
    - Liste alle gefundenen Issues mit Datei:Zeile
    - Berechne Empfehlung basierend auf Gesamtscore
+   - **Akzeptanzkriterien Sektion:** AC-Matrix aus Schritt 5b eintragen (PFLICHT!)
    - **E2E Testing Sektion:** Agent 5 hat die E2E-Ergebnisse bereits eingetragen (Schritt 7 aus check-e2e.md).
      Falls nicht: Manuell eintragen mit Playwright Test-Dateien, Szenarien-Aufschlüsselung, Viewports, Issues.
    - Fülle Documentation Sektionen

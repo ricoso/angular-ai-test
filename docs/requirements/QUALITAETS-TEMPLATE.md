@@ -249,6 +249,21 @@
 
 ---
 
+## ✅ Akzeptanzkriterien (Acceptance Criteria)
+
+> **PFLICHT:** Alle ACs aus requirement.md Section 2 müssen hier geprüft werden.
+> Lese Section 2 "Acceptance Criteria" und erstelle eine vollständige Tabelle.
+
+| AC | Beschreibung | Status | Nachweis (Test / Code) |
+|----|-------------|--------|------------------------|
+| AC-X | [Beschreibung aus requirement.md] | ✅ Erfüllt / ❌ Nicht erfüllt | [TC-X (E2E), datei.ts] |
+
+**Ergebnis:** X/Y Akzeptanzkriterien erfüllt [✅|⚠️|❌]
+
+> ⛔ **STOP bei nicht erfüllten ACs!** Alle ACs MÜSSEN erfüllt sein für "Ready for PR".
+
+---
+
 ## Zusammenfassung
 
 ### Bestanden (✅)
