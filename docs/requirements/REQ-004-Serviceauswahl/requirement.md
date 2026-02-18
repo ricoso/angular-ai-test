@@ -1,6 +1,6 @@
 # REQ-004: Serviceauswahl
 
-**Status:** Draft
+**Status:** In Progress
 **Priority:** High
 **Type:** Functional
 **Created:** 2026-02-16
