@@ -2,7 +2,7 @@
 
 **Project:** Gottfried Schultz Fahrzeugauswahl
 **Version:** 1.0
-**Last Updated:** 2026-02-10
+**Last Updated:** 2026-02-19
 
 ---
 
@@ -27,6 +27,7 @@
 | REQ-002 | Markenauswahl | ✔️ Implemented | High | REQ-001 | Einstiegsseite Buchungswizard: Fahrzeugmarken-Auswahl (Audi, BMW, Mercedes-Benz, MINI, Volkswagen) |
 | REQ-003 | Standortwahl | ✔️ Implemented | High | REQ-002 | Standortwahl basierend auf gewählter Fahrzeugmarke (Wizard-Schritt 2) |
 | REQ-004 | Serviceauswahl | 🔍 In Review | High | REQ-003 | Serviceauswahl mit Multi-Select, Radio-Varianten und Zusammenfassungsleiste (Wizard-Schritt 3) |
+| REQ-005 | Hinweisfenster | 📝 Draft | High | REQ-004 | Hinweisfenster-Seite mit optionalem Textfeld für Buchungshinweise (max. 1000 Zeichen) und kontextspezifischen Service-Hinweisen (Wizard-Schritt 4) |
 
 ---
 
@@ -40,6 +41,8 @@ REQ-001-Header
               └──► REQ-003-Standortwahl
                         │
                         └──► REQ-004-Serviceauswahl
+                                  │
+                                  └──► REQ-005-Hinweisfenster
 ```
 
 ---
@@ -52,6 +55,7 @@ REQ-001-Header
 | REQ-002 | [REQ-002-Markenauswahl](./REQ-002-Markenauswahl/requirement.md) |
 | REQ-003 | [REQ-003-Standortwahl](./REQ-003-Standortwahl/requirement.md) |
 | REQ-004 | [REQ-004-Serviceauswahl](./REQ-004-Serviceauswahl/requirement.md) |
+| REQ-005 | [REQ-005-Hinweisfenster](./REQ-005-Hinweisfenster/requirement.md) |
 
 ---
 
@@ -59,12 +63,12 @@ REQ-001-Header
 
 | Status | Count |
 |--------|-------|
-| 📝 Draft | 0 |
+| 📝 Draft | 1 |
 | 🔍 In Review | 1 |
 | ✅ Approved | 0 |
 | 🚧 In Progress | 0 |
 | ✔️ Implemented | 3 |
-| **Total** | **4** |
+| **Total** | **5** |
 
 ---
 
