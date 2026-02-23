@@ -27,7 +27,7 @@
 | REQ-002 | Markenauswahl | ✔️ Implemented | High | REQ-001 | Einstiegsseite Buchungswizard: Fahrzeugmarken-Auswahl (Audi, BMW, Mercedes-Benz, MINI, Volkswagen) |
 | REQ-003 | Standortwahl | ✔️ Implemented | High | REQ-002 | Standortwahl basierend auf gewählter Fahrzeugmarke (Wizard-Schritt 2) |
 | REQ-004 | Serviceauswahl | 🔍 In Review | High | REQ-003 | Serviceauswahl mit Multi-Select, Radio-Varianten und Zusammenfassungsleiste (Wizard-Schritt 3) |
-| REQ-005 | Hinweisfenster | 🚧 In Progress | High | REQ-004 | Optionale Buchungsnotiz + servicespezifische Hinweise (Wizard-Schritt 4) |
+| REQ-005 | Hinweisfenster | 🔍 In Review | High | REQ-004 | Optionale Buchungsnotiz + servicespezifische Hinweise (Wizard-Schritt 4) |
 
 ---
 
@@ -64,9 +64,9 @@ REQ-001-Header
 | Status | Count |
 |--------|-------|
 | 📝 Draft | 0 |
-| 🔍 In Review | 1 |
+| 🔍 In Review | 2 |
 | ✅ Approved | 0 |
-| 🚧 In Progress | 1 |
+| 🚧 In Progress | 0 |
 | ✔️ Implemented | 3 |
 | **Total** | **5** |
 
