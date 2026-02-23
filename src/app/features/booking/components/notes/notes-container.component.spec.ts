@@ -99,7 +99,7 @@ describe('NotesContainerComponent', () => {
       exposed.onNoteChanged('Bitte Öl prüfen.');
       exposed.onContinue();
       expect(store.bookingNote()).toBe('Bitte Öl prüfen.');
-      expect(router.navigate).toHaveBeenCalledWith(['/home/notes']);
+      expect(router.navigate).toHaveBeenCalledWith(['/home/appointment']);
     });
 
     it('should save null when note is empty', () => {
@@ -136,7 +136,7 @@ describe('NotesContainerComponent', () => {
       const exposed = component as unknown as { onContinue: () => void };
       exposed.onContinue();
       expect(store.bookingNote()).toBeNull();
-      expect(router.navigate).toHaveBeenCalledWith(['/home/notes']);
+      expect(router.navigate).toHaveBeenCalledWith(['/home/appointment']);
     });
   });
 

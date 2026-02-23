@@ -225,3 +225,88 @@ export async function clickNotesBack(page: Page): Promise<void> {
   await backButton.click();
   await waitForAngular(page);
 }
+
+// =============================================
+// APPOINTMENT SELECTION HELPERS (REQ-006)
+// =============================================
+
+/**
+ * Navigate to the appointment page via brand -> location -> services -> notes -> appointment.
+ * Walks through the full wizard flow to satisfy all guards.
+ */
+export async function goToAppointmentPage(
+  page: Page,
+  options?: {
+    brandName?: string;
+    locationName?: string;
+    serviceNames?: string[];
+  }
+): Promise<void> {
+  await goToNotesPage(page, options);
+
+  // Click Continue on notes page to navigate to /home/appointment
+  await clickNotesContinue(page);
+  // Wait for appointment selection section to appear
+  await page.locator('.appointment-selection').waitFor({ state: 'visible', timeout: 10000 });
+  await waitForAngular(page);
+}
+
+/** Get appointment card count */
+export async function getAppointmentCardCount(page: Page): Promise<number> {
+  const cards = page.locator('.appointment-card');
+  return cards.count();
+}
+
+/** Get all appointment card day abbreviation texts (e.g. ['Mo', 'Di', 'Mi', 'Do']) */
+export async function getAppointmentDayAbbreviations(page: Page): Promise<string[]> {
+  const days = page.locator('.appointment-card__day');
+  return days.allTextContents().then(texts => texts.map(t => t.trim()));
+}
+
+/** Get all appointment card date texts (e.g. ['25.02.2026', '26.02.2026']) */
+export async function getAppointmentDates(page: Page): Promise<string[]> {
+  const dates = page.locator('.appointment-card__date');
+  return dates.allTextContents().then(texts => texts.map(t => t.trim()));
+}
+
+/** Get all appointment card time texts (e.g. ['09:00 Uhr', '10:30 Uhr']) */
+export async function getAppointmentTimes(page: Page): Promise<string[]> {
+  const times = page.locator('.appointment-card__time');
+  return times.allTextContents().then(texts => texts.map(t => t.trim()));
+}
+
+/** Select an appointment card by index (0-based) */
+export async function selectAppointmentCard(page: Page, index: number): Promise<void> {
+  const card = page.locator('.appointment-card').nth(index);
+  await expect(card).toBeVisible();
+  await card.click();
+  await waitForAngular(page);
+}
+
+/** Check if an appointment card at the given index is selected */
+export async function isAppointmentCardSelected(page: Page, index: number): Promise<boolean> {
+  const card = page.locator('.appointment-card').nth(index);
+  const classList = await card.getAttribute('class');
+  return classList?.includes('appointment-card--selected') ?? false;
+}
+
+/** Click the Continue button on the appointment page */
+export async function clickAppointmentContinue(page: Page): Promise<void> {
+  const continueButton = page.locator('.appointment-selection__continue-button');
+  await expect(continueButton).toBeVisible();
+  await continueButton.click();
+  await waitForAngular(page);
+}
+
+/** Click the Back button on the appointment page */
+export async function clickAppointmentBack(page: Page): Promise<void> {
+  const backButton = page.locator('.appointment-selection__back-button');
+  await expect(backButton).toBeVisible();
+  await backButton.click();
+  await waitForAngular(page);
+}
+
+/** Get the calendar link element on the appointment page */
+export function getCalendarLink(page: Page) {
+  return page.locator('.appointment-selection__calendar-link');
+}

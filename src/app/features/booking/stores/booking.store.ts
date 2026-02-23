@@ -5,9 +5,11 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 
 import { catchError, EMPTY, from, pipe, switchMap, tap } from 'rxjs';
 
+import type { AppointmentSlot } from '../models/appointment.model';
 import type { Brand, BrandDisplay } from '../models/brand.model';
 import type { LocationDisplay } from '../models/location.model';
 import type { SelectedService, ServiceDisplay, ServiceType } from '../models/service.model';
+import { AppointmentApiService } from '../services/appointment-api.service';
 import { BookingApiService } from '../services/booking-api.service';
 
 interface BookingState {
@@ -18,6 +20,8 @@ interface BookingState {
   services: ServiceDisplay[];
   selectedServices: SelectedService[];
   bookingNote: string | null;
+  appointments: AppointmentSlot[];
+  selectedAppointment: AppointmentSlot | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -30,6 +34,8 @@ const INITIAL_STATE: BookingState = {
   services: [],
   selectedServices: [],
   bookingNote: null,
+  appointments: [],
+  selectedAppointment: null,
   isLoading: false,
   error: null
 };
@@ -39,7 +45,7 @@ export const BookingStore = signalStore(
 
   withState<BookingState>(INITIAL_STATE),
 
-  withComputed(({ brands, selectedBrand, locations, selectedLocation, selectedServices, bookingNote }) => ({
+  withComputed(({ brands, selectedBrand, locations, selectedLocation, selectedServices, bookingNote, selectedAppointment }) => ({
     hasBrandSelected: computed(() => selectedBrand() !== null),
     brandCount: computed(() => brands().length),
     filteredLocations: computed(() => locations()),
@@ -47,10 +53,11 @@ export const BookingStore = signalStore(
     hasLocationSelected: computed(() => selectedLocation() !== null),
     selectedServiceCount: computed(() => selectedServices().length),
     hasServicesSelected: computed(() => selectedServices().length > 0),
-    hasBookingNote: computed(() => bookingNote() !== null && bookingNote() !== '')
+    hasBookingNote: computed(() => bookingNote() !== null && bookingNote() !== ''),
+    hasAppointmentSelected: computed(() => selectedAppointment() !== null)
   })),
 
-  withMethods((store, api = inject(BookingApiService)) => ({
+  withMethods((store, api = inject(BookingApiService), appointmentApi = inject(AppointmentApiService)) => ({
     loadBrands: rxMethod<void>(
       pipe(
         tap(() => { patchState(store, { isLoading: true, error: null }); }),
@@ -149,6 +156,32 @@ export const BookingStore = signalStore(
     setBookingNote(note: string | null): void {
       console.debug('[BookingStore] setBookingNote:', note);
       patchState(store, { bookingNote: note ?? null });
+    },
+
+    loadAppointments: rxMethod<void>(
+      pipe(
+        tap(() => { patchState(store, { isLoading: true, error: null }); }),
+        switchMap(() => from(appointmentApi.getAppointments()).pipe(
+          tap((appointments) => {
+            console.debug('[BookingStore] Appointments loaded:', appointments);
+            patchState(store, { appointments, isLoading: false });
+          }),
+          catchError((err: unknown) => {
+            const message = err instanceof Error ? err.message : 'Unknown error';
+            patchState(store, { error: message, isLoading: false });
+            return EMPTY;
+          })
+        ))
+      )
+    ),
+
+    selectAppointment(appointment: AppointmentSlot): void {
+      console.debug('[BookingStore] selectAppointment:', appointment);
+      patchState(store, { selectedAppointment: appointment });
+    },
+
+    clearSelectedAppointment(): void {
+      patchState(store, { selectedAppointment: null });
     },
 
     clearSelectedServices(): void {

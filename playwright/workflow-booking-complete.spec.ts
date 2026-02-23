@@ -2,18 +2,23 @@ import { expect, test } from '@playwright/test';
 
 import { getCurrentRoute, navigateTo, setLanguage, waitForAngular } from './helpers/app.helpers';
 import {
+  clickAppointmentBack,
   clickNotesBack,
   clickNotesContinue,
   completeBrandToLocationFlow,
   enterNote,
+  getAppointmentCardCount,
   getCharCounter,
   getBrandButtonTexts,
   getLocationButtonTexts,
   getPageTitle,
   getServiceCardTitles,
+  goToAppointmentPage,
   goToBrandSelection,
   goToNotesPage,
   goToServiceSelection,
+  isAppointmentCardSelected,
+  selectAppointmentCard,
   selectBrand,
   selectLocation,
   selectService,
@@ -24,11 +29,11 @@ import {
  *
  * End-to-End flow through all implemented wizard steps:
  *   REQ-001 (Header) -> REQ-002 (Brand Selection) -> REQ-003 (Location Selection)
- *   -> REQ-004 (Service Selection) -> REQ-005 (Notes)
+ *   -> REQ-004 (Service Selection) -> REQ-005 (Notes) -> REQ-006 (Appointment Selection)
  *
  * Tests the full user journey including:
  * - Header always visible
- * - Brand selection -> Location selection -> Service selection -> Notes
+ * - Brand selection -> Location selection -> Service selection -> Notes -> Appointment
  * - Language switching during the flow
  * - Alternative flows (back navigation, brand change)
  * - Guards and redirects
@@ -42,7 +47,7 @@ test.describe('Complete Booking Workflow', () => {
 
   test.describe('Happy Path', () => {
 
-    test('complete flow: Start -> Brand -> Location -> Services -> Notes', async ({ page }) => {
+    test('complete flow: Start -> Brand -> Location -> Services -> Notes -> Appointment', async ({ page }) => {
       await setLanguage(page, 'de');
 
       // Step 1: Navigate to app root -> should redirect to /home/brand
@@ -139,11 +144,29 @@ test.describe('Complete Booking Workflow', () => {
       // "Bitte Öl prüfen." = 16 characters
       expect(updatedCounter).toBe('16 / 1000');
 
-      // Step 15: Click continue
+      // Step 15: Click continue on notes -> navigate to appointment
       await clickNotesContinue(page);
+      await page.locator('.appointment-selection').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
 
-      // Step 16: Header still visible on notes page
+      // Step 16: REQ-006 — Verify appointment page loaded
+      const appointmentRoute = await getCurrentRoute(page);
+      expect(appointmentRoute).toBe('/home/appointment');
+
+      const appointmentTitle = await getPageTitle(page);
+      expect(appointmentTitle).toBe('Wählen Sie den für Sie passenden Tag und Uhrzeit aus');
+
+      // Step 17: Verify 4 appointment cards
+      const appointmentCardCount = await getAppointmentCardCount(page);
+      expect(appointmentCardCount).toBe(4);
+
+      // Step 18: Select first appointment
+      await selectAppointmentCard(page, 0);
+      expect(await isAppointmentCardSelected(page, 0)).toBe(true);
+
+      // Step 19: Header still visible on appointment page
       await expect(header).toBeVisible();
+      await expect(companyName).toContainText('Autohaus GmbH');
     });
 
     test('complete flow: MINI brand with 3 locations', async ({ page }) => {
@@ -281,6 +304,23 @@ test.describe('Complete Booking Workflow', () => {
       expect(servicesTitle).toBe('Welche Services möchten Sie buchen?');
     });
 
+    test('flow: Appointment -> Back to Notes', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToAppointmentPage(page);
+
+      const appointmentRoute = await getCurrentRoute(page);
+      expect(appointmentRoute).toBe('/home/appointment');
+
+      // Click back button on appointment page
+      await clickAppointmentBack(page);
+
+      const notesRoute = await getCurrentRoute(page);
+      expect(notesRoute).toBe('/home/notes');
+
+      const notesTitle = await getPageTitle(page);
+      expect(notesTitle).toBe('Bitte geben Sie uns weitere Hinweise zu Ihrer Buchung');
+    });
+
   });
 
   // =============================================
@@ -328,6 +368,16 @@ test.describe('Complete Booking Workflow', () => {
       const route = await getCurrentRoute(page);
       // Guard checks brand first -> /home/brand
       expect(route).not.toBe('/home/notes');
+      expect(route).toMatch(/\/home\/(brand|location|services)/);
+    });
+
+    test('direct access to /home/appointment without prerequisites -> redirect', async ({ page }) => {
+      await navigateTo(page, '/home/appointment');
+      await waitForAngular(page);
+
+      const route = await getCurrentRoute(page);
+      // Guard checks brand first -> /home/brand
+      expect(route).not.toBe('/home/appointment');
       expect(route).toMatch(/\/home\/(brand|location|services)/);
     });
 
@@ -431,7 +481,7 @@ test.describe('Complete Booking Workflow', () => {
 
   test.describe('Header persistence (REQ-001)', () => {
 
-    test('header stays visible through brand -> location -> services -> notes flow', async ({ page }) => {
+    test('header stays visible through brand -> location -> services -> notes -> appointment flow', async ({ page }) => {
       const header = page.locator('header[role="banner"]');
       const companyName = page.locator('.header__company-name');
 
@@ -460,6 +510,16 @@ test.describe('Complete Booking Workflow', () => {
       await waitForAngular(page);
 
       // Header visible on notes page
+      await expect(header).toBeVisible();
+      await expect(companyName).toContainText('Autohaus GmbH');
+
+      // Click Continue on notes to go to appointment
+      const notesContinueButton = page.locator('.notes__continue-button');
+      await notesContinueButton.click();
+      await page.locator('.appointment-selection').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      // Header visible on appointment page
       await expect(header).toBeVisible();
       await expect(companyName).toContainText('Autohaus GmbH');
     });

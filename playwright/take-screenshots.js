@@ -100,6 +100,33 @@ const SCREENSHOT_CONFIG = {
       await page.waitForTimeout(500);
     },
   },
+
+  'REQ-006-Terminauswahl': {
+    route: '/home/appointment',
+    setup: async (page) => {
+      // Brand -> Location -> Services -> select HU/AU -> Continue to Notes -> Continue to Appointment
+      await page.goto(`${HASH}/home/brand`);
+      await page.waitForLoadState('networkidle');
+      await page.locator('button', { hasText: 'Audi' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      await page.locator('button', { hasText: 'München' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      // Select HU/AU service
+      await page.locator('.service-card', { hasText: 'HU/AU' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      // Click Continue on services -> notes
+      await page.locator('.summary-bar__continue-button').click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
+      // Click Continue on notes -> appointment
+      await page.locator('.notes__continue-button').click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
+    },
+  },
 };
 
 // ---------------------------------------------------------------------------

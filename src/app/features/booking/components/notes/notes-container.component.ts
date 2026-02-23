@@ -36,7 +36,7 @@ export class NotesContainerComponent {
     const sanitizedNote = note && note.trim().length > 0 ? note.trim() : null;
     this.store.setBookingNote(sanitizedNote);
     console.debug('[NotesContainer] Continue clicked, note:', sanitizedNote);
-    void this.router.navigate(['/home/notes']);
+    void this.router.navigate(['/home/appointment']);
   }
 
   protected onBack(): void {

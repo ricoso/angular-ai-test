@@ -80,6 +80,14 @@ export const translations = {
           deselectButton: 'Abwählen'
         }
       },
+      appointment: {
+        title: 'Wählen Sie den für Sie passenden Tag und Uhrzeit aus',
+        calendarLink: 'Hier sehen Sie weitere freie Termine in unserem Werkstattkalender',
+        backButton: 'Zurück',
+        continueButton: 'Weiter',
+        ariaGroupLabel: 'Terminvorschläge',
+        navAriaLabel: 'Seitennavigation'
+      },
       notes: {
         pageTitle: 'Bitte geben Sie uns weitere Hinweise zu Ihrer Buchung',
         sectionTitle: 'Möchten Sie uns noch etwas zu Ihrer Buchung mitteilen?',
@@ -169,6 +177,14 @@ export const translations = {
           confirmButton: 'Confirm',
           deselectButton: 'Deselect'
         }
+      },
+      appointment: {
+        title: 'Select your preferred day and time',
+        calendarLink: 'Here you can see more available appointments in our workshop calendar',
+        backButton: 'Back',
+        continueButton: 'Continue',
+        ariaGroupLabel: 'Appointment suggestions',
+        navAriaLabel: 'Page navigation'
       },
       notes: {
         pageTitle: 'Please provide further notes for your booking',
