@@ -1,6 +1,6 @@
 # REQ-006: Terminauswahl
 
-**Status:** In Review
+**Status:** In Progress
 **Priority:** High
 **Type:** Functional
 **Created:** 2026-02-23
@@ -56,6 +56,7 @@ Der Benutzer wählt aus vier vorgeschlagenen Terminen den für ihn passenden Tag
 - [ ] AC-11: Weiter-Button speichert den gewählten Termin im BookingStore und navigiert zum nächsten Schritt
 - [ ] AC-12: Weiter-Button ist disabled, wenn kein Termin gewählt ist
 - [ ] AC-13: Von `/home/notes` (REQ-005) navigiert der Weiter-Button zu `/home/appointment`
+- [ ] AC-14: Der aktuell gewählte Termin wird im Warenkorb (Header-Cart-Dropdown) angezeigt — bei Terminwechsel wird immer der aktuelle Termin dargestellt (Datum + Uhrzeit als Chip)
 
 ---
 
@@ -356,6 +357,11 @@ async getAppointments(): Promise<AppointmentSlot[]>
 - **Given:** Seite geladen
 - **When:** Tab + Enter/Space
 - **Then:** Focus-Ring sichtbar, Card auswählbar per Tastatur
+
+### TC-13: Termin im Warenkorb (AC-14)
+- **Given:** Termin-Card selektiert
+- **When:** Warenkorb im Header geöffnet
+- **Then:** Gewählter Termin (Datum + Uhrzeit) als Chip sichtbar; bei Terminwechsel wird der neue Termin angezeigt
 
 ---
 

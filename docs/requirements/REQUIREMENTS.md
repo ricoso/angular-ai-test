@@ -28,7 +28,7 @@
 | REQ-003 | Standortwahl | ✔️ Implemented | High | REQ-002 | Standortwahl basierend auf gewählter Fahrzeugmarke (Wizard-Schritt 2) |
 | REQ-004 | Serviceauswahl | 🔍 In Review | High | REQ-003 | Serviceauswahl mit Multi-Select, Radio-Varianten und Zusammenfassungsleiste (Wizard-Schritt 3) |
 | REQ-005 | Hinweisfenster | ✔️ Implemented | High | REQ-004 | Optionale Buchungsnotiz + servicespezifische Hinweise (Wizard-Schritt 4) |
-| REQ-006 | Terminauswahl | 🔍 In Review | High | REQ-005 | Terminauswahl mit 4 Vorschlägen, Single-Select (Wizard-Schritt 5) |
+| REQ-006 | Terminauswahl | 🚧 In Progress | High | REQ-005 | Terminauswahl mit 4 Vorschlägen, Single-Select (Wizard-Schritt 5) |
 
 ---
 
@@ -68,9 +68,9 @@ REQ-001-Header
 | Status | Count |
 |--------|-------|
 | 📝 Draft | 0 |
-| 🔍 In Review | 2 |
+| 🔍 In Review | 1 |
 | ✅ Approved | 0 |
-| 🚧 In Progress | 0 |
+| 🚧 In Progress | 1 |
 | ✔️ Implemented | 4 |
 | **Total** | **6** |
 
