@@ -40,6 +40,7 @@ export const translations = {
         brandLabel: 'Marke',
         locationLabel: 'Standort',
         servicesLabel: 'Services',
+        appointmentLabel: 'Termin',
         badge: {
           ariaLabel: 'Artikel im Warenkorb'
         }
@@ -138,6 +139,7 @@ export const translations = {
         brandLabel: 'Brand',
         locationLabel: 'Location',
         servicesLabel: 'Services',
+        appointmentLabel: 'Appointment',
         badge: {
           ariaLabel: 'items in cart'
         }

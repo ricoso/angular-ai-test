@@ -9,7 +9,7 @@
 
 ## Overview
 
-The appointment selection is the fifth step in the booking wizard. The user selects their preferred day and time from four automatically generated appointment proposals. All appointments are in the future (starting from tomorrow), fall on weekdays (Monday through Saturday, no Sunday), and offer times between 07:00 and 18:00.
+The appointment selection is the fifth step in the booking wizard. The user selects their preferred day and time from four automatically generated appointment proposals. All appointments are in the future (starting from tomorrow), fall on weekdays (Monday through Saturday, no Sunday), and offer times between 07:00 and 18:00. The currently selected appointment is additionally displayed in the shopping cart (header cart dropdown) as a chip with date and time (AC-14).
 
 The feature follows the Container/Presentational pattern: The `AppointmentSelectionContainerComponent` manages data through the `BookingStore`, while the `AppointmentCardComponent` renders individual appointment cards as a pure presentational component.
 
@@ -36,6 +36,31 @@ The feature follows the Container/Presentational pattern: The `AppointmentSelect
 ### Alternative: Workshop Calendar Link
 
 **Description:** The link "Here you can see more available appointments in our workshop calendar" is underlined and clickable, but does not trigger any navigation in the click-dummy (`event.preventDefault()`).
+
+### Cart Integration (AC-14)
+
+**Description:** As soon as an appointment is selected, it appears in the header's cart dropdown as a chip with date and time (e.g., "25.02.2026 - 09:00 Uhr"). When switching appointments, the chip is automatically updated and always displays the currently selected appointment. The display appears below the selected services in the cart dropdown.
+
+---
+
+## Acceptance Criteria
+
+| AC | Description | Status |
+|----|-------------|--------|
+| AC-1 | Page shows heading "Select your preferred day and time" | Implemented |
+| AC-2 | Four appointment proposal cards are displayed | Implemented |
+| AC-3 | Each card shows: weekday abbreviation (in circle), date (DD.MM.YYYY), and time (HH:MM Uhr) | Implemented |
+| AC-4 | All appointments are in the future (starting from tomorrow) | Implemented |
+| AC-5 | No appointment falls on a Sunday | Implemented |
+| AC-6 | Times are between 07:00 and 18:00 | Implemented |
+| AC-7 | Clicking a card selects the appointment (single-select) | Implemented |
+| AC-8 | Selected card shows visual highlighting | Implemented |
+| AC-9 | Calendar link is underlined and clickable (no navigation) | Implemented |
+| AC-10 | Back button navigates to `/home/notes` | Implemented |
+| AC-11 | Continue button saves appointment in BookingStore and navigates forward | Implemented |
+| AC-12 | Continue button is disabled without appointment selection | Implemented |
+| AC-13 | From `/home/notes`, continue navigates to `/home/appointment` | Implemented |
+| AC-14 | Selected appointment is displayed in the cart (header cart dropdown) as a chip | Implemented |
 
 ---
 
@@ -80,3 +105,41 @@ The appointment cards are stacked vertically in a single column. Buttons are ful
 | Resolver | `appointmentsResolver` |
 | Change Detection | OnPush |
 | i18n Keys | `booking.appointment.*` |
+
+---
+
+## i18n Keys
+
+| Key | DE | EN |
+|-----|----|----|
+| `booking.appointment.title` | Wählen Sie den für Sie passenden Tag und Uhrzeit aus | Select your preferred day and time |
+| `booking.appointment.calendarLink` | Hier sehen Sie weitere freie Termine in unserem Werkstattkalender | Here you can see more available appointments in our workshop calendar |
+| `booking.appointment.backButton` | Zurück | Back |
+| `booking.appointment.continueButton` | Weiter | Continue |
+| `booking.appointment.ariaGroupLabel` | Terminvorschläge | Appointment suggestions |
+| `booking.appointment.card.ariaLabel` | {{dayAbbr}}, {{date}}, {{time}} | {{dayAbbr}}, {{date}}, {{time}} |
+| `header.cart.appointmentLabel` | Termin | Appointment |
+
+---
+
+## Component Architecture
+
+```
+AppointmentSelectionContainerComponent (Container)
+  ├── inject(BookingStore)
+  ├── OnPush Change Detection
+  ├── Methods: onAppointmentSelect(), onContinue(), onBack(), onCalendarLinkClick()
+  └── Template:
+      └── AppointmentCardComponent (Presentational) x4
+          ├── input(appointment: AppointmentSlot)
+          ├── input(isSelected: boolean)
+          └── output(appointmentSelected: EventEmitter)
+```
+
+**Store Extension:**
+- `appointments: AppointmentSlot[]` -- Available appointment proposals
+- `selectedAppointment: AppointmentSlot | null` -- Currently selected appointment
+- `hasAppointmentSelected: boolean` -- Computed signal
+- `loadAppointments()` -- rxMethod for loading
+- `selectAppointment(appointment)` -- Set appointment
+- `clearSelectedAppointment()` -- Clear selection

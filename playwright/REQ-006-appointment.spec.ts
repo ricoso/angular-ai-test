@@ -346,6 +346,78 @@ test.describe('REQ-006: Appointment Selection (Terminauswahl)', () => {
   });
 
   // =============================================
+  // TC-13: Appointment in Cart (AC-14)
+  // =============================================
+
+  test.describe('TC-13: Appointment in Cart', () => {
+
+    test('TC-13: selected appointment is shown as chip in cart dropdown', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToAppointmentPage(page);
+
+      // Select first appointment card
+      await selectAppointmentCard(page, 0);
+
+      // Read the selected card's date and time text
+      const dates = await getAppointmentDates(page);
+      const times = await getAppointmentTimes(page);
+      const expectedDate = dates[0];
+      const expectedTime = times[0];
+
+      // Open cart dropdown in header via the cart icon button
+      const cartButton = page.locator('.cart-icon__button');
+      await expect(cartButton).toBeVisible();
+      await cartButton.click();
+      await waitForAngular(page);
+
+      // The cart dropdown should show the appointment chip with date + time
+      // Format: "DD.MM.YYYY, HH:MM Uhr"
+      const appointmentChip = page.locator('.header__cart-row').filter({ hasText: expectedDate });
+      await expect(appointmentChip).toBeVisible();
+      await expect(appointmentChip).toContainText(expectedTime);
+
+      // Verify the event icon is present (appointment row uses 'event' icon)
+      const eventIcon = appointmentChip.locator('mat-icon', { hasText: 'event' });
+      await expect(eventIcon).toBeVisible();
+    });
+
+    test('TC-13b: switching appointment updates the chip in cart', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToAppointmentPage(page);
+
+      // Select first appointment card
+      await selectAppointmentCard(page, 0);
+      const datesFirst = await getAppointmentDates(page);
+      const timesFirst = await getAppointmentTimes(page);
+
+      // Switch to second appointment card
+      await selectAppointmentCard(page, 1);
+      const datesSecond = await getAppointmentDates(page);
+      const timesSecond = await getAppointmentTimes(page);
+      const expectedDate = datesSecond[1];
+      const expectedTime = timesSecond[1];
+
+      // Open cart dropdown
+      const cartButton = page.locator('.cart-icon__button');
+      await cartButton.click();
+      await waitForAngular(page);
+
+      // Verify the updated appointment is shown (second card's data)
+      const appointmentChip = page.locator('.header__cart-row').filter({ hasText: expectedDate });
+      await expect(appointmentChip).toBeVisible();
+      await expect(appointmentChip).toContainText(expectedTime);
+
+      // The first appointment should NOT be shown (unless same date by coincidence)
+      // If dates differ, ensure the first one is not displayed
+      if (datesFirst[0] !== expectedDate) {
+        const oldChip = page.locator('.header__cart-chip').filter({ hasText: datesFirst[0] });
+        await expect(oldChip).toHaveCount(0);
+      }
+    });
+
+  });
+
+  // =============================================
   // ACCESSIBILITY
   // =============================================
 

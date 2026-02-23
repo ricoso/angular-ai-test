@@ -72,6 +72,12 @@ export class HeaderContainerComponent {
     });
   });
 
+  protected readonly selectedAppointmentText = computed(() => {
+    const appointment = this.bookingStore.selectedAppointment();
+    if (!appointment) return null;
+    return `${appointment.displayDate}, ${appointment.displayTime}`;
+  });
+
   protected readonly cartSummaryText = computed(() => {
     const count = this.bookingStore.selectedServiceCount();
     const template = this.translateService.instant(this.header.cart.summary);
