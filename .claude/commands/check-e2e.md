@@ -148,6 +148,15 @@ Wenn neue Features neue Aktionen erfordern:
 - `setLanguage(page, 'de')` IMMER VOR `selectBrand()` aufrufen wenn DE erwartet wird
 - `setLanguage()` macht Reload -> Store-State geht verloren -> danach Brand neu waehlen
 
+**WICHTIG — Navigation in E2E-Tests:**
+> ⛔ **IMMER Klick-Navigation! KEINE direkte URL-Navigation (`navigateTo`, `page.goto`)!**
+> E2E-Tests muessen IMMER ueber Button-/Link-Klicks navigieren — wie ein echter User.
+> Nur fuer Guard/Redirect-Tests (Exception Flows) ist direkte URL-Navigation erlaubt.
+>
+> - ✅ Button-Klick: `await page.locator('button', { hasText: 'Weiter' }).click()`
+> - ❌ URL-Navigation: `await navigateTo(page, '/home/notes')`
+> - ✅ Ausnahme: `await navigateTo(page, '/home/notes')` NUR in Guard-Tests (Section 6)
+
 ---
 
 ### Schritt 5: Tests ausfuehren

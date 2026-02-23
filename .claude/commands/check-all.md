@@ -234,7 +234,12 @@ Folge den Anweisungen in .claude/commands/check-e2e.md:
      - Workflow-Tests Aufschlüsselung
      - Viewports Ergebnisse
      - Issues
-6. Optional: Screenshots via Playwright MCP für Dokumentation
+6. **PFLICHT: Screenshots für Dokumentation erstellen** (Schritt 6 aus check-e2e.md):
+   - Screenshot-Config in `playwright/take-screenshots.js` erweitern (falls neues Feature)
+   - Screenshots erstellen: `node playwright/take-screenshots.js <REQ-ID>`
+   - Ergebnis: `docs/requirements/<REQ-ID>/screenshots/e2e-responsive-{desktop,tablet,mobile}.png`
+   - **KEIN MCP nötig!** Das Script nutzt Playwright API direkt.
+   - ⛔ Agent 6 (Documentation) KANN NICHT ohne Screenshots arbeiten!
 
 Gib zurück im Format:
 E2E_RESULT:
@@ -265,12 +270,16 @@ Folge den Anweisungen in .claude/commands/check-documentation.md:
 
 1. Lese Template: docs/requirements/DOKU-TEMPLATE.md
 2. Lese Requirement: docs/requirements/<REQ-ID>/requirement.md (Section 1, 2, 4, 11, 14)
-3. Nutze vorhandene Screenshots aus docs/requirements/<REQ-ID>/screenshots/
+3. **PFLICHT: Prüfe ob Screenshots existieren** in docs/requirements/<REQ-ID>/screenshots/:
+   - e2e-responsive-desktop.png, e2e-responsive-tablet.png, e2e-responsive-mobile.png
+   - Falls Screenshots FEHLEN: Erstelle sie via `node playwright/take-screenshots.js <REQ-ID>`
+   - ⛔ **KEINE Dokumentation ohne echte Screenshots generieren!**
+   - ⛔ **KEINE Mockups oder Platzhalter-Bilder referenzieren!**
 4. Für jede Doc-Sprache (DE, EN):
    a. Setze Sprache via localStorage: localStorage.setItem('app-language', '<lang>')
    b. Erstelle sprachspezifische Screenshots: doc-overview-<lang>.png, doc-step-XX-<lang>.png
    c. Generiere feature-documentation-<lang>.md aus Template
-5. Prüfe Qualität: Main Flow vollständig, Screenshots vorhanden, Sprache konsistent
+5. Prüfe Qualität: Main Flow vollständig, **Screenshots vorhanden (Dateien auf Disk prüfen!)**, Sprache konsistent
 
 Gib zurück im Format:
 DOCUMENTATION_RESULT:
@@ -455,9 +464,10 @@ Falls ein Agent fehlschlägt:
 4. Empfehle manuelle Prüfung
 
 Falls Playwright MCP nicht verfügbar:
-1. Phase 2+3 (Agent 5+6) überspringen
-2. Gewichtung auf Phase 1 umverteilen (je 25%)
-3. Warnung ausgeben: "E2E + Documentation übersprungen (Playwright MCP nicht verfügbar)"
+1. E2E Tests laufen trotzdem via `npx playwright test` (KEIN MCP nötig!)
+2. Screenshots via `node playwright/take-screenshots.js` erstellen (KEIN MCP nötig!)
+3. Documentation Agent nutzt die erstellten Screenshots
+4. ⛔ **Phase 2+3 NIEMALS überspringen!** Beide sind MCP-unabhängig.
 
 ---
 
