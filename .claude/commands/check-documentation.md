@@ -43,15 +43,20 @@ Example: `booking`
 
 ---
 
-### Schritt 2: Vorhandene Screenshots prüfen
+### Schritt 2: Vorhandene Screenshots prüfen (PFLICHT!)
+
+> ⛔ **KEINE Dokumentation ohne echte Screenshots!** Dateien auf Disk prüfen!
 
 Prüfe ob E2E-Screenshots existieren in `docs/requirements/<REQ-ID>/screenshots/`:
-- `e2e-step-*.png` — Main Flow Screenshots
-- `e2e-responsive-*.png` — Responsive Screenshots
+- `e2e-responsive-desktop.png` — Desktop (1280x720)
+- `e2e-responsive-tablet.png` — Tablet (768x1024)
+- `e2e-responsive-mobile.png` — Mobile (375x667)
 
-Falls **keine Screenshots vorhanden:**
-1. Feature-Route ermitteln (wie in check-e2e)
-2. Basis-Screenshots erstellen via Playwright MCP
+Falls **Screenshots FEHLEN:**
+1. Screenshot-Config in `playwright/take-screenshots.js` prüfen/erweitern
+2. Screenshots erstellen: `node playwright/take-screenshots.js <REQ-ID>`
+3. **KEIN MCP nötig!** Das Script nutzt die Playwright API direkt.
+4. ⛔ **NIEMALS Mockups oder Platzhalter-Bilder referenzieren!**
 
 ---
 
@@ -185,7 +190,8 @@ docs/requirements/<REQ-ID>/
 
 ## Fehlerbehandlung
 
-- **Dev Server nicht erreichbar:** Fehler melden, Screenshots überspringen, nur Text generieren
-- **Playwright MCP nicht verfügbar:** Text-only Dokumentation, Screenshots als Platzhalter
+- **Dev Server nicht erreichbar:** Dev Server starten (`npm start`), dann Screenshots erstellen
+- **Screenshots fehlen:** `node playwright/take-screenshots.js <REQ-ID>` ausführen (KEIN MCP nötig!)
 - **Requirement nicht gefunden:** Fehler melden, Score = 0
 - **Template nicht gefunden:** Standard-Struktur verwenden, Warnung ausgeben
+- ⛔ **NIEMALS Text-only Dokumentation ohne Screenshots generieren!**

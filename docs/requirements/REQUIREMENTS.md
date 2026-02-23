@@ -1,6 +1,6 @@
 # Requirements Overview
 
-**Project:** Gottfried Schultz Fahrzeugauswahl
+**Project:** Autohaus GmbH Fahrzeugauswahl
 **Version:** 1.0
 **Last Updated:** 2026-02-10
 
@@ -27,7 +27,7 @@
 | REQ-002 | Markenauswahl | ✔️ Implemented | High | REQ-001 | Einstiegsseite Buchungswizard: Fahrzeugmarken-Auswahl (Audi, BMW, Mercedes-Benz, MINI, Volkswagen) |
 | REQ-003 | Standortwahl | ✔️ Implemented | High | REQ-002 | Standortwahl basierend auf gewählter Fahrzeugmarke (Wizard-Schritt 2) |
 | REQ-004 | Serviceauswahl | 🔍 In Review | High | REQ-003 | Serviceauswahl mit Multi-Select, Radio-Varianten und Zusammenfassungsleiste (Wizard-Schritt 3) |
-| REQ-006 | Terminauswahl | 📝 Draft | High | REQ-004, REQ-005 | Auswahl eines Termins aus 4 Vorschlägen (Werktage Mo–Sa, 07:00–18:00 Uhr, Wizard-Schritt 5) |
+| REQ-005 | Hinweisfenster | 🔍 In Review | High | REQ-004 | Optionale Buchungsnotiz + servicespezifische Hinweise (Wizard-Schritt 4) |
 
 ---
 
@@ -41,10 +41,8 @@ REQ-001-Header
               └──► REQ-003-Standortwahl
                         │
                         └──► REQ-004-Serviceauswahl
-                                  │
-                                  └──► REQ-005-Notizen
-                                            │
-                                            └──► REQ-006-Terminauswahl
+                                      │
+                                      └──► REQ-005-Hinweisfenster
 ```
 
 ---
@@ -57,7 +55,7 @@ REQ-001-Header
 | REQ-002 | [REQ-002-Markenauswahl](./REQ-002-Markenauswahl/requirement.md) |
 | REQ-003 | [REQ-003-Standortwahl](./REQ-003-Standortwahl/requirement.md) |
 | REQ-004 | [REQ-004-Serviceauswahl](./REQ-004-Serviceauswahl/requirement.md) |
-| REQ-006 | [REQ-006-Terminauswahl](./REQ-006-Terminauswahl/requirement.md) |
+| REQ-005 | [REQ-005-Hinweisfenster](./REQ-005-Hinweisfenster/requirement.md) |
 
 ---
 
@@ -65,8 +63,8 @@ REQ-001-Header
 
 | Status | Count |
 |--------|-------|
-| 📝 Draft | 1 |
-| 🔍 In Review | 1 |
+| 📝 Draft | 0 |
+| 🔍 In Review | 2 |
 | ✅ Approved | 0 |
 | 🚧 In Progress | 0 |
 | ✔️ Implemented | 3 |

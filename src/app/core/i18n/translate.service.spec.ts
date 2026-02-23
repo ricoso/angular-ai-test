@@ -19,7 +19,7 @@ describe('TranslateService', () => {
     it('should return German translation (default)', () => {
       service.use('de');
       const result = service.instant('app.title');
-      expect(result).toBe('Gottfried Schultz');
+      expect(result).toBe('Autohaus GmbH');
     });
 
     it('should return English translation', () => {

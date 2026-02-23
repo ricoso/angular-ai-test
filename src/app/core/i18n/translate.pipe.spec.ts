@@ -28,13 +28,13 @@ describe('TranslatePipe', () => {
   it('sollte deutsche Übersetzung transformieren', () => {
     translateService.use('de');
     const result = pipe.transform('app.title');
-    expect(result).toBe('Gottfried Schultz');
+    expect(result).toBe('Autohaus GmbH');
   });
 
   it('sollte englische Übersetzung transformieren', () => {
     translateService.use('en');
     const result = pipe.transform('app.title');
-    expect(result).toBe('Gottfried Schultz');
+    expect(result).toBe('Autohaus GmbH');
   });
 
   it('sollte Accessibility-Button korrekt übersetzen (DE)', () => {

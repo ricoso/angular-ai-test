@@ -151,3 +151,77 @@ export async function completeBrandToServiceFlow(
   await selectLocation(page, locationName);
   await waitForAngular(page);
 }
+
+// =============================================
+// NOTES PAGE HELPERS (REQ-005)
+// =============================================
+
+/**
+ * Navigate to the notes page via brand -> location -> service selection -> notes.
+ * Selects HU/AU as a default service to satisfy the guard.
+ * Additional services can be selected via the serviceNames parameter.
+ */
+export async function goToNotesPage(
+  page: Page,
+  options?: {
+    brandName?: string;
+    locationName?: string;
+    serviceNames?: string[];
+  }
+): Promise<void> {
+  const brandName = options?.brandName ?? 'Audi';
+  const locationName = options?.locationName ?? 'München';
+  const serviceNames = options?.serviceNames ?? ['HU/AU'];
+
+  await goToServiceSelection(page, brandName, locationName);
+
+  // Select each requested service
+  for (const serviceName of serviceNames) {
+    await selectService(page, serviceName);
+  }
+
+  // Click the Continue button on the services page to navigate to /home/notes
+  const continueButton = page.locator('.summary-bar__continue-button');
+  await expect(continueButton).toBeVisible();
+  await expect(continueButton).toBeEnabled();
+  await continueButton.click();
+  // Wait for notes form to appear
+  await page.locator('.notes').waitFor({ state: 'visible', timeout: 10000 });
+  await waitForAngular(page);
+}
+
+/** Type text into the notes textarea */
+export async function enterNote(page: Page, text: string): Promise<void> {
+  const textarea = page.locator('.notes-form__textarea');
+  await expect(textarea).toBeVisible();
+  await textarea.fill(text);
+  await waitForAngular(page);
+}
+
+/** Get the character counter text (e.g. "5 / 1000") */
+export async function getCharCounter(page: Page): Promise<string> {
+  const counter = page.locator('.notes-form__counter');
+  return (await counter.textContent() ?? '').trim();
+}
+
+/** Get visible service hint texts */
+export async function getVisibleHintTexts(page: Page): Promise<string[]> {
+  const hints = page.locator('.service-hints__text');
+  return hints.allTextContents().then(texts => texts.map(t => t.trim()));
+}
+
+/** Click the Continue button on the notes page */
+export async function clickNotesContinue(page: Page): Promise<void> {
+  const continueButton = page.locator('.notes__continue-button');
+  await expect(continueButton).toBeVisible();
+  await continueButton.click();
+  await waitForAngular(page);
+}
+
+/** Click the Back button on the notes page */
+export async function clickNotesBack(page: Page): Promise<void> {
+  const backButton = page.locator('.notes__back-button');
+  await expect(backButton).toBeVisible();
+  await backButton.click();
+  await waitForAngular(page);
+}

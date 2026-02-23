@@ -149,4 +149,17 @@
     width: 2em;
     height: 2em;
   }
+
+  // Inside Material Buttons: transparent background, no border/shadow
+  // Prevents white-on-white icon issue on primary buttons
+  [mat-flat-button] &,
+  [mat-raised-button] &,
+  [mat-fab] &,
+  [mat-mini-fab] & {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    width: auto;
+    height: auto;
+  }
 }

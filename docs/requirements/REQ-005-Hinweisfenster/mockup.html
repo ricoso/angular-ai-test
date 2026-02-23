@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>REQ-004 Serviceauswahl - Mockup</title>
+  <title>REQ-005 Hinweisfenster - Mockup</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -99,6 +99,26 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
+    /* Skip Link */
+    .skip-link {
+      position: absolute;
+      top: -3em;
+      left: 0;
+      background: var(--color-primary);
+      color: var(--color-text-on-primary);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      text-decoration: none;
+      z-index: 1000;
+      transition: top 0.2s;
+    }
+
+    .skip-link:focus {
+      top: var(--spacing-sm);
+    }
+
     /* =========================================================================
        App Layout
        ========================================================================= */
@@ -146,11 +166,6 @@
     .icon-framed--primary {
       border-color: var(--color-primary);
       color: var(--color-primary);
-    }
-
-    .icon-framed--lg {
-      width: 3em;
-      height: 3em;
     }
 
     /* =========================================================================
@@ -320,112 +335,133 @@
     }
 
     /* =========================================================================
-       Service Selection (from service-selection-container.component.scss)
+       Hinweisfenster Page Layout
        ========================================================================= */
-    .service-selection {
+    .hints-page {
       max-width: 70em;
       margin: 0 auto;
       padding: var(--spacing-xl) var(--spacing-md);
-      text-align: center;
     }
 
-    .service-selection__title {
+    .hints-page__title {
       font-size: var(--font-size-2xl);
       line-height: var(--line-height-tight);
       color: var(--color-text-primary);
-      margin: 0 0 var(--spacing-sm);
+      margin: 0 0 var(--spacing-xl);
       font-weight: 700;
     }
 
-    .service-selection__subtitle {
-      font-size: var(--font-size-md);
-      line-height: var(--line-height-normal);
-      color: var(--color-text-secondary);
-      margin: 0 0 var(--spacing-xl);
-    }
-
-    .service-selection__grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: var(--spacing-lg);
-    }
-
-    @media (min-width: 48em) {
-      .service-selection__grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (min-width: 64em) {
-      .service-selection__grid {
-        grid-template-columns: repeat(3, 1fr);
+    @media (max-width: 47.9375em) {
+      .hints-page__title {
+        font-size: var(--font-size-xl);
       }
     }
 
     /* =========================================================================
-       Service Card (from service-card.component.scss)
+       Message Section (Textfeld)
        ========================================================================= */
-    .service-card {
-      position: relative;
+    .message-section {
       background-color: var(--color-background-surface);
-      border: 0.125em solid var(--color-border);
+      border: 0.0625em solid var(--color-border);
       border-radius: var(--radius-lg);
-      transition: border-color 0.2s, box-shadow 0.2s;
-      text-align: center;
+      box-shadow: var(--shadow-small);
       padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
     }
 
-    .service-card__content {
+    .message-section__heading {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin: 0 0 var(--spacing-md);
+    }
+
+    .message-section__textarea-wrapper {
+      position: relative;
+    }
+
+    .message-section__textarea {
+      width: 100%;
+      min-height: 10em;
+      padding: var(--spacing-md);
+      border: 0.125em solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-relaxed);
+      color: var(--color-text-primary);
+      background-color: var(--color-background-surface);
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+
+    .message-section__textarea::placeholder {
+      color: var(--color-text-muted);
+      font-style: italic;
+    }
+
+    .message-section__textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 0.125em rgba(102, 126, 234, 0.2);
+    }
+
+    .message-section__textarea:focus-visible {
+      outline: 0.125em solid var(--color-focus-ring);
+      outline-offset: 0.0625em;
+    }
+
+    .message-section__char-count {
       display: flex;
-      flex-direction: column;
+      justify-content: flex-end;
+      margin-top: var(--spacing-xs);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+
+    /* =========================================================================
+       Service Hints Section
+       ========================================================================= */
+    .service-hints {
+      background-color: var(--color-background-surface);
+      border: 0.0625em solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-small);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .service-hints__header {
+      display: flex;
       align-items: center;
       gap: var(--spacing-sm);
-      padding: 0;
+      margin-bottom: var(--spacing-lg);
+      padding-bottom: var(--spacing-md);
+      border-bottom: 0.0625em solid var(--color-divider);
     }
 
-    .service-card__icon {
-      font-size: var(--font-size-2xl);
-      color: var(--color-primary);
-    }
-
-    .service-card__title {
+    .service-hints__heading {
       font-size: var(--font-size-lg);
       font-weight: 600;
       color: var(--color-text-primary);
       margin: 0;
     }
 
-    .service-card__description {
-      font-size: var(--font-size-sm);
-      line-height: var(--line-height-normal);
-      color: var(--color-text-secondary);
-      margin: 0;
-    }
-
-    /* Check icon (hidden by default, shown via CSS when card is selected) */
-    .service-card__check {
-      position: absolute;
-      top: var(--spacing-sm);
-      right: var(--spacing-sm);
-      color: var(--color-primary);
-      font-size: var(--font-size-xl);
-      display: none;
+    .service-hints__icon {
+      color: var(--color-warning);
     }
 
     /* =========================================================================
-       CSS-Only Card Selection via Hidden Checkboxes
-       Using <input type="checkbox"> + <label> + sibling selectors
+       CSS-Only Service Hint Toggle
+       Hidden checkboxes control visibility of each hint block.
+       Structure:
+         <input type="checkbox" class="hint-toggle" id="hint-X" checked>
+         <div class="hint-item">...</div>
 
-       Structure per toggleable card:
-         <input type="checkbox" class="card-toggle" id="toggle-X">
-         <label class="service-card service-card--clickable" for="toggle-X">
-           ...card content...
-         </label>
-
-       When :checked, the adjacent label gets selected styles.
+       By default hints are hidden (unchecked).
+       Pre-check inputs that match selected services.
        ========================================================================= */
-    .card-toggle {
-      /* Visually hidden but accessible */
+    .hint-toggle {
       position: absolute;
       width: 1px;
       height: 1px;
@@ -437,156 +473,62 @@
       border: 0;
     }
 
-    /* Clickable card (label) base styles */
-    .service-card--clickable {
-      cursor: pointer;
-      display: block;
+    /* Hint items are hidden by default */
+    .hint-item {
+      display: none;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      border-left: 0.25em solid var(--color-warning);
+      background-color: #fff8f0;
+      margin-bottom: var(--spacing-md);
     }
 
-    .service-card--clickable:hover {
-      border-color: var(--color-primary);
-      box-shadow: var(--shadow-medium);
+    /* Show hint when corresponding toggle is checked */
+    .hint-toggle:checked + .hint-item {
+      display: flex;
+      flex-direction: column;
     }
 
-    /* Focus-visible on the hidden checkbox transfers to the label */
-    .card-toggle:focus-visible + .service-card--clickable {
-      outline: 0.1875em solid var(--color-focus-ring);
-      outline-offset: 0.125em;
+    .hint-item:last-child {
+      margin-bottom: 0;
     }
 
-    /* Selected state: checkbox is :checked */
-    .card-toggle:checked + .service-card--clickable {
-      border-color: var(--color-primary);
-      box-shadow: var(--shadow-medium);
-    }
-
-    /* Show check_circle icon when card is selected */
-    .card-toggle:checked + .service-card--clickable .service-card__check {
-      display: block;
-    }
-
-    /* =========================================================================
-       Tire Change Card - Variant Selection (Radio Buttons, CSS-only)
-
-       The tire-change card uses native radio inputs.
-       A hidden checkbox controls the "confirmed" state.
-       When a radio is selected AND the confirm checkbox is checked,
-       the card shows as selected.
-       ========================================================================= */
-    .service-card__variants {
-      width: 100%;
-      margin-top: var(--spacing-md);
-      text-align: left;
-    }
-
-    .service-card__radio-label {
+    .hint-item__header {
       display: flex;
       align-items: center;
       gap: var(--spacing-sm);
-      min-height: var(--touch-target-min);
-      cursor: pointer;
-      padding: var(--spacing-xs) 0;
     }
 
-    .service-card__radio-label:focus-within {
-      outline: 0.125em solid var(--color-focus-ring);
-      outline-offset: 0.125em;
-      border-radius: var(--radius-sm);
-    }
-
-    .service-card__radio-input {
-      accent-color: var(--color-primary);
-      width: 1.25em;
-      height: 1.25em;
-      cursor: pointer;
-    }
-
-    .service-card__radio-input:focus-visible {
-      outline: 0.125em solid var(--color-focus-ring);
-      outline-offset: 0.125em;
-    }
-
-    .service-card__radio-text {
+    .hint-item__service-name {
       font-size: var(--font-size-sm);
+      font-weight: 600;
       color: var(--color-text-primary);
     }
 
-    .service-card__actions {
+    .hint-item__icon {
+      color: var(--color-warning);
+      font-size: var(--font-size-md);
+    }
+
+    .hint-item__text {
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-relaxed);
+      color: var(--color-text-secondary);
+    }
+
+    /* No hints message when all toggles unchecked */
+    .service-hints__empty {
       display: flex;
-      justify-content: center;
-      margin-top: var(--spacing-md);
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md);
+      color: var(--color-text-muted);
+      font-size: var(--font-size-sm);
     }
 
     /* =========================================================================
-       Tire Change Card - CSS-Only Confirm/Deselect Toggle
-
-       Structure:
-         <input type="checkbox" class="tire-confirm-toggle" id="tire-confirm">
-         <div class="service-card tire-change-card">
-           ...radio inputs...
-           <div class="service-card__actions">
-             <label for="tire-confirm" class="btn btn--confirm">Bestätigen</label>
-             <label for="tire-confirm" class="btn btn--deselect">Abwählen</label>
-           </div>
-         </div>
-
-       - Confirm button visible by default, Deselect hidden
-       - When tire-confirm is :checked, swap visibility and add selected state
-       ========================================================================= */
-    .tire-confirm-toggle {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    /* Default: show confirm, hide deselect */
-    .tire-change-card .btn--deselect {
-      display: none;
-    }
-
-    .tire-change-card .btn--confirm {
-      display: inline-flex;
-    }
-
-    /* When confirmed: show deselect, hide confirm, show selected card state */
-    .tire-confirm-toggle:checked ~ .tire-change-card {
-      border-color: var(--color-primary);
-      box-shadow: var(--shadow-medium);
-    }
-
-    .tire-confirm-toggle:checked ~ .tire-change-card .service-card__check {
-      display: block;
-    }
-
-    .tire-confirm-toggle:checked ~ .tire-change-card .btn--confirm {
-      display: none;
-    }
-
-    .tire-confirm-toggle:checked ~ .tire-change-card .btn--deselect {
-      display: inline-flex;
-    }
-
-    /* Focus-visible on the tire-confirm toggle transfers to the label button */
-    .tire-confirm-toggle:focus-visible ~ .tire-change-card .btn--confirm,
-    .tire-confirm-toggle:focus-visible ~ .tire-change-card .btn--deselect {
-      outline: 0.1875em solid var(--color-focus-ring);
-      outline-offset: 0.125em;
-    }
-
-    /* Wrapper for tire change card to contain the hidden checkbox + card */
-    .tire-change-wrapper {
-      position: relative;
-      display: contents;
-    }
-
-    /* =========================================================================
-       Buttons (from Material-style button system)
+       Buttons
        ========================================================================= */
     .btn {
       display: inline-flex;
@@ -618,15 +560,7 @@
 
     .btn--primary:hover {
       background-color: var(--color-primary-hover);
-    }
-
-    .btn--primary:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .btn--primary:disabled:hover {
-      background-color: var(--color-primary);
+      box-shadow: var(--shadow-medium);
     }
 
     .btn--flat {
@@ -638,54 +572,24 @@
       background-color: var(--color-border);
     }
 
-    .btn--confirm {
-      background-color: var(--color-primary);
-      color: var(--color-text-on-primary);
-      min-width: 10em;
-    }
-
-    .btn--confirm:hover {
-      background-color: var(--color-primary-hover);
-    }
-
-    .btn--deselect {
-      background-color: var(--color-background-hover);
-      color: var(--color-text-primary);
-      min-width: 10em;
-    }
-
-    .btn--deselect:hover {
-      background-color: var(--color-border);
-    }
-
-    /* Label styled as button - remove default label text selection */
-    label.btn {
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
     .material-icons {
       font-size: 1.5em;
       vertical-align: middle;
     }
 
-    .material-icons.check-icon {
-      font-size: var(--font-size-xl);
-    }
-
     /* =========================================================================
-       Summary Bar / Navigation Bar (from service-summary-bar.component.scss)
+       Navigation Bar (Zurück / Weiter)
        ========================================================================= */
-    .summary-bar {
+    .navigation-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: var(--spacing-xl);
-      padding: var(--spacing-md) 0;
+      padding-top: var(--spacing-lg);
+      border-top: 0.0625em solid var(--color-divider);
     }
 
     /* =========================================================================
-       Footer (from app.component.scss)
+       Footer
        ========================================================================= */
     .app-footer {
       background: var(--color-background-surface);
@@ -710,7 +614,7 @@
        Reduced Motion
        ========================================================================= */
     @media (prefers-reduced-motion: reduce) {
-      .service-card,
+      .message-section__textarea,
       .header__logo-link,
       .btn {
         transition: none;
@@ -729,6 +633,9 @@
   </style>
 </head>
 <body>
+  <!-- Skip Link -->
+  <a class="skip-link" href="#main-content">Zum Hauptinhalt springen</a>
+
   <div class="app-layout">
 
     <!-- ===================================================================
@@ -754,10 +661,10 @@
         <button
           class="header__icon-button"
           type="button"
-          aria-label="Warenkorb: 1 Service ausgewählt">
+          aria-label="Warenkorb: 2 Services ausgewählt">
           <span class="icon-framed icon-framed--sm" style="overflow: visible; position: relative;">
             <span class="material-icons" aria-hidden="true">shopping_cart</span>
-            <span class="cart-badge" aria-hidden="true">1</span>
+            <span class="cart-badge" aria-hidden="true">2</span>
           </span>
         </button>
 
@@ -777,160 +684,181 @@
          MAIN CONTENT
          =================================================================== -->
     <main id="main-content" class="app-main" role="main">
-      <section class="service-selection" aria-labelledby="service-title">
-        <h1 id="service-title" class="service-selection__title">Welche Services möchten Sie buchen?</h1>
-        <p class="service-selection__subtitle">Wählen Sie die gewünschten Services aus.</p>
+      <section class="hints-page" aria-labelledby="hints-title">
 
-        <div class="service-selection__grid" role="group" aria-label="Verfügbare Services">
+        <!-- Page Title -->
+        <h1 id="hints-title" class="hints-page__title">
+          Bitte geben Sie uns weitere Hinweise zu Ihrer Buchung
+        </h1>
 
-          <!-- ===============================================================
-               Card 1: HU/AU (SELECTED by default via checked checkbox)
-               CSS-only toggle: hidden checkbox + label as card
-               =============================================================== -->
-          <input
-            type="checkbox"
-            class="card-toggle"
-            id="toggle-huau"
-            checked
-            aria-label="HU/AU Service auswählen"
-          />
-          <label
-            class="service-card service-card--clickable"
-            for="toggle-huau"
-            role="button"
-            aria-pressed="true"
-            tabindex="0">
-            <span class="service-card__check material-icons check-icon" aria-hidden="true">check_circle</span>
-            <div class="service-card__content">
-              <span class="icon-framed service-card__icon">
-                <span class="material-icons" aria-hidden="true">verified</span>
-              </span>
-              <h2 class="service-card__title">HU/AU</h2>
-              <p class="service-card__description">Jetzt Ihren Termin für eine gesetzliche HU/AU vereinbaren!</p>
-            </div>
-          </label>
+        <!-- ===============================================================
+             MESSAGE SECTION – Freitext-Textfeld
+             =============================================================== -->
+        <div class="message-section" role="region" aria-labelledby="message-heading">
+          <h2 id="message-heading" class="message-section__heading">
+            Möchten Sie uns noch etwas zu Ihrer Buchung mitteilen?
+          </h2>
 
-          <!-- ===============================================================
-               Card 2: Inspektion (UNSELECTED by default)
-               CSS-only toggle: hidden checkbox + label as card
-               =============================================================== -->
-          <input
-            type="checkbox"
-            class="card-toggle"
-            id="toggle-inspection"
-            aria-label="Inspektion Service auswählen"
-          />
-          <label
-            class="service-card service-card--clickable"
-            for="toggle-inspection"
-            role="button"
-            aria-pressed="false"
-            tabindex="0">
-            <span class="service-card__check material-icons check-icon" aria-hidden="true">check_circle</span>
-            <div class="service-card__content">
-              <span class="icon-framed service-card__icon">
-                <span class="material-icons" aria-hidden="true">build</span>
-              </span>
-              <h2 class="service-card__title">Inspektion</h2>
-              <p class="service-card__description">Lassen Sie Ihre fällige Inspektion hier durchführen! Buchen Sie jetzt einen Termin.</p>
-            </div>
-          </label>
-
-          <!-- ===============================================================
-               Card 3: Räderwechsel (with radio variant selection)
-               CSS-only: hidden checkbox for confirm/deselect toggle
-               Native radio inputs for variant selection
-               =============================================================== -->
-          <input
-            type="checkbox"
-            class="tire-confirm-toggle"
-            id="tire-confirm"
-            aria-label="Räderwechsel Service bestätigen"
-          />
-          <div
-            class="service-card tire-change-card"
-            role="region"
-            aria-label="Räderwechsel Service">
-            <span class="service-card__check material-icons check-icon" aria-hidden="true">check_circle</span>
-            <div class="service-card__content">
-              <span class="icon-framed service-card__icon">
-                <span class="material-icons" aria-hidden="true">tire_repair</span>
-              </span>
-              <h2 class="service-card__title">Räderwechsel</h2>
-              <p class="service-card__description">Kommen Sie zu uns für Ihren Räderwechsel &ndash; inkl. optionaler Einlagerung!</p>
-
-              <div class="service-card__variants" role="radiogroup" aria-label="Räderwechsel Variante wählen">
-                <label class="service-card__radio-label">
-                  <input
-                    type="radio"
-                    name="tire-change-variant"
-                    value="without-storage"
-                    class="service-card__radio-input"
-                    aria-label="Räderwechsel ohne Einlagerung"
-                  />
-                  <span class="service-card__radio-text">Räderwechsel ohne Einlagerung</span>
-                </label>
-                <label class="service-card__radio-label">
-                  <input
-                    type="radio"
-                    name="tire-change-variant"
-                    value="with-storage"
-                    class="service-card__radio-input"
-                    aria-label="Räderwechsel mit Einlagerung"
-                  />
-                  <span class="service-card__radio-text">Räderwechsel mit Einlagerung</span>
-                </label>
-
-                <div class="service-card__actions">
-                  <!-- Confirm button (visible when NOT confirmed) -->
-                  <label
-                    for="tire-confirm"
-                    class="btn btn--confirm"
-                    role="button"
-                    tabindex="0"
-                    aria-label="Räderwechsel bestätigen">
-                    Bestätigen
-                  </label>
-                  <!-- Deselect button (visible when confirmed) -->
-                  <label
-                    for="tire-confirm"
-                    class="btn btn--deselect"
-                    role="button"
-                    tabindex="0"
-                    aria-label="Räderwechsel abwählen">
-                    Abwählen
-                  </label>
-                </div>
-              </div>
-            </div>
+          <div class="message-section__textarea-wrapper">
+            <label for="booking-notes" class="sr-only">
+              Nachricht an uns (optional, max. 1000 Zeichen)
+            </label>
+            <textarea
+              id="booking-notes"
+              class="message-section__textarea"
+              name="bookingNotes"
+              maxlength="1000"
+              rows="6"
+              placeholder="Bitte tragen Sie hier Ihre Nachricht an uns ein (Hinweise, Buchung weiterer Leistungen, etc.)"
+              aria-describedby="char-count-hint"
+            ></textarea>
           </div>
 
+          <div class="message-section__char-count" id="char-count-hint" aria-live="polite">
+            <span>0 / 1000 Zeichen</span>
+          </div>
         </div>
 
         <!-- ===============================================================
-             Navigation Bar (Summary Bar)
+             SERVICE HINTS SECTION
+             CSS-only: hidden checkboxes control hint visibility.
+             Pre-checked = services selected in previous step (REQ-004).
              =============================================================== -->
-        <nav class="summary-bar" aria-label="Seitennavigation">
-          <button class="btn btn--flat" type="button" aria-label="Zurück zur vorherigen Seite">
+        <div class="service-hints" role="region" aria-labelledby="service-hints-heading">
+          <div class="service-hints__header">
+            <span class="icon-framed icon-framed--primary" aria-hidden="true">
+              <span class="material-icons service-hints__icon">info_outline</span>
+            </span>
+            <h2 id="service-hints-heading" class="service-hints__heading">
+              Wichtige Hinweise zu Ihren ausgewählten Services
+            </h2>
+          </div>
+
+          <!-- HU/AU Hint — pre-checked (service was selected in REQ-004) -->
+          <input
+            type="checkbox"
+            class="hint-toggle"
+            id="hint-huau"
+            checked
+            aria-hidden="true"
+          />
+          <div class="hint-item" role="note" aria-label="Hinweis: HU/AU">
+            <div class="hint-item__header">
+              <span class="material-icons hint-item__icon" aria-hidden="true">warning_amber</span>
+              <span class="hint-item__service-name">HU/AU (Hauptuntersuchung / Abgasuntersuchung)</span>
+            </div>
+            <p class="hint-item__text">
+              Bitte bringen Sie alle fahrzeugbezogenen Unterlagen mit (Fahrzeugschein, letzter HU-Bericht).
+              Die Durchführung dauert ca. 60–90 Minuten. Bitte planen Sie ausreichend Zeit ein.
+              Ein Fahrzeugprüfer der DEKRA / TÜV wird vor Ort sein.
+            </p>
+          </div>
+
+          <!-- Räderwechsel Hint — pre-checked -->
+          <input
+            type="checkbox"
+            class="hint-toggle"
+            id="hint-räderwechsel"
+            checked
+            aria-hidden="true"
+          />
+          <div class="hint-item" role="note" aria-label="Hinweis: Räderwechsel">
+            <div class="hint-item__header">
+              <span class="material-icons hint-item__icon" aria-hidden="true">warning_amber</span>
+              <span class="hint-item__service-name">Räderwechsel</span>
+            </div>
+            <p class="hint-item__text">
+              Bitte stellen Sie sicher, dass Ihre Saisonräder griffbereit sind oder bereits im Kofferraum verstaut.
+              Falls wir Ihre Räder einlagern, erhalten Sie nach dem Termin eine Einlagerungsbestätigung.
+              Bei beschädigten Reifen informieren wir Sie vorab über etwaige Mehrkosten.
+            </p>
+          </div>
+
+          <!-- Ölwechsel Hint — unchecked (not selected in REQ-004, only shown when checked) -->
+          <input
+            type="checkbox"
+            class="hint-toggle"
+            id="hint-oelwechsel"
+            aria-hidden="true"
+          />
+          <div class="hint-item" role="note" aria-label="Hinweis: Ölwechsel">
+            <div class="hint-item__header">
+              <span class="material-icons hint-item__icon" aria-hidden="true">warning_amber</span>
+              <span class="hint-item__service-name">Ölwechsel</span>
+            </div>
+            <p class="hint-item__text">
+              Bitte teilen Sie uns vorab mit, welche Ölsorte und Viskosität für Ihr Fahrzeug vorgeschrieben ist
+              (Hinweis im Fahrzeughandbuch). Falls unklar, ermitteln wir die passende Spezifikation anhand
+              Ihrer Fahrzeugdaten.
+            </p>
+          </div>
+
+          <!-- Inspektion Hint — unchecked -->
+          <input
+            type="checkbox"
+            class="hint-toggle"
+            id="hint-inspektion"
+            aria-hidden="true"
+          />
+          <div class="hint-item" role="note" aria-label="Hinweis: Inspektion">
+            <div class="hint-item__header">
+              <span class="material-icons hint-item__icon" aria-hidden="true">warning_amber</span>
+              <span class="hint-item__service-name">Inspektion</span>
+            </div>
+            <p class="hint-item__text">
+              Für eine vollständige Inspektion benötigen wir das Scheckheft Ihres Fahrzeugs.
+              Die Durchführung dauert je nach Fahrzeugmodell zwischen 2 und 4 Stunden.
+              Wir empfehlen, einen Ersatzwagen oder Shuttle-Service vorab anzufragen.
+            </p>
+          </div>
+        </div>
+
+        <!-- ===============================================================
+             NAVIGATION: Zurück / Weiter
+             =============================================================== -->
+        <nav class="navigation-bar" aria-label="Seitennavigation">
+          <a
+            href="#"
+            class="btn btn--flat"
+            aria-label="Zurück zur Serviceauswahl">
             <span class="material-icons" aria-hidden="true">arrow_back</span>
             Zurück
-          </button>
+          </a>
 
-          <button class="btn btn--primary" type="button" aria-label="Weiter zur nächsten Seite">
+          <a
+            href="#"
+            class="btn btn--primary"
+            aria-label="Weiter zum nächsten Schritt">
             Weiter
             <span class="material-icons" aria-hidden="true">arrow_forward</span>
-          </button>
+          </a>
         </nav>
+
       </section>
     </main>
 
     <!-- ===================================================================
-         FOOTER (matches app.component.html)
+         FOOTER
          =================================================================== -->
     <footer class="app-footer" role="contentinfo">
       <p>Autohaus GmbH</p>
     </footer>
 
   </div>
+
+  <!-- Visually hidden utility class for screen readers -->
+  <style>
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
 </body>
 </html>

@@ -85,7 +85,7 @@ docs/requirements/     # Requirement Specs + Quality Reports
 
 ## Github Page
 
-https://ricoso.github.io/angular-ai-test/#/app
+https://ricoso.github.io/angular-spec-ai/#/app
 
 ## Dokumentation
 

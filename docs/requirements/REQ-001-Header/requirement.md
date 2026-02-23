@@ -244,14 +244,14 @@ const FONT_SIZE_LABELS: Record<FontSize, { de: string; en: string }> = {
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│ [🏢]  Gottfried Schultz              [🛒³]  [accessibility] │
-│       Automobilhandels SE                                            │
+│ [🏢]  Autohaus GmbH                  [🛒³]  [accessibility] │
+│       Fahrzeugauswahl                                                │
 └──────────────────────────────────────────────────────────────────────┘
 
 Warenkorb-Dropdown geöffnet:
 ┌──────────────────────────────────────────────────────────────────────┐
-│ [🏢]  Gottfried Schultz              [🛒³]  [accessibility] │
-│       Automobilhandels SE        ┌──────────────┐                    │
+│ [🏢]  Autohaus GmbH                  [🛒³]  [accessibility] │
+│       Fahrzeugauswahl            ┌──────────────┐                    │
 │                                  │ Warenkorb (3) │                    │
 │                                  │               │                    │
 │                                  │  (Platzhalter │                    │
