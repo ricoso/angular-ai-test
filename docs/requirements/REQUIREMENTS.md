@@ -27,6 +27,7 @@
 | REQ-002 | Markenauswahl | ✔️ Implemented | High | REQ-001 | Einstiegsseite Buchungswizard: Fahrzeugmarken-Auswahl (Audi, BMW, Mercedes-Benz, MINI, Volkswagen) |
 | REQ-003 | Standortwahl | ✔️ Implemented | High | REQ-002 | Standortwahl basierend auf gewählter Fahrzeugmarke (Wizard-Schritt 2) |
 | REQ-004 | Serviceauswahl | 🔍 In Review | High | REQ-003 | Serviceauswahl mit Multi-Select, Radio-Varianten und Zusammenfassungsleiste (Wizard-Schritt 3) |
+| REQ-006 | Terminauswahl | 📝 Draft | High | REQ-004, REQ-005 | Auswahl eines Termins aus 4 Vorschlägen (Werktage Mo–Sa, 07:00–18:00 Uhr, Wizard-Schritt 5) |
 
 ---
 
@@ -40,6 +41,10 @@ REQ-001-Header
               └──► REQ-003-Standortwahl
                         │
                         └──► REQ-004-Serviceauswahl
+                                  │
+                                  └──► REQ-005-Notizen
+                                            │
+                                            └──► REQ-006-Terminauswahl
 ```
 
 ---
@@ -52,6 +57,7 @@ REQ-001-Header
 | REQ-002 | [REQ-002-Markenauswahl](./REQ-002-Markenauswahl/requirement.md) |
 | REQ-003 | [REQ-003-Standortwahl](./REQ-003-Standortwahl/requirement.md) |
 | REQ-004 | [REQ-004-Serviceauswahl](./REQ-004-Serviceauswahl/requirement.md) |
+| REQ-006 | [REQ-006-Terminauswahl](./REQ-006-Terminauswahl/requirement.md) |
 
 ---
 
@@ -59,12 +65,12 @@ REQ-001-Header
 
 | Status | Count |
 |--------|-------|
-| 📝 Draft | 0 |
+| 📝 Draft | 1 |
 | 🔍 In Review | 1 |
 | ✅ Approved | 0 |
 | 🚧 In Progress | 0 |
 | ✔️ Implemented | 3 |
-| **Total** | **4** |
+| **Total** | **5** |
 
 ---
 
