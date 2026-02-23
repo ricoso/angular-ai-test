@@ -1,6 +1,6 @@
 # REQ-005: Hinweisfenster
 
-**Status:** Draft
+**Status:** In Progress
 **Priority:** High
 **Type:** Functional
 **Created:** 2026-02-19
