@@ -1,0 +1,20 @@
+<section class="location-selection">
+  <h1 class="location-selection__title">{{ booking.location.title | translate }}</h1>
+  <p class="location-selection__subtitle">{{ booking.location.subtitle | translate }}</p>
+
+  <app-location-buttons
+    [locations]="locations()"
+    [selectedLocation]="selectedLocation()"
+    (locationSelected)="onLocationSelect($event)"
+  />
+
+  <div class="location-selection__nav">
+    <button
+      mat-flat-button
+      class="location-selection__back-button"
+      (click)="onBack()">
+      <mat-icon aria-hidden="true">arrow_back</mat-icon>
+      {{ booking.location.backButton | translate }}
+    </button>
+  </div>
+</section>

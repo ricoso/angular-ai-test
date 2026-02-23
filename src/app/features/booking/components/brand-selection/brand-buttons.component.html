@@ -1,0 +1,13 @@
+<div class="brand-grid" role="group" aria-label="Vehicle brands">
+  @for (brand of brands(); track brand.id) {
+    <button
+      type="button"
+      class="brand-grid__button"
+      [class.brand-grid__button--active]="brand.id === selectedBrand()"
+      [attr.aria-pressed]="brand.id === selectedBrand()"
+      (click)="onClick(brand)"
+    >
+      {{ brand.name }}
+    </button>
+  }
+</div>

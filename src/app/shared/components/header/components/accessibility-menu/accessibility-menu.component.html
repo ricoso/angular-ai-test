@@ -1,0 +1,54 @@
+<div class="accessibility-menu">
+  <!-- Font Size -->
+  <section class="accessibility-menu__section">
+    <h3 class="accessibility-menu__heading" id="font-size-label">
+      {{ a11y.fontSize.label | translate }}
+    </h3>
+    <mat-radio-group
+      class="accessibility-menu__radio-group"
+      [value]="fontSize()"
+      (change)="onFontSizeChange($event.value)"
+      aria-labelledby="font-size-label">
+      @for (size of fontSizes; track size) {
+        <mat-radio-button
+          class="accessibility-menu__radio"
+          [value]="size">
+          @switch (size) {
+            @case ('small') {
+              {{ a11y.fontSize.small | translate }}
+            }
+            @case ('normal') {
+              {{ a11y.fontSize.normal | translate }}
+            }
+            @case ('large') {
+              {{ a11y.fontSize.large | translate }}
+            }
+            @case ('x-large') {
+              {{ a11y.fontSize.xLarge | translate }}
+            }
+          }
+        </mat-radio-button>
+      }
+    </mat-radio-group>
+  </section>
+
+  <!-- High Contrast -->
+  <section class="accessibility-menu__section">
+    <mat-slide-toggle
+      class="accessibility-menu__toggle"
+      [checked]="highContrast()"
+      (change)="onHighContrastChange($event.checked)">
+      {{ a11y.highContrast | translate }}
+    </mat-slide-toggle>
+  </section>
+
+  <!-- Reduced Motion -->
+  <section class="accessibility-menu__section">
+    <mat-slide-toggle
+      class="accessibility-menu__toggle"
+      [checked]="reducedMotion()"
+      (change)="onReducedMotionChange($event.checked)">
+      {{ a11y.reducedMotion | translate }}
+    </mat-slide-toggle>
+  </section>
+</div>

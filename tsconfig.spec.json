@@ -1,0 +1,26 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/spec",
+    "types": ["jest", "node"],
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "@angular/material/*": ["node_modules/@angular/material/types/*"],
+      "@app/*": ["src/app/*"],
+      "@core/*": ["src/app/core/*"],
+      "@shared/*": ["src/app/shared/*"],
+      "@features/*": ["src/app/features/*"],
+      "@layouts/*": ["src/app/layouts/*"],
+      "@environments/*": ["src/environments/*"],
+      "@ngrx/signals/rxjs-interop": ["node_modules/@ngrx/signals/types/ngrx-signals-rxjs-interop.d.ts"]
+    }
+  },
+  "include": [
+    "src/**/*.spec.ts",
+    "src/**/*.d.ts",
+    "src/setup-jest.ts"
+  ]
+}
