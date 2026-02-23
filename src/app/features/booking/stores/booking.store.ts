@@ -17,6 +17,7 @@ interface BookingState {
   selectedLocation: LocationDisplay | null;
   services: ServiceDisplay[];
   selectedServices: SelectedService[];
+  bookingNote: string | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -28,6 +29,7 @@ const INITIAL_STATE: BookingState = {
   selectedLocation: null,
   services: [],
   selectedServices: [],
+  bookingNote: null,
   isLoading: false,
   error: null
 };
@@ -37,14 +39,15 @@ export const BookingStore = signalStore(
 
   withState<BookingState>(INITIAL_STATE),
 
-  withComputed(({ brands, selectedBrand, locations, selectedLocation, selectedServices }) => ({
+  withComputed(({ brands, selectedBrand, locations, selectedLocation, selectedServices, bookingNote }) => ({
     hasBrandSelected: computed(() => selectedBrand() !== null),
     brandCount: computed(() => brands().length),
     filteredLocations: computed(() => locations()),
     locationCount: computed(() => locations().length),
     hasLocationSelected: computed(() => selectedLocation() !== null),
     selectedServiceCount: computed(() => selectedServices().length),
-    hasServicesSelected: computed(() => selectedServices().length > 0)
+    hasServicesSelected: computed(() => selectedServices().length > 0),
+    hasBookingNote: computed(() => bookingNote() !== null && bookingNote() !== '')
   })),
 
   withMethods((store, api = inject(BookingApiService)) => ({
@@ -141,6 +144,11 @@ export const BookingStore = signalStore(
       console.debug('[BookingStore] Deselecting tire change');
       const current = store.selectedServices();
       patchState(store, { selectedServices: current.filter(s => s.serviceId !== 'tire-change') });
+    },
+
+    setBookingNote(note: string | null): void {
+      console.debug('[BookingStore] setBookingNote:', note);
+      patchState(store, { bookingNote: note ?? null });
     },
 
     clearSelectedServices(): void {

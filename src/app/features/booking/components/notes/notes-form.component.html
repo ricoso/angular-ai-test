@@ -1,0 +1,23 @@
+<div class="notes-form">
+  <mat-form-field class="notes-form__field" appearance="outline">
+    <textarea
+      matInput
+      [formControl]="noteControl"
+      [placeholder]="booking.notes.textareaPlaceholder | translate"
+      [maxlength]="maxLength"
+      [attr.aria-label]="booking.notes.sectionTitle | translate"
+      [attr.aria-describedby]="'char-counter'"
+      rows="6"
+      class="notes-form__textarea"
+    ></textarea>
+    <mat-hint align="end">
+      <span
+        id="char-counter"
+        aria-live="polite"
+        class="notes-form__counter"
+      >
+        {{ currentLength() }} / {{ maxLength }}
+      </span>
+    </mat-hint>
+  </mat-form-field>
+</div>
