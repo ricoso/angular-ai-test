@@ -21,7 +21,7 @@
       [attr.aria-label]="booking.notes.backButton | translate"
       (click)="onBack()"
     >
-      <mat-icon class="icon-framed">arrow_back</mat-icon>
+      <mat-icon class="icon-framed" aria-hidden="true">arrow_back</mat-icon>
       {{ booking.notes.backButton | translate }}
     </button>
     <button
@@ -33,7 +33,7 @@
       (click)="onContinue()"
     >
       {{ booking.notes.continueButton | translate }}
-      <mat-icon class="icon-framed">arrow_forward</mat-icon>
+      <mat-icon class="icon-framed" aria-hidden="true">arrow_forward</mat-icon>
     </button>
   </div>
 </section>

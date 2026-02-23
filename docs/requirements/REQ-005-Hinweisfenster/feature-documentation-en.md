@@ -36,9 +36,9 @@ The booking notes page is **step 4 in the booking wizard** (Brand -> Location ->
 ## Responsive Views
 
 ### Desktop (1280x720)
-![Desktop](./screenshots/e2e-responsive-desktop.png)
+![Desktop](./screenshots/e2e-responsive-desktop-en.png)
 
-The free-text field spans the full width of the content area with 6 rows of height. The service-specific hints are displayed stacked vertically. The "Back" and "Continue" buttons are positioned side by side (Back on the left, Continue on the right).
+The free-text field spans the full width of the content area with 6 rows of height. The service-specific hints are displayed stacked vertically. The "Back" and "Continue" buttons are positioned side by side (Back on the left, Continue on the right). Button icons use the `.icon-framed` pattern with `aria-hidden="true"` and become transparent inside filled buttons. Button sizing (min-height, flex alignment, gap) is consistent with previous wizard steps (REQ-004).
 
 ### Tablet (768x1024)
 ![Tablet](./screenshots/e2e-responsive-tablet.png)

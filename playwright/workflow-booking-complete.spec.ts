@@ -108,8 +108,11 @@ test.describe('Complete Booking Workflow', () => {
       // Step 10: Header still visible on services page
       await expect(header).toBeVisible();
 
-      // Step 11: REQ-005 — Navigate to notes page
-      await navigateTo(page, '/home/notes');
+      // Step 11: REQ-005 — Click Continue on services page to go to notes
+      const servicesContinueButton = page.locator('.summary-bar__continue-button');
+      await expect(servicesContinueButton).toBeVisible();
+      await expect(servicesContinueButton).toBeEnabled();
+      await servicesContinueButton.click();
       await page.locator('.notes').waitFor({ state: 'visible', timeout: 10000 });
       await waitForAngular(page);
 
@@ -362,9 +365,12 @@ test.describe('Complete Booking Workflow', () => {
         expect.arrayContaining(['HU/AU', 'Inspection', 'Tire Change'])
       );
 
-      // Select a service and navigate to notes
+      // Select a service and click Continue to navigate to notes
       await selectService(page, 'HU/AU');
-      await navigateTo(page, '/home/notes');
+      const enContinueButton = page.locator('.summary-bar__continue-button');
+      await expect(enContinueButton).toBeVisible();
+      await expect(enContinueButton).toBeEnabled();
+      await enContinueButton.click();
       await page.locator('.notes').waitFor({ state: 'visible', timeout: 10000 });
       await waitForAngular(page);
 
@@ -444,9 +450,12 @@ test.describe('Complete Booking Workflow', () => {
       await expect(header).toBeVisible();
       await expect(companyName).toContainText('Autohaus GmbH');
 
-      // Select a service and go to notes
+      // Select a service and click Continue to go to notes
       await selectService(page, 'HU/AU');
-      await navigateTo(page, '/home/notes');
+      const headerContinueButton = page.locator('.summary-bar__continue-button');
+      await expect(headerContinueButton).toBeVisible();
+      await expect(headerContinueButton).toBeEnabled();
+      await headerContinueButton.click();
       await page.locator('.notes').waitFor({ state: 'visible', timeout: 10000 });
       await waitForAngular(page);
 
@@ -486,9 +495,12 @@ test.describe('Complete Booking Workflow', () => {
       await waitForAngular(page);
       await expect(cartButton).toBeVisible();
 
-      // Select service and navigate to notes
+      // Select service and click Continue to navigate to notes
       await selectService(page, 'HU/AU');
-      await navigateTo(page, '/home/notes');
+      const cartContinueButton = page.locator('.summary-bar__continue-button');
+      await expect(cartContinueButton).toBeVisible();
+      await expect(cartContinueButton).toBeEnabled();
+      await cartContinueButton.click();
       await page.locator('.notes').waitFor({ state: 'visible', timeout: 10000 });
       await waitForAngular(page);
       await expect(cartButton).toBeVisible();

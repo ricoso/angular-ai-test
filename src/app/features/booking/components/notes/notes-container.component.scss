@@ -36,7 +36,9 @@
   &__back-button,
   &__continue-button {
     min-height: var(--touch-target-min);
-    font-size: var(--font-size-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
 
     &:focus-visible {
       outline: 0.125em solid var(--color-focus-ring);

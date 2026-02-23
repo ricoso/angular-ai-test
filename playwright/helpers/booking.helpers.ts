@@ -180,8 +180,11 @@ export async function goToNotesPage(
     await selectService(page, serviceName);
   }
 
-  // Navigate to notes page directly (click-dummy Continue stays on same page)
-  await navigateTo(page, '/home/notes');
+  // Click the Continue button on the services page to navigate to /home/notes
+  const continueButton = page.locator('.summary-bar__continue-button');
+  await expect(continueButton).toBeVisible();
+  await expect(continueButton).toBeEnabled();
+  await continueButton.click();
   // Wait for notes form to appear
   await page.locator('.notes').waitFor({ state: 'visible', timeout: 10000 });
   await waitForAngular(page);

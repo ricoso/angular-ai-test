@@ -131,8 +131,11 @@ test.describe('REQ-005: Notes Page (Hinweisfenster)', () => {
       // For tire change, use the confirm helper
       await confirmTireChange(page, 'without-storage');
 
-      // Navigate to notes
-      await navigateTo(page, '/home/notes');
+      // Click Continue on services page to navigate to notes
+      const continueButton = page.locator('.summary-bar__continue-button');
+      await expect(continueButton).toBeVisible();
+      await expect(continueButton).toBeEnabled();
+      await continueButton.click();
       await page.locator('.notes').waitFor({ state: 'visible', timeout: 10000 });
       await waitForAngular(page);
 
@@ -317,8 +320,11 @@ test.describe('REQ-005: Notes Page (Hinweisfenster)', () => {
       const servicesRoute = await getCurrentRoute(page);
       expect(servicesRoute).toBe('/home/services');
 
-      // Navigate back to notes
-      await navigateTo(page, '/home/notes');
+      // Click Continue on services page to navigate back to notes
+      const continueBtn = page.locator('.summary-bar__continue-button');
+      await expect(continueBtn).toBeVisible();
+      await expect(continueBtn).toBeEnabled();
+      await continueBtn.click();
       await page.locator('.notes').waitFor({ state: 'visible', timeout: 10000 });
       await waitForAngular(page);
 

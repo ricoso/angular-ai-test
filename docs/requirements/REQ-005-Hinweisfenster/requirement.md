@@ -53,9 +53,11 @@ Der Benutzer kann nach der Serviceauswahl (REQ-004) optionale Hinweise zu seiner
 - [ ] AC-6: Abschnitt "Wichtige Hinweise zu Ihren ausgewählten Services" wird angezeigt, wenn mindestens ein Service gewählt wurde
 - [ ] AC-7: Servicespezifische Hinweistexte werden nur angezeigt, wenn der jeweilige Service in `BookingStore.selectedServices` enthalten ist
 - [ ] AC-8: Zurück-Button navigiert zu `/home/services`
-- [ ] AC-9: Weiter-Button navigiert zum nächsten Schritt und speichert die Buchungsnotiz im BookingStore
+- [ ] AC-9: Weiter-Button navigiert zu `/home/notes` (nächster Schritt) und speichert die Buchungsnotiz im BookingStore
 - [ ] AC-10: Das Textfeld und alle Hinweise sind WCAG 2.1 AA konform
 - [ ] AC-11: Der Weiter-Button ist immer aktiv (Feld ist optional — keine Pflichtvalidierung)
+- [ ] AC-12: Alle Icons verwenden `.icon-framed` — innerhalb von Material Buttons wird `.icon-framed` automatisch transparent (kein weißer Hintergrund auf farbigen Buttons)
+- [ ] AC-13: Button-Größe und -Styling ist konsistent mit den vorherigen Wizard-Schritten (gleiche `min-height`, `display: flex`, `align-items: center`, `gap`)
 
 ---
 
@@ -318,9 +320,9 @@ interface ServiceHint {
 │  [Räderwechsel — nur wenn gewählt]                               │
 │  Hinweistext für Räderwechsel ...                                │
 │                                                                  │
-│  ┌────────────┐                         ┌────────────────────┐  │
-│  │  Zurück    │                         │      Weiter        │  │
-│  └────────────┘                         └────────────────────┘  │
+│  ┌──────────────┐                       ┌──────────────────┐  │
+│  │ ← Zurück     │                       │     Weiter →     │  │
+│  └──────────────┘                       └──────────────────┘  │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
@@ -338,8 +340,8 @@ interface ServiceHint {
 | Hinweis-Überschrift | Überschrift | `<h2>` | - |
 | Hinweis-Item | Text | `<p>` mit Icon | `role="note"` |
 | Hinweis-Icon | Icon | `<mat-icon>` | `aria-hidden="true"` |
-| Zurück-Button | Button | `mat-flat-button` | `aria-label` |
-| Weiter-Button | Button | `mat-flat-button` (primary) | `aria-label` |
+| Zurück-Button | Button | `mat-flat-button` + `<mat-icon aria-hidden="true">arrow_back</mat-icon>` | `aria-label` |
+| Weiter-Button | Button | `mat-flat-button` (primary) + `<mat-icon aria-hidden="true">arrow_forward</mat-icon>` | `aria-label` |
 
 ### Responsive Verhalten
 
@@ -354,7 +356,8 @@ interface ServiceHint {
 - Karten/Container: `var(--color-background-surface)` (weiß)
 - Text: `var(--color-text-primary)` / `var(--color-text-secondary)`
 - Buttons IMMER: `mat-flat-button` (filled, KEIN `mat-stroked-button`)
-- Icons: IMMER mit `.icon-framed` Rahmen
+- Icons: IMMER mit `.icon-framed` Rahmen (wird innerhalb von Material Buttons automatisch transparent)
+- Button-Sizing konsistent mit vorherigen Wizard-Schritten (`min-height`, flex, gap)
 - Keine Inline-Styles, keine hardcodierten Farben oder px-Werte
 
 ---
@@ -603,8 +606,9 @@ booking: {
 - KEINE Farben aus Screenshots!
 - IMMER `_variables.scss` verwenden
 - Helles Theme (`var(--color-background-surface)` für Karten/Container)
-- Icons: IMMER mit `.icon-framed` Rahmen
+- Icons: IMMER mit `.icon-framed` Rahmen (wird innerhalb von Material Buttons automatisch transparent via `_utilities.scss`)
 - Buttons: IMMER `mat-flat-button` (filled)
+- Button-Sizing: Konsistent mit vorherigen Wizard-Schritten (REQ-004) — gleiche `min-height`, `display: flex`, `align-items: center`, `gap`
 
 **Store-Erweiterung:**
 - Neues Feld `bookingNote: string | null` in `BookingState` in `booking.store.ts`

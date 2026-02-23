@@ -38,7 +38,7 @@ Das Hinweisfenster ist der **4. Schritt im Buchungs-Wizard** (Marke -> Standort 
 ### Desktop (1280x720)
 ![Desktop](./screenshots/e2e-responsive-desktop.png)
 
-Das Freitextfeld erstreckt sich ueber die volle Breite des Content-Bereichs mit 6 Zeilen Hoehe. Die servicespezifischen Hinweise werden untereinander angezeigt. Die Buttons "Zurueck" und "Weiter" stehen nebeneinander (Zurueck links, Weiter rechts).
+Das Freitextfeld erstreckt sich ueber die volle Breite des Content-Bereichs mit 6 Zeilen Hoehe. Die servicespezifischen Hinweise werden untereinander angezeigt. Die Buttons "Zurueck" und "Weiter" stehen nebeneinander (Zurueck links, Weiter rechts). Button-Icons verwenden das `.icon-framed`-Pattern mit `aria-hidden="true"` und werden innerhalb von gefuellten Buttons automatisch transparent. Button-Groesse und -Styling (min-height, flex, gap) sind konsistent mit den vorherigen Wizard-Schritten (REQ-004).
 
 ### Tablet (768x1024)
 ![Tablet](./screenshots/e2e-responsive-tablet.png)
