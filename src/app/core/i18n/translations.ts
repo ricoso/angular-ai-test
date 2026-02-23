@@ -79,6 +79,20 @@ export const translations = {
           confirmButton: 'Bestätigen',
           deselectButton: 'Abwählen'
         }
+      },
+      notes: {
+        pageTitle: 'Bitte geben Sie uns weitere Hinweise zu Ihrer Buchung',
+        sectionTitle: 'Möchten Sie uns noch etwas zu Ihrer Buchung mitteilen?',
+        textareaPlaceholder: 'Bitte tragen Sie hier Ihre Nachricht an uns ein (Hinweise, Buchung weiterer Leistungen, etc.)',
+        charCountAriaLabel: '{current} von {max} Zeichen verwendet',
+        hintsTitle: 'Wichtige Hinweise zu Ihren ausgewählten Services',
+        backButton: 'Zurück',
+        continueButton: 'Weiter',
+        hints: {
+          huau: 'Bitte beachten Sie: Für die HU/AU benötigen Sie alle Fahrzeugpapiere. Stellen Sie sicher, dass Ihr Fahrzeug fahrtüchtig und verkehrssicher ist.',
+          inspection: 'Bitte beachten Sie: Bringen Sie Ihr Serviceheft mit. Bei umfangreichen Arbeiten kann ein Ersatzfahrzeug bereitgestellt werden — bitte im Voraus anfragen.',
+          tireChange: 'Bitte beachten Sie: Für die Einlagerung Ihrer Reifen bitten wir um Vorabinformation über Reifenanzahl und -größe. Die Einlagerung ist kostenpflichtig.'
+        }
       }
     }
   },
@@ -154,6 +168,20 @@ export const translations = {
           withStorage: 'Tire change with storage',
           confirmButton: 'Confirm',
           deselectButton: 'Deselect'
+        }
+      },
+      notes: {
+        pageTitle: 'Please provide further notes for your booking',
+        sectionTitle: 'Would you like to tell us anything else about your booking?',
+        textareaPlaceholder: 'Please enter your message here (notes, booking of additional services, etc.)',
+        charCountAriaLabel: '{current} of {max} characters used',
+        hintsTitle: 'Important notes about your selected services',
+        backButton: 'Back',
+        continueButton: 'Continue',
+        hints: {
+          huau: 'Please note: For the HU/AU you will need all vehicle documents. Make sure your vehicle is roadworthy and safe to drive.',
+          inspection: 'Please note: Please bring your service booklet. For extensive work, a replacement vehicle may be provided — please enquire in advance.',
+          tireChange: 'Please note: For tire storage, please inform us in advance about the number and size of tires. Storage is subject to a fee.'
         }
       }
     }

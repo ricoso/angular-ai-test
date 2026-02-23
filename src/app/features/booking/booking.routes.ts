@@ -2,6 +2,7 @@ import type { Routes } from '@angular/router';
 
 import { brandSelectedGuard } from './guards/brand-selected.guard';
 import { locationSelectedGuard } from './guards/location-selected.guard';
+import { servicesSelectedGuard } from './guards/services-selected.guard';
 import { brandsResolver } from './resolvers/brands.resolver';
 import { locationsResolver } from './resolvers/locations.resolver';
 import { servicesResolver } from './resolvers/services.resolver';
@@ -31,5 +32,11 @@ export const bookingRoutes: Routes = [
       .then(m => m.ServiceSelectionContainerComponent),
     canActivate: [locationSelectedGuard],
     resolve: { _: servicesResolver }
+  },
+  {
+    path: 'notes',
+    loadComponent: () => import('./components/notes/notes-container.component')
+      .then(m => m.NotesContainerComponent),
+    canActivate: [servicesSelectedGuard]
   }
 ];

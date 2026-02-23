@@ -1,0 +1,39 @@
+<section class="notes">
+  <h1 class="notes__title">{{ booking.notes.pageTitle | translate }}</h1>
+  <p class="notes__subtitle">{{ booking.notes.sectionTitle | translate }}</p>
+
+  <app-notes-form
+    [initialNote]="initialNote()"
+    (noteChanged)="onNoteChanged($event)"
+  />
+
+  @if (selectedServices().length > 0) {
+    <app-service-hints
+      [selectedServices]="selectedServices()"
+    />
+  }
+
+  <div class="notes__actions">
+    <button
+      mat-flat-button
+      class="notes__back-button"
+      type="button"
+      [attr.aria-label]="booking.notes.backButton | translate"
+      (click)="onBack()"
+    >
+      <mat-icon class="icon-framed">arrow_back</mat-icon>
+      {{ booking.notes.backButton | translate }}
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      class="notes__continue-button"
+      type="button"
+      [attr.aria-label]="booking.notes.continueButton | translate"
+      (click)="onContinue()"
+    >
+      {{ booking.notes.continueButton | translate }}
+      <mat-icon class="icon-framed">arrow_forward</mat-icon>
+    </button>
+  </div>
+</section>
