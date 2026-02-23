@@ -1,6 +1,6 @@
 # REQ-006: Terminauswahl
 
-**Status:** Draft
+**Status:** In Progress
 **Priority:** High
 **Type:** Functional
 **Created:** 2026-02-23
@@ -55,6 +55,7 @@ Der Benutzer wählt aus vier vorgeschlagenen Terminen den für ihn passenden Tag
 - [ ] AC-10: Zurück-Button navigiert zu `/home/notes`
 - [ ] AC-11: Weiter-Button speichert den gewählten Termin im BookingStore und navigiert zum nächsten Schritt
 - [ ] AC-12: Weiter-Button ist disabled, wenn kein Termin gewählt ist
+- [ ] AC-13: Von `/home/notes` (REQ-005) navigiert der Weiter-Button zu `/home/appointment`
 
 ---
 
