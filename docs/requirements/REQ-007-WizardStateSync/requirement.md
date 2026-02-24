@@ -45,7 +45,7 @@ Bei Rückwärtsnavigation im Buchungswizard werden die jeweiligen Store-Properti
 **Acceptance Criteria:**
 - [ ] AC-1: Klick auf "Zurück" in der Terminauswahl (Schritt 5) nullt `selectedAppointment` und navigiert zu `/home/notes`
 - [ ] AC-2: Klick auf "Zurück" im Hinweisfenster (Schritt 4) nullt `bookingNote` und navigiert zu `/home/services`
-- [ ] AC-3: Klick auf "Zurück" in der Serviceauswahl (Schritt 3) leert `selectedServices` und navigiert zu `/home/location` (bereits implementiert)
+- [ ] AC-3: Klick auf "Zurück" in der Serviceauswahl (Schritt 3) nullt `selectedServices` und navigiert zu `/home/location` (bereits implementiert)
 - [ ] AC-4: Klick auf "Zurück" in der Standortwahl (Schritt 2) nullt `selectedLocation` und navigiert zu `/home/brand`
 - [ ] AC-5: Nach Rückwärts-Navigation von Schritt 5 zu Schritt 4: Direktaufruf von `/home/appointment` wird von `servicesSelectedGuard` zu `/home/services` redirectet (da `selectedAppointment` null — allerdings kein eigener Appointment-Guard nötig, denn der Guard prüft Services)
 - [ ] AC-6: Nach vollständiger Rückwärts-Navigation von Schritt 5 bis Schritt 1: Direktaufruf von `/home/notes` wird zu `/home/brand` redirectet (weil `selectedBrand`, `selectedLocation`, `selectedServices` alle null sind)
@@ -86,15 +86,15 @@ Dieser Main Flow beschreibt den vollständigen Rückwärts-Navigations-Zyklus ü
 
 **Step 2:** Benutzer ist auf dem Hinweisfenster (Schritt 4) und klickt "Zurück"
 - **User:** Klickt Zurück-Button auf `/home/notes`
-- **System:** Nullt `bookingNote` im BookingStore (`setBookingNote(null)`)
+- **System:** Nullt `bookingNote` im BookingStore (`clearBookingNote()`)
 - **System:** Navigiert zu `/home/services`
 - **Expected:** `BookingStore.bookingNote === null`, Seite `/home/services` wird angezeigt
 
 **Step 3:** Benutzer ist auf der Serviceauswahl (Schritt 3) und klickt "Zurück"
 - **User:** Klickt Zurück-Button auf `/home/services`
-- **System:** Leert `selectedServices` im BookingStore (`clearSelectedServices()`) — bereits implementiert
+- **System:** Nullt `selectedServices` im BookingStore (`clearSelectedServices()`) — bereits implementiert
 - **System:** Navigiert zu `/home/location`
-- **Expected:** `BookingStore.selectedServices === []`, Seite `/home/location` wird angezeigt
+- **Expected:** `BookingStore.selectedServices === null`, Seite `/home/location` wird angezeigt
 
 **Step 4:** Benutzer ist auf der Standortwahl (Schritt 2) und klickt "Zurück"
 - **User:** Klickt Zurück-Button auf `/home/location`
@@ -158,7 +158,7 @@ Dieser Main Flow beschreibt den vollständigen Rückwärts-Navigations-Zyklus ü
 **Trigger:** Property ist bereits `null` / leer, wenn `onBack()` aufgerufen wird
 
 **Flow:**
-1. System ruft trotzdem die Reset-Methode auf (`clearSelectedAppointment()`, `setBookingNote(null)` etc.)
+1. System ruft trotzdem die Reset-Methode auf (`clearSelectedAppointment()`, `clearBookingNote()` etc.)
 2. `patchState` mit gleichem Wert ist idempotent — kein Fehler
 3. Navigation erfolgt normal
 
@@ -226,7 +226,7 @@ interface BookingState {
   locations: LocationDisplay[];
   selectedLocation: LocationDisplay | null;
   services: ServiceDisplay[];
-  selectedServices: SelectedService[];
+  selectedServices: SelectedService[] | null;
   bookingNote: string | null;
   appointments: AppointmentSlot[];
   selectedAppointment: AppointmentSlot | null;
@@ -235,9 +235,9 @@ interface BookingState {
 }
 
 // Bestehende Reset-Methoden im BookingStore:
-// clearSelectedServices(): void — setzt selectedServices auf []
+// clearSelectedServices(): void — setzt selectedServices auf null
 // clearSelectedAppointment(): void — setzt selectedAppointment auf null
-// setBookingNote(null): void — setzt bookingNote auf null
+// clearBookingNote(): void — setzt bookingNote auf null
 // resetBooking(): void — setzt gesamten State auf INITIAL_STATE
 
 // Eventuell NEUE Methode (falls nicht über setLocation(null) abbildbar):
@@ -250,7 +250,7 @@ interface BookingState {
 |---------|----------------------|----------------|---------------|
 | Schritt 2 (Location) | `LocationSelectionContainerComponent.onBack()` | `selectedLocation` | `clearSelectedLocation()` (NEU) oder `patchState` |
 | Schritt 3 (Services) | `ServiceSelectionContainerComponent.onBack()` | `selectedServices` | `clearSelectedServices()` (EXISTIERT) |
-| Schritt 4 (Notes) | `NotesContainerComponent.onBack()` | `bookingNote` | `setBookingNote(null)` (EXISTIERT) |
+| Schritt 4 (Notes) | `NotesContainerComponent.onBack()` | `bookingNote` | `clearBookingNote()` (EXISTIERT) |
 | Schritt 5 (Appointment) | `AppointmentSelectionContainerComponent.onBack()` | `selectedAppointment` | `clearSelectedAppointment()` (EXISTIERT) |
 
 ---
@@ -300,10 +300,10 @@ Keine Backend-API erforderlich. Rein Frontend-basierte Änderung am Store-State 
 - **When:** Klick auf "Zurück"-Button
 - **Then:** `BookingStore.bookingNote === null`, Navigation zu `/home/services`
 
-### TC-3: Services onBack() leert selectedServices (AC-3, bereits implementiert)
+### TC-3: Services onBack() nullt selectedServices (AC-3, bereits implementiert)
 - **Given:** Benutzer ist auf `/home/services`, `selectedServices` enthält 2 Services
 - **When:** Klick auf "Zurück"-Button
-- **Then:** `BookingStore.selectedServices === []`, Navigation zu `/home/location`
+- **Then:** `BookingStore.selectedServices === null`, Navigation zu `/home/location`
 
 ### TC-4: Location onBack() nullt selectedLocation (AC-4)
 - **Given:** Benutzer ist auf `/home/location`, `selectedLocation` ist gesetzt (z.B. München)
@@ -311,7 +311,7 @@ Keine Backend-API erforderlich. Rein Frontend-basierte Änderung am Store-State 
 - **Then:** `BookingStore.selectedLocation === null`, Navigation zu `/home/brand`
 
 ### TC-5: Guard-Redirect nach Rückwärts-Navigation von Notes (AC-6)
-- **Given:** Benutzer hat von Schritt 5 bis Schritt 2 zurücknavigiert, `selectedLocation === null`, `selectedServices === []`
+- **Given:** Benutzer hat von Schritt 5 bis Schritt 2 zurücknavigiert, `selectedLocation === null`, `selectedServices === null`
 - **When:** Direktaufruf von `/home/notes` via Adressleiste
 - **Then:** `servicesSelectedGuard` prüft `hasLocationSelected()` → `false`, Redirect zu `/home/location`
 
@@ -327,7 +327,7 @@ Keine Backend-API erforderlich. Rein Frontend-basierte Änderung am Store-State 
 
 ### TC-8: Warenkorb aktualisiert sich nach onBack() (AC-8)
 - **Given:** Benutzer hat Marke, Standort, 2 Services und Notiz gewählt (Badge zeigt "2")
-- **When:** Klick auf "Zurück" auf Notes-Seite (nullt bookingNote), dann "Zurück" auf Services-Seite (leert selectedServices)
+- **When:** Klick auf "Zurück" auf Notes-Seite (nullt bookingNote), dann "Zurück" auf Services-Seite (nullt selectedServices)
 - **Then:** Warenkorb-Badge verschwindet (0 Services), Dropdown zeigt nur noch Marke + Standort
 
 ### TC-9: E2E — Komplette Rückwärts-Navigation und anschließende URL-Navigation
@@ -397,7 +397,7 @@ protected onBack(): void {
 
 // NACHHER:
 protected onBack(): void {
-  this.store.setBookingNote(null);
+  this.store.clearBookingNote();
   void this.router.navigate(['/home/services']);
 }
 ```
@@ -450,7 +450,7 @@ clearSelectedLocation(): void {
 | Component | Methode | Beschreibung |
 |-----------|---------|--------------|
 | `LocationSelectionContainerComponent` | `onBack()` | Nullt `selectedLocation`, navigiert zu `/home/brand` |
-| `ServiceSelectionContainerComponent` | `onBack()` | Leert `selectedServices` (BEREITS IMPLEMENTIERT), navigiert zu `/home/location` |
+| `ServiceSelectionContainerComponent` | `onBack()` | Nullt `selectedServices` (BEREITS IMPLEMENTIERT), navigiert zu `/home/location` |
 | `NotesContainerComponent` | `onBack()` | Nullt `bookingNote`, navigiert zu `/home/services` |
 | `AppointmentSelectionContainerComponent` | `onBack()` | Nullt `selectedAppointment`, navigiert zu `/home/notes` |
 
@@ -458,9 +458,9 @@ clearSelectedLocation(): void {
 
 | Methode | Status | Beschreibung |
 |---------|--------|--------------|
-| `clearSelectedServices()` | EXISTIERT | Setzt `selectedServices` auf `[]` |
+| `clearSelectedServices()` | EXISTIERT | Setzt `selectedServices` auf `null` |
 | `clearSelectedAppointment()` | EXISTIERT | Setzt `selectedAppointment` auf `null` |
-| `setBookingNote(null)` | EXISTIERT | Setzt `bookingNote` auf `null` |
+| `clearBookingNote()` | EXISTIERT | Setzt `bookingNote` auf `null` |
 | `clearSelectedLocation()` | **NEU** | Setzt `selectedLocation` auf `null` |
 
 ### Computed Signals — Bestehend (von Guards genutzt)
@@ -469,7 +469,7 @@ clearSelectedLocation(): void {
 |--------|--------------|-------------------|
 | `hasBrandSelected` | `selectedBrand !== null` | `brandSelectedGuard`, `locationSelectedGuard`, `servicesSelectedGuard` |
 | `hasLocationSelected` | `selectedLocation !== null` | `locationSelectedGuard`, `servicesSelectedGuard` |
-| `hasServicesSelected` | `selectedServices.length > 0` | `servicesSelectedGuard` |
+| `hasServicesSelected` | `selectedServices !== null` | `servicesSelectedGuard` |
 | `hasAppointmentSelected` | `selectedAppointment !== null` | (kein eigener Guard) |
 
 ---
@@ -500,14 +500,14 @@ clearSelectedLocation(): void {
 |-----------|-------|-------------|--------------|
 | `LocationSelectionContainerComponent` | `location-selection-container.component.ts` | Navigiert NUR zu `/home/brand` — **kein Reset** | `clearSelectedLocation()` + Navigation |
 | `ServiceSelectionContainerComponent` | `service-selection-container.component.ts` | Ruft `clearSelectedServices()` auf + Navigation — **korrekt** | Keine Änderung nötig |
-| `NotesContainerComponent` | `notes-container.component.ts` | Navigiert NUR zu `/home/services` — **kein Reset** | `setBookingNote(null)` + Navigation |
+| `NotesContainerComponent` | `notes-container.component.ts` | Navigiert NUR zu `/home/services` — **kein Reset** | `clearBookingNote()` + Navigation |
 | `AppointmentSelectionContainerComponent` | `appointment-selection-container.component.ts` | Navigiert NUR zu `/home/notes` — **kein Reset** | `clearSelectedAppointment()` + Navigation |
 
 **Store-Methoden — Verfügbarkeit:**
 
 | Methode | Vorhanden | Hinweis |
 |---------|-----------|---------|
-| `clearSelectedServices()` | Ja (Zeile 187–189) | Wird bereits in `ServiceSelectionContainerComponent.onBack()` genutzt |
+| `clearSelectedServices()` | Ja (Zeile 187–189) | Setzt `selectedServices` auf `null`, wird bereits in `ServiceSelectionContainerComponent.onBack()` genutzt |
 | `clearSelectedAppointment()` | Ja (Zeile 183–185) | Vorhanden, aber wird in `onBack()` noch NICHT aufgerufen |
-| `setBookingNote(null)` | Ja (Zeile 156–159) | Vorhanden, akzeptiert `null`, aber wird in `onBack()` noch NICHT aufgerufen |
+| `clearBookingNote()` | Ja | Vorhanden, setzt `bookingNote` auf `null`, aber wird in `onBack()` noch NICHT aufgerufen |
 | `clearSelectedLocation()` | **Nein** | MUSS NEU erstellt werden (analog zu `clearSelectedAppointment()`) |
