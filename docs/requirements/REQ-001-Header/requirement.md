@@ -17,9 +17,12 @@ Wiederverwendbarer Application Header mit Firmenlogo und Accessibility-Einstellu
 **Included:**
 - Firmenlogo mit Name
 - Accessibility-Dropdown mit Font-Size, High-Contrast, Reduced-Motion
+- Sprachumschaltung im Accessibility-Dropdown (DE, EN, UK, FR, AR)
+- RTL-Unterstützung für Arabisch (Right-to-Left)
 - Warenkorb-Icon mit Badge (Anzahl Items) und Dropdown
 - Responsive Design (Mobile/Desktop)
 - Persistierung der Accessibility-Einstellungen (LocalStorage)
+- Persistierung der Spracheinstellung (LocalStorage)
 
 **Excluded:**
 - Navigation Menu (separate REQ)
@@ -35,8 +38,8 @@ Wiederverwendbarer Application Header mit Firmenlogo und Accessibility-Einstellu
 ## 2. User Story
 
 **As a** Benutzer
-**I want** einen Header mit Logo, Warenkorb und Accessibility-Einstellungen
-**So that** ich jederzeit meinen Warenkorb sehe und die Darstellung anpassen kann
+**I want** einen Header mit Logo, Warenkorb, Sprachumschaltung und Accessibility-Einstellungen
+**So that** ich jederzeit meinen Warenkorb sehe, die Sprache wechseln und die Darstellung anpassen kann
 
 **Acceptance Criteria:**
 - [ ] AC-1: Logo und Firmenname werden links im Header angezeigt
@@ -53,6 +56,10 @@ Wiederverwendbarer Application Header mit Firmenlogo und Accessibility-Einstellu
 - [ ] AC-12: Badge wird bei 0 Items ausgeblendet
 - [ ] AC-13: Klick auf Warenkorb-Icon öffnet Dropdown
 - [ ] AC-14: Warenkorb-Dropdown zeigt Platzhalter-Inhalt (wird später ausgebaut)
+- [ ] AC-15: Sprache kann im Accessibility-Dropdown gewechselt werden (DE, EN, UK, FR, AR)
+- [ ] AC-16: Spracheinstellung wird im LocalStorage persistiert
+- [ ] AC-17: Arabisch aktiviert RTL-Layout (dir="rtl" auf html-Element)
+- [ ] AC-18: UI-Texte werden in der gewählten Sprache angezeigt
 
 ---
 
@@ -98,17 +105,24 @@ Wiederverwendbarer Application Header mit Firmenlogo und Accessibility-Einstellu
 - **System:** Speichert in LocalStorage
 - **Expected:** Kontrastreiche Darstellung aktiv
 
-**Step 5:** Benutzer schließt Menu
+**Step 5:** Benutzer wechselt Sprache
+- **User:** Wählt eine Sprache im Accessibility-Dropdown (z.B. "English")
+- **System:** Schaltet alle UI-Texte auf die gewählte Sprache um
+- **System:** Speichert Spracheinstellung in LocalStorage
+- **System:** Bei Arabisch: Setzt `dir="rtl"` auf `<html>` Element
+- **Expected:** Gesamte Anwendung zeigt Texte in gewählter Sprache
+
+**Step 6:** Benutzer schließt Menu
 - **User:** Klickt außerhalb oder drückt ESC
 - **System:** Schließt Dropdown
-- **Expected:** Einstellungen bleiben erhalten
+- **Expected:** Einstellungen und Sprache bleiben erhalten
 
-**Step 6:** Benutzer klickt auf Warenkorb-Icon
+**Step 7:** Benutzer klickt auf Warenkorb-Icon
 - **User:** Klickt auf Warenkorb-Icon
 - **System:** Öffnet Warenkorb-Dropdown
 - **Expected:** Dropdown mit Platzhalter-Inhalt ist sichtbar
 
-**Step 7:** Benutzer schließt Warenkorb-Dropdown
+**Step 8:** Benutzer schließt Warenkorb-Dropdown
 - **User:** Klickt außerhalb oder drückt ESC
 - **System:** Schließt Warenkorb-Dropdown
 - **Expected:** Badge-Zähler bleibt sichtbar
@@ -174,6 +188,10 @@ Wiederverwendbarer Application Header mit Firmenlogo und Accessibility-Einstellu
 - **BR-5:** Warenkorb-Badge zeigt Gesamtanzahl der Items (Summe aller Positionen)
 - **BR-6:** Badge wird bei 0 Items ausgeblendet (nicht "0" anzeigen)
 - **BR-7:** Badge-Zähler maximal "99+" (bei > 99 Items)
+- **BR-8:** Unterstützte Sprachen: Deutsch (de), English (en), Українська (uk), Français (fr), العربية (ar)
+- **BR-9:** Arabisch ist RTL (Right-to-Left) — `dir="rtl"` wird auf `<html>` gesetzt
+- **BR-10:** Spracheinstellung wird im LocalStorage unter Key `app-language` gespeichert
+- **BR-11:** Browser-Sprache wird als Fallback verwendet wenn keine Einstellung gespeichert ist
 
 ---
 
@@ -217,6 +235,17 @@ interface WarenkorbBadgeState {
 // anzahlItems 1–99 → Badge zeigt Zahl
 // anzahlItems > 99 → Badge zeigt "99+"
 
+// Language
+type Language = 'de' | 'en' | 'uk' | 'fr' | 'ar';
+
+interface LanguageOption {
+  code: Language;
+  label: string; // Native name (e.g. 'Deutsch', 'العربية')
+}
+
+// RTL Languages
+const RTL_LANGUAGES: Set<string> = new Set(['ar']);
+
 // LocalStorage Schema
 interface AccessibilityStorageData {
   fontSize: FontSize;
@@ -224,6 +253,7 @@ interface AccessibilityStorageData {
   reducedMotion: boolean;
   version: number; // Für Migration
 }
+// Language stored separately: localStorage.setItem('app-language', language)
 
 // Font-Size Mapping
 const FONT_SIZE_LABELS: Record<FontSize, { de: string; en: string }> = {
@@ -287,6 +317,8 @@ Badge bei >99: "99+" anzeigen
 | Font-Size Option | Radio | `mat-radio-button` | - |
 | Contrast Toggle | Toggle | `mat-slide-toggle` | - |
 | Motion Toggle | Toggle | `mat-slide-toggle` | - |
+| Language Group | Radio | `mat-radio-group` | `aria-label="Sprache"` |
+| Language Option | Radio | `mat-radio-button` | - |
 
 ### Responsive Behavior
 
@@ -377,6 +409,26 @@ localStorage.setItem('accessibility-settings', JSON.stringify(settings));
 - **When:** User navigiert zum Warenkorb-Button
 - **Then:** "Warenkorb, 3 Artikel" wird angesagt
 
+### TC-13: Sprache wechseln
+- **Given:** Header ist sichtbar, Sprache ist Deutsch
+- **When:** User wählt "English" im Accessibility-Dropdown
+- **Then:** Alle UI-Texte werden auf Englisch angezeigt
+
+### TC-14: Spracheinstellung persistieren
+- **Given:** User hat Sprache auf Englisch gewechselt
+- **When:** Page wird neu geladen
+- **Then:** Sprache bleibt Englisch (aus LocalStorage)
+
+### TC-15: RTL-Layout bei Arabisch
+- **Given:** Sprache ist nicht Arabisch
+- **When:** User wählt "العربية" (Arabisch)
+- **Then:** `html[dir="rtl"]` wird gesetzt, Layout spiegelt sich
+
+### TC-16: Alle 5 Sprachen verfügbar
+- **Given:** Accessibility-Dropdown ist geöffnet
+- **When:** User sieht Sprachoptionen
+- **Then:** DE, EN, UK, FR, AR sind als Optionen verfügbar
+
 ---
 
 ## 14. Implementation
@@ -446,9 +498,11 @@ src/app/shared/
 - `schriftgroesse: input<FontSize>()` - Aktuelle Schriftgröße
 - `hoherKontrast: input<boolean>()` - High Contrast Status
 - `reduzierteBewegung: input<boolean>()` - Reduced Motion Status
+- `currentLanguage: input<Language>()` - Aktuelle Sprache
 - `schriftgroesseGeaendert: output<FontSize>()` - Font-Size Change Event
 - `hoherKontrastGeaendert: output<boolean>()` - Contrast Change Event
 - `reduzierteBewegungGeaendert: output<boolean>()` - Motion Change Event
+- `languageChanged: output<Language>()` - Language Change Event
 
 ### Presentational: WarenkorbIcon Inputs/Outputs
 - `anzahlItems: input<number>()` - Anzahl Items für Badge
@@ -496,6 +550,7 @@ src/app/shared/
 'header.accessibility.fontSize.xLarge': 'Sehr groß',
 'header.accessibility.highContrast': 'Hoher Kontrast',
 'header.accessibility.reducedMotion': 'Reduzierte Bewegung',
+'header.accessibility.language.label': 'Sprache',
 'header.warenkorb.button': 'Warenkorb',
 'header.warenkorb.badge.ariaLabel': '{count} Artikel im Warenkorb',
 'header.warenkorb.titel': 'Warenkorb',
@@ -511,6 +566,7 @@ src/app/shared/
 'header.accessibility.fontSize.xLarge': 'Extra Large',
 'header.accessibility.highContrast': 'High Contrast',
 'header.accessibility.reducedMotion': 'Reduced Motion',
+'header.accessibility.language.label': 'Language',
 'header.warenkorb.button': 'Shopping Cart',
 'header.warenkorb.badge.ariaLabel': '{count} items in cart',
 'header.warenkorb.titel': 'Shopping Cart',

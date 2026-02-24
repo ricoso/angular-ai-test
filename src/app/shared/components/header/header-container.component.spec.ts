@@ -2,7 +2,10 @@ import type { ComponentFixture } from '@angular/core/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
+import { TranslateService } from '@app/core/i18n';
+import type { AppointmentSlot } from '@app/features/booking/models/appointment.model';
 import { LOCATIONS_BY_BRAND } from '@app/features/booking/models/location.model';
+import { AppointmentApiService } from '@app/features/booking/services/appointment-api.service';
 import { BookingApiService } from '@app/features/booking/services/booking-api.service';
 import { BookingStore } from '@app/features/booking/stores/booking.store';
 import { ACCESSIBILITY_DEFAULTS } from '@shared/models/accessibility.model';
@@ -41,6 +44,12 @@ describe('HeaderContainerComponent', () => {
             getBrands: jest.fn().mockResolvedValue([]),
             getLocations: jest.fn().mockResolvedValue([]),
             getServices: jest.fn().mockResolvedValue([])
+          }
+        },
+        {
+          provide: AppointmentApiService,
+          useValue: {
+            getAppointments: jest.fn().mockResolvedValue([])
           }
         }
       ]
@@ -96,6 +105,16 @@ describe('HeaderContainerComponent', () => {
       exposed.onReducedMotionChange(true);
 
       expect(setReducedMotionSpy).toHaveBeenCalledWith(true);
+    });
+
+    it('should delegate onLanguageChange to TranslateService', () => {
+      const translateService = TestBed.inject(TranslateService);
+      const useSpy = jest.spyOn(translateService, 'use');
+      const exposed = component as unknown as { onLanguageChange: (lang: string) => void };
+
+      exposed.onLanguageChange('fr');
+
+      expect(useSpy).toHaveBeenCalledWith('fr');
     });
   });
 
@@ -153,6 +172,51 @@ describe('HeaderContainerComponent', () => {
       const exposed = component as unknown as { cartSummaryText: () => string };
       const text = exposed.cartSummaryText();
       expect(text).toContain('2');
+    });
+
+    it('should return null for selectedAppointmentText when no appointment selected', () => {
+      const exposed = component as unknown as { selectedAppointmentText: () => string | null };
+      expect(exposed.selectedAppointmentText()).toBeNull();
+    });
+
+    it('should return formatted appointment text when appointment is selected', () => {
+      const mockAppointment: AppointmentSlot = {
+        id: '2026-02-25-09-00',
+        date: '2026-02-25',
+        displayDate: '25.02.2026',
+        dayAbbreviation: 'Mi',
+        time: '09:00',
+        displayTime: '09:00 Uhr'
+      };
+      bookingStore.selectAppointment(mockAppointment);
+      const exposed = component as unknown as { selectedAppointmentText: () => string | null };
+      expect(exposed.selectedAppointmentText()).toBe('25.02.2026, 09:00 Uhr');
+    });
+
+    it('should update appointment text when appointment changes', () => {
+      const appointment1: AppointmentSlot = {
+        id: '2026-02-25-09-00',
+        date: '2026-02-25',
+        displayDate: '25.02.2026',
+        dayAbbreviation: 'Mi',
+        time: '09:00',
+        displayTime: '09:00 Uhr'
+      };
+      const appointment2: AppointmentSlot = {
+        id: '2026-02-26-14-00',
+        date: '2026-02-26',
+        displayDate: '26.02.2026',
+        dayAbbreviation: 'Do',
+        time: '14:00',
+        displayTime: '14:00 Uhr'
+      };
+      const exposed = component as unknown as { selectedAppointmentText: () => string | null };
+
+      bookingStore.selectAppointment(appointment1);
+      expect(exposed.selectedAppointmentText()).toBe('25.02.2026, 09:00 Uhr');
+
+      bookingStore.selectAppointment(appointment2);
+      expect(exposed.selectedAppointmentText()).toBe('26.02.2026, 14:00 Uhr');
     });
   });
 });

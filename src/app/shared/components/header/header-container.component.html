@@ -71,6 +71,18 @@
               }
             </mat-chip-set>
           </div>
+
+          @if (selectedAppointmentText()) {
+            <div class="header__cart-row">
+              <span class="header__cart-label">{{ header.cart.appointmentLabel | translate }}:</span>
+              <mat-chip-set class="header__cart-chips">
+                <mat-chip class="header__cart-chip">
+                  <mat-icon matChipAvatar>event</mat-icon>
+                  {{ selectedAppointmentText() }}
+                </mat-chip>
+              </mat-chip-set>
+            </div>
+          }
         } @else {
           <p class="header__cart-empty">{{ header.cart.empty | translate }}</p>
         }
@@ -95,9 +107,11 @@
           [fontSize]="accessibilityStore.fontSize()"
           [highContrast]="accessibilityStore.highContrast()"
           [reducedMotion]="accessibilityStore.reducedMotion()"
+          [currentLanguage]="currentLanguage()"
           (fontSizeChanged)="onFontSizeChange($event)"
           (highContrastChanged)="onHighContrastChange($event)"
           (reducedMotionChanged)="onReducedMotionChange($event)"
+          (languageChanged)="onLanguageChange($event)"
         />
       </div>
     </mat-menu>

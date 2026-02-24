@@ -149,7 +149,7 @@ describe('ServiceSelectionContainerComponent', () => {
     it('should navigate forward on continue', () => {
       const exposed = component as unknown as { onContinue: () => void };
       exposed.onContinue();
-      expect(router.navigate).toHaveBeenCalledWith(['/home/services']);
+      expect(router.navigate).toHaveBeenCalledWith(['/home/notes']);
     });
 
     it('should navigate back and clear services on back', () => {

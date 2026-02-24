@@ -3,12 +3,14 @@ import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
-import { i18nKeys,TranslatePipe } from '@app/core/i18n';
+import type { Language, LanguageOption } from '@app/core/i18n';
+import { AVAILABLE_LANGUAGES, i18nKeys, TranslatePipe } from '@app/core/i18n';
 import type { FontSize } from '@app/shared/models/accessibility.model';
 
 /**
  * Presentational Component for Accessibility Menu
- * Shows font-size radio buttons and toggles for high contrast / reduced motion
+ * Shows font-size radio buttons, toggles for high contrast / reduced motion,
+ * and a language selector (DE, EN, UK, FR)
  */
 @Component({
   selector: 'app-accessibility-menu',
@@ -30,14 +32,17 @@ export class AccessibilityMenuComponent {
   public readonly fontSize = input.required<FontSize>();
   public readonly highContrast = input.required<boolean>();
   public readonly reducedMotion = input.required<boolean>();
+  public readonly currentLanguage = input.required<Language>();
 
   // Outputs
   public readonly fontSizeChanged = output<FontSize>();
   public readonly highContrastChanged = output<boolean>();
   public readonly reducedMotionChanged = output<boolean>();
+  public readonly languageChanged = output<Language>();
 
-  // Available font sizes
+  // Available options
   protected readonly fontSizes: FontSize[] = ['small', 'normal', 'large', 'x-large'];
+  protected readonly languages: LanguageOption[] = AVAILABLE_LANGUAGES;
 
   protected onFontSizeChange(size: FontSize): void {
     this.fontSizeChanged.emit(size);
@@ -49,5 +54,9 @@ export class AccessibilityMenuComponent {
 
   protected onReducedMotionChange(value: boolean): void {
     this.reducedMotionChanged.emit(value);
+  }
+
+  protected onLanguageChange(language: Language): void {
+    this.languageChanged.emit(language);
   }
 }

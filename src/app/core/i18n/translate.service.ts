@@ -4,6 +4,7 @@ import type { Language,TranslationKey} from './translations';
 import { translations } from './translations';
 
 const LANGUAGE_STORAGE_KEY = 'app-language';
+const RTL_LANGUAGES: ReadonlySet<string> = new Set(['ar']);
 
 /**
  * Type-safe TranslateService
@@ -46,11 +47,19 @@ export class TranslateService {
    */
   public use(language: Language): void {
     this.currentLanguage.set(language);
+    this.applyDirection(language);
     try {
       localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
     } catch {
       // LocalStorage not available
     }
+  }
+
+  /**
+   * Returns whether the current language is RTL
+   */
+  public isRtl(): boolean {
+    return RTL_LANGUAGES.has(this.currentLanguage());
   }
 
   /**
@@ -68,12 +77,21 @@ export class TranslateService {
   }
 
   /**
+   * Sets document direction based on language (LTR/RTL)
+   */
+  private applyDirection(language: Language): void {
+    const dir = RTL_LANGUAGES.has(language) ? 'rtl' : 'ltr';
+    document.documentElement.setAttribute('dir', dir);
+    document.documentElement.setAttribute('lang', language);
+  }
+
+  /**
    * Loads language from LocalStorage or uses default
    */
   private loadLanguageFromStorage(): Language {
     try {
       const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-      if (stored === 'de' || stored === 'en') {
+      if (stored === 'de' || stored === 'en' || stored === 'uk' || stored === 'fr' || stored === 'ar') {
         return stored;
       }
     } catch {
@@ -81,6 +99,10 @@ export class TranslateService {
     }
     // Browser language as fallback
     const browserLanguage = navigator.language.toLowerCase();
-    return browserLanguage.startsWith('de') ? 'de' : 'en';
+    if (browserLanguage.startsWith('de')) return 'de';
+    if (browserLanguage.startsWith('uk') || browserLanguage.startsWith('ua')) return 'uk';
+    if (browserLanguage.startsWith('fr')) return 'fr';
+    if (browserLanguage.startsWith('ar')) return 'ar';
+    return 'en';
   }
 }
