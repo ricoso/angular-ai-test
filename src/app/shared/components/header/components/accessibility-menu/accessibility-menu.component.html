@@ -1,4 +1,24 @@
 <div class="accessibility-menu">
+  <!-- Language -->
+  <section class="accessibility-menu__section">
+    <h3 class="accessibility-menu__heading" id="language-label">
+      {{ a11y.language.label | translate }}
+    </h3>
+    <mat-radio-group
+      class="accessibility-menu__radio-group"
+      [value]="currentLanguage()"
+      (change)="onLanguageChange($event.value)"
+      aria-labelledby="language-label">
+      @for (lang of languages; track lang.code) {
+        <mat-radio-button
+          class="accessibility-menu__radio"
+          [value]="lang.code">
+          {{ lang.label }}
+        </mat-radio-button>
+      }
+    </mat-radio-group>
+  </section>
+
   <!-- Font Size -->
   <section class="accessibility-menu__section">
     <h3 class="accessibility-menu__heading" id="font-size-label">

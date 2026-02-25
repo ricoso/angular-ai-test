@@ -388,7 +388,7 @@ test.describe('REQ-006: Appointment Selection (Terminauswahl)', () => {
       // Select first appointment card
       await selectAppointmentCard(page, 0);
       const datesFirst = await getAppointmentDates(page);
-      const timesFirst = await getAppointmentTimes(page);
+      await getAppointmentTimes(page);
 
       // Switch to second appointment card
       await selectAppointmentCard(page, 1);

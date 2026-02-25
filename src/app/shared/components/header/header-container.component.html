@@ -107,9 +107,11 @@
           [fontSize]="accessibilityStore.fontSize()"
           [highContrast]="accessibilityStore.highContrast()"
           [reducedMotion]="accessibilityStore.reducedMotion()"
+          [currentLanguage]="currentLanguage()"
           (fontSizeChanged)="onFontSizeChange($event)"
           (highContrastChanged)="onHighContrastChange($event)"
           (reducedMotionChanged)="onReducedMotionChange($event)"
+          (languageChanged)="onLanguageChange($event)"
         />
       </div>
     </mat-menu>

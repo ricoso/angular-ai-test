@@ -2,6 +2,7 @@ import type { ComponentFixture } from '@angular/core/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
+import { TranslateService } from '@app/core/i18n';
 import type { AppointmentSlot } from '@app/features/booking/models/appointment.model';
 import { LOCATIONS_BY_BRAND } from '@app/features/booking/models/location.model';
 import { AppointmentApiService } from '@app/features/booking/services/appointment-api.service';
@@ -104,6 +105,16 @@ describe('HeaderContainerComponent', () => {
       exposed.onReducedMotionChange(true);
 
       expect(setReducedMotionSpy).toHaveBeenCalledWith(true);
+    });
+
+    it('should delegate onLanguageChange to TranslateService', () => {
+      const translateService = TestBed.inject(TranslateService);
+      const useSpy = jest.spyOn(translateService, 'use');
+      const exposed = component as unknown as { onLanguageChange: (lang: string) => void };
+
+      exposed.onLanguageChange('fr');
+
+      expect(useSpy).toHaveBeenCalledWith('fr');
     });
   });
 

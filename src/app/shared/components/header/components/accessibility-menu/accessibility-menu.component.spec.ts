@@ -26,6 +26,7 @@ describe('AccessibilityMenuComponent', () => {
     fixture.componentRef.setInput('fontSize', 'normal');
     fixture.componentRef.setInput('highContrast', false);
     fixture.componentRef.setInput('reducedMotion', false);
+    fixture.componentRef.setInput('currentLanguage', 'de');
 
     fixture.detectChanges();
   });
@@ -91,6 +92,30 @@ describe('AccessibilityMenuComponent', () => {
       const expectedSizes: FontSize[] = ['small', 'normal', 'large', 'x-large'];
       const exposed = component as unknown as { fontSizes: FontSize[] };
       expect(exposed.fontSizes).toEqual(expectedSizes);
+    });
+  });
+
+  describe('Language', () => {
+    it('should accept currentLanguage input', () => {
+      fixture.componentRef.setInput('currentLanguage', 'en');
+      fixture.detectChanges();
+      expect(component.currentLanguage()).toBe('en');
+    });
+
+    it('should emit languageChanged', () => {
+      const emitSpy = jest.fn();
+      component.languageChanged.subscribe(emitSpy);
+
+      const exposed = component as unknown as { onLanguageChange: (lang: string) => void };
+      exposed.onLanguageChange('fr');
+
+      expect(emitSpy).toHaveBeenCalledWith('fr');
+    });
+
+    it('should have all 5 languages available', () => {
+      const exposed = component as unknown as { languages: { code: string; label: string }[] };
+      expect(exposed.languages).toHaveLength(5);
+      expect(exposed.languages.map(l => l.code)).toEqual(['de', 'en', 'uk', 'fr', 'ar']);
     });
   });
 });
