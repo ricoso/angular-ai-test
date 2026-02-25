@@ -23,6 +23,7 @@ Der Benutzer gelangt auf diese Seite, indem er auf der Terminauswahl-Seite (REQ-
 - Single-Select für Uhrzeitslot
 - Navigation: Zurück-Button (→ `/home/appointment`) + Weiter-Button (→ noch kein Ziel)
 - Speichern des gewählten Termins im BookingStore (`selectedAppointment`)
+- Kalenderlink auf der Terminauswahl-Seite (`/home/appointment`) navigiert zu `/home/workshop-calendar`
 
 **Excluded:**
 - Echter API-Call (Click-Dummy: Termine client-seitig generiert)
@@ -58,7 +59,8 @@ Der Benutzer gelangt auf diese Seite, indem er auf der Terminauswahl-Seite (REQ-
 - [ ] AC-12: Die 3 angezeigten Tage sind Werktage (Mo–Sa, kein Sonntag) ab dem gewählten Datum
 - [ ] AC-13: Klick auf eine Uhrzeit selektiert den Termin (Single-Select)
 - [ ] AC-14: Zurück-Button navigiert zu `/home/appointment`
-- [ ] AC-15: Weiter-Button ist vorhanden (Ziel noch nicht definiert)
+- [ ] AC-15: Weiter-Button ist disabled, solange kein Uhrzeitslot gewählt ist; erst nach Slot-Auswahl klickbar (Ziel noch nicht definiert)
+- [ ] AC-16: Kalenderlink auf `/home/appointment` ("Hier sehen Sie weitere freie Termine...") navigiert zu `/home/workshop-calendar`
 
 ---
 
@@ -393,6 +395,11 @@ async getWorkshopCalendarDays(fromDate: string): Promise<WorkshopCalendarDay[]>
 - **When:** Klick auf "09:00 Uhr"
 - **Then:** Slot selektiert (Highlighting), andere Slots deselektiert; Weiter aktiv
 
+### TC-7b: Weiter disabled ohne Slot-Auswahl (AC-15, BR-7)
+- **Given:** Datum gewählt, Uhrzeitslots sichtbar, kein Slot selektiert
+- **When:** Weiter-Button betrachtet
+- **Then:** Button disabled
+
 ### TC-8: Datum manuell eingeben (5.1)
 - **Given:** Eingabefeld leer
 - **When:** Benutzer tippt "02.03.2026"
@@ -423,7 +430,12 @@ async getWorkshopCalendarDays(fromDate: string): Promise<WorkshopCalendarDay[]>
 - **When:** Tab + Enter/Space
 - **Then:** Focus-Ring sichtbar, Slot per Tastatur wählbar
 
-### TC-14: Datum wechseln (5.3)
+### TC-14: Kalenderlink navigiert zum Werkstattkalender (AC-16)
+- **Given:** Benutzer ist auf `/home/appointment`
+- **When:** Klick auf "Hier sehen Sie weitere freie Termine in unserem Werkstattkalender"
+- **Then:** Navigation zu `/home/workshop-calendar`
+
+### TC-15: Datum wechseln (5.3)
 - **Given:** Datum und Slot gewählt
 - **When:** Benutzer wählt neues Datum
 - **Then:** Neue 3 Tage angezeigt; vorheriger Slot deselektiert; `workshopCalendarDate` aktualisiert
