@@ -354,7 +354,7 @@
       transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    .date-input-wrapper:has(.date-toggle-label:focus-visible) {
+    .date-input-wrapper:focus-within {
       border-color: var(--color-focus-ring);
       box-shadow: 0 0 0 0.1875em rgba(0, 95, 204, 0.25);
     }
@@ -363,61 +363,46 @@
       border-color: var(--color-primary);
     }
 
-    .date-icon-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 2.75em;
-      height: 2.75em;
-      background: var(--color-background-hover);
-      border-right: 0.0625em solid var(--color-border);
-      border-radius: 0;
-      box-shadow: none;
-      flex-shrink: 0;
-      color: var(--color-primary);
-    }
-
-    /* CSS-only date toggle: the label acts as the clickable date field */
-    .date-toggle {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    .date-toggle-label {
-      display: flex;
-      align-items: center;
+    /* Native date input styled to match design */
+    .date-input-native {
       flex: 1;
       height: 2.75em;
       padding: 0 var(--spacing-sm);
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: var(--font-size-sm);
+      color: transparent;
       cursor: pointer;
+      outline: none;
+    }
+
+    .date-input-native.has-value {
+      color: var(--color-text-primary);
+    }
+
+    .date-input-native::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      opacity: 0.6;
+    }
+
+    .date-input-native::-webkit-calendar-picker-indicator:hover {
+      opacity: 1;
+    }
+
+    /* Custom placeholder for date input */
+    .date-input-wrapper {
+      position: relative;
+    }
+
+    .date-input-placeholder {
+      position: absolute;
+      left: var(--spacing-sm);
+      top: 50%;
+      transform: translateY(-50%);
       font-size: var(--font-size-sm);
       color: var(--color-text-muted);
-      user-select: none;
-    }
-
-    .date-toggle-label:focus-visible {
-      outline: 0.1875em solid var(--color-focus-ring);
-      outline-offset: 0.125em;
-    }
-
-    /* Placeholder shown before toggle */
-    .date-field__placeholder {
-      display: inline;
-      color: var(--color-text-muted);
-    }
-
-    /* Date value hidden before toggle */
-    .date-field__value {
-      display: none;
-      color: var(--color-text-primary);
-      font-weight: 500;
+      pointer-events: none;
     }
 
     /* =========================================================================
@@ -528,21 +513,12 @@
        CSS Toggle: State changes when #date-toggle is :checked
        ========================================================================= */
 
-    /* Show date value in field */
-    .date-toggle:checked ~ .workshop-calendar__body .date-field__placeholder {
+    /* When date is selected: hide hint, show slots */
+    .workshop-calendar--date-selected .right-panel__hint {
       display: none;
     }
 
-    .date-toggle:checked ~ .workshop-calendar__body .date-field__value {
-      display: inline;
-    }
-
-    /* Switch right panel: hide hint, show slots */
-    .date-toggle:checked ~ .workshop-calendar__body .right-panel__hint {
-      display: none;
-    }
-
-    .date-toggle:checked ~ .workshop-calendar__body .right-panel__slots {
+    .workshop-calendar--date-selected .right-panel__slots {
       display: block;
     }
 
@@ -681,19 +657,6 @@
          ======================================================================= -->
     <main class="app-main" id="main-content" tabindex="-1">
 
-      <!--
-        CSS-ONLY STATE TOGGLE:
-        Checkbox #date-toggle drives the "before/after date selection" states.
-        - unchecked = no date selected (placeholder shown, hint text right)
-        - checked   = date selected  (date value shown, time slots visible right)
-        Clicking the date input label toggles this checkbox.
-      -->
-      <input
-        type="checkbox"
-        id="date-toggle"
-        class="date-toggle"
-        aria-hidden="true"
-      />
 
       <section
         class="workshop-calendar"
@@ -719,23 +682,16 @@
 
             <p class="left-panel__label">Ihr Wunschtermin:</p>
 
-            <!-- Date input field (CSS-only, label toggles #date-toggle checkbox) -->
+            <!-- Date input field with native date picker -->
             <div class="date-input-wrapper">
-              <!-- Calendar icon framed -->
-              <span class="icon-framed date-icon-btn" aria-hidden="true">
-                <span class="material-icons">calendar_today</span>
-              </span>
-
-              <label
-                for="date-toggle"
-                class="date-toggle-label"
-                role="button"
-                aria-label="Wunschtermin wählen, aktuell: Wunschtermin wählen"
-                tabindex="0"
-              >
-                <span class="date-field__placeholder" aria-hidden="true">Wunschtermin wählen</span>
-                <span class="date-field__value" aria-hidden="true">26.02.2026</span>
-              </label>
+              <span class="date-input-placeholder" id="date-placeholder">Wählen Sie Ihren Wunschtermin</span>
+              <input
+                type="date"
+                id="date-picker"
+                class="date-input-native"
+                aria-label="Wunschtermin wählen"
+                min="2026-02-25"
+              />
             </div>
 
           </div><!-- /.workshop-calendar__left-panel -->
@@ -762,134 +718,7 @@
                 Klicken Sie auf eine Uhrzeit, um den Termin auszuwählen.
               </p>
 
-              <!-- ============================================================
-                   Day 1: Mo, 02.03.2026
-                   ============================================================ -->
-              <div class="time-day">
-                <h2 class="time-day__heading" aria-level="2">Mo, 02.03.2026</h2>
-                <div class="time-slots-grid" role="radiogroup" aria-label="Verfügbare Uhrzeiten für Montag, 02.03.2026">
-
-                  <input type="radio" class="time-slot-radio" id="slot-mo-0700" name="time-slot-mo" aria-label="07:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mo-0700">07:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mo-0800" name="time-slot-mo" aria-label="08:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mo-0800">08:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mo-0900" name="time-slot-mo" aria-label="09:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mo-0900">09:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mo-1000" name="time-slot-mo" aria-label="10:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mo-1000">10:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mo-1100" name="time-slot-mo" aria-label="11:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mo-1100">11:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mo-1200" name="time-slot-mo" aria-label="12:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mo-1200">12:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mo-1300" name="time-slot-mo" aria-label="13:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mo-1300">13:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mo-1400" name="time-slot-mo" aria-label="14:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mo-1400">14:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mo-1500" name="time-slot-mo" aria-label="15:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mo-1500">15:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mo-1600" name="time-slot-mo" aria-label="16:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mo-1600">16:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mo-1700" name="time-slot-mo" aria-label="17:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mo-1700">17:00 Uhr</label>
-
-                </div>
-              </div><!-- /.time-day Mo -->
-
-              <!-- ============================================================
-                   Day 2: Di, 03.03.2026
-                   ============================================================ -->
-              <div class="time-day">
-                <h2 class="time-day__heading" aria-level="2">Di, 03.03.2026</h2>
-                <div class="time-slots-grid" role="radiogroup" aria-label="Verfügbare Uhrzeiten für Dienstag, 03.03.2026">
-
-                  <input type="radio" class="time-slot-radio" id="slot-di-0700" name="time-slot-di" aria-label="07:00 Uhr">
-                  <label class="time-slot-btn" for="slot-di-0700">07:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-di-0800" name="time-slot-di" aria-label="08:00 Uhr">
-                  <label class="time-slot-btn" for="slot-di-0800">08:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-di-0900" name="time-slot-di" aria-label="09:00 Uhr">
-                  <label class="time-slot-btn" for="slot-di-0900">09:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-di-1000" name="time-slot-di" aria-label="10:00 Uhr">
-                  <label class="time-slot-btn" for="slot-di-1000">10:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-di-1100" name="time-slot-di" aria-label="11:00 Uhr">
-                  <label class="time-slot-btn" for="slot-di-1100">11:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-di-1200" name="time-slot-di" aria-label="12:00 Uhr">
-                  <label class="time-slot-btn" for="slot-di-1200">12:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-di-1300" name="time-slot-di" aria-label="13:00 Uhr">
-                  <label class="time-slot-btn" for="slot-di-1300">13:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-di-1400" name="time-slot-di" aria-label="14:00 Uhr">
-                  <label class="time-slot-btn" for="slot-di-1400">14:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-di-1500" name="time-slot-di" aria-label="15:00 Uhr">
-                  <label class="time-slot-btn" for="slot-di-1500">15:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-di-1600" name="time-slot-di" aria-label="16:00 Uhr">
-                  <label class="time-slot-btn" for="slot-di-1600">16:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-di-1700" name="time-slot-di" aria-label="17:00 Uhr">
-                  <label class="time-slot-btn" for="slot-di-1700">17:00 Uhr</label>
-
-                </div>
-              </div><!-- /.time-day Di -->
-
-              <!-- ============================================================
-                   Day 3: Mi, 04.03.2026
-                   ============================================================ -->
-              <div class="time-day">
-                <h2 class="time-day__heading" aria-level="2">Mi, 04.03.2026</h2>
-                <div class="time-slots-grid" role="radiogroup" aria-label="Verfügbare Uhrzeiten für Mittwoch, 04.03.2026">
-
-                  <input type="radio" class="time-slot-radio" id="slot-mi-0700" name="time-slot-mi" aria-label="07:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mi-0700">07:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mi-0800" name="time-slot-mi" aria-label="08:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mi-0800">08:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mi-0900" name="time-slot-mi" aria-label="09:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mi-0900">09:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mi-1000" name="time-slot-mi" aria-label="10:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mi-1000">10:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mi-1100" name="time-slot-mi" aria-label="11:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mi-1100">11:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mi-1200" name="time-slot-mi" aria-label="12:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mi-1200">12:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mi-1300" name="time-slot-mi" aria-label="13:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mi-1300">13:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mi-1400" name="time-slot-mi" aria-label="14:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mi-1400">14:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mi-1500" name="time-slot-mi" aria-label="15:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mi-1500">15:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mi-1600" name="time-slot-mi" aria-label="16:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mi-1600">16:00 Uhr</label>
-
-                  <input type="radio" class="time-slot-radio" id="slot-mi-1700" name="time-slot-mi" aria-label="17:00 Uhr">
-                  <label class="time-slot-btn" for="slot-mi-1700">17:00 Uhr</label>
-
-                </div>
-              </div><!-- /.time-day Mi -->
+              <!-- Time slot days are generated dynamically by JavaScript -->
 
             </div><!-- /.right-panel__slots -->
 
@@ -931,5 +760,75 @@
     </footer>
 
   </div>
+
+  <script>
+    const datePicker = document.getElementById('date-picker');
+    const calendar = document.querySelector('.workshop-calendar');
+    const slotsContainer = document.querySelector('.right-panel__slots');
+    const slotsIntro = document.querySelector('.slots__intro');
+
+    const WEEKDAYS = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+    const HOURS = ['07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
+
+    function formatDate(date) {
+      const d = String(date.getDate()).padStart(2, '0');
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      return WEEKDAYS[date.getDay()] + ', ' + d + '.' + m + '.' + date.getFullYear();
+    }
+
+    function getNextWorkdays(startDate, count) {
+      const days = [];
+      const current = new Date(startDate);
+      while (days.length < count) {
+        if (current.getDay() !== 0 && current.getDay() !== 6) {
+          days.push(new Date(current));
+        }
+        current.setDate(current.getDate() + 1);
+      }
+      return days;
+    }
+
+    function buildDayHtml(date, dayIndex) {
+      const label = formatDate(date);
+      const dayKey = 'day' + dayIndex;
+      let html = '<div class="time-day">';
+      html += '<h2 class="time-day__heading">' + label + '</h2>';
+      html += '<div class="time-slots-grid" role="radiogroup" aria-label="Verfügbare Uhrzeiten für ' + label + '">';
+      for (const hour of HOURS) {
+        const id = 'slot-' + dayKey + '-' + hour.replace(':', '');
+        html += '<input type="radio" class="time-slot-radio" id="' + id + '" name="time-slot-' + dayKey + '" aria-label="' + hour + ' Uhr">';
+        html += '<label class="time-slot-btn" for="' + id + '">' + hour + ' Uhr</label>';
+      }
+      html += '</div></div>';
+      return html;
+    }
+
+    const placeholder = document.getElementById('date-placeholder');
+
+    datePicker.addEventListener('change', function () {
+      if (!this.value) {
+        calendar.classList.remove('workshop-calendar--date-selected');
+        datePicker.classList.remove('has-value');
+        placeholder.style.display = '';
+        return;
+      }
+
+      datePicker.classList.add('has-value');
+      placeholder.style.display = 'none';
+
+      const selected = new Date(this.value + 'T00:00:00');
+      const workdays = getNextWorkdays(selected, 3);
+
+      // Remove old day elements, keep intro text
+      slotsContainer.querySelectorAll('.time-day').forEach(function (el) { el.remove(); });
+
+      // Build new day slots
+      let daysHtml = '';
+      workdays.forEach(function (day, i) { daysHtml += buildDayHtml(day, i); });
+      slotsIntro.insertAdjacentHTML('afterend', daysHtml);
+
+      calendar.classList.add('workshop-calendar--date-selected');
+    });
+  </script>
 </body>
 </html>
