@@ -153,6 +153,30 @@ export async function completeBrandToServiceFlow(
 }
 
 // =============================================
+// LOCATION SELECTION HELPERS (REQ-003 / REQ-007)
+// =============================================
+
+/** Click the Back button on the location selection page */
+export async function clickLocationBack(page: Page): Promise<void> {
+  const backButton = page.locator('.location-selection__back-button');
+  await expect(backButton).toBeVisible();
+  await backButton.click();
+  await waitForAngular(page);
+}
+
+// =============================================
+// SERVICE SELECTION BACK HELPER (REQ-004 / REQ-007)
+// =============================================
+
+/** Click the Back button on the service selection page (summary bar) */
+export async function clickServiceBack(page: Page): Promise<void> {
+  const backButton = page.locator('.summary-bar__back-button');
+  await expect(backButton).toBeVisible();
+  await backButton.click();
+  await waitForAngular(page);
+}
+
+// =============================================
 // NOTES PAGE HELPERS (REQ-005)
 // =============================================
 

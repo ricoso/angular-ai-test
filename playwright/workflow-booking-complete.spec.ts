@@ -3,8 +3,10 @@ import { expect, test } from '@playwright/test';
 import { getCurrentRoute, navigateTo, setLanguage, waitForAngular } from './helpers/app.helpers';
 import {
   clickAppointmentBack,
+  clickLocationBack,
   clickNotesBack,
   clickNotesContinue,
+  clickServiceBack,
   completeBrandToLocationFlow,
   enterNote,
   getAppointmentCardCount,
@@ -564,6 +566,121 @@ test.describe('Complete Booking Workflow', () => {
       await page.locator('.notes').waitFor({ state: 'visible', timeout: 10000 });
       await waitForAngular(page);
       await expect(cartButton).toBeVisible();
+    });
+
+  });
+
+  // =============================================
+  // REQ-007: WIZARD STATE SYNC — Back Navigation with Store Reset
+  // =============================================
+
+  test.describe('REQ-007: Wizard State Sync — Back Navigation', () => {
+
+    test('complete backward navigation: Appointment -> Notes -> Services -> Location -> Brand', async ({ page }) => {
+      await setLanguage(page, 'de');
+
+      // Walk the full wizard forward
+      await goToAppointmentPage(page);
+      await selectAppointmentCard(page, 0);
+
+      // Now navigate all the way back
+      // Step 1: Appointment -> Notes (clears selectedAppointment)
+      await clickAppointmentBack(page);
+      expect(await getCurrentRoute(page)).toBe('/home/notes');
+
+      // Step 2: Notes -> Services (clears bookingNote)
+      await clickNotesBack(page);
+      expect(await getCurrentRoute(page)).toBe('/home/services');
+
+      // Step 3: Services -> Location (clears selectedServices)
+      await clickServiceBack(page);
+      expect(await getCurrentRoute(page)).toBe('/home/location');
+
+      // Step 4: Location -> Brand (clears selectedLocation)
+      await clickLocationBack(page);
+      expect(await getCurrentRoute(page)).toBe('/home/brand');
+
+      // Verify brand page renders
+      const title = await getPageTitle(page);
+      expect(title).toBe('Welche Fahrzeugmarke fahren Sie?');
+    });
+
+    test('guard redirect after complete backward navigation: /home/appointment -> redirected', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToAppointmentPage(page);
+
+      // Navigate all the way back
+      await clickAppointmentBack(page);
+      await clickNotesBack(page);
+      await clickServiceBack(page);
+      await clickLocationBack(page);
+      expect(await getCurrentRoute(page)).toBe('/home/brand');
+
+      // Direct access to /home/appointment should redirect
+      await navigateTo(page, '/home/appointment');
+      await waitForAngular(page);
+
+      const route = await getCurrentRoute(page);
+      expect(route).not.toBe('/home/appointment');
+      expect(route).toMatch(/\/home\/(brand|location)/);
+    });
+
+    test('partial back then forward: appointment reset requires re-selection', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToAppointmentPage(page);
+
+      // Select appointment
+      await selectAppointmentCard(page, 0);
+      expect(await isAppointmentCardSelected(page, 0)).toBe(true);
+
+      // Back to notes (clears selectedAppointment)
+      await clickAppointmentBack(page);
+      expect(await getCurrentRoute(page)).toBe('/home/notes');
+
+      // Forward from notes back to appointment
+      await clickNotesContinue(page);
+      await page.locator('.appointment-selection').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      // No appointment should be pre-selected
+      const selectedCards = page.locator('.appointment-card--selected');
+      expect(await selectedCards.count()).toBe(0);
+    });
+
+    test('cart badge resets when services are cleared via back navigation', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToNotesPage(page, { serviceNames: ['HU/AU', 'Inspektion'] });
+
+      const badge = page.locator('.cart-icon__button .mat-badge-content');
+      await expect(badge).toHaveText('2');
+
+      // Back from notes (clears bookingNote, badge stays 2)
+      await clickNotesBack(page);
+      await expect(badge).toHaveText('2');
+
+      // Back from services (clears selectedServices, badge disappears)
+      await clickServiceBack(page);
+      await expect(badge).toBeHidden();
+    });
+
+    test('header stays visible during backward navigation', async ({ page }) => {
+      await setLanguage(page, 'de');
+      const header = page.locator('header[role="banner"]');
+
+      await goToAppointmentPage(page);
+      await expect(header).toBeVisible();
+
+      await clickAppointmentBack(page);
+      await expect(header).toBeVisible();
+
+      await clickNotesBack(page);
+      await expect(header).toBeVisible();
+
+      await clickServiceBack(page);
+      await expect(header).toBeVisible();
+
+      await clickLocationBack(page);
+      await expect(header).toBeVisible();
     });
 
   });

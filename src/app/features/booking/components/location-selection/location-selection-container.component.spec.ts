@@ -83,5 +83,27 @@ describe('LocationSelectionContainerComponent', () => {
 
       expect(router.navigate).toHaveBeenCalledWith(['/home/brand']);
     });
+
+    it('should clear selected location in store before navigating back', () => {
+      store.setLocation(LOCATIONS_BY_BRAND.audi[0]);
+      expect(store.selectedLocation()).not.toBeNull();
+
+      const exposed = component as unknown as { onBack: () => void };
+      exposed.onBack();
+
+      expect(store.selectedLocation()).toBeNull();
+      expect(store.hasLocationSelected()).toBe(false);
+      expect(router.navigate).toHaveBeenCalledWith(['/home/brand']);
+    });
+
+    it('should handle back when location is already null', () => {
+      expect(store.selectedLocation()).toBeNull();
+
+      const exposed = component as unknown as { onBack: () => void };
+      exposed.onBack();
+
+      expect(store.selectedLocation()).toBeNull();
+      expect(router.navigate).toHaveBeenCalledWith(['/home/brand']);
+    });
   });
 });
