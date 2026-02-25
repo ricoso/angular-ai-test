@@ -130,6 +130,36 @@ const SCREENSHOT_CONFIG = {
       await page.waitForTimeout(500);
     },
   },
+
+  'REQ-007-WizardStateSync': {
+    route: '/home/services',
+    setup: async (page) => {
+      // REQ-007 is a cross-cutting requirement with no own UI.
+      // Screenshot shows the services page after back-navigation from notes:
+      // Brand -> Location -> Services -> select HU/AU -> Continue to Notes -> Back to Services
+      // This demonstrates the back-navigation that clears bookingNote and returns to services.
+      await page.goto(`${HASH}/home/brand`);
+      await page.waitForLoadState('networkidle');
+      await page.locator('button', { hasText: 'Audi' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      await page.locator('button', { hasText: 'München' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      // Select HU/AU service
+      await page.locator('.service-card', { hasText: 'HU/AU' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      // Click Continue on services -> notes
+      await page.locator('.summary-bar__continue-button').click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
+      // Click Back on notes -> services (demonstrates REQ-007 back navigation)
+      await page.locator('.notes__back-button').click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
+    },
+  },
 };
 
 // ---------------------------------------------------------------------------

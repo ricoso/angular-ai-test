@@ -40,6 +40,7 @@ export class NotesContainerComponent {
   }
 
   protected onBack(): void {
+    this.store.clearBookingNote();
     void this.router.navigate(['/home/services']);
   }
 }

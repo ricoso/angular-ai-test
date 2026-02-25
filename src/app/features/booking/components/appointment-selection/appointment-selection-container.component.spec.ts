@@ -88,6 +88,30 @@ describe('AppointmentSelectionContainerComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/home/notes']);
   });
 
+  it('should clear selected appointment in store before navigating back', () => {
+    store.selectAppointment(MOCK_APPOINTMENTS[0]);
+    expect(store.selectedAppointment()).not.toBeNull();
+
+    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const exposed = component as unknown as { onBack: () => void };
+    exposed.onBack();
+
+    expect(store.selectedAppointment()).toBeNull();
+    expect(store.hasAppointmentSelected()).toBe(false);
+    expect(navigateSpy).toHaveBeenCalledWith(['/home/notes']);
+  });
+
+  it('should handle back when appointment is already null', () => {
+    expect(store.selectedAppointment()).toBeNull();
+
+    const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
+    const exposed = component as unknown as { onBack: () => void };
+    exposed.onBack();
+
+    expect(store.selectedAppointment()).toBeNull();
+    expect(navigateSpy).toHaveBeenCalledWith(['/home/notes']);
+  });
+
   it('should navigate forward on continue', () => {
     const navigateSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true);
 
