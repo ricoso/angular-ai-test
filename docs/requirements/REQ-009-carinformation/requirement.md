@@ -34,8 +34,9 @@ Der Benutzer gibt seine persönlichen Kontaktdaten sowie fahrzeugbezogene Inform
 - REQ-001: Header (Warenkorb-Icon zeigt gewählte Services)
 - REQ-004: Serviceauswahl (liefert `selectedServices`)
 - REQ-005: Hinweisfenster (liefert optional `customerNote`)
-- REQ-006: Terminauswahl (direkter Vorgänger — liefert `selectedAppointment`)
+- REQ-006: Terminauswahl (direkter Vorgänger — "Weiter"-Button navigiert zu `/home/carinformation`, liefert `selectedAppointment`)
 - REQ-007: WizardStateSync (definiert `onBack()`-Verhalten)
+- REQ-008: Werkstattkalender (alternativer Vorgänger — "Weiter"-Button navigiert ebenfalls zu `/home/carinformation`)
 
 ---
 
@@ -73,7 +74,7 @@ Der Benutzer gibt seine persönlichen Kontaktdaten sowie fahrzeugbezogene Inform
 - Header-Component (REQ-001) aktiv
 
 ### 3.2 User
-- Benutzer hat die vorherigen Wizard-Schritte (REQ-002–REQ-006) durchlaufen
+- Benutzer kommt über "Weiter"-Button von REQ-006 (Terminauswahl) ODER REQ-008 (Werkstattkalender)
 - Benutzer ruft `/home/carinformation` auf
 
 ### 3.3 Data
@@ -136,8 +137,12 @@ Der Benutzer gibt seine persönlichen Kontaktdaten sowie fahrzeugbezogene Inform
 
 **Flow:**
 1. System setzt gemäß REQ-007 (WizardStateSync) `selectedAppointment` auf `null`
-2. System navigiert zurück zu `/home/appointment` (REQ-006)
+2. System navigiert kontextabhängig zurück:
+   - Standardfall: `/home/appointment` (REQ-006 Terminauswahl)
+   - Falls Benutzer über REQ-008 (Werkstattkalender) kam: `/home/workshop-calendar` (REQ-008)
 3. Bereits eingegebene Formulardaten bleiben im Store (falls bereits Step 5 ausgeführt)
+
+> **Hinweis:** Die Zurück-Navigation richtet sich nach dem Wizard-Pfad des Benutzers. REQ-007 (WizardStateSync) steuert die korrekte Rücknavigation.
 
 ### 5.3 Erklärung der FIN aufrufen
 
@@ -497,8 +502,9 @@ src/app/features/booking/
 - REQ-002: Markenauswahl (`selectedBrand` im Store)
 - REQ-003: Standortwahl (`selectedLocation` im Store)
 - REQ-004: Serviceauswahl (`selectedServices` im Store)
-- REQ-006: Terminauswahl (`selectedAppointment` im Store)
+- REQ-006: Terminauswahl (`selectedAppointment` im Store, "Weiter"-Button navigiert hierher)
 - REQ-007: WizardStateSync (`onBack()` setzt `selectedAppointment` auf `null`)
+- REQ-008: Werkstattkalender ("Weiter"-Button navigiert hierher — alternativer Eingangspunkt)
 
 **Blocks:**
 - REQ-010+: Buchungsübersicht (benötigt `customerInfo`, `vehicleInfo`, `privacyConsent`)
@@ -641,6 +647,11 @@ carinformation: {
 // Presentational emittiert Änderungen via output()
 // Container subscribet Store, zeigt gespeicherte Werte beim Re-Besuch
 ```
+
+**Navigation von Vorgänger-Schritten:**
+- Bei Implementierung von REQ-009 müssen die `onContinue()`-Methoden in REQ-006 (Terminauswahl) und REQ-008 (Werkstattkalender) auf `/home/carinformation` umgebogen werden
+- REQ-006: `appointment-container.component.ts` → `onContinue()` navigiert zu `/home/carinformation`
+- REQ-008: `workshop-calendar-container.component.ts` → `onContinue()` navigiert zu `/home/carinformation`
 
 **Store-Erweiterung:**
 - `BookingState` um `customerInfo`, `vehicleInfo`, `privacyConsent` erweitern
