@@ -29,6 +29,10 @@ Example: `product`
 - NO Store injection
 - NO Service injection
 - NO Business logic
+- **Template: NUR computed() / signal() Reads** — KEINE Methoden-Aufrufe!
+  - `hasError()`, `getErrorMessage()`, `getLabel()` etc. sind VERBOTEN
+  - Stattdessen: `errors` computed Signal (Form-Fehler), `labels` computed Signal etc.
+  - Einzige Ausnahme: Event Handler in `(event)="onAction()"` Bindings
 
 ### 2. Service Layers
 
@@ -59,19 +63,33 @@ Example: `product`
 ✅ **Performance Rules:**
 - All `@for` loops have `track` (NOT `$index`)
 - Track uses unique ID (`track item.id`)
-- NO method calls in templates
+- **NUR computed() / signal() im Template** — KEINE Methoden-Aufrufe!
 - NO calculations in templates (`{{ price * qty }}`)
 - Use computed signals instead
 
 ✅ **Template Syntax:**
 ```html
-<!-- ✅ GOOD -->
+<!-- ✅ GOOD — Signal/Computed reads -->
 @for (user of users(); track user.id) { }
 <div>{{ activeUsers().length }}</div>
+@if (errors().email.required) { <mat-error>...</mat-error> }
 
-<!-- ❌ BAD -->
+<!-- ❌ BAD — Method calls -->
 @for (user of users(); track $index) { }
 <div>{{ getActiveUsers().length }}</div>
+@if (hasError('email', 'required')) { <mat-error>...</mat-error> }
+```
+
+✅ **Form Error Pattern:**
+```typescript
+// ❌ VERBOTEN: Methode im Template
+protected hasError(field: string, error: string): boolean { ... }
+
+// ✅ PFLICHT: Computed Signal mit form.events
+protected readonly errors = computed(() => {
+  this.formEvents(); // toSignal(toObservable(form).pipe(switchMap(f => f.events)))
+  return { email: { required: this.checkError(form, 'email', 'required') } };
+});
 ```
 
 ### 5. File Structure
@@ -100,6 +118,27 @@ Example: `product`
 - No `any` types
 - Proper interface definitions
 - DTO types for API requests/responses
+
+### 8. Dead Code (Ungenutzte Methoden / Properties)
+
+✅ **Keine ungenutzten Methoden:**
+- Jede `protected`/`public` Methode in Components muss im Template ODER in Tests genutzt werden
+- Jede `private` Methode muss intern aufgerufen werden
+- Durch Refactoring überflüssig gewordene Methoden MÜSSEN gelöscht werden
+- Kein auskommentierter Code, kein `// deprecated`, kein `// unused`
+
+```typescript
+// ❌ BAD — isInvalid() durch errors computed ersetzt, aber nicht gelöscht
+export class UserFormComponent {
+  protected readonly errors = computed(() => { ... });
+  protected isInvalid(): boolean { ... }  // DEAD CODE → LÖSCHEN!
+}
+
+// ✅ GOOD — Nur was gebraucht wird
+export class UserFormComponent {
+  protected readonly errors = computed(() => { ... });
+}
+```
 
 ## Output Format
 

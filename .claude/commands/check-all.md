@@ -39,6 +39,9 @@ Prompt: "Analysiere das Feature '$ARGUMENTS' und führe folgende Architektur-Che
    - Prüfe: 1 Route = 1 Container + Presentational Children
    - Container: inject(Store), OnPush, Event Handler (onXxx())
    - Presentational: input(), output() only, KEIN Store
+   - Template: NUR computed()/signal() Reads — KEINE Methoden-Aufrufe (außer Event Handler)
+   - Form-Fehler: errors computed Signal statt hasError() Methode
+   - Dead Code: KEINE ungenutzten Methoden/Properties — nicht im Template + nicht intern aufgerufen = LÖSCHEN!
 
 2. **check-stores**: NgRx Signal Store Pattern
    - Prüfe: withState, withComputed, withMethods, withHooks
@@ -80,12 +83,14 @@ Prompt: "Analysiere das Feature '$ARGUMENTS' und führe folgende Quality-Checks 
    - KEIN any Type (nutze unknown)
    - Explicit Return Types
    - Interfaces in models/
+   - KEINE ungenutzten Methoden/Properties (Dead Code) — nicht referenziert = LÖSCHEN!
 
 3. **check-performance**: Performance
    - OnPush bei ALLEN Components
    - @for mit track item.id
-   - computed() statt Methoden im Template
-   - KEINE Methoden-Aufrufe im Template
+   - NUR computed()/signal() im Template — KEINE Methoden-Aufrufe!
+   - hasError()/getErrorMessage() als Methode ist VERBOTEN → errors computed Signal
+   - Einzige Ausnahme: Event Handler (click)="onAction()"
 
 4. **check-styling**: SCSS & Accessibility
    - em/rem statt px
@@ -174,6 +179,8 @@ Prompt: "Analysiere das Feature '$ARGUMENTS' und führe folgende Feature-Checks 
    - Typed Forms mit Generics
    - Validators im Component
    - KEIN ngModel
+   - Form-Fehler als computed Signal (KEINE hasError()/getErrorMessage() Methoden im Template!)
+   - Pattern: toSignal(form.events) → errors computed → errors().field.error im Template
 
 3. **check-code-language**: Code Language
    - Code-Sprache ist FIXIERT auf Englisch (unabhängig von REQ-Sprache!)

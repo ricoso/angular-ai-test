@@ -94,6 +94,71 @@ export class ProductListComponent {
 - Converts to computed signals
 - Updates template references
 
+### 3b. Convert Form Error Methods to Computed Signals
+
+**Before:**
+```typescript
+export class UserFormComponent {
+  public readonly form = input.required<FormGroup>();
+
+  // ❌ Called on EVERY change detection cycle
+  protected hasError(field: string, error: string): boolean {
+    const control = this.form().get(field);
+    return !!(control?.hasError(error) && control.touched);
+  }
+}
+```
+
+```html
+@if (hasError('email', 'required')) {
+  <mat-error>Required</mat-error>
+}
+```
+
+**After:**
+```typescript
+export class UserFormComponent {
+  public readonly form = input.required<FormGroup>();
+
+  // ✅ Reactive: tracks form.events
+  private readonly formEvents = toSignal(
+    toObservable(this.form).pipe(
+      switchMap(form => form.events.pipe(startWith(null)))
+    ),
+    { initialValue: null }
+  );
+
+  // ✅ Cached computed signal — only recalculates on form events
+  protected readonly errors = computed(() => {
+    this.formEvents();
+    const form = this.form();
+    return {
+      email: {
+        required: this.checkError(form, 'email', 'required'),
+        email: this.checkError(form, 'email', 'email'),
+      },
+    };
+  });
+
+  private checkError(form: FormGroup, field: string, error: string): boolean {
+    const control = form.get(field);
+    return !!(control?.hasError(error) && control.touched);
+  }
+}
+```
+
+```html
+@if (errors().email.required) {
+  <mat-error>Required</mat-error>
+}
+```
+
+**Detection:**
+- Finds `hasError()`, `getErrorMessage()`, `isInvalid()` methods used in templates
+- Converts to `errors` computed signal with `form.events` tracking
+- Maps all field/error combinations from template usage
+- Updates all template references from `hasError('field', 'error')` to `errors().field.error`
+
 ### 4. Add Debounce to Form Inputs
 
 **Before:**

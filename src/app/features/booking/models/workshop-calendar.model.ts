@@ -21,9 +21,3 @@ export interface WorkshopCalendarDay {
   displayHeading: string;
   slots: WorkshopTimeSlot[];
 }
-
-/**
- * View state for the workshop calendar page
- * DE: View-State fuer die Werkstattkalender-Seite / EN: Workshop calendar view state
- */
-export type WorkshopCalendarViewState = 'empty' | 'loading' | 'slots-visible';

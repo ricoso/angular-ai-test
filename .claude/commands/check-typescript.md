@@ -90,6 +90,26 @@ if (items.length > 100) { }
 if (status === 'active') { }
 ```
 
+### 8. Keine ungenutzten Methoden / Properties (Dead Code)
+```typescript
+// ❌ BAD — Methode existiert, wird aber nirgends aufgerufen
+export class UserFormComponent {
+  protected isInvalid(): boolean { ... }  // Nicht im Template, nicht in Tests → LÖSCHEN!
+  protected hasError(): boolean { ... }   // Durch computed ersetzt → LÖSCHEN!
+}
+
+// ✅ GOOD — Nur Methoden die tatsächlich genutzt werden
+export class UserFormComponent {
+  protected readonly errors = computed(() => { ... }); // Im Template genutzt
+}
+```
+
+**Prüfung:**
+- Für jede `protected`/`public` Methode in Components: Wird sie im `.html` Template aufgerufen?
+- Für jede `private` Methode: Wird sie intern in der Klasse aufgerufen?
+- Für jede exportierte Funktion/Klasse: Wird sie in anderen Dateien importiert?
+- **Nicht genutzt = LÖSCHEN!** Kein auskommentieren, kein `// deprecated`
+
 ## Output
 
 ```

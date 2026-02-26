@@ -15,11 +15,23 @@
 @Component({ changeDetection: ChangeDetectionStrategy.OnPush })
 ```
 
-### 3. Computed statt Methods
+### 3. Computed statt Methods (ÜBERALL — auch Forms!)
 
 ```typescript
 filtered = computed(() => items().filter(...))  // ✅ Cached
 getFiltered() { return items().filter(...) }    // ❌ Re-runs!
+```
+
+**Auch bei Forms:** `hasError()` / `getErrorMessage()` als Methode ist VERBOTEN!
+```typescript
+// ❌ VERBOTEN: Methode im Template
+protected hasError(field: string, error: string): boolean { ... }
+
+// ✅ PFLICHT: Computed Signal mit form.events
+protected readonly errors = computed(() => {
+  this.formEvents(); // toSignal(form.events)
+  return { email: { required: this.checkError(form, 'email', 'required') } };
+});
 ```
 
 ### 4. Lazy Loading (PFLICHT!)
@@ -30,8 +42,11 @@ getFiltered() { return items().filter(...) }    // ❌ Re-runs!
 
 ### 5. Template Rules
 
-**ALLOWED:** `{{ signal() }}`, `{{ property }}`, `{{ date | pipe }}`, `(event)="handler()"`
-**FORBIDDEN:** `{{ method() }}`, `{{ a * b }}`, `{{ arr.filter() }}`
+**ALLOWED:** `{{ signal() }}`, `{{ computed() }}`, `{{ property }}`, `{{ date | pipe }}`, `(event)="handler()"`
+**FORBIDDEN:** `{{ method() }}`, `{{ a * b }}`, `{{ arr.filter() }}`, `hasError()`, `getErrorMessage()`
+
+> **NUR computed() und signal() dürfen im Template gelesen werden!**
+> Event Handler (`(click)="onSave()"`) sind die EINZIGE erlaubte Methoden-Nutzung im Template.
 
 ## Optional Optimizations
 

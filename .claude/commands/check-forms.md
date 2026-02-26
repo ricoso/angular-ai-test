@@ -78,6 +78,41 @@ onSubmit() {
 // ❌ BAD - Presentational handled submit
 ```
 
+### 7. Form Errors als Computed Signal (KEINE Methoden im Template!)
+```typescript
+// ❌ VERBOTEN: Methoden-Aufruf im Template
+protected hasError(field: string, error: string): boolean {
+  const control = this.form().get(field);
+  return !!(control?.hasError(error) && control.touched);
+}
+// Template: @if (hasError('email', 'required')) { ... }  ← VERBOTEN!
+
+// ✅ PFLICHT: Computed Signal mit form.events
+private readonly formEvents = toSignal(
+  toObservable(this.form).pipe(
+    switchMap(form => form.events.pipe(startWith(null)))
+  ),
+  { initialValue: null }
+);
+
+protected readonly errors = computed(() => {
+  this.formEvents();
+  const form = this.form();
+  return {
+    email: {
+      required: this.checkError(form, 'email', 'required'),
+      email: this.checkError(form, 'email', 'email'),
+    },
+  };
+});
+
+private checkError(form: FormGroup, field: string, error: string): boolean {
+  const control = form.get(field);
+  return !!(control?.hasError(error) && control.touched);
+}
+// Template: @if (errors().email.required) { ... }  ← RICHTIG!
+```
+
 ## Output
 
 ```

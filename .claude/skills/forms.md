@@ -31,26 +31,42 @@ export class UserEditContainerComponent {
 
 ### Presentational Component (zeigt FormGroup)
 
+> **REGEL:** KEINE Methoden im Template! Stattdessen `computed()` Signal für Fehler-State.
+> `hasError()` / `getErrorMessage()` als Methode ist VERBOTEN — wird bei jedem Change Detection Cycle aufgerufen!
+
 ```typescript
 export class UserFormComponent {
   public readonly form = input.required<FormGroup>();
   public readonly submit = output<void>();
 
-  protected hasError(field: string): boolean {
-    const control = this.form().get(field);
-    return !!(control && control.invalid && control.touched);
-  }
+  // Reactive: form.events tracken, damit computed() bei Änderungen aktualisiert
+  private readonly formEvents = toSignal(
+    toObservable(this.form).pipe(
+      switchMap(form => form.events.pipe(startWith(null)))
+    ),
+    { initialValue: null }
+  );
 
-  protected getErrorMessage(field: string): string {
-    const control = this.form().get(field);
-    if (!control?.errors || !control.touched) return '';
+  // ✅ Computed Signal — cached, nur bei form.events neu berechnet
+  protected readonly errors = computed(() => {
+    this.formEvents(); // Trigger bei Form-Events
+    const form = this.form();
+    return {
+      firstName: {
+        required: this.checkError(form, 'firstName', 'required'),
+        minlength: this.checkError(form, 'firstName', 'minlength'),
+      },
+      email: {
+        required: this.checkError(form, 'email', 'required'),
+        email: this.checkError(form, 'email', 'email'),
+      },
+    };
+  });
 
-    if (control.errors['required']) return 'Required';
-    if (control.errors['email']) return 'Invalid email';
-    if (control.errors['minlength'])
-      return `Min ${control.errors['minlength'].requiredLength} chars`;
-
-    return 'Invalid';
+  // Private Helper (NICHT im Template aufgerufen!)
+  private checkError(form: FormGroup, field: string, error: string): boolean {
+    const control = form.get(field);
+    return !!(control?.hasError(error) && control.touched);
   }
 }
 ```
@@ -58,12 +74,26 @@ export class UserFormComponent {
 **Template:**
 ```html
 <form [formGroup]="form()" (ngSubmit)="submit.emit()">
-  <input formControlName="email" [class.error]="hasError('email')" />
-  @if (hasError('email')) {
-    <span class="error">{{ getErrorMessage('email') }}</span>
+  <!-- ✅ GOOD: computed signal read -->
+  <input formControlName="email" />
+  @if (errors().email.required) {
+    <mat-error>{{ t.validation.required | translate }}</mat-error>
+  }
+  @if (errors().email.email) {
+    <mat-error>{{ t.validation.invalidEmail | translate }}</mat-error>
   }
   <button type="submit" [disabled]="form().invalid">Save</button>
 </form>
+```
+
+**VERBOTEN:**
+```html
+<!-- ❌ BAD: Methoden-Aufruf im Template -->
+@if (hasError('email')) { ... }
+{{ getErrorMessage('email') }}
+
+<!-- ✅ GOOD: Computed Signal im Template -->
+@if (errors().email.required) { ... }
 ```
 
 ---

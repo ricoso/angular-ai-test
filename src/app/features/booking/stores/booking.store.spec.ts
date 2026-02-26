@@ -345,20 +345,4 @@ describe('BookingStore', () => {
     });
   });
 
-  describe('resetBooking', () => {
-    it('should reset to initial state', () => {
-      store.setBrand('bmw');
-      store.setLocation(LOCATIONS_BY_BRAND.bmw[0]);
-      store.toggleService('huau');
-      store.resetBooking();
-      expect(store.selectedBrand()).toBeNull();
-      expect(store.selectedLocation()).toBeNull();
-      expect(store.brands()).toEqual([]);
-      expect(store.locations()).toEqual([]);
-      expect(store.services()).toEqual([]);
-      expect(store.selectedServices()).toEqual([]);
-      expect(store.isLoading()).toBe(false);
-      expect(store.error()).toBeNull();
-    });
-  });
 });

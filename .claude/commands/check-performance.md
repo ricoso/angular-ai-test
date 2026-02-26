@@ -35,14 +35,29 @@ Beispiel: `user-notifications`
 @for (user of users()) {}
 ```
 
-### 3. Keine Methoden im Template
+### 3. NUR computed() / signal() im Template — KEINE Methoden!
 ```html
 <!-- ✅ GOOD - Computed Signal -->
 <div>{{ activeUsers().length }}</div>
+@if (errors().email.required) { <mat-error>...</mat-error> }
 
-<!-- ❌ BAD - Method call -->
+<!-- ❌ BAD - Method call (wird bei JEDEM Change Detection Cycle aufgerufen!) -->
 <div>{{ getActiveUsers().length }}</div>
 <div>{{ users.filter(u => u.active).length }}</div>
+@if (hasError('email', 'required')) { ... }
+{{ getErrorMessage('email') }}
+```
+
+**Auch bei Forms!** `hasError()` / `getErrorMessage()` als Template-Methode ist VERBOTEN:
+```typescript
+// ❌ VERBOTEN
+protected hasError(field: string, error: string): boolean { ... }
+
+// ✅ PFLICHT: Computed Signal
+protected readonly errors = computed(() => {
+  this.formEvents(); // toSignal(form.events) für Reaktivität
+  return { email: { required: this.checkError(form, 'email', 'required') } };
+});
 ```
 
 ### 4. Computed statt Getter

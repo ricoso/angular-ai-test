@@ -231,10 +231,6 @@ export const BookingStore = signalStore(
 
     clearSelectedServices(): void {
       patchState(store, { selectedServices: [] });
-    },
-
-    resetBooking(): void {
-      patchState(store, INITIAL_STATE);
     }
   }))
 );

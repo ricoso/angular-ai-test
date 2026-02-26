@@ -193,6 +193,10 @@ feature/
 - NO HTTP in Store
 - NO business logic in Container
 - TrackBy in @for loops
+- **NUR computed() / signal() im Template** — KEINE Methoden-Aufrufe!
+  - Erlaubt: `{{ mySignal() }}`, `{{ myComputed() }}`, `(click)="onSave()"`
+  - VERBOTEN: `{{ hasError('x') }}`, `{{ getLabel() }}`, `{{ calculate() }}`
+  - Auch bei Forms: `hasError()` → `errors` computed Signal (siehe forms.md)
 
 ---
 
