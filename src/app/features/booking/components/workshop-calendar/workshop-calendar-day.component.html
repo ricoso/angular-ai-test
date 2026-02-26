@@ -1,0 +1,24 @@
+<div class="time-day">
+  <h2 class="time-day__heading">{{ day().displayHeading }}</h2>
+
+  <div
+    class="time-slots-grid"
+    role="radiogroup"
+    [attr.aria-label]="booking.workshopCalendar.slotsAriaLabel | translate"
+  >
+    @for (slot of day().slots; track slot.id) {
+      <button
+        class="time-slot-btn"
+        type="button"
+        role="radio"
+        [class.time-slot-btn--selected]="selectedSlotId() === slot.id"
+        [attr.aria-checked]="selectedSlotId() === slot.id"
+        [attr.aria-label]="slot.displayTime"
+        (click)="onSlotClick(slot)"
+        (keydown)="onSlotKeydown($event, slot)"
+      >
+        {{ slot.displayTime }}
+      </button>
+    }
+  </div>
+</div>

@@ -334,3 +334,146 @@ export async function clickAppointmentBack(page: Page): Promise<void> {
 export function getCalendarLink(page: Page) {
   return page.locator('.appointment-selection__calendar-link');
 }
+
+// =============================================
+// WORKSHOP CALENDAR HELPERS (REQ-008)
+// =============================================
+
+/**
+ * Navigate to the workshop calendar page via the full wizard flow:
+ * Brand -> Location -> Services -> Notes -> Appointment -> Calendar Link Click.
+ * Walks through all steps to satisfy guards.
+ */
+export async function goToWorkshopCalendarPage(
+  page: Page,
+  options?: {
+    brandName?: string;
+    locationName?: string;
+    serviceNames?: string[];
+  }
+): Promise<void> {
+  await goToAppointmentPage(page, options);
+
+  // Click the calendar link on the appointment page to navigate to /home/workshop-calendar
+  const calendarLink = getCalendarLink(page);
+  await expect(calendarLink).toBeVisible();
+  await calendarLink.click();
+  // Wait for workshop calendar section to appear
+  await page.locator('.workshop-calendar').waitFor({ state: 'visible', timeout: 10000 });
+  await waitForAngular(page);
+}
+
+/** Open the MatDatepicker on the workshop calendar page and select today's date */
+export async function openDatePickerAndSelectToday(page: Page): Promise<void> {
+  // Click the datepicker toggle button to open the calendar
+  const toggle = page.locator('mat-datepicker-toggle button');
+  await expect(toggle).toBeVisible();
+  await toggle.click();
+  await waitForAngular(page);
+
+  // Click the today button in the datepicker calendar (it has class .mat-calendar-body-today)
+  const todayCell = page.locator('.mat-calendar-body-today');
+  await expect(todayCell).toBeVisible();
+  await todayCell.click();
+  await waitForAngular(page);
+}
+
+/** Open the MatDatepicker and select a specific day (1-31) in the currently visible month */
+export async function openDatePickerAndSelectDay(page: Page, dayNumber: number): Promise<void> {
+  // Click the datepicker toggle button to open the calendar
+  const toggle = page.locator('mat-datepicker-toggle button');
+  await expect(toggle).toBeVisible();
+  await toggle.click();
+  await waitForAngular(page);
+
+  // Click the day cell with the given day number
+  const dayCell = page.locator(`.mat-calendar-body-cell`).filter({ hasText: new RegExp(`^\\s*${dayNumber}\\s*$`) });
+  // There could be multiple matches (prev/next month), click the first enabled one
+  const enabledCells = dayCell.locator(':not(.mat-calendar-body-disabled)');
+  const count = await enabledCells.count();
+  if (count > 0) {
+    await enabledCells.first().click();
+  } else {
+    await dayCell.first().click();
+  }
+  await waitForAngular(page);
+}
+
+/** Get all time-day headings (e.g. ['Mo, 02.03.2026', 'Di, 03.03.2026', 'Mi, 04.03.2026']) */
+export async function getTimeDayHeadings(page: Page): Promise<string[]> {
+  const headings = page.locator('.time-day__heading');
+  return headings.allTextContents().then(texts => texts.map(t => t.trim()));
+}
+
+/** Get all time slot button texts from all days */
+export async function getAllTimeSlotTexts(page: Page): Promise<string[]> {
+  const slots = page.locator('.time-slot-btn');
+  return slots.allTextContents().then(texts => texts.map(t => t.trim()));
+}
+
+/** Get time slot button texts for a specific day (0-indexed) */
+export async function getTimeSlotsForDay(page: Page, dayIndex: number): Promise<string[]> {
+  const dayComponent = page.locator('app-workshop-calendar-day').nth(dayIndex);
+  const slots = dayComponent.locator('.time-slot-btn');
+  return slots.allTextContents().then(texts => texts.map(t => t.trim()));
+}
+
+/** Click a time slot button by its text (e.g. '09:00 Uhr'). Clicks the first match if multiple days have the same slot. */
+export async function selectTimeSlot(page: Page, slotText: string): Promise<void> {
+  const slot = page.locator('.time-slot-btn', { hasText: slotText }).first();
+  await expect(slot).toBeVisible();
+  await slot.click();
+  await waitForAngular(page);
+}
+
+/** Click a time slot button in a specific day (0-indexed) by its text */
+export async function selectTimeSlotInDay(page: Page, dayIndex: number, slotText: string): Promise<void> {
+  const dayComponent = page.locator('app-workshop-calendar-day').nth(dayIndex);
+  const slot = dayComponent.locator('.time-slot-btn', { hasText: slotText });
+  await expect(slot).toBeVisible();
+  await slot.click();
+  await waitForAngular(page);
+}
+
+/** Check if a time slot is selected by its text (checks first match) */
+export async function isTimeSlotSelected(page: Page, slotText: string): Promise<boolean> {
+  const slot = page.locator('.time-slot-btn', { hasText: slotText }).first();
+  const classList = await slot.getAttribute('class');
+  return classList?.includes('time-slot-btn--selected') ?? false;
+}
+
+/** Check if a time slot in a specific day (0-indexed) is selected */
+export async function isTimeSlotSelectedInDay(page: Page, dayIndex: number, slotText: string): Promise<boolean> {
+  const dayComponent = page.locator('app-workshop-calendar-day').nth(dayIndex);
+  const slot = dayComponent.locator('.time-slot-btn', { hasText: slotText });
+  const classList = await slot.getAttribute('class');
+  return classList?.includes('time-slot-btn--selected') ?? false;
+}
+
+/** Click the Back button on the workshop calendar page */
+export async function clickWorkshopCalendarBack(page: Page): Promise<void> {
+  const backButton = page.locator('.wizard-nav__back-button');
+  await expect(backButton).toBeVisible();
+  await backButton.click();
+  await waitForAngular(page);
+}
+
+/** Click the Continue button on the workshop calendar page */
+export async function clickWorkshopCalendarContinue(page: Page): Promise<void> {
+  const continueButton = page.locator('.wizard-nav__continue-button');
+  await expect(continueButton).toBeVisible();
+  await continueButton.click();
+  await waitForAngular(page);
+}
+
+/** Get the hint text shown on the right panel before date selection */
+export async function getWorkshopCalendarHintText(page: Page): Promise<string> {
+  const hint = page.locator('.right-panel__hint');
+  return (await hint.textContent() ?? '').trim();
+}
+
+/** Get the intro text shown on the right panel after date selection */
+export async function getWorkshopCalendarIntroText(page: Page): Promise<string> {
+  const intro = page.locator('.slots__intro');
+  return (await intro.textContent() ?? '').trim();
+}

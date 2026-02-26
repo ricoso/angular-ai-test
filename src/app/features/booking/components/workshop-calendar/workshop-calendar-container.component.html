@@ -1,0 +1,71 @@
+<section class="workshop-calendar" aria-labelledby="wk-title">
+
+  <h1 class="workshop-calendar__title" id="wk-title">
+    {{ booking.workshopCalendar.title | translate }}
+  </h1>
+
+  <div class="workshop-calendar__body">
+
+    <!-- Left Panel: Date Picker Card -->
+    <app-workshop-calendar-date-picker
+      [selectedDate]="workshopCalendarDate()"
+      (dateSelected)="onDateSelected($event)"
+    />
+
+    <!-- Right Panel: Hint or Time Slots -->
+    <div
+      class="workshop-calendar__right-panel"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      @if (!workshopCalendarDate()) {
+        <p class="right-panel__hint">
+          {{ booking.workshopCalendar.hintBefore | translate }}
+        </p>
+      } @else {
+        <div class="right-panel__slots">
+          <p class="slots__intro">
+            {{ booking.workshopCalendar.hintAfter | translate }}
+          </p>
+
+          @for (day of workshopCalendarDays(); track day.date) {
+            <app-workshop-calendar-day
+              [day]="day"
+              [selectedSlotId]="selectedAppointment()?.id ?? null"
+              (slotSelected)="onSlotSelected($event, day)"
+            />
+          }
+        </div>
+      }
+    </div>
+
+  </div>
+
+  <!-- Navigation Bar -->
+  <nav class="wizard-nav" [attr.aria-label]="booking.workshopCalendar.navAriaLabel | translate">
+    <button
+      mat-flat-button
+      class="wizard-nav__back-button"
+      type="button"
+      [attr.aria-label]="booking.workshopCalendar.backButton | translate"
+      (click)="onBack()"
+    >
+      <mat-icon aria-hidden="true">arrow_back</mat-icon>
+      {{ booking.workshopCalendar.backButton | translate }}
+    </button>
+
+    <button
+      mat-flat-button
+      color="primary"
+      class="wizard-nav__continue-button"
+      type="button"
+      [disabled]="!hasAppointmentSelected()"
+      [attr.aria-label]="booking.workshopCalendar.continueButton | translate"
+      (click)="onContinue()"
+    >
+      {{ booking.workshopCalendar.continueButton | translate }}
+      <mat-icon aria-hidden="true">arrow_forward</mat-icon>
+    </button>
+  </nav>
+
+</section>

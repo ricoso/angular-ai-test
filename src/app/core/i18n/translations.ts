@@ -92,6 +92,19 @@ export const translations = {
         ariaGroupLabel: 'Terminvorschläge',
         navAriaLabel: 'Seitennavigation'
       },
+      workshopCalendar: {
+        title: 'Hier sehen Sie weitere freie Termine in unserem Werkstattkalender',
+        description: 'Wählen Sie Ihren Wunschtermin. Wir zeigen Ihnen alle freien Termine ab diesem Tag an.',
+        desiredDateLabel: 'Ihr Wunschtermin:',
+        datePlaceholder: 'Wunschtermin wählen',
+        hintBefore: 'Wählen Sie im Kalender einen gewünschten Termin aus und wir zeigen Ihnen die nächsten verfügbaren Termine',
+        hintAfter: 'Wir haben folgende ab dem von Ihnen ausgewählten Datum verfügbaren Termine für Sie gefunden. Klicken Sie auf eine Uhrzeit, um den Termin auszuwählen.',
+        dateInputAriaLabel: 'Wunschtermin eingeben im Format TT.MM.JJJJ',
+        slotsAriaLabel: 'Verfügbare Uhrzeiten',
+        backButton: 'Zurück',
+        continueButton: 'Weiter',
+        navAriaLabel: 'Seitennavigation'
+      },
       notes: {
         pageTitle: 'Bitte geben Sie uns weitere Hinweise zu Ihrer Buchung',
         sectionTitle: 'Möchten Sie uns noch etwas zu Ihrer Buchung mitteilen?',
@@ -192,6 +205,19 @@ export const translations = {
         backButton: 'Back',
         continueButton: 'Continue',
         ariaGroupLabel: 'Appointment suggestions',
+        navAriaLabel: 'Page navigation'
+      },
+      workshopCalendar: {
+        title: 'Here you can see further available appointments in our workshop calendar',
+        description: 'Select your desired date. We will show you all available appointments from that day onwards.',
+        desiredDateLabel: 'Your desired date:',
+        datePlaceholder: 'Select desired date',
+        hintBefore: 'Select a desired date in the calendar and we will show you the next available appointments',
+        hintAfter: 'We found the following available appointments from your selected date. Click on a time to select the appointment.',
+        dateInputAriaLabel: 'Enter desired date in format DD.MM.YYYY',
+        slotsAriaLabel: 'Available times',
+        backButton: 'Back',
+        continueButton: 'Continue',
         navAriaLabel: 'Page navigation'
       },
       notes: {
@@ -296,6 +322,19 @@ export const translations = {
         ariaGroupLabel: 'Пропозиції записів',
         navAriaLabel: 'Навігація по сторінках'
       },
+      workshopCalendar: {
+        title: 'Тут ви можете побачити додаткові вільні записи у нашому календарі майстерні',
+        description: 'Оберіть бажану дату. Ми покажемо вам усі доступні записи починаючи з цього дня.',
+        desiredDateLabel: 'Ваша бажана дата:',
+        datePlaceholder: 'Оберіть бажану дату',
+        hintBefore: 'Оберіть бажану дату в календарі, і ми покажемо вам найближчі доступні записи',
+        hintAfter: 'Ми знайшли наступні доступні записи від обраної вами дати. Натисніть на час, щоб обрати запис.',
+        dateInputAriaLabel: 'Введіть бажану дату у форматі ДД.ММ.РРРР',
+        slotsAriaLabel: 'Доступні часи',
+        backButton: 'Назад',
+        continueButton: 'Далі',
+        navAriaLabel: 'Навігація по сторінках'
+      },
       notes: {
         pageTitle: 'Будь ласка, надайте додаткові примітки до вашого запису',
         sectionTitle: 'Чи хочете ви повідомити нам щось ще про ваш запис?',
@@ -398,6 +437,19 @@ export const translations = {
         ariaGroupLabel: 'Propositions de rendez-vous',
         navAriaLabel: 'Navigation par page'
       },
+      workshopCalendar: {
+        title: 'Consultez ici les créneaux disponibles dans notre calendrier d\'atelier',
+        description: 'Sélectionnez votre date souhaitée. Nous vous montrerons tous les rendez-vous disponibles à partir de ce jour.',
+        desiredDateLabel: 'Votre date souhaitée :',
+        datePlaceholder: 'Sélectionner une date',
+        hintBefore: 'Sélectionnez une date dans le calendrier et nous vous montrerons les prochains rendez-vous disponibles',
+        hintAfter: 'Nous avons trouvé les rendez-vous disponibles suivants à partir de votre date sélectionnée. Cliquez sur un horaire pour sélectionner le rendez-vous.',
+        dateInputAriaLabel: 'Entrez la date souhaitée au format JJ.MM.AAAA',
+        slotsAriaLabel: 'Horaires disponibles',
+        backButton: 'Retour',
+        continueButton: 'Continuer',
+        navAriaLabel: 'Navigation par page'
+      },
       notes: {
         pageTitle: 'Veuillez fournir des remarques supplémentaires pour votre réservation',
         sectionTitle: 'Souhaitez-vous nous communiquer autre chose concernant votre réservation ?',
@@ -498,6 +550,19 @@ export const translations = {
         backButton: 'رجوع',
         continueButton: 'متابعة',
         ariaGroupLabel: 'اقتراحات المواعيد',
+        navAriaLabel: 'التنقل بين الصفحات'
+      },
+      workshopCalendar: {
+        title: 'هنا يمكنك رؤية المزيد من المواعيد المتاحة في تقويم الورشة',
+        description: 'اختر التاريخ المطلوب. سنعرض لك جميع المواعيد المتاحة بدءاً من هذا اليوم.',
+        desiredDateLabel: 'التاريخ المطلوب:',
+        datePlaceholder: 'اختر التاريخ المطلوب',
+        hintBefore: 'اختر تاريخاً في التقويم وسنعرض لك المواعيد المتاحة القادمة',
+        hintAfter: 'وجدنا المواعيد المتاحة التالية بدءاً من التاريخ الذي اخترته. انقر على وقت لاختيار الموعد.',
+        dateInputAriaLabel: 'أدخل التاريخ المطلوب بالتنسيق يي.شش.سسسس',
+        slotsAriaLabel: 'الأوقات المتاحة',
+        backButton: 'رجوع',
+        continueButton: 'متابعة',
         navAriaLabel: 'التنقل بين الصفحات'
       },
       notes: {

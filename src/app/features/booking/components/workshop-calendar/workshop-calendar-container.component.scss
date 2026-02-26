@@ -1,0 +1,67 @@
+.workshop-calendar {
+  max-width: 70em;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-md);
+
+  &__title {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    line-height: var(--line-height-tight);
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+  }
+
+  &__right-panel {
+    min-height: 8em;
+  }
+}
+
+.right-panel {
+  &__hint {
+    display: block;
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-relaxed);
+  }
+}
+
+.slots__intro {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  line-height: var(--line-height-relaxed);
+}
+
+.wizard-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-md) 0;
+  border-top: 0.0625em solid var(--color-divider);
+}
+
+@media (min-width: 48em) {
+  .workshop-calendar {
+    padding: var(--spacing-xl);
+
+    &__title {
+      font-size: var(--font-size-2xl);
+    }
+
+    &__body {
+      grid-template-columns: minmax(16em, 20em) 1fr;
+      align-items: start;
+    }
+  }
+}

@@ -232,7 +232,7 @@ test.describe('REQ-006: Appointment Selection (Terminauswahl)', () => {
 
   test.describe('TC-10: Calendar Link', () => {
 
-    test('TC-10: calendar link is visible, underlined, and does not navigate', async ({ page }) => {
+    test('TC-10: calendar link is visible, underlined, and navigates to workshop calendar', async ({ page }) => {
       await setLanguage(page, 'de');
       await goToAppointmentPage(page);
 
@@ -249,16 +249,12 @@ test.describe('REQ-006: Appointment Selection (Terminauswahl)', () => {
       );
       expect(textDecoration).toContain('underline');
 
-      // Store route before click
-      const routeBefore = await getCurrentRoute(page);
-
-      // Click the link
+      // Click the link — should navigate to workshop calendar (REQ-008)
       await calendarLink.click();
       await waitForAngular(page);
 
-      // Route should not change (no navigation)
       const routeAfter = await getCurrentRoute(page);
-      expect(routeAfter).toBe(routeBefore);
+      expect(routeAfter).toBe('/home/workshop-calendar');
     });
 
     test('TC-10b: calendar link text in English', async ({ page }) => {

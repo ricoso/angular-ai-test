@@ -46,5 +46,11 @@ export const bookingRoutes: Routes = [
       .then(m => m.AppointmentSelectionContainerComponent),
     canActivate: [servicesSelectedGuard],
     resolve: { _: appointmentsResolver }
+  },
+  {
+    path: 'workshop-calendar',
+    loadComponent: () => import('./components/workshop-calendar/workshop-calendar-container.component')
+      .then(m => m.WorkshopCalendarContainerComponent),
+    canActivate: [servicesSelectedGuard]
   }
 ];

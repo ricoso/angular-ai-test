@@ -44,5 +44,6 @@ export class AppointmentSelectionContainerComponent {
 
   protected onCalendarLinkClick(event: Event): void {
     event.preventDefault();
+    void this.router.navigate(['/home/workshop-calendar']);
   }
 }
