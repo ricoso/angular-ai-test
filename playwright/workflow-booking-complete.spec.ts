@@ -7,23 +7,30 @@ import {
   clickNotesBack,
   clickNotesContinue,
   clickServiceBack,
+  clickWorkshopCalendarBack,
   completeBrandToLocationFlow,
   enterNote,
   getAppointmentCardCount,
+  getCalendarLink,
   getCharCounter,
   getBrandButtonTexts,
   getLocationButtonTexts,
   getPageTitle,
   getServiceCardTitles,
+  getTimeDayHeadings,
   goToAppointmentPage,
   goToBrandSelection,
   goToNotesPage,
   goToServiceSelection,
+  goToWorkshopCalendarPage,
   isAppointmentCardSelected,
+  isTimeSlotSelected,
+  openDatePickerAndSelectToday,
   selectAppointmentCard,
   selectBrand,
   selectLocation,
   selectService,
+  selectTimeSlot,
 } from './helpers/booking.helpers';
 
 /**
@@ -32,10 +39,11 @@ import {
  * End-to-End flow through all implemented wizard steps:
  *   REQ-001 (Header) -> REQ-002 (Brand Selection) -> REQ-003 (Location Selection)
  *   -> REQ-004 (Service Selection) -> REQ-005 (Notes) -> REQ-006 (Appointment Selection)
+ *   -> REQ-008 (Workshop Calendar)
  *
  * Tests the full user journey including:
  * - Header always visible
- * - Brand selection -> Location selection -> Service selection -> Notes -> Appointment
+ * - Brand selection -> Location selection -> Service selection -> Notes -> Appointment -> Workshop Calendar
  * - Language switching during the flow
  * - Alternative flows (back navigation, brand change)
  * - Guards and redirects
@@ -167,6 +175,34 @@ test.describe('Complete Booking Workflow', () => {
       expect(await isAppointmentCardSelected(page, 0)).toBe(true);
 
       // Step 19: Header still visible on appointment page
+      await expect(header).toBeVisible();
+      await expect(companyName).toContainText('Autohaus GmbH');
+
+      // Step 20: REQ-008 — Click calendar link to navigate to workshop calendar
+      const calendarLink = getCalendarLink(page);
+      await expect(calendarLink).toBeVisible();
+      await calendarLink.click();
+      await page.locator('.workshop-calendar').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      const workshopRoute = await getCurrentRoute(page);
+      expect(workshopRoute).toBe('/home/workshop-calendar');
+
+      const workshopTitle = await getPageTitle(page);
+      expect(workshopTitle).toBe('Hier sehen Sie weitere freie Termine in unserem Werkstattkalender');
+
+      // Step 21: Select date via datepicker
+      await openDatePickerAndSelectToday(page);
+
+      // Step 22: Verify 3 days with time slots
+      const dayHeadings = await getTimeDayHeadings(page);
+      expect(dayHeadings).toHaveLength(3);
+
+      // Step 23: Select a time slot
+      await selectTimeSlot(page, '09:00 Uhr');
+      expect(await isTimeSlotSelected(page, '09:00 Uhr')).toBe(true);
+
+      // Step 24: Header still visible on workshop calendar page
       await expect(header).toBeVisible();
       await expect(companyName).toContainText('Autohaus GmbH');
     });
@@ -323,6 +359,23 @@ test.describe('Complete Booking Workflow', () => {
       expect(notesTitle).toBe('Bitte geben Sie uns weitere Hinweise zu Ihrer Buchung');
     });
 
+    test('flow: Workshop Calendar -> Back to Appointment', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToWorkshopCalendarPage(page);
+
+      const workshopRoute = await getCurrentRoute(page);
+      expect(workshopRoute).toBe('/home/workshop-calendar');
+
+      // Click back button on workshop calendar page
+      await clickWorkshopCalendarBack(page);
+
+      const appointmentRoute = await getCurrentRoute(page);
+      expect(appointmentRoute).toBe('/home/appointment');
+
+      const appointmentTitle = await getPageTitle(page);
+      expect(appointmentTitle).toBe('Wählen Sie den für Sie passenden Tag und Uhrzeit aus');
+    });
+
   });
 
   // =============================================
@@ -383,6 +436,16 @@ test.describe('Complete Booking Workflow', () => {
       expect(route).toMatch(/\/home\/(brand|location|services)/);
     });
 
+    test('direct access to /home/workshop-calendar without prerequisites -> redirect', async ({ page }) => {
+      await navigateTo(page, '/home/workshop-calendar');
+      await waitForAngular(page);
+
+      const route = await getCurrentRoute(page);
+      // Guard checks services -> redirect
+      expect(route).not.toBe('/home/workshop-calendar');
+      expect(route).toMatch(/\/home\/(brand|location|services)/);
+    });
+
   });
 
   // =============================================
@@ -391,7 +454,7 @@ test.describe('Complete Booking Workflow', () => {
 
   test.describe('i18n — Language through flow', () => {
 
-    test('EN: complete flow with English language including services and notes', async ({ page }) => {
+    test('EN: complete flow with English language including services, notes, appointment, and workshop calendar', async ({ page }) => {
       await setLanguage(page, 'en');
       await navigateTo(page, '/home/brand');
 
@@ -434,6 +497,31 @@ test.describe('Complete Booking Workflow', () => {
 
       const continueButton = page.locator('.notes__continue-button');
       await expect(continueButton).toContainText('Continue');
+
+      // Navigate through to appointment and workshop calendar
+      await continueButton.click();
+      await page.locator('.appointment-selection').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      const appointmentTitle = await getPageTitle(page);
+      expect(appointmentTitle).toBe('Select your preferred day and time');
+
+      // Click calendar link to go to workshop calendar
+      const calendarLink = getCalendarLink(page);
+      await calendarLink.click();
+      await page.locator('.workshop-calendar').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      // REQ-008: English title
+      const workshopTitle = await getPageTitle(page);
+      expect(workshopTitle).toBe('Here you can see further available appointments in our workshop calendar');
+
+      // English Back/Continue buttons
+      const workshopBack = page.locator('.wizard-nav__back-button');
+      await expect(workshopBack).toContainText('Back');
+
+      const workshopContinue = page.locator('.wizard-nav__continue-button');
+      await expect(workshopContinue).toContainText('Continue');
     });
 
     test('language switch mid-flow: DE brand -> EN location', async ({ page }) => {
@@ -483,7 +571,7 @@ test.describe('Complete Booking Workflow', () => {
 
   test.describe('Header persistence (REQ-001)', () => {
 
-    test('header stays visible through brand -> location -> services -> notes -> appointment flow', async ({ page }) => {
+    test('header stays visible through brand -> location -> services -> notes -> appointment -> workshop calendar flow', async ({ page }) => {
       const header = page.locator('header[role="banner"]');
       const companyName = page.locator('.header__company-name');
 
@@ -522,6 +610,16 @@ test.describe('Complete Booking Workflow', () => {
       await waitForAngular(page);
 
       // Header visible on appointment page
+      await expect(header).toBeVisible();
+      await expect(companyName).toContainText('Autohaus GmbH');
+
+      // Click calendar link to go to workshop calendar
+      const calendarLink = getCalendarLink(page);
+      await calendarLink.click();
+      await page.locator('.workshop-calendar').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      // Header visible on workshop calendar page
       await expect(header).toBeVisible();
       await expect(companyName).toContainText('Autohaus GmbH');
     });
@@ -663,11 +761,15 @@ test.describe('Complete Booking Workflow', () => {
       await expect(badge).toBeHidden();
     });
 
-    test('header stays visible during backward navigation', async ({ page }) => {
+    test('header stays visible during backward navigation including workshop calendar', async ({ page }) => {
       await setLanguage(page, 'de');
       const header = page.locator('header[role="banner"]');
 
-      await goToAppointmentPage(page);
+      await goToWorkshopCalendarPage(page);
+      await expect(header).toBeVisible();
+
+      // Workshop Calendar -> Appointment
+      await clickWorkshopCalendarBack(page);
       await expect(header).toBeVisible();
 
       await clickAppointmentBack(page);

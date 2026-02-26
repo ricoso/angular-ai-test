@@ -131,6 +131,45 @@ const SCREENSHOT_CONFIG = {
     },
   },
 
+  'REQ-008-Werkstattkalender': {
+    route: '/home/workshop-calendar',
+    setup: async (page) => {
+      // Brand -> Location -> Services -> select HU/AU -> Continue to Notes -> Continue to Appointment -> Calendar Link
+      await page.goto(`${HASH}/home/brand`);
+      await page.waitForLoadState('networkidle');
+      await page.locator('button', { hasText: 'Audi' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      await page.locator('button', { hasText: 'München' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      // Select HU/AU service
+      await page.locator('.service-card', { hasText: 'HU/AU' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      // Click Continue on services -> notes
+      await page.locator('.summary-bar__continue-button').click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
+      // Click Continue on notes -> appointment
+      await page.locator('.notes__continue-button').click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
+      // Click calendar link -> workshop calendar
+      await page.locator('.appointment-selection__calendar-link').click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
+      // Open datepicker and select today to show time slots
+      const toggle = page.locator('mat-datepicker-toggle button');
+      await toggle.click();
+      await page.waitForTimeout(500);
+      const todayCell = page.locator('.mat-calendar-body-today');
+      await todayCell.click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
+    },
+  },
+
   'REQ-007-WizardStateSync': {
     route: '/home/services',
     setup: async (page) => {
