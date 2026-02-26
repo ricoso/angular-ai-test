@@ -2,10 +2,12 @@ import { TestBed } from '@angular/core/testing';
 
 import type { AppointmentSlot } from '../models/appointment.model';
 import { AVAILABLE_BRANDS } from '../models/brand.model';
+import type { CustomerInfo, VehicleInfo } from '../models/customer.model';
 import { LOCATIONS_BY_BRAND } from '../models/location.model';
 import { AVAILABLE_SERVICES } from '../models/service.model';
 import { AppointmentApiService } from '../services/appointment-api.service';
 import { BookingApiService } from '../services/booking-api.service';
+import { WorkshopCalendarApiService } from '../services/workshop-calendar-api.service';
 
 import { BookingStore } from './booking.store';
 
@@ -24,7 +26,8 @@ describe('BookingStore', () => {
       providers: [
         BookingStore,
         { provide: BookingApiService, useValue: apiSpy },
-        { provide: AppointmentApiService, useValue: { getAppointments: jest.fn().mockResolvedValue([]) } }
+        { provide: AppointmentApiService, useValue: { getAppointments: jest.fn().mockResolvedValue([]) } },
+        { provide: WorkshopCalendarApiService, useValue: { getWorkshopCalendarDays: jest.fn().mockResolvedValue([]) } }
       ]
     });
 
@@ -342,6 +345,132 @@ describe('BookingStore', () => {
       expect(store.selectedAppointment()).toBeNull();
       store.clearSelectedAppointment();
       expect(store.selectedAppointment()).toBeNull();
+    });
+  });
+
+  describe('setCustomerInfo', () => {
+    const mockCustomer: CustomerInfo = {
+      email: 'max@mustermann.de',
+      salutation: 'mr',
+      firstName: 'Max',
+      lastName: 'Mustermann',
+      street: 'Musterweg 1',
+      postalCode: '30159',
+      city: 'Berlin',
+      mobilePhone: '017012345678'
+    };
+
+    it('should set customerInfo', () => {
+      store.setCustomerInfo(mockCustomer);
+      expect(store.customerInfo()).toEqual(mockCustomer);
+    });
+
+    it('should update hasCustomerInfo to true', () => {
+      expect(store.hasCustomerInfo()).toBe(false);
+      store.setCustomerInfo(mockCustomer);
+      expect(store.hasCustomerInfo()).toBe(true);
+    });
+  });
+
+  describe('setVehicleInfo', () => {
+    const mockVehicle: VehicleInfo = {
+      licensePlate: 'B-MS1234',
+      mileage: 50000,
+      vin: 'WDB1234567A890123'
+    };
+
+    it('should set vehicleInfo', () => {
+      store.setVehicleInfo(mockVehicle);
+      expect(store.vehicleInfo()).toEqual(mockVehicle);
+    });
+
+    it('should update hasVehicleInfo to true', () => {
+      expect(store.hasVehicleInfo()).toBe(false);
+      store.setVehicleInfo(mockVehicle);
+      expect(store.hasVehicleInfo()).toBe(true);
+    });
+  });
+
+  describe('setPrivacyConsent', () => {
+    it('should set privacyConsent to true', () => {
+      store.setPrivacyConsent(true);
+      expect(store.privacyConsent()).toBe(true);
+    });
+
+    it('should set privacyConsent to false', () => {
+      store.setPrivacyConsent(true);
+      store.setPrivacyConsent(false);
+      expect(store.privacyConsent()).toBe(false);
+    });
+  });
+
+  describe('clearCustomerInfo', () => {
+    it('should clear customerInfo, vehicleInfo and privacyConsent', () => {
+      store.setCustomerInfo({
+        email: 'test@test.de', salutation: 'mr', firstName: 'A',
+        lastName: 'B', street: 'C', postalCode: '12345', city: 'D', mobilePhone: '01234'
+      });
+      store.setVehicleInfo({ licensePlate: 'X-Y1', mileage: 100, vin: 'WDB1234567A890123' });
+      store.setPrivacyConsent(true);
+
+      store.clearCustomerInfo();
+
+      expect(store.customerInfo()).toBeNull();
+      expect(store.vehicleInfo()).toBeNull();
+      expect(store.privacyConsent()).toBe(false);
+    });
+
+    it('should update hasCustomerInfo and hasVehicleInfo to false', () => {
+      store.setCustomerInfo({
+        email: 'test@test.de', salutation: 'ms', firstName: 'A',
+        lastName: 'B', street: 'C', postalCode: '12345', city: 'D', mobilePhone: '01234'
+      });
+      store.setVehicleInfo({ licensePlate: 'X-Y1', mileage: 100, vin: 'WDB1234567A890123' });
+
+      store.clearCustomerInfo();
+
+      expect(store.hasCustomerInfo()).toBe(false);
+      expect(store.hasVehicleInfo()).toBe(false);
+    });
+  });
+
+  describe('isBookingComplete', () => {
+    const mockAppointment: AppointmentSlot = {
+      id: '2026-02-25-09-00', date: '2026-02-25', displayDate: '25.02.2026',
+      dayAbbreviation: 'Mi', time: '09:00', displayTime: '09:00 Uhr'
+    };
+
+    it('should be false initially', () => {
+      expect(store.isBookingComplete()).toBe(false);
+    });
+
+    it('should be true when all fields are set', () => {
+      store.setBrand('bmw');
+      store.setLocation(LOCATIONS_BY_BRAND.bmw[0]);
+      store.toggleService('huau');
+      store.selectAppointment(mockAppointment);
+      store.setCustomerInfo({
+        email: 'max@test.de', salutation: 'mr', firstName: 'Max',
+        lastName: 'M', street: 'S 1', postalCode: '12345', city: 'Berlin', mobilePhone: '01234'
+      });
+      store.setVehicleInfo({ licensePlate: 'B-MS1234', mileage: 50000, vin: 'WDB1234567A890123' });
+      store.setPrivacyConsent(true);
+
+      expect(store.isBookingComplete()).toBe(true);
+    });
+
+    it('should be false without privacyConsent', () => {
+      store.setBrand('bmw');
+      store.setLocation(LOCATIONS_BY_BRAND.bmw[0]);
+      store.toggleService('huau');
+      store.selectAppointment(mockAppointment);
+      store.setCustomerInfo({
+        email: 'max@test.de', salutation: 'mr', firstName: 'Max',
+        lastName: 'M', street: 'S 1', postalCode: '12345', city: 'Berlin', mobilePhone: '01234'
+      });
+      store.setVehicleInfo({ licensePlate: 'B-MS1234', mileage: 50000, vin: 'WDB1234567A890123' });
+
+      expect(store.isBookingComplete()).toBe(false);
     });
   });
 

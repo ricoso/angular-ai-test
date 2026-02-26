@@ -1,0 +1,208 @@
+<section class="form-section" [formGroup]="form()">
+
+  <!-- Email -->
+  <div class="form-row">
+    <mat-form-field appearance="outline" class="form-field--full">
+      <mat-label>{{ booking.carinformation.form.email.label | translate }} *</mat-label>
+      <span matPrefix class="form-field__icon">
+        <span class="icon-framed icon-framed--sm">
+          <mat-icon>email</mat-icon>
+        </span>
+      </span>
+      <input
+        matInput
+        formControlName="email"
+        type="email"
+        [placeholder]="booking.carinformation.form.email.placeholder | translate"
+        autocomplete="email"
+        aria-required="true"
+      />
+      @if (errors().email.required) {
+        <mat-error>{{ booking.carinformation.form.email.error.required | translate }}</mat-error>
+      }
+      @if (errors().email.email) {
+        <mat-error>{{ booking.carinformation.form.email.error.invalid | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <!-- Row: Salutation | First Name | Last Name -->
+  <div class="form-row form-row--3col">
+    <!-- Salutation -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ booking.carinformation.form.salutation.label | translate }} *</mat-label>
+      <span matPrefix class="form-field__icon">
+        <span class="icon-framed icon-framed--sm">
+          <mat-icon>person</mat-icon>
+        </span>
+      </span>
+      <mat-select
+        formControlName="salutation"
+        [placeholder]="booking.carinformation.form.salutation.placeholder | translate"
+        aria-required="true"
+      >
+        <mat-option value="mr">{{ booking.carinformation.form.salutation.mr | translate }}</mat-option>
+        <mat-option value="ms">{{ booking.carinformation.form.salutation.ms | translate }}</mat-option>
+      </mat-select>
+      @if (errors().salutation.required) {
+        <mat-error>{{ booking.carinformation.form.salutation.error.required | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- First Name -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ booking.carinformation.form.firstName.label | translate }} *</mat-label>
+      <span matPrefix class="form-field__icon">
+        <span class="icon-framed icon-framed--sm">
+          <mat-icon>person</mat-icon>
+        </span>
+      </span>
+      <input
+        matInput
+        formControlName="firstName"
+        type="text"
+        [placeholder]="booking.carinformation.form.firstName.placeholder | translate"
+        autocomplete="given-name"
+        aria-required="true"
+      />
+      @if (errors().firstName.required) {
+        <mat-error>{{ booking.carinformation.form.firstName.error.required | translate }}</mat-error>
+      }
+      @if (errors().firstName.pattern) {
+        <mat-error>{{ booking.carinformation.form.firstName.error.lettersOnly | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Last Name -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ booking.carinformation.form.lastName.label | translate }} *</mat-label>
+      <span matPrefix class="form-field__icon">
+        <span class="icon-framed icon-framed--sm">
+          <mat-icon>person</mat-icon>
+        </span>
+      </span>
+      <input
+        matInput
+        formControlName="lastName"
+        type="text"
+        [placeholder]="booking.carinformation.form.lastName.placeholder | translate"
+        autocomplete="family-name"
+        aria-required="true"
+      />
+      @if (errors().lastName.required) {
+        <mat-error>{{ booking.carinformation.form.lastName.error.required | translate }}</mat-error>
+      }
+      @if (errors().lastName.pattern) {
+        <mat-error>{{ booking.carinformation.form.lastName.error.lettersOnly | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <!-- Street -->
+  <div class="form-row">
+    <mat-form-field appearance="outline" class="form-field--full">
+      <mat-label>{{ booking.carinformation.form.street.label | translate }} *</mat-label>
+      <span matPrefix class="form-field__icon">
+        <span class="icon-framed icon-framed--sm">
+          <mat-icon>location_on</mat-icon>
+        </span>
+      </span>
+      <input
+        matInput
+        formControlName="street"
+        type="text"
+        [placeholder]="booking.carinformation.form.street.placeholder | translate"
+        autocomplete="street-address"
+        aria-required="true"
+      />
+      @if (errors().street.required) {
+        <mat-error>{{ booking.carinformation.form.street.error.required | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <!-- Row: Postal Code | City -->
+  <div class="form-row form-row--2col">
+    <!-- Postal Code -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ booking.carinformation.form.postalCode.label | translate }} *</mat-label>
+      <span matPrefix class="form-field__icon">
+        <span class="icon-framed icon-framed--sm">
+          <mat-icon>location_on</mat-icon>
+        </span>
+      </span>
+      <input
+        matInput
+        formControlName="postalCode"
+        type="text"
+        [placeholder]="booking.carinformation.form.postalCode.placeholder | translate"
+        autocomplete="postal-code"
+        inputmode="numeric"
+        maxlength="5"
+        aria-required="true"
+      />
+      @if (errors().postalCode.required) {
+        <mat-error>{{ booking.carinformation.form.postalCode.error.required | translate }}</mat-error>
+      }
+      @if (errors().postalCode.pattern) {
+        <mat-error>{{ booking.carinformation.form.postalCode.error.digitsOnly | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- City -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ booking.carinformation.form.city.label | translate }} *</mat-label>
+      <span matPrefix class="form-field__icon">
+        <span class="icon-framed icon-framed--sm">
+          <mat-icon>location_on</mat-icon>
+        </span>
+      </span>
+      <input
+        matInput
+        formControlName="city"
+        type="text"
+        [placeholder]="booking.carinformation.form.city.placeholder | translate"
+        autocomplete="address-level2"
+        aria-required="true"
+      />
+      @if (errors().city.required) {
+        <mat-error>{{ booking.carinformation.form.city.error.required | translate }}</mat-error>
+      }
+      @if (errors().city.pattern) {
+        <mat-error>{{ booking.carinformation.form.city.error.lettersOnly | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <!-- Mobile Phone -->
+  <div class="form-row">
+    <mat-form-field appearance="outline" class="form-field--full">
+      <mat-label>{{ booking.carinformation.form.mobilePhone.label | translate }} *</mat-label>
+      <span matPrefix class="form-field__icon">
+        <span class="icon-framed icon-framed--sm">
+          <mat-icon>phone_android</mat-icon>
+        </span>
+      </span>
+      <input
+        matInput
+        formControlName="mobilePhone"
+        type="tel"
+        [placeholder]="booking.carinformation.form.mobilePhone.placeholder | translate"
+        autocomplete="tel"
+        inputmode="numeric"
+        aria-required="true"
+        [attr.aria-describedby]="'mobilePhone-hint'"
+      />
+      <mat-hint id="mobilePhone-hint">
+        {{ booking.carinformation.form.mobilePhone.hint | translate }}
+      </mat-hint>
+      @if (errors().mobilePhone.required) {
+        <mat-error>{{ booking.carinformation.form.mobilePhone.error.required | translate }}</mat-error>
+      }
+      @if (errors().mobilePhone.pattern && !errors().mobilePhone.required) {
+        <mat-error>{{ booking.carinformation.form.mobilePhone.error.startsWithZero | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+</section>

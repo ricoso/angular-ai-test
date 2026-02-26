@@ -477,3 +477,140 @@ export async function getWorkshopCalendarIntroText(page: Page): Promise<string> 
   const intro = page.locator('.slots__intro');
   return (await intro.textContent() ?? '').trim();
 }
+
+// =============================================
+// CARINFORMATION HELPERS (REQ-009)
+// =============================================
+
+/**
+ * Navigate to the carinformation page via the full wizard flow:
+ * Brand -> Location -> Services -> Notes -> Appointment -> select appointment -> Continue.
+ * Walks through all steps to satisfy all guards.
+ */
+export async function goToCarinformationPage(
+  page: Page,
+  options?: {
+    brandName?: string;
+    locationName?: string;
+    serviceNames?: string[];
+  }
+): Promise<void> {
+  await goToAppointmentPage(page, options);
+
+  // Select the first appointment card
+  await selectAppointmentCard(page, 0);
+
+  // Click Continue on appointment page to navigate to /home/carinformation
+  await clickAppointmentContinue(page);
+  // Wait for carinformation container to appear
+  await page.locator('.carinformation').waitFor({ state: 'visible', timeout: 10000 });
+  await waitForAngular(page);
+}
+
+/** Fill the customer form fields */
+export async function fillCustomerForm(
+  page: Page,
+  data: {
+    email?: string;
+    salutation?: 'mr' | 'ms';
+    firstName?: string;
+    lastName?: string;
+    street?: string;
+    postalCode?: string;
+    city?: string;
+    mobilePhone?: string;
+  }
+): Promise<void> {
+  if (data.email) {
+    await page.locator('input[formControlName="email"]').fill(data.email);
+  }
+  if (data.salutation) {
+    await page.locator('mat-select[formControlName="salutation"]').click();
+    await waitForAngular(page);
+    const optionValue = data.salutation === 'mr' ? 'Herr' : 'Frau';
+    await page.locator('mat-option', { hasText: optionValue }).first().click();
+    await waitForAngular(page);
+  }
+  if (data.firstName) {
+    await page.locator('input[formControlName="firstName"]').fill(data.firstName);
+  }
+  if (data.lastName) {
+    await page.locator('input[formControlName="lastName"]').fill(data.lastName);
+  }
+  if (data.street) {
+    await page.locator('input[formControlName="street"]').fill(data.street);
+  }
+  if (data.postalCode) {
+    await page.locator('input[formControlName="postalCode"]').fill(data.postalCode);
+  }
+  if (data.city) {
+    await page.locator('input[formControlName="city"]').fill(data.city);
+  }
+  if (data.mobilePhone) {
+    await page.locator('input[formControlName="mobilePhone"]').fill(data.mobilePhone);
+  }
+  await waitForAngular(page);
+}
+
+/** Fill the vehicle form fields */
+export async function fillVehicleForm(
+  page: Page,
+  data: {
+    licensePlate?: string;
+    mileage?: string;
+    vin?: string;
+  }
+): Promise<void> {
+  if (data.licensePlate) {
+    await page.locator('input[formControlName="licensePlate"]').fill(data.licensePlate);
+  }
+  if (data.mileage) {
+    await page.locator('input[formControlName="mileage"]').fill(data.mileage);
+  }
+  if (data.vin) {
+    await page.locator('input[formControlName="vin"]').fill(data.vin);
+  }
+  await waitForAngular(page);
+}
+
+/** Check the privacy consent checkbox */
+export async function checkPrivacyConsent(page: Page): Promise<void> {
+  const checkbox = page.locator('mat-checkbox').first();
+  await checkbox.click();
+  await waitForAngular(page);
+}
+
+/** Click the Continue button on the carinformation page */
+export async function clickCarinformationContinue(page: Page): Promise<void> {
+  const continueButton = page.locator('.wizard-nav__continue');
+  await expect(continueButton).toBeVisible();
+  await continueButton.click();
+  await waitForAngular(page);
+}
+
+/** Click the Back button on the carinformation page */
+export async function clickCarinformationBack(page: Page): Promise<void> {
+  const backButton = page.locator('.wizard-nav__back');
+  await expect(backButton).toBeVisible();
+  await backButton.click();
+  await waitForAngular(page);
+}
+
+/** Fill all form fields with valid test data */
+export async function fillAllFormsWithValidData(page: Page): Promise<void> {
+  await fillCustomerForm(page, {
+    email: 'max@mustermann.de',
+    salutation: 'mr',
+    firstName: 'Max',
+    lastName: 'Mustermann',
+    street: 'Musterweg 1',
+    postalCode: '30159',
+    city: 'Hannover',
+    mobilePhone: '017012345678',
+  });
+  await fillVehicleForm(page, {
+    licensePlate: 'B-MS1234',
+    mileage: '50000',
+    vin: 'WBAPH5C55BA123456',
+  });
+}

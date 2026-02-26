@@ -2,7 +2,7 @@
 
 **Project:** Autohaus GmbH Fahrzeugauswahl
 **Version:** 1.0
-**Last Updated:** 2026-02-24
+**Last Updated:** 2026-02-26
 
 ---
 
@@ -29,8 +29,9 @@
 | REQ-004 | Serviceauswahl | 🔍 In Review | High | REQ-003 | Serviceauswahl mit Multi-Select, Radio-Varianten und Zusammenfassungsleiste (Wizard-Schritt 3) |
 | REQ-005 | Hinweisfenster | ✔️ Implemented | High | REQ-004 | Optionale Buchungsnotiz + servicespezifische Hinweise (Wizard-Schritt 4) |
 | REQ-006 | Terminauswahl | ✔️ Implemented | High | REQ-005 | Terminauswahl mit 4 Vorschlägen, Single-Select (Wizard-Schritt 5) |
-| REQ-007 | WizardStateSync | 🔍 In Review | High | REQ-002, REQ-003, REQ-004, REQ-005 | Cross-Cutting: Bei Rückwärtsnavigation im Wizard werden Store-Properties genullt, um UI-Flow und Store-State synchron zu halten. Verhindert unbeabsichtigte URL-Navigation. |
-| REQ-008 | Werkstattkalender | 🔍 In Review | High | REQ-006 | Werkstattkalender mit DatePicker und Uhrzeitslot-Auswahl (Wizard-Schritt 5b) |
+| REQ-007 | WizardStateSync | ✔️ Implemented | High | REQ-002, REQ-003, REQ-004, REQ-005 | Cross-Cutting: Bei Rückwärtsnavigation im Wizard werden Store-Properties genullt, um UI-Flow und Store-State synchron zu halten. Verhindert unbeabsichtigte URL-Navigation. |
+| REQ-008 | Werkstattkalender | ✔️ Implemented | High | REQ-006 | Werkstattkalender mit DatePicker und Uhrzeitslot-Auswahl (Wizard-Schritt 5b) |
+| REQ-009 | Carinformation | 🔍 In Review | High | REQ-006, REQ-008 | Kunden- und Fahrzeugdaten-Formular mit DSGVO-Einwilligung (Wizard-Schritt 6) |
 
 ---
 
@@ -47,9 +48,11 @@ REQ-001-Header
                                       │
                                       └──► REQ-005-Hinweisfenster
                                                     │
-                                                    └──► REQ-006-Terminauswahl
-
-                                                    └──► REQ-008-Werkstattkalender
+                                                    └──► REQ-006-Terminauswahl ──────┐
+                                                                                │
+                                                    └──► REQ-008-Werkstattkalender ──┤
+                                                                                │
+                                                                                └──► REQ-009-Carinformation
 
 REQ-007-WizardStateSync (Cross-Cutting)
     ├──► REQ-002-Markenauswahl
@@ -72,6 +75,7 @@ REQ-007-WizardStateSync (Cross-Cutting)
 | REQ-006 | [REQ-006-Terminauswahl](./REQ-006-Terminauswahl/requirement.md) |
 | REQ-007 | [REQ-007-WizardStateSync](./REQ-007-WizardStateSync/requirement.md) |
 | REQ-008 | [REQ-008-Werkstattkalender](./REQ-008-Werkstattkalender/requirement.md) |
+| REQ-009 | [REQ-009-Carinformation](./REQ-009-carinformation/requirement.md) |
 
 ---
 
@@ -80,11 +84,11 @@ REQ-007-WizardStateSync (Cross-Cutting)
 | Status | Count |
 |--------|-------|
 | 📝 Draft | 0 |
-| 🔍 In Review | 3 |
+| 🔍 In Review | 2 |
 | ✅ Approved | 0 |
 | 🚧 In Progress | 0 |
-| ✔️ Implemented | 5 |
-| **Total** | **8** |
+| ✔️ Implemented | 7 |
+| **Total** | **9** |
 
 ---
 
