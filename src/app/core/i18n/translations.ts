@@ -118,6 +118,120 @@ export const translations = {
           inspection: 'Bitte beachten Sie: Bringen Sie Ihr Serviceheft mit. Bei umfangreichen Arbeiten kann ein Ersatzfahrzeug bereitgestellt werden — bitte im Voraus anfragen.',
           tireChange: 'Bitte beachten Sie: Für die Einlagerung Ihrer Reifen bitten wir um Vorabinformation über Reifenanzahl und -größe. Die Einlagerung ist kostenpflichtig.'
         }
+      },
+      carinformation: {
+        title: 'Bitte geben Sie uns letzte Informationen rund um Ihren Termin',
+        returningCustomer: {
+          title: 'Schon einmal bei uns gewesen?',
+          description: 'Dann rufen Sie Ihre Daten automatisch mit Eingabe Ihrer E-Mail-Adresse ab.',
+          button: 'Jetzt Daten abrufen!'
+        },
+        form: {
+          email: {
+            label: 'E-Mail Adresse',
+            placeholder: 'max@mustermann.de',
+            error: {
+              required: 'Bitte geben Sie Ihre E-Mail-Adresse ein.',
+              invalid: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.'
+            }
+          },
+          salutation: {
+            label: 'Anrede',
+            placeholder: 'Bitte wählen',
+            mr: 'Herr',
+            ms: 'Frau',
+            error: {
+              required: 'Bitte wählen Sie eine Anrede.'
+            }
+          },
+          firstName: {
+            label: 'Vorname',
+            placeholder: 'Max',
+            error: {
+              required: 'Bitte geben Sie Ihren Vornamen ein.',
+              lettersOnly: 'Vorname darf nur Buchstaben enthalten.'
+            }
+          },
+          lastName: {
+            label: 'Nachname',
+            placeholder: 'Mustermann',
+            error: {
+              required: 'Bitte geben Sie Ihren Nachnamen ein.',
+              lettersOnly: 'Nachname darf nur Buchstaben enthalten.'
+            }
+          },
+          street: {
+            label: 'Straße und Haus Nr.',
+            placeholder: 'Musterweg 1',
+            error: {
+              required: 'Bitte geben Sie Ihre Straße und Hausnummer ein.'
+            }
+          },
+          postalCode: {
+            label: 'Postleitzahl',
+            placeholder: '30159',
+            error: {
+              required: 'Bitte geben Sie Ihre Postleitzahl ein.',
+              digitsOnly: 'Postleitzahl darf nur Zahlen enthalten.'
+            }
+          },
+          city: {
+            label: 'Wohnort',
+            placeholder: 'Berlin',
+            error: {
+              required: 'Bitte geben Sie Ihren Wohnort ein.',
+              lettersOnly: 'Wohnort darf nur Buchstaben enthalten.'
+            }
+          },
+          mobilePhone: {
+            label: 'Mobilfunknummer',
+            placeholder: '017012345678',
+            hint: 'Bitte geben Sie Ihre Mobilfunknummer ohne Sonderzeichen als Zahl im Format 017012345678 ein.',
+            error: {
+              required: 'Bitte geben Sie Ihre Mobilfunknummer ein.',
+              digitsOnly: 'Mobilfunknummer darf nur Zahlen enthalten.',
+              startsWithZero: 'Die Mobilfunknummer muss mit 0 beginnen.'
+            }
+          },
+          licensePlate: {
+            label: 'Kfz. Kennzeichen',
+            placeholder: 'XX-XX1234',
+            error: {
+              required: 'Bitte geben Sie Ihr Kfz-Kennzeichen ein.',
+              invalidFormat: 'Bitte geben Sie ein gültiges Kennzeichen ein (z.B. B-MS1234).'
+            }
+          },
+          mileage: {
+            label: 'Kilometerstand',
+            placeholder: '5000',
+            error: {
+              required: 'Bitte geben Sie den Kilometerstand ein.',
+              digitsOnly: 'Kilometerstand darf nur Zahlen enthalten.'
+            }
+          },
+          vin: {
+            label: 'FIN',
+            placeholder: 'WDB8XXXXXXA123456',
+            infoLink: 'Erklärung der FIN',
+            error: {
+              required: 'Bitte geben Sie die Fahrzeugidentifikationsnummer ein.',
+              invalidLength: 'Die FIN muss genau 17 Zeichen enthalten.',
+              invalidFormat: 'Die FIN darf nur Buchstaben und Zahlen enthalten.'
+            }
+          },
+          privacy: {
+            consent: 'Ich willige in die Verarbeitung meiner personenbezogenen Daten zum Zwecke der Online-Terminvereinbarung ein. Näheres finden Sie in unserer',
+            privacyLink: 'Datenschutzerklärung',
+            error: {
+              required: 'Bitte bestätigen Sie die Datenschutzerklärung.'
+            }
+          },
+          requiredHint: 'Pflichtfelder sind mit * gekennzeichnet'
+        },
+        navigation: {
+          back: 'Zurück',
+          continue: 'Zur Buchungsübersicht'
+        }
       }
     }
   },
@@ -232,6 +346,120 @@ export const translations = {
           huau: 'Please note: For the HU/AU you will need all vehicle documents. Make sure your vehicle is roadworthy and safe to drive.',
           inspection: 'Please note: Please bring your service booklet. For extensive work, a replacement vehicle may be provided — please enquire in advance.',
           tireChange: 'Please note: For tire storage, please inform us in advance about the number and size of tires. Storage is subject to a fee.'
+        }
+      },
+      carinformation: {
+        title: 'Please provide us with final information about your appointment',
+        returningCustomer: {
+          title: 'Been with us before?',
+          description: 'Retrieve your data automatically by entering your email address.',
+          button: 'Retrieve my data!'
+        },
+        form: {
+          email: {
+            label: 'Email Address',
+            placeholder: 'max@example.com',
+            error: {
+              required: 'Please enter your email address.',
+              invalid: 'Please enter a valid email address.'
+            }
+          },
+          salutation: {
+            label: 'Salutation',
+            placeholder: 'Please select',
+            mr: 'Mr.',
+            ms: 'Ms.',
+            error: {
+              required: 'Please select a salutation.'
+            }
+          },
+          firstName: {
+            label: 'First Name',
+            placeholder: 'John',
+            error: {
+              required: 'Please enter your first name.',
+              lettersOnly: 'First name may only contain letters.'
+            }
+          },
+          lastName: {
+            label: 'Last Name',
+            placeholder: 'Doe',
+            error: {
+              required: 'Please enter your last name.',
+              lettersOnly: 'Last name may only contain letters.'
+            }
+          },
+          street: {
+            label: 'Street and House Number',
+            placeholder: '1 Example Street',
+            error: {
+              required: 'Please enter your street and house number.'
+            }
+          },
+          postalCode: {
+            label: 'Postal Code',
+            placeholder: '30159',
+            error: {
+              required: 'Please enter your postal code.',
+              digitsOnly: 'Postal code may only contain digits.'
+            }
+          },
+          city: {
+            label: 'City',
+            placeholder: 'Berlin',
+            error: {
+              required: 'Please enter your city.',
+              lettersOnly: 'City may only contain letters.'
+            }
+          },
+          mobilePhone: {
+            label: 'Mobile Phone Number',
+            placeholder: '017012345678',
+            hint: 'Please enter your mobile number without special characters in the format 017012345678.',
+            error: {
+              required: 'Please enter your mobile phone number.',
+              digitsOnly: 'Mobile number may only contain digits.',
+              startsWithZero: 'Mobile number must start with 0.'
+            }
+          },
+          licensePlate: {
+            label: 'License Plate',
+            placeholder: 'XX-XX1234',
+            error: {
+              required: 'Please enter your license plate.',
+              invalidFormat: 'Please enter a valid license plate (e.g. B-MS1234).'
+            }
+          },
+          mileage: {
+            label: 'Mileage',
+            placeholder: '5000',
+            error: {
+              required: 'Please enter the current mileage.',
+              digitsOnly: 'Mileage may only contain digits.'
+            }
+          },
+          vin: {
+            label: 'VIN',
+            placeholder: 'WDB8XXXXXXA123456',
+            infoLink: 'Explanation of VIN',
+            error: {
+              required: 'Please enter the vehicle identification number.',
+              invalidLength: 'The VIN must be exactly 17 characters.',
+              invalidFormat: 'The VIN may only contain letters and digits.'
+            }
+          },
+          privacy: {
+            consent: 'I consent to the processing of my personal data for the purpose of online appointment booking. More information can be found in our',
+            privacyLink: 'Privacy Policy',
+            error: {
+              required: 'Please accept the privacy policy.'
+            }
+          },
+          requiredHint: 'Required fields are marked with *'
+        },
+        navigation: {
+          back: 'Back',
+          continue: 'To Booking Overview'
         }
       }
     }
@@ -348,6 +576,120 @@ export const translations = {
           inspection: 'Зверніть увагу: Візьміть з собою сервісну книжку. При масштабних роботах може бути надано підмінний автомобіль — запитуйте заздалегідь.',
           tireChange: 'Зверніть увагу: Для зберігання шин просимо заздалегідь повідомити про кількість та розмір шин. Зберігання є платним.'
         }
+      },
+      carinformation: {
+        title: 'Будь ласка, надайте останню інформацію щодо вашого запису',
+        returningCustomer: {
+          title: 'Вже були у нас?',
+          description: 'Отримайте свої дані автоматично, ввівши адресу електронної пошти.',
+          button: 'Отримати мої дані!'
+        },
+        form: {
+          email: {
+            label: 'Електронна пошта',
+            placeholder: 'max@example.com',
+            error: {
+              required: 'Будь ласка, введіть адресу електронної пошти.',
+              invalid: 'Будь ласка, введіть дійсну адресу електронної пошти.'
+            }
+          },
+          salutation: {
+            label: 'Звертання',
+            placeholder: 'Будь ласка, оберіть',
+            mr: 'Пан',
+            ms: 'Пані',
+            error: {
+              required: 'Будь ласка, оберіть звертання.'
+            }
+          },
+          firstName: {
+            label: "Ім'я",
+            placeholder: 'Іван',
+            error: {
+              required: "Будь ласка, введіть ваше ім'я.",
+              lettersOnly: "Ім'я може містити лише літери."
+            }
+          },
+          lastName: {
+            label: 'Прізвище',
+            placeholder: 'Петренко',
+            error: {
+              required: 'Будь ласка, введіть ваше прізвище.',
+              lettersOnly: 'Прізвище може містити лише літери.'
+            }
+          },
+          street: {
+            label: 'Вулиця та номер будинку',
+            placeholder: 'вул. Прикладна 1',
+            error: {
+              required: 'Будь ласка, введіть вулицю та номер будинку.'
+            }
+          },
+          postalCode: {
+            label: 'Поштовий індекс',
+            placeholder: '01001',
+            error: {
+              required: 'Будь ласка, введіть поштовий індекс.',
+              digitsOnly: 'Поштовий індекс може містити лише цифри.'
+            }
+          },
+          city: {
+            label: 'Місто',
+            placeholder: 'Київ',
+            error: {
+              required: 'Будь ласка, введіть місто.',
+              lettersOnly: 'Місто може містити лише літери.'
+            }
+          },
+          mobilePhone: {
+            label: 'Мобільний номер',
+            placeholder: '017012345678',
+            hint: 'Будь ласка, введіть мобільний номер без спеціальних символів у форматі 017012345678.',
+            error: {
+              required: 'Будь ласка, введіть мобільний номер.',
+              digitsOnly: 'Мобільний номер може містити лише цифри.',
+              startsWithZero: 'Мобільний номер повинен починатися з 0.'
+            }
+          },
+          licensePlate: {
+            label: 'Номерний знак',
+            placeholder: 'XX-XX1234',
+            error: {
+              required: 'Будь ласка, введіть номерний знак.',
+              invalidFormat: 'Будь ласка, введіть дійсний номерний знак (напр. B-MS1234).'
+            }
+          },
+          mileage: {
+            label: 'Пробіг',
+            placeholder: '5000',
+            error: {
+              required: 'Будь ласка, введіть пробіг.',
+              digitsOnly: 'Пробіг може містити лише цифри.'
+            }
+          },
+          vin: {
+            label: 'VIN',
+            placeholder: 'WDB8XXXXXXA123456',
+            infoLink: 'Пояснення VIN',
+            error: {
+              required: 'Будь ласка, введіть ідентифікаційний номер транспортного засобу.',
+              invalidLength: 'VIN повинен містити рівно 17 символів.',
+              invalidFormat: 'VIN може містити лише літери та цифри.'
+            }
+          },
+          privacy: {
+            consent: 'Я даю згоду на обробку моїх персональних даних з метою онлайн-запису. Більше інформації в нашій',
+            privacyLink: 'Політиці конфіденційності',
+            error: {
+              required: 'Будь ласка, прийміть політику конфіденційності.'
+            }
+          },
+          requiredHint: "Обов'язкові поля позначені *"
+        },
+        navigation: {
+          back: 'Назад',
+          continue: 'До огляду бронювання'
+        }
       }
     }
   },
@@ -463,6 +805,120 @@ export const translations = {
           inspection: 'Veuillez noter : Apportez votre carnet d\'entretien. Pour des travaux importants, un véhicule de remplacement peut être fourni — veuillez vous renseigner à l\'avance.',
           tireChange: 'Veuillez noter : Pour le stockage des pneus, veuillez nous informer à l\'avance du nombre et de la taille des pneus. Le stockage est payant.'
         }
+      },
+      carinformation: {
+        title: 'Veuillez nous fournir les dernières informations concernant votre rendez-vous',
+        returningCustomer: {
+          title: 'Déjà venu chez nous ?',
+          description: 'Récupérez vos données automatiquement en saisissant votre adresse e-mail.',
+          button: 'Récupérer mes données !'
+        },
+        form: {
+          email: {
+            label: 'Adresse e-mail',
+            placeholder: 'max@example.com',
+            error: {
+              required: 'Veuillez saisir votre adresse e-mail.',
+              invalid: 'Veuillez saisir une adresse e-mail valide.'
+            }
+          },
+          salutation: {
+            label: 'Civilité',
+            placeholder: 'Veuillez sélectionner',
+            mr: 'M.',
+            ms: 'Mme',
+            error: {
+              required: 'Veuillez sélectionner une civilité.'
+            }
+          },
+          firstName: {
+            label: 'Prénom',
+            placeholder: 'Jean',
+            error: {
+              required: 'Veuillez saisir votre prénom.',
+              lettersOnly: 'Le prénom ne peut contenir que des lettres.'
+            }
+          },
+          lastName: {
+            label: 'Nom',
+            placeholder: 'Dupont',
+            error: {
+              required: 'Veuillez saisir votre nom.',
+              lettersOnly: 'Le nom ne peut contenir que des lettres.'
+            }
+          },
+          street: {
+            label: 'Rue et numéro',
+            placeholder: '1 Rue Example',
+            error: {
+              required: 'Veuillez saisir votre rue et numéro.'
+            }
+          },
+          postalCode: {
+            label: 'Code postal',
+            placeholder: '75001',
+            error: {
+              required: 'Veuillez saisir votre code postal.',
+              digitsOnly: 'Le code postal ne peut contenir que des chiffres.'
+            }
+          },
+          city: {
+            label: 'Ville',
+            placeholder: 'Paris',
+            error: {
+              required: 'Veuillez saisir votre ville.',
+              lettersOnly: 'La ville ne peut contenir que des lettres.'
+            }
+          },
+          mobilePhone: {
+            label: 'Numéro de mobile',
+            placeholder: '017012345678',
+            hint: 'Veuillez saisir votre numéro de mobile sans caractères spéciaux au format 017012345678.',
+            error: {
+              required: 'Veuillez saisir votre numéro de mobile.',
+              digitsOnly: 'Le numéro de mobile ne peut contenir que des chiffres.',
+              startsWithZero: 'Le numéro de mobile doit commencer par 0.'
+            }
+          },
+          licensePlate: {
+            label: 'Plaque d\'immatriculation',
+            placeholder: 'XX-XX1234',
+            error: {
+              required: 'Veuillez saisir votre plaque d\'immatriculation.',
+              invalidFormat: 'Veuillez saisir une plaque valide (ex. B-MS1234).'
+            }
+          },
+          mileage: {
+            label: 'Kilométrage',
+            placeholder: '5000',
+            error: {
+              required: 'Veuillez saisir le kilométrage.',
+              digitsOnly: 'Le kilométrage ne peut contenir que des chiffres.'
+            }
+          },
+          vin: {
+            label: 'NIV',
+            placeholder: 'WDB8XXXXXXA123456',
+            infoLink: 'Explication du NIV',
+            error: {
+              required: 'Veuillez saisir le numéro d\'identification du véhicule.',
+              invalidLength: 'Le NIV doit contenir exactement 17 caractères.',
+              invalidFormat: 'Le NIV ne peut contenir que des lettres et des chiffres.'
+            }
+          },
+          privacy: {
+            consent: 'Je consens au traitement de mes données personnelles aux fins de prise de rendez-vous en ligne. Plus d\'informations dans notre',
+            privacyLink: 'Politique de confidentialité',
+            error: {
+              required: 'Veuillez accepter la politique de confidentialité.'
+            }
+          },
+          requiredHint: 'Les champs obligatoires sont marqués d\'un *'
+        },
+        navigation: {
+          back: 'Retour',
+          continue: 'Vers l\'aperçu de réservation'
+        }
       }
     }
   },
@@ -577,6 +1033,120 @@ export const translations = {
           huau: 'يرجى ملاحظة: للفحص الفني ستحتاج إلى جميع وثائق السيارة. تأكد من أن سيارتك صالحة للقيادة وآمنة.',
           inspection: 'يرجى ملاحظة: أحضر دفتر الصيانة. للأعمال الكبيرة، يمكن توفير سيارة بديلة — يرجى الاستفسار مسبقاً.',
           tireChange: 'يرجى ملاحظة: لتخزين الإطارات، يرجى إبلاغنا مسبقاً بعدد وحجم الإطارات. التخزين مقابل رسوم.'
+        }
+      },
+      carinformation: {
+        title: 'يرجى تقديم آخر المعلومات حول موعدك',
+        returningCustomer: {
+          title: 'هل زرتنا من قبل؟',
+          description: 'استرجع بياناتك تلقائياً عن طريق إدخال عنوان بريدك الإلكتروني.',
+          button: 'استرجع بياناتي!'
+        },
+        form: {
+          email: {
+            label: 'البريد الإلكتروني',
+            placeholder: 'max@example.com',
+            error: {
+              required: 'يرجى إدخال عنوان بريدك الإلكتروني.',
+              invalid: 'يرجى إدخال عنوان بريد إلكتروني صالح.'
+            }
+          },
+          salutation: {
+            label: 'اللقب',
+            placeholder: 'يرجى الاختيار',
+            mr: 'السيد',
+            ms: 'السيدة',
+            error: {
+              required: 'يرجى اختيار لقب.'
+            }
+          },
+          firstName: {
+            label: 'الاسم الأول',
+            placeholder: 'أحمد',
+            error: {
+              required: 'يرجى إدخال اسمك الأول.',
+              lettersOnly: 'الاسم الأول يمكن أن يحتوي على حروف فقط.'
+            }
+          },
+          lastName: {
+            label: 'اسم العائلة',
+            placeholder: 'محمد',
+            error: {
+              required: 'يرجى إدخال اسم عائلتك.',
+              lettersOnly: 'اسم العائلة يمكن أن يحتوي على حروف فقط.'
+            }
+          },
+          street: {
+            label: 'الشارع ورقم المنزل',
+            placeholder: 'شارع المثال 1',
+            error: {
+              required: 'يرجى إدخال شارعك ورقم المنزل.'
+            }
+          },
+          postalCode: {
+            label: 'الرمز البريدي',
+            placeholder: '30159',
+            error: {
+              required: 'يرجى إدخال الرمز البريدي.',
+              digitsOnly: 'الرمز البريدي يمكن أن يحتوي على أرقام فقط.'
+            }
+          },
+          city: {
+            label: 'المدينة',
+            placeholder: 'برلين',
+            error: {
+              required: 'يرجى إدخال مدينتك.',
+              lettersOnly: 'المدينة يمكن أن تحتوي على حروف فقط.'
+            }
+          },
+          mobilePhone: {
+            label: 'رقم الهاتف المحمول',
+            placeholder: '017012345678',
+            hint: 'يرجى إدخال رقم هاتفك المحمول بدون رموز خاصة بالتنسيق 017012345678.',
+            error: {
+              required: 'يرجى إدخال رقم هاتفك المحمول.',
+              digitsOnly: 'رقم الهاتف يمكن أن يحتوي على أرقام فقط.',
+              startsWithZero: 'رقم الهاتف المحمول يجب أن يبدأ بـ 0.'
+            }
+          },
+          licensePlate: {
+            label: 'لوحة الترخيص',
+            placeholder: 'XX-XX1234',
+            error: {
+              required: 'يرجى إدخال لوحة الترخيص.',
+              invalidFormat: 'يرجى إدخال لوحة ترخيص صالحة (مثل B-MS1234).'
+            }
+          },
+          mileage: {
+            label: 'عداد الكيلومترات',
+            placeholder: '5000',
+            error: {
+              required: 'يرجى إدخال عداد الكيلومترات.',
+              digitsOnly: 'عداد الكيلومترات يمكن أن يحتوي على أرقام فقط.'
+            }
+          },
+          vin: {
+            label: 'رقم تعريف المركبة',
+            placeholder: 'WDB8XXXXXXA123456',
+            infoLink: 'شرح رقم تعريف المركبة',
+            error: {
+              required: 'يرجى إدخال رقم تعريف المركبة.',
+              invalidLength: 'رقم تعريف المركبة يجب أن يحتوي على 17 حرفاً بالضبط.',
+              invalidFormat: 'رقم تعريف المركبة يمكن أن يحتوي على حروف وأرقام فقط.'
+            }
+          },
+          privacy: {
+            consent: 'أوافق على معالجة بياناتي الشخصية لغرض حجز المواعيد عبر الإنترنت. مزيد من المعلومات في',
+            privacyLink: 'سياسة الخصوصية',
+            error: {
+              required: 'يرجى قبول سياسة الخصوصية.'
+            }
+          },
+          requiredHint: 'الحقول المطلوبة مميزة بعلامة *'
+        },
+        navigation: {
+          back: 'رجوع',
+          continue: 'إلى نظرة عامة على الحجز'
         }
       }
     }

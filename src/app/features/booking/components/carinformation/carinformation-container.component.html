@@ -1,0 +1,91 @@
+<section class="carinformation" aria-labelledby="carinformation-title">
+
+  <!-- Page Title -->
+  <h1 class="carinformation__title" id="carinformation-title">
+    {{ booking.carinformation.title | translate }}
+  </h1>
+
+  <!-- Returning Customer Banner -->
+  <div class="returning-banner" aria-label="Returning customer data retrieval">
+    <div class="returning-banner__content">
+      <h2 class="returning-banner__title">
+        {{ booking.carinformation.returningCustomer.title | translate }}
+      </h2>
+      <p class="returning-banner__description">
+        {{ booking.carinformation.returningCustomer.description | translate }}
+      </p>
+      <button
+        mat-flat-button
+        color="primary"
+        class="returning-banner__button"
+        type="button"
+        (click)="onRetrieveData()"
+      >
+        {{ booking.carinformation.returningCustomer.button | translate }}
+      </button>
+    </div>
+    <div class="returning-banner__image" aria-hidden="true">
+      <mat-icon>keyboard</mat-icon>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form novalidate aria-label="Customer and vehicle information">
+
+    <!-- Customer Data Section -->
+    <app-customer-form [form]="customerForm()" />
+
+    <!-- Vehicle Data Section -->
+    <app-vehicle-form [form]="vehicleForm()" />
+
+    <!-- Privacy Consent -->
+    <div class="privacy-section">
+      <mat-checkbox
+        [checked]="privacyConsent()"
+        (change)="onPrivacyConsentChange($event.checked)"
+        aria-required="true"
+        color="primary"
+      >
+        <span class="privacy-checkbox__label">
+          {{ booking.carinformation.form.privacy.consent | translate }}
+          <a href="#" class="privacy-checkbox__link" (click)="$event.preventDefault()">
+            {{ booking.carinformation.form.privacy.privacyLink | translate }}
+          </a>.
+          <span class="privacy-checkbox__required" aria-hidden="true"> *</span>
+        </span>
+      </mat-checkbox>
+    </div>
+
+    <!-- Required Hint -->
+    <p class="required-hint">{{ booking.carinformation.form.requiredHint | translate }}</p>
+
+    <!-- Navigation -->
+    <nav class="wizard-nav" aria-label="Page navigation">
+      <button
+        mat-flat-button
+        class="wizard-nav__back"
+        type="button"
+        (click)="onBack()"
+        aria-label="Back to previous step"
+      >
+        <mat-icon>arrow_back</mat-icon>
+        {{ booking.carinformation.navigation.back | translate }}
+      </button>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="wizard-nav__continue"
+        type="button"
+        [disabled]="!isFormValid()"
+        (click)="onSubmit()"
+        aria-label="Continue to booking overview"
+      >
+        {{ booking.carinformation.navigation.continue | translate }}
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </nav>
+
+  </form>
+
+</section>

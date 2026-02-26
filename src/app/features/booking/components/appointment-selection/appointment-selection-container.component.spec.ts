@@ -118,7 +118,7 @@ describe('AppointmentSelectionContainerComponent', () => {
     const exposed = component as unknown as { onContinue: () => void };
     exposed.onContinue();
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/home/appointment']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/home/carinformation']);
   });
 
   it('should prevent default on calendar link click', () => {

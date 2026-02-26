@@ -7,6 +7,7 @@ import { catchError, EMPTY, from, pipe, switchMap, tap } from 'rxjs';
 
 import type { AppointmentSlot } from '../models/appointment.model';
 import type { Brand, BrandDisplay } from '../models/brand.model';
+import type { CustomerInfo, VehicleInfo } from '../models/customer.model';
 import type { LocationDisplay } from '../models/location.model';
 import type { SelectedService, ServiceDisplay, ServiceType } from '../models/service.model';
 import type { WorkshopCalendarDay } from '../models/workshop-calendar.model';
@@ -26,6 +27,9 @@ interface BookingState {
   selectedAppointment: AppointmentSlot | null;
   workshopCalendarDate: string | null;
   workshopCalendarDays: WorkshopCalendarDay[];
+  customerInfo: CustomerInfo | null;
+  vehicleInfo: VehicleInfo | null;
+  privacyConsent: boolean;
   isLoading: boolean;
   error: string | null;
 }
@@ -42,6 +46,9 @@ const INITIAL_STATE: BookingState = {
   selectedAppointment: null,
   workshopCalendarDate: null,
   workshopCalendarDays: [],
+  customerInfo: null,
+  vehicleInfo: null,
+  privacyConsent: false,
   isLoading: false,
   error: null
 };
@@ -51,7 +58,7 @@ export const BookingStore = signalStore(
 
   withState<BookingState>(INITIAL_STATE),
 
-  withComputed(({ brands, selectedBrand, locations, selectedLocation, selectedServices, bookingNote, selectedAppointment, workshopCalendarDate }) => ({
+  withComputed(({ brands, selectedBrand, locations, selectedLocation, selectedServices, bookingNote, selectedAppointment, workshopCalendarDate, customerInfo, vehicleInfo, privacyConsent }) => ({
     hasBrandSelected: computed(() => selectedBrand() !== null),
     brandCount: computed(() => brands().length),
     filteredLocations: computed(() => locations()),
@@ -65,7 +72,18 @@ export const BookingStore = signalStore(
       const appointment = selectedAppointment();
       const calendarDate = workshopCalendarDate();
       return appointment !== null && calendarDate !== null;
-    })
+    }),
+    hasCustomerInfo: computed(() => customerInfo() !== null),
+    hasVehicleInfo: computed(() => vehicleInfo() !== null),
+    isBookingComplete: computed(() =>
+      selectedBrand() !== null &&
+      selectedLocation() !== null &&
+      selectedServices().length > 0 &&
+      selectedAppointment() !== null &&
+      customerInfo() !== null &&
+      vehicleInfo() !== null &&
+      privacyConsent()
+    )
   })),
 
   withMethods((store, api = inject(BookingApiService), appointmentApi = inject(AppointmentApiService), workshopCalendarApi = inject(WorkshopCalendarApiService)) => ({
@@ -231,6 +249,25 @@ export const BookingStore = signalStore(
 
     clearSelectedServices(): void {
       patchState(store, { selectedServices: [] });
+    },
+
+    setCustomerInfo(info: CustomerInfo): void {
+      console.debug('[BookingStore] setCustomerInfo:', info);
+      patchState(store, { customerInfo: info });
+    },
+
+    setVehicleInfo(info: VehicleInfo): void {
+      console.debug('[BookingStore] setVehicleInfo:', info);
+      patchState(store, { vehicleInfo: info });
+    },
+
+    setPrivacyConsent(consent: boolean): void {
+      console.debug('[BookingStore] setPrivacyConsent:', consent);
+      patchState(store, { privacyConsent: consent });
+    },
+
+    clearCustomerInfo(): void {
+      patchState(store, { customerInfo: null, vehicleInfo: null, privacyConsent: false });
     }
   }))
 );

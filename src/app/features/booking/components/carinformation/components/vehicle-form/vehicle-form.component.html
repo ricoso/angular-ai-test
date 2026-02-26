@@ -1,0 +1,87 @@
+<section class="form-section" [formGroup]="form()">
+
+  <!-- Row: License Plate | Mileage -->
+  <div class="form-row form-row--equal">
+    <!-- License Plate -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ booking.carinformation.form.licensePlate.label | translate }} *</mat-label>
+      <span matPrefix class="form-field__icon">
+        <span class="icon-framed icon-framed--sm">
+          <mat-icon>directions_car</mat-icon>
+        </span>
+      </span>
+      <input
+        matInput
+        formControlName="licensePlate"
+        type="text"
+        [placeholder]="booking.carinformation.form.licensePlate.placeholder | translate"
+        aria-required="true"
+      />
+      @if (errors().licensePlate.required) {
+        <mat-error>{{ booking.carinformation.form.licensePlate.error.required | translate }}</mat-error>
+      }
+      @if (errors().licensePlate.pattern) {
+        <mat-error>{{ booking.carinformation.form.licensePlate.error.invalidFormat | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Mileage -->
+    <mat-form-field appearance="outline">
+      <mat-label>{{ booking.carinformation.form.mileage.label | translate }} *</mat-label>
+      <span matPrefix class="form-field__icon">
+        <span class="icon-framed icon-framed--sm">
+          <mat-icon>directions_car</mat-icon>
+        </span>
+      </span>
+      <input
+        matInput
+        formControlName="mileage"
+        type="text"
+        [placeholder]="booking.carinformation.form.mileage.placeholder | translate"
+        inputmode="numeric"
+        aria-required="true"
+      />
+      @if (errors().mileage.required) {
+        <mat-error>{{ booking.carinformation.form.mileage.error.required | translate }}</mat-error>
+      }
+      @if (errors().mileage.pattern) {
+        <mat-error>{{ booking.carinformation.form.mileage.error.digitsOnly | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <!-- VIN -->
+  <div class="form-row">
+    <mat-form-field appearance="outline" class="form-field--full">
+      <div class="form-field__label-row">
+        <mat-label>{{ booking.carinformation.form.vin.label | translate }} *</mat-label>
+      </div>
+      <span matPrefix class="form-field__icon">
+        <span class="icon-framed icon-framed--sm">
+          <mat-icon>directions_car</mat-icon>
+        </span>
+      </span>
+      <input
+        matInput
+        formControlName="vin"
+        type="text"
+        [placeholder]="booking.carinformation.form.vin.placeholder | translate"
+        maxlength="17"
+        aria-required="true"
+      />
+      <span matSuffix class="form-field__vin-link">
+        <a href="#" class="form-field__info-link" (click)="$event.preventDefault()" aria-label="VIN explanation">
+          <mat-icon class="form-field__info-icon">info</mat-icon>
+          {{ booking.carinformation.form.vin.infoLink | translate }}
+        </a>
+      </span>
+      @if (errors().vin.required) {
+        <mat-error>{{ booking.carinformation.form.vin.error.required | translate }}</mat-error>
+      }
+      @if (errors().vin.pattern && !errors().vin.required) {
+        <mat-error>{{ booking.carinformation.form.vin.error.invalidFormat | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+</section>

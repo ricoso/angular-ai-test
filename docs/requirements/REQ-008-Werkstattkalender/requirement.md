@@ -1,6 +1,6 @@
 # REQ-008: Werkstattkalender
 
-**Status:** In Review
+**Status:** Implemented
 **Priority:** High
 **Type:** Functional
 **Created:** 2026-02-25

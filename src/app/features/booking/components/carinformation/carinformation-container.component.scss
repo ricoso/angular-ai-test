@@ -1,0 +1,146 @@
+:host {
+  display: block;
+}
+
+.carinformation {
+  max-width: 70em;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-md);
+
+  &__title {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    line-height: var(--line-height-tight);
+
+    @media (min-width: 48em) {
+      font-size: var(--font-size-2xl);
+    }
+  }
+}
+
+// Returning Customer Banner
+.returning-banner {
+  background-color: var(--color-background-surface);
+  border: 0.0625em solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-medium);
+  overflow: hidden;
+  margin-bottom: var(--spacing-xl);
+  display: flex;
+  align-items: stretch;
+
+  &__content {
+    padding: var(--spacing-lg);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    justify-content: center;
+  }
+
+  &__title {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  &__description {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-normal);
+  }
+
+  &__button {
+    align-self: flex-start;
+    font-size: var(--font-size-xs);
+  }
+
+  &__image {
+    width: 12em;
+    background-color: var(--color-background-hover);
+    border-left: 0.0625em solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    mat-icon {
+      font-size: 3em;
+      width: 1em;
+      height: 1em;
+      color: var(--color-text-muted);
+    }
+  }
+
+  @media (max-width: 47.9375em) {
+    flex-direction: column;
+
+    &__image {
+      width: 100%;
+      height: 6em;
+      border-left: none;
+      border-top: 0.0625em solid var(--color-border);
+    }
+  }
+}
+
+// Privacy Section
+.privacy-section {
+  background-color: var(--color-background-surface);
+  border: 0.0625em solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+}
+
+.privacy-checkbox {
+  &__label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+  }
+
+  &__link {
+    color: var(--color-primary);
+    text-decoration: underline;
+
+    &:hover {
+      color: var(--color-primary-hover);
+    }
+
+    &:focus-visible {
+      outline: 0.125em solid var(--color-focus-ring);
+      border-radius: var(--radius-sm);
+    }
+  }
+
+  &__required {
+    color: var(--color-error);
+  }
+}
+
+// Required Hint
+.required-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+// Wizard Navigation
+.wizard-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-md) 0;
+  border-top: 0.0625em solid var(--color-divider);
+
+  &__back,
+  &__continue {
+    min-height: var(--touch-target-min);
+  }
+}

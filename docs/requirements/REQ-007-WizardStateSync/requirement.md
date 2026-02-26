@@ -1,6 +1,6 @@
 # REQ-007: Wizard State Sync (Rückwärtsnavigation)
 
-**Status:** In Review
+**Status:** Implemented
 **Priority:** High
 **Type:** Functional
 **Created:** 2026-02-24
