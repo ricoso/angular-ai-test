@@ -180,6 +180,14 @@ export const BookingStore = signalStore(
       patchState(store, { selectedAppointment: appointment });
     },
 
+    clearSelectedLocation(): void {
+      patchState(store, { selectedLocation: null });
+    },
+
+    clearBookingNote(): void {
+      patchState(store, { bookingNote: null });
+    },
+
     clearSelectedAppointment(): void {
       patchState(store, { selectedAppointment: null });
     },

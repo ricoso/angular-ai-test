@@ -146,6 +146,28 @@ describe('NotesContainerComponent', () => {
       exposed.onBack();
       expect(router.navigate).toHaveBeenCalledWith(['/home/services']);
     });
+
+    it('should clear booking note in store before navigating back', () => {
+      store.setBookingNote('Test note');
+      expect(store.bookingNote()).toBe('Test note');
+
+      const exposed = component as unknown as { onBack: () => void };
+      exposed.onBack();
+
+      expect(store.bookingNote()).toBeNull();
+      expect(store.hasBookingNote()).toBe(false);
+      expect(router.navigate).toHaveBeenCalledWith(['/home/services']);
+    });
+
+    it('should handle back when booking note is already null', () => {
+      expect(store.bookingNote()).toBeNull();
+
+      const exposed = component as unknown as { onBack: () => void };
+      exposed.onBack();
+
+      expect(store.bookingNote()).toBeNull();
+      expect(router.navigate).toHaveBeenCalledWith(['/home/services']);
+    });
   });
 
   describe('Store Integration', () => {

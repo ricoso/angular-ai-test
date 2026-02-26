@@ -1,8 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
+import type { AppointmentSlot } from '../models/appointment.model';
 import { AVAILABLE_BRANDS } from '../models/brand.model';
 import { LOCATIONS_BY_BRAND } from '../models/location.model';
 import { AVAILABLE_SERVICES } from '../models/service.model';
+import { AppointmentApiService } from '../services/appointment-api.service';
 import { BookingApiService } from '../services/booking-api.service';
 
 import { BookingStore } from './booking.store';
@@ -21,7 +23,8 @@ describe('BookingStore', () => {
     TestBed.configureTestingModule({
       providers: [
         BookingStore,
-        { provide: BookingApiService, useValue: apiSpy }
+        { provide: BookingApiService, useValue: apiSpy },
+        { provide: AppointmentApiService, useValue: { getAppointments: jest.fn().mockResolvedValue([]) } }
       ]
     });
 
@@ -264,6 +267,81 @@ describe('BookingStore', () => {
       store.toggleService('inspection');
       store.clearSelectedServices();
       expect(store.selectedServices()).toEqual([]);
+    });
+  });
+
+  describe('clearSelectedLocation', () => {
+    it('should clear selected location', () => {
+      store.setLocation(LOCATIONS_BY_BRAND.audi[0]);
+      expect(store.selectedLocation()).not.toBeNull();
+      store.clearSelectedLocation();
+      expect(store.selectedLocation()).toBeNull();
+    });
+
+    it('should update hasLocationSelected to false', () => {
+      store.setLocation(LOCATIONS_BY_BRAND.audi[0]);
+      expect(store.hasLocationSelected()).toBe(true);
+      store.clearSelectedLocation();
+      expect(store.hasLocationSelected()).toBe(false);
+    });
+
+    it('should be idempotent when already null', () => {
+      expect(store.selectedLocation()).toBeNull();
+      store.clearSelectedLocation();
+      expect(store.selectedLocation()).toBeNull();
+    });
+  });
+
+  describe('clearBookingNote', () => {
+    it('should clear booking note', () => {
+      store.setBookingNote('Test note');
+      expect(store.bookingNote()).toBe('Test note');
+      store.clearBookingNote();
+      expect(store.bookingNote()).toBeNull();
+    });
+
+    it('should update hasBookingNote to false', () => {
+      store.setBookingNote('Test note');
+      expect(store.hasBookingNote()).toBe(true);
+      store.clearBookingNote();
+      expect(store.hasBookingNote()).toBe(false);
+    });
+
+    it('should be idempotent when already null', () => {
+      expect(store.bookingNote()).toBeNull();
+      store.clearBookingNote();
+      expect(store.bookingNote()).toBeNull();
+    });
+  });
+
+  describe('clearSelectedAppointment', () => {
+    const mockAppointment: AppointmentSlot = {
+      id: '2026-02-25-09-00',
+      date: '2026-02-25',
+      displayDate: '25.02.2026',
+      dayAbbreviation: 'Mi',
+      time: '09:00',
+      displayTime: '09:00 Uhr'
+    };
+
+    it('should clear selected appointment', () => {
+      store.selectAppointment(mockAppointment);
+      expect(store.selectedAppointment()).not.toBeNull();
+      store.clearSelectedAppointment();
+      expect(store.selectedAppointment()).toBeNull();
+    });
+
+    it('should update hasAppointmentSelected to false', () => {
+      store.selectAppointment(mockAppointment);
+      expect(store.hasAppointmentSelected()).toBe(true);
+      store.clearSelectedAppointment();
+      expect(store.hasAppointmentSelected()).toBe(false);
+    });
+
+    it('should be idempotent when already null', () => {
+      expect(store.selectedAppointment()).toBeNull();
+      store.clearSelectedAppointment();
+      expect(store.selectedAppointment()).toBeNull();
     });
   });
 

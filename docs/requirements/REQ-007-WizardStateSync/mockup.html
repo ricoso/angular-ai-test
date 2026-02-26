@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REQ-007 WizardStateSync - Architektur-Diagramm</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* ================================================================
+       CSS Custom Properties (from _variables.scss)
+       ================================================================ */
+    :root {
+      /* Brand Colors */
+      --color-primary: #667eea;
+      --color-primary-hover: #5a67d8;
+      --color-secondary: #764ba2;
+      --color-accent: #ed8936;
+
+      /* Text Colors (WCAG AA) */
+      --color-text-primary: #1a1a1a;
+      --color-text-secondary: #595959;
+      --color-text-muted: #767676;
+      --color-text-on-primary: #ffffff;
+      --color-text-on-dark: #ffffff;
+
+      /* Background Colors */
+      --color-background-page: #f8f9fa;
+      --color-background-surface: #ffffff;
+      --color-background-hover: #f5f5f5;
+
+      /* Border & Divider */
+      --color-border: #e0e0e0;
+      --color-divider: #eeeeee;
+
+      /* Semantic Colors */
+      --color-error: #c62828;
+      --color-success: #2e7d32;
+      --color-warning: #e65100;
+      --color-info: #1565c0;
+
+      /* Focus (Accessibility) */
+      --color-focus-ring: #005fcc;
+
+      /* Shadows */
+      --shadow-small: 0 0.0625em 0.125em rgba(0, 0, 0, 0.1);
+      --shadow-medium: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
+      --shadow-large: 0 0.5em 1em rgba(0, 0, 0, 0.15);
+
+      /* Typography */
+      --font-size-base: 1em;
+      --font-size-xs: 0.875em;
+      --font-size-sm: 1em;
+      --font-size-md: 1.125em;
+      --font-size-lg: 1.25em;
+      --font-size-xl: 1.5em;
+      --font-size-2xl: 2em;
+
+      --line-height-tight: 1.25;
+      --line-height-normal: 1.5;
+      --line-height-relaxed: 1.75;
+
+      /* Spacing (em-based) */
+      --spacing-xs: 0.25em;
+      --spacing-sm: 0.5em;
+      --spacing-md: 1em;
+      --spacing-lg: 1.5em;
+      --spacing-xl: 2em;
+
+      /* Border Radius */
+      --radius-sm: 0.25em;
+      --radius-md: 0.5em;
+      --radius-lg: 0.75em;
+      --radius-xl: 1em;
+      --radius-full: 50%;
+
+      /* Touch Targets (Accessibility) */
+      --touch-target-min: 2.75em;
+
+      /* Diagram-specific Colors */
+      --color-step-brand: #667eea;
+      --color-step-location: #764ba2;
+      --color-step-services: #ed8936;
+      --color-step-notes: #2e7d32;
+      --color-step-appointment: #1565c0;
+      --color-nulled: #c62828;
+      --color-guard: #e65100;
+    }
+
+    /* ================================================================
+       Reset & Base
+       ================================================================ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif;
+      font-size: var(--font-size-base);
+      color: var(--color-text-primary);
+      background-color: var(--color-background-page);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: var(--line-height-normal);
+    }
+
+    /* ================================================================
+       Skip Link (Accessibility)
+       ================================================================ */
+    .skip-link {
+      position: absolute;
+      top: -10em;
+      left: var(--spacing-md);
+      background: var(--color-primary);
+      color: var(--color-text-on-primary);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      font-weight: 600;
+      z-index: 9999;
+      transition: top 0.2s ease;
+    }
+
+    .skip-link:focus {
+      top: var(--spacing-md);
+      outline: 0.125em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+
+    /* ================================================================
+       Icon Framed (from _utilities.scss)
+       ================================================================ */
+    .icon-framed {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5em;
+      height: 2.5em;
+      background: var(--color-background-surface);
+      border: 0.0625em solid var(--color-border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-small);
+      cursor: pointer;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .icon-framed:hover {
+      box-shadow: var(--shadow-medium);
+      border-color: var(--color-primary);
+    }
+
+    .icon-framed:focus-visible {
+      outline: 0.1875em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+
+    .icon-framed--sm {
+      width: 2em;
+      height: 2em;
+    }
+
+    .icon-framed .material-icons {
+      font-size: 1.25em;
+      color: var(--color-text-primary);
+    }
+
+    .icon-framed--sm .material-icons {
+      font-size: 1em;
+    }
+
+    button.icon-framed {
+      font-family: inherit;
+      padding: 0;
+      min-width: var(--touch-target-min);
+      min-height: var(--touch-target-min);
+    }
+
+    /* ================================================================
+       Header (from header-container.component.scss)
+       ================================================================ */
+    .header {
+      background-color: var(--color-background-surface);
+      border-bottom: 0.0625em solid var(--color-border);
+      box-shadow: var(--shadow-small);
+    }
+
+    .header__content {
+      display: flex;
+      align-items: center;
+      padding: var(--spacing-sm) var(--spacing-md);
+      max-width: 80em;
+      margin: 0 auto;
+      min-height: 3.5em;
+    }
+
+    .header__logo-link {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      text-decoration: none;
+      color: inherit;
+      min-height: var(--touch-target-min);
+      padding: var(--spacing-xs);
+      border-radius: var(--radius-sm);
+      transition: background-color 0.2s ease;
+    }
+
+    .header__logo-link:hover {
+      background-color: var(--color-background-hover);
+    }
+
+    .header__logo-link:focus-visible {
+      outline: 0.125em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+
+    .header__logo-container {
+      width: 2.5em;
+      height: 2.5em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background-color: var(--color-primary);
+      border-radius: var(--radius-md);
+      color: var(--color-text-on-primary);
+      font-weight: 700;
+      font-size: var(--font-size-md);
+    }
+
+    .header__company {
+      display: flex;
+      flex-direction: column;
+      line-height: var(--line-height-tight);
+    }
+
+    .header__company-name {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .header__company-subtitle {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+    }
+
+    .header__spacer {
+      flex: 1;
+    }
+
+    .header__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .header__icon-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: var(--touch-target-min);
+      min-height: var(--touch-target-min);
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      padding: 0;
+    }
+
+    .header__icon-button:focus-visible {
+      outline: 0.125em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+
+    .header__icon-button:hover .icon-framed {
+      border-color: var(--color-primary);
+    }
+
+    /* ================================================================
+       Main Content
+       ================================================================ */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content {
+      max-width: 80em;
+      width: 100%;
+      margin: 0 auto;
+      padding: var(--spacing-xl) var(--spacing-md);
+      flex: 1;
+    }
+
+    .content__header {
+      text-align: center;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .content__title {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      text-align: center;
+      line-height: var(--line-height-tight);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .content__subtitle {
+      font-size: var(--font-size-md);
+      color: var(--color-text-secondary);
+      text-align: center;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .content__description {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+      text-align: center;
+      max-width: 50em;
+      margin: 0 auto;
+      line-height: var(--line-height-relaxed);
+    }
+
+    /* ================================================================
+       Legend
+       ================================================================ */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-md);
+      justify-content: center;
+      margin-bottom: var(--spacing-xl);
+      padding: var(--spacing-md);
+      background-color: var(--color-background-surface);
+      border: 0.0625em solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-small);
+    }
+
+    .legend__item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+    }
+
+    .legend__swatch {
+      width: 1em;
+      height: 1em;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+    }
+
+    .legend__swatch--forward {
+      background-color: var(--color-success);
+    }
+
+    .legend__swatch--back {
+      background-color: var(--color-nulled);
+    }
+
+    .legend__swatch--guard {
+      background-color: var(--color-guard);
+    }
+
+    .legend__swatch--nulled {
+      background-color: var(--color-nulled);
+      opacity: 0.2;
+      border: 0.125em solid var(--color-nulled);
+    }
+
+    /* ================================================================
+       Wizard Flow - Horizontal Flowchart
+       ================================================================ */
+    .wizard-flow {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    /* Each step row: step card + arrow connector */
+    .wizard-flow__row {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    /* ================================================================
+       Step Card
+       ================================================================ */
+    .step-card {
+      background-color: var(--color-background-surface);
+      border: 0.125em solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-medium);
+      padding: var(--spacing-lg);
+      flex: 1;
+      min-width: 0;
+    }
+
+    .step-card__header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .step-card__number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2em;
+      height: 2em;
+      border-radius: var(--radius-full);
+      color: var(--color-text-on-primary);
+      font-weight: 700;
+      font-size: var(--font-size-sm);
+      flex-shrink: 0;
+    }
+
+    .step-card__number--brand { background-color: var(--color-step-brand); }
+    .step-card__number--location { background-color: var(--color-step-location); }
+    .step-card__number--services { background-color: var(--color-step-services); }
+    .step-card__number--notes { background-color: var(--color-step-notes); }
+    .step-card__number--appointment { background-color: var(--color-step-appointment); }
+
+    .step-card__title {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .step-card__route {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      font-family: 'Courier New', Courier, monospace;
+      margin-bottom: var(--spacing-md);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      background-color: var(--color-background-hover);
+      border-radius: var(--radius-sm);
+      display: inline-block;
+    }
+
+    /* Store State Properties */
+    .step-card__section-title {
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--spacing-xs);
+      margin-top: var(--spacing-md);
+    }
+
+    .step-card__properties {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-xs);
+    }
+
+    .property-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-xs);
+      font-family: 'Courier New', Courier, monospace;
+      line-height: var(--line-height-tight);
+    }
+
+    .property-tag--set {
+      background-color: rgba(46, 125, 50, 0.1);
+      border: 0.0625em solid var(--color-success);
+      color: var(--color-success);
+    }
+
+    .property-tag--guard {
+      background-color: rgba(230, 81, 0, 0.1);
+      border: 0.0625em solid var(--color-guard);
+      color: var(--color-guard);
+    }
+
+    .property-tag--nulled {
+      background-color: rgba(198, 40, 40, 0.1);
+      border: 0.0625em solid var(--color-nulled);
+      color: var(--color-nulled);
+    }
+
+    .property-tag .material-icons {
+      font-size: 0.875em;
+    }
+
+    /* ================================================================
+       Arrow Connectors between steps (vertical on mobile)
+       ================================================================ */
+    .arrow-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--spacing-sm) 0;
+      gap: var(--spacing-xs);
+      position: relative;
+    }
+
+    .arrow-connector__line {
+      width: 0.1875em;
+      flex: 1;
+      min-height: 1em;
+      border-radius: 0.125em;
+    }
+
+    .arrow-connector__line--forward {
+      background-color: var(--color-success);
+    }
+
+    .arrow-connector__line--back {
+      background-color: var(--color-nulled);
+    }
+
+    .arrow-connector__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2em;
+      height: 2em;
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+    }
+
+    .arrow-connector__icon--forward {
+      background-color: var(--color-success);
+      color: var(--color-text-on-primary);
+    }
+
+    .arrow-connector__icon--back {
+      background-color: var(--color-nulled);
+      color: var(--color-text-on-primary);
+    }
+
+    .arrow-connector__icon .material-icons {
+      font-size: 1.25em;
+    }
+
+    .arrow-connector__label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      text-align: center;
+      max-width: 10em;
+    }
+
+    /* ================================================================
+       Back Navigation Sections
+       ================================================================ */
+    .back-navigation {
+      margin-top: var(--spacing-xl);
+    }
+
+    .back-navigation__title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      text-align: center;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .back-navigation__subtitle {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      text-align: center;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .back-nav-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-lg);
+    }
+
+    .back-nav-card {
+      background-color: var(--color-background-surface);
+      border: 0.125em solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-small);
+      overflow: hidden;
+    }
+
+    .back-nav-card__header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md) var(--spacing-lg);
+      background-color: rgba(198, 40, 40, 0.05);
+      border-bottom: 0.0625em solid var(--color-divider);
+    }
+
+    .back-nav-card__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5em;
+      height: 2.5em;
+      background-color: var(--color-nulled);
+      color: var(--color-text-on-primary);
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+    }
+
+    .back-nav-card__icon .material-icons {
+      font-size: 1.25em;
+    }
+
+    .back-nav-card__header-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125em;
+    }
+
+    .back-nav-card__title {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .back-nav-card__from-to {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+
+    .back-nav-card__body {
+      padding: var(--spacing-md) var(--spacing-lg);
+    }
+
+    .back-nav-card__section-label {
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .back-nav-card__section-label:not(:first-child) {
+      margin-top: var(--spacing-md);
+    }
+
+    .back-nav-card__property-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-xs);
+    }
+
+    /* ================================================================
+       Store State Overview Table
+       ================================================================ */
+    .state-overview {
+      margin-top: var(--spacing-xl);
+    }
+
+    .state-overview__title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      text-align: center;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .state-overview__subtitle {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      text-align: center;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .state-table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 0.0625em solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-small);
+    }
+
+    .state-table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: var(--color-background-surface);
+      font-size: var(--font-size-xs);
+    }
+
+    .state-table th {
+      padding: var(--spacing-sm) var(--spacing-md);
+      text-align: left;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      background-color: var(--color-background-hover);
+      border-bottom: 0.125em solid var(--color-border);
+      white-space: nowrap;
+    }
+
+    .state-table td {
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-bottom: 0.0625em solid var(--color-divider);
+      vertical-align: middle;
+    }
+
+    .state-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .state-table__property {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      white-space: nowrap;
+    }
+
+    .state-cell {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .state-cell--set {
+      color: var(--color-success);
+    }
+
+    .state-cell--null {
+      color: var(--color-text-muted);
+    }
+
+    .state-cell--nulled {
+      color: var(--color-nulled);
+      font-weight: 600;
+    }
+
+    .state-cell .material-icons {
+      font-size: 1em;
+    }
+
+    /* ================================================================
+       Footer
+       ================================================================ */
+    .footer {
+      background: var(--color-background-surface);
+      padding: var(--spacing-md);
+      text-align: center;
+      border-top: 0.0625em solid var(--color-border);
+    }
+
+    .footer__text {
+      margin: 0;
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-xs);
+    }
+
+    /* ================================================================
+       Responsive: Tablet (>= 48em)
+       ================================================================ */
+    @media (min-width: 48em) {
+      .content {
+        padding: var(--spacing-xl);
+      }
+
+      .back-nav-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .footer {
+        padding: var(--spacing-lg);
+      }
+
+      .legend {
+        gap: var(--spacing-lg);
+      }
+    }
+
+    /* ================================================================
+       Responsive: Desktop (>= 64em)
+       ================================================================ */
+    @media (min-width: 64em) {
+      .header__content {
+        padding: var(--spacing-md) var(--spacing-lg);
+      }
+
+      .header__logo-container {
+        width: 3em;
+        height: 3em;
+        font-size: var(--font-size-lg);
+      }
+
+      .header__company-subtitle {
+        display: block;
+      }
+
+      .back-nav-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      /* Desktop: Horizontal wizard flow */
+      .wizard-flow {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: var(--spacing-sm);
+      }
+
+      .wizard-flow__row {
+        flex-direction: column;
+        flex: 1;
+        min-width: 12em;
+      }
+
+      .step-card {
+        min-height: 20em;
+      }
+
+      .arrow-connector {
+        flex-direction: row;
+        padding: 0 var(--spacing-xs);
+        min-width: 3em;
+        align-self: center;
+      }
+
+      .arrow-connector__line {
+        width: auto;
+        height: 0.1875em;
+        min-height: auto;
+        min-width: 0.5em;
+        flex: 1;
+      }
+
+      .arrow-connector__icon .material-icons {
+        /* On desktop, arrows point right for forward flow */
+      }
+    }
+
+    /* ================================================================
+       Responsive: Mobile (< 48em)
+       ================================================================ */
+    @media (max-width: 47.9375em) {
+      .header__company {
+        display: none;
+      }
+
+      .header__content {
+        padding: var(--spacing-xs) var(--spacing-sm);
+      }
+
+      .content__title {
+        font-size: var(--font-size-xl);
+      }
+
+      .content {
+        padding: var(--spacing-lg) var(--spacing-sm);
+      }
+
+      .step-card {
+        padding: var(--spacing-md);
+      }
+
+      .step-card__title {
+        font-size: var(--font-size-md);
+      }
+
+      .legend {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        align-items: flex-start;
+      }
+
+      .state-table {
+        font-size: 0.75em;
+      }
+    }
+
+    /* ================================================================
+       Responsive: Tablet-only (hide subtitle)
+       ================================================================ */
+    @media (min-width: 48em) and (max-width: 63.9375em) {
+      .header__company-subtitle {
+        display: none;
+      }
+    }
+
+    /* ================================================================
+       Reduced Motion
+       ================================================================ */
+    @media (prefers-reduced-motion: reduce) {
+      .header__logo-link,
+      .icon-framed,
+      .skip-link {
+        transition: none;
+      }
+    }
+
+    /* ================================================================
+       High Contrast
+       ================================================================ */
+    html[data-high-contrast="true"] {
+      --color-text-primary: #000000;
+      --color-text-secondary: #000000;
+      --color-background-page: #ffffff;
+      --color-border: #000000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Skip Link (Accessibility) -->
+  <a href="#main-content" class="skip-link">
+    Zum Hauptinhalt springen
+  </a>
+
+  <!-- ================================================================
+       Header
+       ================================================================ -->
+  <header class="header" role="banner">
+    <div class="header__content">
+      <a href="#" class="header__logo-link" aria-label="Zur Startseite">
+        <div class="header__logo-container" aria-hidden="true">AH</div>
+        <div class="header__company">
+          <span class="header__company-name">Autohaus GmbH</span>
+          <span class="header__company-subtitle">Fahrzeugauswahl</span>
+        </div>
+      </a>
+
+      <div class="header__spacer"></div>
+
+      <div class="header__actions">
+        <button class="header__icon-button" type="button" aria-label="Warenkorb">
+          <span class="icon-framed icon-framed--sm">
+            <span class="material-icons" aria-hidden="true">shopping_cart</span>
+          </span>
+        </button>
+        <button class="header__icon-button" type="button" aria-label="Barrierefreiheit">
+          <span class="icon-framed icon-framed--sm">
+            <span class="material-icons" aria-hidden="true">accessibility_new</span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================================================================
+       Main Content
+       ================================================================ -->
+  <main id="main-content" class="main" role="main">
+    <div class="content">
+
+      <!-- Page Title -->
+      <div class="content__header">
+        <h1 class="content__title">REQ-007: Wizard State Sync</h1>
+        <p class="content__subtitle">
+          R&uuml;ckw&auml;rtsnavigation &amp; Store-State-Synchronisation
+        </p>
+        <p class="content__description">
+          Architektur-Diagramm: Bei R&uuml;ckw&auml;rtsnavigation im Wizard werden abh&auml;ngige
+          Store-Properties genullt, damit UI-Flow und State konsistent bleiben.
+          Guards pr&uuml;fen den Store-State, bevor ein Step betreten werden kann.
+        </p>
+      </div>
+
+      <!-- Legend -->
+      <div class="legend" role="img" aria-label="Legende">
+        <div class="legend__item">
+          <span class="legend__swatch legend__swatch--forward"></span>
+          <span>Vorw&auml;rts-Navigation</span>
+        </div>
+        <div class="legend__item">
+          <span class="legend__swatch legend__swatch--back"></span>
+          <span>R&uuml;ckw&auml;rts-Navigation</span>
+        </div>
+        <div class="legend__item">
+          <span class="legend__swatch legend__swatch--guard"></span>
+          <span>Guard-Check (Pr&uuml;fung)</span>
+        </div>
+        <div class="legend__item">
+          <span class="legend__swatch legend__swatch--nulled"></span>
+          <span>Genullte Property</span>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           SECTION 1: Wizard Steps Forward Flow
+           ================================================================ -->
+      <h2 class="back-navigation__title" style="margin-bottom: var(--spacing-md);">
+        <span class="material-icons" aria-hidden="true" style="vertical-align: middle; color: var(--color-success);">linear_scale</span>
+        Wizard-Schritte &amp; Vorw&auml;rts-Flow
+      </h2>
+      <p class="back-navigation__subtitle">
+        Jeder Schritt setzt eine Store-Property. Guards pr&uuml;fen den State vor dem Betreten.
+      </p>
+
+      <div class="wizard-flow" role="img" aria-label="Wizard-Schritte von Marke bis Termin">
+
+        <!-- Step 1: Markenauswahl -->
+        <div class="wizard-flow__row">
+          <div class="step-card">
+            <div class="step-card__header">
+              <span class="step-card__number step-card__number--brand">1</span>
+              <span class="step-card__title">Markenauswahl</span>
+            </div>
+            <span class="step-card__route">/booking/brands</span>
+
+            <div class="step-card__section-title">Guard-Check</div>
+            <div class="step-card__properties">
+              <span class="property-tag property-tag--guard">
+                <span class="material-icons" aria-hidden="true">security</span>
+                Kein Guard (Einstieg)
+              </span>
+            </div>
+
+            <div class="step-card__section-title">Setzt im Store</div>
+            <div class="step-card__properties">
+              <span class="property-tag property-tag--set">
+                <span class="material-icons" aria-hidden="true">check_circle</span>
+                selectedBrand
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Arrow 1→2 -->
+        <div class="arrow-connector">
+          <div class="arrow-connector__line arrow-connector__line--forward"></div>
+          <div class="arrow-connector__icon arrow-connector__icon--forward">
+            <span class="material-icons" aria-hidden="true">arrow_downward</span>
+          </div>
+          <div class="arrow-connector__line arrow-connector__line--forward"></div>
+        </div>
+
+        <!-- Step 2: Standortwahl -->
+        <div class="wizard-flow__row">
+          <div class="step-card">
+            <div class="step-card__header">
+              <span class="step-card__number step-card__number--location">2</span>
+              <span class="step-card__title">Standortwahl</span>
+            </div>
+            <span class="step-card__route">/booking/locations</span>
+
+            <div class="step-card__section-title">Guard-Check</div>
+            <div class="step-card__properties">
+              <span class="property-tag property-tag--guard">
+                <span class="material-icons" aria-hidden="true">security</span>
+                selectedBrand !== null
+              </span>
+            </div>
+
+            <div class="step-card__section-title">Setzt im Store</div>
+            <div class="step-card__properties">
+              <span class="property-tag property-tag--set">
+                <span class="material-icons" aria-hidden="true">check_circle</span>
+                selectedLocation
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Arrow 2→3 -->
+        <div class="arrow-connector">
+          <div class="arrow-connector__line arrow-connector__line--forward"></div>
+          <div class="arrow-connector__icon arrow-connector__icon--forward">
+            <span class="material-icons" aria-hidden="true">arrow_downward</span>
+          </div>
+          <div class="arrow-connector__line arrow-connector__line--forward"></div>
+        </div>
+
+        <!-- Step 3: Serviceauswahl -->
+        <div class="wizard-flow__row">
+          <div class="step-card">
+            <div class="step-card__header">
+              <span class="step-card__number step-card__number--services">3</span>
+              <span class="step-card__title">Serviceauswahl</span>
+            </div>
+            <span class="step-card__route">/booking/services</span>
+
+            <div class="step-card__section-title">Guard-Check</div>
+            <div class="step-card__properties">
+              <span class="property-tag property-tag--guard">
+                <span class="material-icons" aria-hidden="true">security</span>
+                selectedLocation !== null
+              </span>
+            </div>
+
+            <div class="step-card__section-title">Setzt im Store</div>
+            <div class="step-card__properties">
+              <span class="property-tag property-tag--set">
+                <span class="material-icons" aria-hidden="true">check_circle</span>
+                selectedServices[]
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Arrow 3→4 -->
+        <div class="arrow-connector">
+          <div class="arrow-connector__line arrow-connector__line--forward"></div>
+          <div class="arrow-connector__icon arrow-connector__icon--forward">
+            <span class="material-icons" aria-hidden="true">arrow_downward</span>
+          </div>
+          <div class="arrow-connector__line arrow-connector__line--forward"></div>
+        </div>
+
+        <!-- Step 4: Hinweisfenster -->
+        <div class="wizard-flow__row">
+          <div class="step-card">
+            <div class="step-card__header">
+              <span class="step-card__number step-card__number--notes">4</span>
+              <span class="step-card__title">Hinweisfenster</span>
+            </div>
+            <span class="step-card__route">/booking/notes</span>
+
+            <div class="step-card__section-title">Guard-Check</div>
+            <div class="step-card__properties">
+              <span class="property-tag property-tag--guard">
+                <span class="material-icons" aria-hidden="true">security</span>
+                selectedServices.length &gt; 0
+              </span>
+            </div>
+
+            <div class="step-card__section-title">Setzt im Store</div>
+            <div class="step-card__properties">
+              <span class="property-tag property-tag--set">
+                <span class="material-icons" aria-hidden="true">check_circle</span>
+                bookingNote
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Arrow 4→5 -->
+        <div class="arrow-connector">
+          <div class="arrow-connector__line arrow-connector__line--forward"></div>
+          <div class="arrow-connector__icon arrow-connector__icon--forward">
+            <span class="material-icons" aria-hidden="true">arrow_downward</span>
+          </div>
+          <div class="arrow-connector__line arrow-connector__line--forward"></div>
+        </div>
+
+        <!-- Step 5: Terminauswahl -->
+        <div class="wizard-flow__row">
+          <div class="step-card">
+            <div class="step-card__header">
+              <span class="step-card__number step-card__number--appointment">5</span>
+              <span class="step-card__title">Terminauswahl</span>
+            </div>
+            <span class="step-card__route">/booking/appointments</span>
+
+            <div class="step-card__section-title">Guard-Check</div>
+            <div class="step-card__properties">
+              <span class="property-tag property-tag--guard">
+                <span class="material-icons" aria-hidden="true">security</span>
+                selectedServices.length &gt; 0
+              </span>
+            </div>
+
+            <div class="step-card__section-title">Setzt im Store</div>
+            <div class="step-card__properties">
+              <span class="property-tag property-tag--set">
+                <span class="material-icons" aria-hidden="true">check_circle</span>
+                selectedAppointment
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================================================================
+           SECTION 2: Back Navigation - Nulled Properties
+           ================================================================ -->
+      <div class="back-navigation">
+        <h2 class="back-navigation__title">
+          <span class="material-icons" aria-hidden="true" style="vertical-align: middle; color: var(--color-nulled);">undo</span>
+          R&uuml;ckw&auml;rts-Navigation: Genullte Properties
+        </h2>
+        <p class="back-navigation__subtitle">
+          Bei jedem &bdquo;Zur&uuml;ck&ldquo;-Klick werden alle nachfolgenden Store-Properties auf <code>null</code> / <code>[]</code> gesetzt.
+        </p>
+
+        <div class="back-nav-grid">
+
+          <!-- Back: Step 5 → Step 4 -->
+          <div class="back-nav-card">
+            <div class="back-nav-card__header">
+              <div class="back-nav-card__icon">
+                <span class="material-icons" aria-hidden="true">arrow_back</span>
+              </div>
+              <div class="back-nav-card__header-text">
+                <span class="back-nav-card__title">Terminauswahl &rarr; Hinweisfenster</span>
+                <span class="back-nav-card__from-to">Schritt 5 &rarr; Schritt 4</span>
+              </div>
+            </div>
+            <div class="back-nav-card__body">
+              <div class="back-nav-card__section-label">Genullte Properties</div>
+              <div class="back-nav-card__property-list">
+                <span class="property-tag property-tag--nulled">
+                  <span class="material-icons" aria-hidden="true">close</span>
+                  selectedAppointment = null
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Back: Step 4 → Step 3 -->
+          <div class="back-nav-card">
+            <div class="back-nav-card__header">
+              <div class="back-nav-card__icon">
+                <span class="material-icons" aria-hidden="true">arrow_back</span>
+              </div>
+              <div class="back-nav-card__header-text">
+                <span class="back-nav-card__title">Hinweisfenster &rarr; Serviceauswahl</span>
+                <span class="back-nav-card__from-to">Schritt 4 &rarr; Schritt 3</span>
+              </div>
+            </div>
+            <div class="back-nav-card__body">
+              <div class="back-nav-card__section-label">Genullte Properties</div>
+              <div class="back-nav-card__property-list">
+                <span class="property-tag property-tag--nulled">
+                  <span class="material-icons" aria-hidden="true">close</span>
+                  bookingNote = null
+                </span>
+                <span class="property-tag property-tag--nulled">
+                  <span class="material-icons" aria-hidden="true">close</span>
+                  selectedAppointment = null
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Back: Step 3 → Step 2 -->
+          <div class="back-nav-card">
+            <div class="back-nav-card__header">
+              <div class="back-nav-card__icon">
+                <span class="material-icons" aria-hidden="true">arrow_back</span>
+              </div>
+              <div class="back-nav-card__header-text">
+                <span class="back-nav-card__title">Serviceauswahl &rarr; Standortwahl</span>
+                <span class="back-nav-card__from-to">Schritt 3 &rarr; Schritt 2</span>
+              </div>
+            </div>
+            <div class="back-nav-card__body">
+              <div class="back-nav-card__section-label">Genullte Properties</div>
+              <div class="back-nav-card__property-list">
+                <span class="property-tag property-tag--nulled">
+                  <span class="material-icons" aria-hidden="true">close</span>
+                  selectedServices = []
+                </span>
+                <span class="property-tag property-tag--nulled">
+                  <span class="material-icons" aria-hidden="true">close</span>
+                  bookingNote = null
+                </span>
+                <span class="property-tag property-tag--nulled">
+                  <span class="material-icons" aria-hidden="true">close</span>
+                  selectedAppointment = null
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Back: Step 2 → Step 1 -->
+          <div class="back-nav-card">
+            <div class="back-nav-card__header">
+              <div class="back-nav-card__icon">
+                <span class="material-icons" aria-hidden="true">arrow_back</span>
+              </div>
+              <div class="back-nav-card__header-text">
+                <span class="back-nav-card__title">Standortwahl &rarr; Markenauswahl</span>
+                <span class="back-nav-card__from-to">Schritt 2 &rarr; Schritt 1</span>
+              </div>
+            </div>
+            <div class="back-nav-card__body">
+              <div class="back-nav-card__section-label">Genullte Properties</div>
+              <div class="back-nav-card__property-list">
+                <span class="property-tag property-tag--nulled">
+                  <span class="material-icons" aria-hidden="true">close</span>
+                  selectedLocation = null
+                </span>
+                <span class="property-tag property-tag--nulled">
+                  <span class="material-icons" aria-hidden="true">close</span>
+                  selectedServices = []
+                </span>
+                <span class="property-tag property-tag--nulled">
+                  <span class="material-icons" aria-hidden="true">close</span>
+                  bookingNote = null
+                </span>
+                <span class="property-tag property-tag--nulled">
+                  <span class="material-icons" aria-hidden="true">close</span>
+                  selectedAppointment = null
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ================================================================
+           SECTION 3: State Overview Table
+           ================================================================ -->
+      <div class="state-overview">
+        <h2 class="state-overview__title">
+          <span class="material-icons" aria-hidden="true" style="vertical-align: middle; color: var(--color-primary);">table_chart</span>
+          Store-State &Uuml;bersicht nach R&uuml;cknavigation
+        </h2>
+        <p class="state-overview__subtitle">
+          Zeigt den Zustand jeder Property im <code>BookingStore</code> nach einem &bdquo;Zur&uuml;ck&ldquo;-Klick zu einem bestimmten Schritt.
+        </p>
+
+        <div class="state-table-wrapper">
+          <table class="state-table" role="table" aria-label="Store-State nach R&uuml;cknavigation">
+            <thead>
+              <tr>
+                <th scope="col">Store-Property</th>
+                <th scope="col">Zur&uuml;ck zu Schritt 1<br>(Markenauswahl)</th>
+                <th scope="col">Zur&uuml;ck zu Schritt 2<br>(Standortwahl)</th>
+                <th scope="col">Zur&uuml;ck zu Schritt 3<br>(Serviceauswahl)</th>
+                <th scope="col">Zur&uuml;ck zu Schritt 4<br>(Hinweisfenster)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="state-table__property">selectedBrand</td>
+                <td>
+                  <span class="state-cell state-cell--set">
+                    <span class="material-icons" aria-hidden="true">check_circle</span>
+                    Behalten
+                  </span>
+                </td>
+                <td>
+                  <span class="state-cell state-cell--set">
+                    <span class="material-icons" aria-hidden="true">check_circle</span>
+                    Behalten
+                  </span>
+                </td>
+                <td>
+                  <span class="state-cell state-cell--set">
+                    <span class="material-icons" aria-hidden="true">check_circle</span>
+                    Behalten
+                  </span>
+                </td>
+                <td>
+                  <span class="state-cell state-cell--set">
+                    <span class="material-icons" aria-hidden="true">check_circle</span>
+                    Behalten
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td class="state-table__property">selectedLocation</td>
+                <td>
+                  <span class="state-cell state-cell--nulled">
+                    <span class="material-icons" aria-hidden="true">cancel</span>
+                    null
+                  </span>
+                </td>
+                <td>
+                  <span class="state-cell state-cell--set">
+                    <span class="material-icons" aria-hidden="true">check_circle</span>
+                    Behalten
+                  </span>
+                </td>
+                <td>
+                  <span class="state-cell state-cell--set">
+                    <span class="material-icons" aria-hidden="true">check_circle</span>
+                    Behalten
+                  </span>
+                </td>
+                <td>
+                  <span class="state-cell state-cell--set">
+                    <span class="material-icons" aria-hidden="true">check_circle</span>
+                    Behalten
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td class="state-table__property">selectedServices</td>
+                <td>
+                  <span class="state-cell state-cell--nulled">
+                    <span class="material-icons" aria-hidden="true">cancel</span>
+                    []
+                  </span>
+                </td>
+                <td>
+                  <span class="state-cell state-cell--nulled">
+                    <span class="material-icons" aria-hidden="true">cancel</span>
+                    []
+                  </span>
+                </td>
+                <td>
+                  <span class="state-cell state-cell--set">
+                    <span class="material-icons" aria-hidden="true">check_circle</span>
+                    Behalten
+                  </span>
+                </td>
+                <td>
+                  <span class="state-cell state-cell--set">
+                    <span class="material-icons" aria-hidden="true">check_circle</span>
+                    Behalten
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td class="state-table__property">bookingNote</td>
+                <td>
+                  <span class="state-cell state-cell--nulled">
+                    <span class="material-icons" aria-hidden="true">cancel</span>
+                    null
+                  </span>
+                </td>
+                <td>
+                  <span class="state-cell state-cell--nulled">
+                    <span class="material-icons" aria-hidden="true">cancel</span>
+                    null
+                  </span>
+                </td>
+                <td>
+                  <span class="state-cell state-cell--nulled">
+                    <span class="material-icons" aria-hidden="true">cancel</span>
+                    null
+                  </span>
+                </td>
+                <td>
+                  <span class="state-cell state-cell--set">
+                    <span class="material-icons" aria-hidden="true">check_circle</span>
+                    Behalten
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td class="state-table__property">selectedAppointment</td>
+                <td>
+                  <span class="state-cell state-cell--nulled">
+                    <span class="material-icons" aria-hidden="true">cancel</span>
+                    null
+                  </span>
+                </td>
+                <td>
+                  <span class="state-cell state-cell--nulled">
+                    <span class="material-icons" aria-hidden="true">cancel</span>
+                    null
+                  </span>
+                </td>
+                <td>
+                  <span class="state-cell state-cell--nulled">
+                    <span class="material-icons" aria-hidden="true">cancel</span>
+                    null
+                  </span>
+                </td>
+                <td>
+                  <span class="state-cell state-cell--nulled">
+                    <span class="material-icons" aria-hidden="true">cancel</span>
+                    null
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ================================================================
+       Footer
+       ================================================================ -->
+  <footer class="footer" role="contentinfo">
+    <p class="footer__text">Autohaus GmbH</p>
+  </footer>
+
+</body>
+</html>
