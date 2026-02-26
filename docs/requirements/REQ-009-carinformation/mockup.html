@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REQ-009 Carinformation - Mockup</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================================================
+       CSS Custom Properties - Design System (from _variables.scss)
+       ========================================================================= */
+    :root {
+      --color-primary: #667eea;
+      --color-primary-hover: #5a67d8;
+      --color-secondary: #764ba2;
+      --color-accent: #ed8936;
+
+      --color-text-primary: #1a1a1a;
+      --color-text-secondary: #595959;
+      --color-text-muted: #767676;
+      --color-text-on-primary: #ffffff;
+      --color-text-on-dark: #ffffff;
+
+      --color-background-page: #f8f9fa;
+      --color-background-surface: #ffffff;
+      --color-background-hover: #f5f5f5;
+
+      --color-border: #e0e0e0;
+      --color-divider: #eeeeee;
+
+      --color-error: #c62828;
+      --color-success: #2e7d32;
+      --color-warning: #e65100;
+      --color-info: #1565c0;
+
+      --color-focus-ring: #005fcc;
+
+      --shadow-small: 0 0.0625em 0.125em rgba(0,0,0,0.1);
+      --shadow-medium: 0 0.25em 0.5em rgba(0,0,0,0.1);
+      --shadow-large: 0 0.5em 1em rgba(0,0,0,0.15);
+
+      --font-size-base: 1em;
+      --font-size-xs: 0.875em;
+      --font-size-sm: 1em;
+      --font-size-md: 1.125em;
+      --font-size-lg: 1.25em;
+      --font-size-xl: 1.5em;
+      --font-size-2xl: 2em;
+
+      --line-height-tight: 1.25;
+      --line-height-normal: 1.5;
+      --line-height-relaxed: 1.75;
+
+      --spacing-xs: 0.25em;
+      --spacing-sm: 0.5em;
+      --spacing-md: 1em;
+      --spacing-lg: 1.5em;
+      --spacing-xl: 2em;
+
+      --radius-sm: 0.25em;
+      --radius-md: 0.5em;
+      --radius-lg: 0.75em;
+      --radius-xl: 1em;
+      --radius-full: 50%;
+
+      --touch-target-min: 2.75em;
+    }
+
+    /* =========================================================================
+       Reset & Base
+       ========================================================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      line-height: var(--line-height-normal);
+      color: var(--color-text-primary);
+      background-color: var(--color-background-page);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* =========================================================================
+       App Layout
+       ========================================================================= */
+    .app-layout {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-main {
+      flex: 1;
+      padding: var(--spacing-md);
+      width: 100%;
+      max-width: 70em;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 48em) {
+      .app-main { padding: var(--spacing-xl); }
+    }
+
+    /* =========================================================================
+       Icon Framed (from _utilities.scss)
+       ========================================================================= */
+    .icon-framed {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5em;
+      height: 2.5em;
+      background: var(--color-background-surface);
+      border: 0.0625em solid var(--color-border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-small);
+      flex-shrink: 0;
+    }
+
+    .icon-framed--sm { width: 2em; height: 2em; }
+    .icon-framed--primary { border-color: var(--color-primary); color: var(--color-primary); }
+
+    /* =========================================================================
+       Header
+       ========================================================================= */
+    .header {
+      background-color: var(--color-background-surface);
+      border-bottom: 0.0625em solid var(--color-border);
+      box-shadow: var(--shadow-small);
+    }
+
+    .header__content {
+      display: flex;
+      align-items: center;
+      padding: var(--spacing-sm) var(--spacing-md);
+      max-width: 70em;
+      margin: 0 auto;
+      min-height: 3.5em;
+    }
+
+    .header__logo-link {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      text-decoration: none;
+      color: inherit;
+      min-height: var(--touch-target-min);
+      padding: var(--spacing-xs);
+      border-radius: var(--radius-sm);
+    }
+
+    .header__logo-link:focus-visible {
+      outline: 0.125em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+
+    .header__logo-circle {
+      width: 2.5em;
+      height: 2.5em;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-on-primary);
+      font-weight: 700;
+      font-size: var(--font-size-sm);
+      flex-shrink: 0;
+    }
+
+    .header__company-name {
+      font-weight: 600;
+      font-size: var(--font-size-md);
+      color: var(--color-text-primary);
+    }
+
+    .header__company-subtitle {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+
+    .header__actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .header__icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: var(--touch-target-min);
+      min-width: var(--touch-target-min);
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      color: var(--color-text-secondary);
+      padding: var(--spacing-xs);
+    }
+
+    .header__icon-btn:focus-visible {
+      outline: 0.125em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+
+    /* =========================================================================
+       Page Title
+       ========================================================================= */
+    .page-title {
+      font-size: var(--font-size-xl);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      text-align: center;
+      margin-bottom: var(--spacing-xl);
+      line-height: var(--line-height-tight);
+    }
+
+    @media (min-width: 48em) {
+      .page-title { font-size: var(--font-size-2xl); }
+    }
+
+    /* =========================================================================
+       Returning Customer Banner
+       ========================================================================= */
+    .returning-banner {
+      background-color: var(--color-background-surface);
+      border: 0.0625em solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-medium);
+      overflow: hidden;
+      margin-bottom: var(--spacing-xl);
+      display: flex;
+      align-items: stretch;
+    }
+
+    .returning-banner__content {
+      padding: var(--spacing-lg);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+      justify-content: center;
+    }
+
+    .returning-banner__title {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .returning-banner__description {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-normal);
+    }
+
+    .returning-banner__image {
+      width: 12em;
+      background: linear-gradient(135deg, #2d3748, #4a5568);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .returning-banner__image .material-icons {
+      font-size: 3em;
+      color: rgba(255,255,255,0.4);
+    }
+
+    @media (max-width: 47.99em) {
+      .returning-banner { flex-direction: column; }
+      .returning-banner__image { width: 100%; height: 6em; }
+    }
+
+    /* =========================================================================
+       Form Section (dark container)
+       ========================================================================= */
+    .form-section {
+      background-color: #2d3748;
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    /* =========================================================================
+       Form Fields
+       ========================================================================= */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .form-row:last-child { margin-bottom: 0; }
+
+    @media (min-width: 48em) {
+      .form-row--3col { grid-template-columns: 1fr 1.5fr 1.5fr; }
+      .form-row--2col { grid-template-columns: 1fr 2fr; }
+      .form-row--equal { grid-template-columns: 1fr 1fr; }
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-xs);
+    }
+
+    .form-field__label {
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .form-field__required {
+      color: var(--color-accent);
+    }
+
+    .form-field__input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background-color: var(--color-background-surface);
+      border: 0.125em solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      min-height: var(--touch-target-min);
+      transition: border-color 0.2s ease;
+    }
+
+    .form-field__input-wrapper:focus-within {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 0.125em rgba(102, 126, 234, 0.2);
+    }
+
+    .form-field__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.75em;
+      min-height: var(--touch-target-min);
+      background-color: #f1f5f9;
+      border-right: 0.0625em solid var(--color-border);
+      flex-shrink: 0;
+      color: var(--color-text-muted);
+    }
+
+    .form-field__icon .material-icons { font-size: 1.25em; }
+
+    .form-field__input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 0 var(--spacing-sm);
+      font-size: var(--font-size-sm);
+      font-family: inherit;
+      color: var(--color-text-primary);
+      background: transparent;
+      min-height: var(--touch-target-min);
+    }
+
+    .form-field__input::placeholder {
+      color: var(--color-text-muted);
+    }
+
+    .form-field__select {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 0 var(--spacing-sm);
+      font-size: var(--font-size-sm);
+      font-family: inherit;
+      color: var(--color-text-muted);
+      background: transparent;
+      min-height: var(--touch-target-min);
+      cursor: pointer;
+      appearance: auto;
+    }
+
+    .form-field__hint {
+      font-size: var(--font-size-xs);
+      color: #94a3b8;
+      line-height: var(--line-height-normal);
+    }
+
+    /* FIN info link */
+    .form-field__label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-field__info-link {
+      font-size: var(--font-size-xs);
+      color: var(--color-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.2em;
+    }
+
+    .form-field__info-link .material-icons { font-size: 1em; }
+
+    .form-field__info-link:focus-visible {
+      outline: 0.125em solid var(--color-focus-ring);
+      border-radius: var(--radius-sm);
+    }
+
+    /* =========================================================================
+       Privacy Section
+       ========================================================================= */
+    .privacy-section {
+      background-color: var(--color-background-surface);
+      border: 0.0625em solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .privacy-checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-sm);
+      cursor: pointer;
+    }
+
+    .privacy-checkbox__input {
+      width: 1.25em;
+      height: 1.25em;
+      margin-top: 0.15em;
+      flex-shrink: 0;
+      accent-color: var(--color-primary);
+      cursor: pointer;
+    }
+
+    .privacy-checkbox__label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-relaxed);
+    }
+
+    .privacy-checkbox__link {
+      color: var(--color-primary);
+      text-decoration: underline;
+    }
+
+    .privacy-checkbox__link:focus-visible {
+      outline: 0.125em solid var(--color-focus-ring);
+      border-radius: var(--radius-sm);
+    }
+
+    .privacy-checkbox__required {
+      color: var(--color-error);
+    }
+
+    /* =========================================================================
+       Required Hint
+       ========================================================================= */
+    .required-hint {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      text-align: center;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    /* =========================================================================
+       Buttons
+       ========================================================================= */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-xs);
+      padding: 0 var(--spacing-lg);
+      min-height: var(--touch-target-min);
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn:focus-visible {
+      outline: 0.125em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+
+    .btn--primary {
+      background-color: var(--color-primary);
+      color: var(--color-text-on-primary);
+    }
+
+    .btn--primary:hover {
+      background-color: var(--color-primary-hover);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .btn--secondary {
+      background-color: transparent;
+      color: var(--color-primary);
+      border: 0.125em solid var(--color-primary);
+    }
+
+    .btn--secondary:hover {
+      background-color: rgba(102, 126, 234, 0.08);
+    }
+
+    .btn--retrieve {
+      background-color: #4a5568;
+      color: #e2e8f0;
+      font-size: var(--font-size-xs);
+      padding: 0 var(--spacing-md);
+      align-self: flex-start;
+    }
+
+    .btn--retrieve:hover {
+      background-color: #2d3748;
+    }
+
+    /* =========================================================================
+       Navigation Row
+       ========================================================================= */
+    .navigation-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-md) 0 var(--spacing-xl);
+      gap: var(--spacing-md);
+    }
+
+    /* =========================================================================
+       Footer
+       ========================================================================= */
+    .footer {
+      background-color: var(--color-background-surface);
+      border-top: 0.0625em solid var(--color-border);
+      padding: var(--spacing-md);
+      text-align: center;
+    }
+
+    .footer__text {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+
+    <!-- =====================================================================
+         Header (REQ-001)
+         ===================================================================== -->
+    <header class="header" role="banner">
+      <div class="header__content">
+        <a href="#main" class="header__logo-link" aria-label="Gottfried Schultz – Zur Startseite">
+          <div class="header__logo-circle" aria-hidden="true">GS</div>
+          <div>
+            <div class="header__company-name">Gottfried Schultz</div>
+            <div class="header__company-subtitle">Automobilhandels SE</div>
+          </div>
+        </a>
+
+        <div class="header__actions">
+          <button class="header__icon-btn icon-framed icon-framed--sm" aria-label="Warenkorb">
+            <span class="material-icons" aria-hidden="true">shopping_cart</span>
+          </button>
+          <button class="header__icon-btn icon-framed icon-framed--sm" aria-label="Barrierefreiheit">
+            <span class="material-icons" aria-hidden="true">accessibility</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- =====================================================================
+         Main Content
+         ===================================================================== -->
+    <main id="main" class="app-main" role="main">
+
+      <!-- Page Title -->
+      <h1 class="page-title">Bitte geben Sie uns letzte Informationen rund um Ihren Termin</h1>
+
+      <!-- Returning Customer Banner -->
+      <section class="returning-banner" aria-label="Bestandskunde – Datenabruf">
+        <div class="returning-banner__content">
+          <h2 class="returning-banner__title">Schon einmal bei uns gewesen?</h2>
+          <p class="returning-banner__description">
+            Dann rufen Sie Ihre Daten automatisch mit Eingabe Ihrer E-Mail-Adresse ab.
+          </p>
+          <button class="btn btn--retrieve" type="button">
+            Jetzt Daten abrufen!
+          </button>
+        </div>
+        <div class="returning-banner__image" aria-hidden="true">
+          <span class="material-icons">keyboard</span>
+        </div>
+      </section>
+
+      <!-- Form: Customer Data -->
+      <form novalidate aria-label="Kunden- und Fahrzeuginformationen">
+
+        <section class="form-section" aria-labelledby="customer-section-title">
+          <div class="form-row">
+            <!-- E-Mail -->
+            <div class="form-field">
+              <label class="form-field__label" for="email">
+                E-Mail Adresse <span class="form-field__required" aria-hidden="true">*</span>
+              </label>
+              <div class="form-field__input-wrapper">
+                <span class="form-field__icon icon-framed icon-framed--sm" aria-hidden="true">
+                  <span class="material-icons">email</span>
+                </span>
+                <input
+                  class="form-field__input"
+                  id="email"
+                  type="email"
+                  placeholder="max@mustermann.de"
+                  aria-required="true"
+                  autocomplete="email"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Row: Anrede | Vorname | Nachname -->
+          <div class="form-row form-row--3col">
+            <!-- Anrede -->
+            <div class="form-field">
+              <label class="form-field__label" for="salutation">
+                Anrede <span class="form-field__required" aria-hidden="true">*</span>
+              </label>
+              <div class="form-field__input-wrapper">
+                <span class="form-field__icon icon-framed icon-framed--sm" aria-hidden="true">
+                  <span class="material-icons">person</span>
+                </span>
+                <select
+                  class="form-field__select"
+                  id="salutation"
+                  aria-required="true"
+                  autocomplete="honorific-prefix"
+                >
+                  <option value="">Bitte wählen</option>
+                  <option value="mr">Herr</option>
+                  <option value="ms">Frau</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Vorname -->
+            <div class="form-field">
+              <label class="form-field__label" for="firstName">
+                Vorname <span class="form-field__required" aria-hidden="true">*</span>
+              </label>
+              <div class="form-field__input-wrapper">
+                <span class="form-field__icon icon-framed icon-framed--sm" aria-hidden="true">
+                  <span class="material-icons">person</span>
+                </span>
+                <input
+                  class="form-field__input"
+                  id="firstName"
+                  type="text"
+                  placeholder="Max"
+                  aria-required="true"
+                  autocomplete="given-name"
+                />
+              </div>
+            </div>
+
+            <!-- Nachname -->
+            <div class="form-field">
+              <label class="form-field__label" for="lastName">
+                Nachname <span class="form-field__required" aria-hidden="true">*</span>
+              </label>
+              <div class="form-field__input-wrapper">
+                <span class="form-field__icon icon-framed icon-framed--sm" aria-hidden="true">
+                  <span class="material-icons">person</span>
+                </span>
+                <input
+                  class="form-field__input"
+                  id="lastName"
+                  type="text"
+                  placeholder="Mustermann"
+                  aria-required="true"
+                  autocomplete="family-name"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Straße und Haus Nr. -->
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-field__label" for="street">
+                Straße und Haus Nr. <span class="form-field__required" aria-hidden="true">*</span>
+              </label>
+              <div class="form-field__input-wrapper">
+                <span class="form-field__icon icon-framed icon-framed--sm" aria-hidden="true">
+                  <span class="material-icons">location_on</span>
+                </span>
+                <input
+                  class="form-field__input"
+                  id="street"
+                  type="text"
+                  placeholder="Musterweg 1"
+                  aria-required="true"
+                  autocomplete="street-address"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Row: PLZ | Wohnort -->
+          <div class="form-row form-row--2col">
+            <!-- PLZ -->
+            <div class="form-field">
+              <label class="form-field__label" for="postalCode">
+                Postleitzahl <span class="form-field__required" aria-hidden="true">*</span>
+              </label>
+              <div class="form-field__input-wrapper">
+                <span class="form-field__icon icon-framed icon-framed--sm" aria-hidden="true">
+                  <span class="material-icons">location_on</span>
+                </span>
+                <input
+                  class="form-field__input"
+                  id="postalCode"
+                  type="text"
+                  placeholder="30159"
+                  aria-required="true"
+                  autocomplete="postal-code"
+                  inputmode="numeric"
+                  maxlength="5"
+                />
+              </div>
+            </div>
+
+            <!-- Wohnort -->
+            <div class="form-field">
+              <label class="form-field__label" for="city">
+                Wohnort <span class="form-field__required" aria-hidden="true">*</span>
+              </label>
+              <div class="form-field__input-wrapper">
+                <span class="form-field__icon icon-framed icon-framed--sm" aria-hidden="true">
+                  <span class="material-icons">location_on</span>
+                </span>
+                <input
+                  class="form-field__input"
+                  id="city"
+                  type="text"
+                  placeholder="Berlin"
+                  aria-required="true"
+                  autocomplete="address-level2"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobilfunknummer -->
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-field__label" for="mobilePhone">
+                Mobilfunknummer <span class="form-field__required" aria-hidden="true">*</span>
+              </label>
+              <div class="form-field__input-wrapper">
+                <span class="form-field__icon icon-framed icon-framed--sm" aria-hidden="true">
+                  <span class="material-icons">phone_android</span>
+                </span>
+                <input
+                  class="form-field__input"
+                  id="mobilePhone"
+                  type="tel"
+                  placeholder="017012345678"
+                  aria-required="true"
+                  aria-describedby="mobilePhone-hint"
+                  autocomplete="tel"
+                  inputmode="numeric"
+                />
+              </div>
+              <p class="form-field__hint" id="mobilePhone-hint">
+                Bitte geben Sie Ihre Mobilfunknummer ohne Sonderzeichen als Zahl im Format 017012345678 ein.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Form: Vehicle Data -->
+        <section class="form-section" aria-labelledby="vehicle-section-title">
+
+          <!-- Row: Kennzeichen | Kilometerstand -->
+          <div class="form-row form-row--equal">
+            <!-- Kennzeichen -->
+            <div class="form-field">
+              <label class="form-field__label" for="licensePlate">
+                Kfz. Kennzeichen <span class="form-field__required" aria-hidden="true">*</span>
+              </label>
+              <div class="form-field__input-wrapper">
+                <span class="form-field__icon icon-framed icon-framed--sm" aria-hidden="true">
+                  <span class="material-icons">directions_car</span>
+                </span>
+                <input
+                  class="form-field__input"
+                  id="licensePlate"
+                  type="text"
+                  placeholder="XX-XX1234"
+                  aria-required="true"
+                />
+              </div>
+            </div>
+
+            <!-- Kilometerstand -->
+            <div class="form-field">
+              <label class="form-field__label" for="mileage">
+                Kilometerstand <span class="form-field__required" aria-hidden="true">*</span>
+              </label>
+              <div class="form-field__input-wrapper">
+                <span class="form-field__icon icon-framed icon-framed--sm" aria-hidden="true">
+                  <span class="material-icons">directions_car</span>
+                </span>
+                <input
+                  class="form-field__input"
+                  id="mileage"
+                  type="text"
+                  placeholder="5000"
+                  aria-required="true"
+                  inputmode="numeric"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- FIN -->
+          <div class="form-row">
+            <div class="form-field">
+              <div class="form-field__label-row">
+                <label class="form-field__label" for="vin">
+                  FIN <span class="form-field__required" aria-hidden="true">*</span>
+                </label>
+                <a href="#" class="form-field__info-link" aria-label="Erklärung der FIN">
+                  <span class="material-icons" aria-hidden="true">info</span>
+                  Erklärung der FIN
+                </a>
+              </div>
+              <div class="form-field__input-wrapper">
+                <span class="form-field__icon icon-framed icon-framed--sm" aria-hidden="true">
+                  <span class="material-icons">directions_car</span>
+                </span>
+                <input
+                  class="form-field__input"
+                  id="vin"
+                  type="text"
+                  placeholder="WDB8XXXXXXA123456"
+                  aria-required="true"
+                  maxlength="17"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Privacy Consent -->
+        <div class="privacy-section">
+          <label class="privacy-checkbox" for="privacyConsent">
+            <input
+              class="privacy-checkbox__input"
+              id="privacyConsent"
+              type="checkbox"
+              aria-required="true"
+            />
+            <span class="privacy-checkbox__label">
+              Ich willige in die Verarbeitung meiner personenbezogenen Daten zum Zwecke der
+              Online-Terminvereinbarung ein. Näheres finden Sie in unserer
+              <a href="#" class="privacy-checkbox__link">Datenschutzerklärung</a>.
+              <span class="privacy-checkbox__required" aria-hidden="true"> *</span>
+            </span>
+          </label>
+        </div>
+
+        <!-- Required Hint -->
+        <p class="required-hint">Pflichtfelder sind mit * gekennzeichnet</p>
+
+        <!-- Navigation -->
+        <nav class="navigation-row" aria-label="Wizard-Navigation">
+          <button class="btn btn--secondary" type="button" aria-label="Zurück zum vorherigen Schritt">
+            <span class="material-icons" aria-hidden="true">arrow_back</span>
+            Zurück
+          </button>
+          <button class="btn btn--primary" type="submit" aria-label="Zur Buchungsübersicht weiter">
+            Zur Buchungsübersicht
+            <span class="material-icons" aria-hidden="true">arrow_forward</span>
+          </button>
+        </nav>
+
+      </form>
+    </main>
+
+    <!-- =====================================================================
+         Footer
+         ===================================================================== -->
+    <footer class="footer" role="contentinfo">
+      <p class="footer__text">Gottfried Schultz Automobilhandels SE</p>
+    </footer>
+
+  </div>
+</body>
+</html>
