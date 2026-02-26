@@ -18,7 +18,7 @@ The Application Header is a reusable component displayed on all pages of the app
 ### Step 1: View header
 ![Header EN](./screenshots/doc-header-en.png)
 
-**Description:** The header is automatically displayed when any page loads. On the left side is the company logo with the name "Gottfried Schultz Automobilhandels SE". On the right side are the shopping cart icon and the accessibility button.
+**Description:** The header is automatically displayed when any page loads. On the left side is the company logo with the name "Autohaus GmbH". On the right side are the shopping cart icon and the accessibility button.
 
 ### Step 2: Shopping cart icon
 

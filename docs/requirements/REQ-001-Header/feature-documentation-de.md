@@ -18,7 +18,7 @@ Der Application Header ist eine wiederverwendbare Komponente, die auf allen Seit
 ### Schritt 1: Header anzeigen
 ![Header DE](./screenshots/doc-header-de.png)
 
-**Beschreibung:** Der Header wird beim Laden jeder Seite automatisch angezeigt. Links befindet sich das Firmenlogo mit dem Namen "Gottfried Schultz Automobilhandels SE". Rechts sind das Warenkorb-Icon und der Accessibility-Button platziert.
+**Beschreibung:** Der Header wird beim Laden jeder Seite automatisch angezeigt. Links befindet sich das Firmenlogo mit dem Namen "Autohaus GmbH". Rechts sind das Warenkorb-Icon und der Accessibility-Button platziert.
 
 ### Schritt 2: Warenkorb-Icon
 

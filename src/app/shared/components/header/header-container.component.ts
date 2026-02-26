@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 
+import type { Language } from '@app/core/i18n';
 import { i18nKeys, TranslatePipe, TranslateService } from '@app/core/i18n';
 import { AVAILABLE_SERVICES } from '@app/features/booking/models/service.model';
 import { BookingStore } from '@app/features/booking/stores/booking.store';
@@ -44,6 +45,7 @@ export class HeaderContainerComponent {
 
   protected readonly app = i18nKeys.app;
   protected readonly header = i18nKeys.header;
+  protected readonly currentLanguage = this.translateService.getLanguageSignal();
 
   protected readonly selectedBrandName = computed(() => {
     const brand = this.bookingStore.selectedBrand();
@@ -72,6 +74,12 @@ export class HeaderContainerComponent {
     });
   });
 
+  protected readonly selectedAppointmentText = computed(() => {
+    const appointment = this.bookingStore.selectedAppointment();
+    if (!appointment) return null;
+    return `${appointment.displayDate}, ${appointment.displayTime}`;
+  });
+
   protected readonly cartSummaryText = computed(() => {
     const count = this.bookingStore.selectedServiceCount();
     const template = this.translateService.instant(this.header.cart.summary);
@@ -88,6 +96,10 @@ export class HeaderContainerComponent {
 
   protected onReducedMotionChange(value: boolean): void {
     this.accessibilityStore.setReducedMotion(value);
+  }
+
+  protected onLanguageChange(language: Language): void {
+    this.translateService.use(language);
   }
 
   protected onCartOpen(): void {

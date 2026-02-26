@@ -50,7 +50,7 @@ export class ServiceSelectionContainerComponent {
 
   protected onContinue(): void {
     console.debug('[ServiceSelection] Continue clicked, services:', this.store.selectedServices());
-    void this.router.navigate(['/home/services']);
+    void this.router.navigate(['/home/notes']);
   }
 
   protected onBack(): void {

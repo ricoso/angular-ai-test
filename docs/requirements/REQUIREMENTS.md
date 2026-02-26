@@ -1,8 +1,8 @@
 # Requirements Overview
 
-**Project:** Gottfried Schultz Fahrzeugauswahl
+**Project:** Autohaus GmbH Fahrzeugauswahl
 **Version:** 1.0
-**Last Updated:** 2026-02-10
+**Last Updated:** 2026-02-24
 
 ---
 
@@ -27,11 +27,10 @@
 | REQ-002 | Markenauswahl | ✔️ Implemented | High | REQ-001 | Einstiegsseite Buchungswizard: Fahrzeugmarken-Auswahl (Audi, BMW, Mercedes-Benz, MINI, Volkswagen) |
 | REQ-003 | Standortwahl | ✔️ Implemented | High | REQ-002 | Standortwahl basierend auf gewählter Fahrzeugmarke (Wizard-Schritt 2) |
 | REQ-004 | Serviceauswahl | 🔍 In Review | High | REQ-003 | Serviceauswahl mit Multi-Select, Radio-Varianten und Zusammenfassungsleiste (Wizard-Schritt 3) |
-| REQ-005 | Hinweisfenster | 📝 Draft | High | REQ-004 | Optionale Hinweiseingabe nach Serviceauswahl, servicespezifische Hinweistexte werden angezeigt (Wizard-Schritt 4) |
-| REQ-006 | Terminauswahl | 🚧 In Progress | High | REQ-005 | Auswahl eines Termins aus 4 vorgeschlagenen Zeitfenstern (Werktage Mo–Sa, 07:00–18:00 Uhr) (Wizard-Schritt 5) |
-| REQ-007 | WizardStateSync | 📝 Draft | High | REQ-002 | Rückwärtsnavigation synchronisiert BookingStore — Guards greifen korrekt bei Direktaufruf (Cross-Cutting alle Schritte 2–5) |
-| REQ-008 | Werkstattkalender | 📝 Draft | High | REQ-006 | Erweiterter Kalender mit DatePicker zur Auswahl eines Wunschtermins + Uhrzeiten der nächsten 3 Werktage (Wizard-Schritt 5b) |
-| REQ-009 | carinformation | 📝 Draft | High | REQ-006 | Formular für Kunden- und Fahrzeuginformationen: E-Mail, Anrede, Name, Adresse, Mobilnummer, Kennzeichen, Kilometerstand, FIN, DSGVO-Einwilligung (Wizard letzter Datenschritt) |
+| REQ-005 | Hinweisfenster | ✔️ Implemented | High | REQ-004 | Optionale Buchungsnotiz + servicespezifische Hinweise (Wizard-Schritt 4) |
+| REQ-006 | Terminauswahl | ✔️ Implemented | High | REQ-005 | Terminauswahl mit 4 Vorschlägen, Single-Select (Wizard-Schritt 5) |
+| REQ-007 | WizardStateSync | 🔍 In Review | High | REQ-002, REQ-003, REQ-004, REQ-005 | Cross-Cutting: Bei Rückwärtsnavigation im Wizard werden Store-Properties genullt, um UI-Flow und Store-State synchron zu halten. Verhindert unbeabsichtigte URL-Navigation. |
+| REQ-008 | Werkstattkalender | 🔍 In Review | High | REQ-006 | Werkstattkalender mit DatePicker und Uhrzeitslot-Auswahl (Wizard-Schritt 5b) |
 
 ---
 
@@ -40,19 +39,23 @@
 ```
 REQ-001-Header
     │
-    └──► REQ-002-Markenauswahl ◄── REQ-007-WizardStateSync (Cross-Cutting)
+    └──► REQ-002-Markenauswahl
               │
               └──► REQ-003-Standortwahl
                         │
                         └──► REQ-004-Serviceauswahl
-                                  │
-                                  └──► REQ-005-Hinweisfenster
-                                            │
-                                            └──► REQ-006-Terminauswahl
-                                                      │
-                                                      ├──► REQ-008-Werkstattkalender (5b)
-                                                      │
-                                                      └──► REQ-009-carinformation
+                                      │
+                                      └──► REQ-005-Hinweisfenster
+                                                    │
+                                                    └──► REQ-006-Terminauswahl
+
+                                                    └──► REQ-008-Werkstattkalender
+
+REQ-007-WizardStateSync (Cross-Cutting)
+    ├──► REQ-002-Markenauswahl
+    ├──► REQ-003-Standortwahl
+    ├──► REQ-004-Serviceauswahl
+    └──► REQ-005-Hinweisfenster
 ```
 
 ---
@@ -69,7 +72,6 @@ REQ-001-Header
 | REQ-006 | [REQ-006-Terminauswahl](./REQ-006-Terminauswahl/requirement.md) |
 | REQ-007 | [REQ-007-WizardStateSync](./REQ-007-WizardStateSync/requirement.md) |
 | REQ-008 | [REQ-008-Werkstattkalender](./REQ-008-Werkstattkalender/requirement.md) |
-| REQ-009 | [REQ-009-carinformation](./REQ-009-carinformation/requirement.md) |
 
 ---
 
@@ -77,12 +79,12 @@ REQ-001-Header
 
 | Status | Count |
 |--------|-------|
-| 📝 Draft | 4 |
-| 🔍 In Review | 1 |
+| 📝 Draft | 0 |
+| 🔍 In Review | 3 |
 | ✅ Approved | 0 |
-| 🚧 In Progress | 1 |
-| ✔️ Implemented | 3 |
-| **Total** | **9** |
+| 🚧 In Progress | 0 |
+| ✔️ Implemented | 5 |
+| **Total** | **8** |
 
 ---
 

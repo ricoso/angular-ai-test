@@ -5,10 +5,14 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 
 import { catchError, EMPTY, from, pipe, switchMap, tap } from 'rxjs';
 
+import type { AppointmentSlot } from '../models/appointment.model';
 import type { Brand, BrandDisplay } from '../models/brand.model';
 import type { LocationDisplay } from '../models/location.model';
 import type { SelectedService, ServiceDisplay, ServiceType } from '../models/service.model';
+import type { WorkshopCalendarDay } from '../models/workshop-calendar.model';
+import { AppointmentApiService } from '../services/appointment-api.service';
 import { BookingApiService } from '../services/booking-api.service';
+import { WorkshopCalendarApiService } from '../services/workshop-calendar-api.service';
 
 interface BookingState {
   brands: BrandDisplay[];
@@ -17,6 +21,11 @@ interface BookingState {
   selectedLocation: LocationDisplay | null;
   services: ServiceDisplay[];
   selectedServices: SelectedService[];
+  bookingNote: string | null;
+  appointments: AppointmentSlot[];
+  selectedAppointment: AppointmentSlot | null;
+  workshopCalendarDate: string | null;
+  workshopCalendarDays: WorkshopCalendarDay[];
   isLoading: boolean;
   error: string | null;
 }
@@ -28,6 +37,11 @@ const INITIAL_STATE: BookingState = {
   selectedLocation: null,
   services: [],
   selectedServices: [],
+  bookingNote: null,
+  appointments: [],
+  selectedAppointment: null,
+  workshopCalendarDate: null,
+  workshopCalendarDays: [],
   isLoading: false,
   error: null
 };
@@ -37,17 +51,24 @@ export const BookingStore = signalStore(
 
   withState<BookingState>(INITIAL_STATE),
 
-  withComputed(({ brands, selectedBrand, locations, selectedLocation, selectedServices }) => ({
+  withComputed(({ brands, selectedBrand, locations, selectedLocation, selectedServices, bookingNote, selectedAppointment, workshopCalendarDate }) => ({
     hasBrandSelected: computed(() => selectedBrand() !== null),
     brandCount: computed(() => brands().length),
     filteredLocations: computed(() => locations()),
     locationCount: computed(() => locations().length),
     hasLocationSelected: computed(() => selectedLocation() !== null),
     selectedServiceCount: computed(() => selectedServices().length),
-    hasServicesSelected: computed(() => selectedServices().length > 0)
+    hasServicesSelected: computed(() => selectedServices().length > 0),
+    hasBookingNote: computed(() => bookingNote() !== null && bookingNote() !== ''),
+    hasAppointmentSelected: computed(() => selectedAppointment() !== null),
+    hasWorkshopSlotSelected: computed(() => {
+      const appointment = selectedAppointment();
+      const calendarDate = workshopCalendarDate();
+      return appointment !== null && calendarDate !== null;
+    })
   })),
 
-  withMethods((store, api = inject(BookingApiService)) => ({
+  withMethods((store, api = inject(BookingApiService), appointmentApi = inject(AppointmentApiService), workshopCalendarApi = inject(WorkshopCalendarApiService)) => ({
     loadBrands: rxMethod<void>(
       pipe(
         tap(() => { patchState(store, { isLoading: true, error: null }); }),
@@ -141,6 +162,71 @@ export const BookingStore = signalStore(
       console.debug('[BookingStore] Deselecting tire change');
       const current = store.selectedServices();
       patchState(store, { selectedServices: current.filter(s => s.serviceId !== 'tire-change') });
+    },
+
+    setBookingNote(note: string | null): void {
+      console.debug('[BookingStore] setBookingNote:', note);
+      patchState(store, { bookingNote: note ?? null });
+    },
+
+    loadAppointments: rxMethod<void>(
+      pipe(
+        tap(() => { patchState(store, { isLoading: true, error: null }); }),
+        switchMap(() => from(appointmentApi.getAppointments()).pipe(
+          tap((appointments) => {
+            console.debug('[BookingStore] Appointments loaded:', appointments);
+            patchState(store, { appointments, isLoading: false });
+          }),
+          catchError((err: unknown) => {
+            const message = err instanceof Error ? err.message : 'Unknown error';
+            patchState(store, { error: message, isLoading: false });
+            return EMPTY;
+          })
+        ))
+      )
+    ),
+
+    selectAppointment(appointment: AppointmentSlot): void {
+      console.debug('[BookingStore] selectAppointment:', appointment);
+      patchState(store, { selectedAppointment: appointment });
+    },
+
+    setWorkshopCalendarDate(date: string): void {
+      console.debug('[BookingStore] setWorkshopCalendarDate:', date);
+      patchState(store, { workshopCalendarDate: date, selectedAppointment: null });
+    },
+
+    loadWorkshopCalendarDays: rxMethod<string>(
+      pipe(
+        tap(() => { patchState(store, { isLoading: true, error: null }); }),
+        switchMap((fromDate) => from(workshopCalendarApi.getWorkshopCalendarDays(fromDate)).pipe(
+          tap((workshopCalendarDays) => {
+            console.debug('[BookingStore] Workshop calendar days loaded:', workshopCalendarDays);
+            patchState(store, { workshopCalendarDays, isLoading: false });
+          }),
+          catchError((err: unknown) => {
+            const message = err instanceof Error ? err.message : 'Unknown error';
+            patchState(store, { error: message, isLoading: false });
+            return EMPTY;
+          })
+        ))
+      )
+    ),
+
+    clearWorkshopCalendar(): void {
+      patchState(store, { workshopCalendarDate: null, workshopCalendarDays: [], selectedAppointment: null });
+    },
+
+    clearSelectedLocation(): void {
+      patchState(store, { selectedLocation: null });
+    },
+
+    clearBookingNote(): void {
+      patchState(store, { bookingNote: null });
+    },
+
+    clearSelectedAppointment(): void {
+      patchState(store, { selectedAppointment: null });
     },
 
     clearSelectedServices(): void {

@@ -1,0 +1,13 @@
+<section
+  class="service-hints"
+  [attr.aria-label]="booking.notes.hintsTitle | translate"
+>
+  <h2 class="service-hints__title">{{ booking.notes.hintsTitle | translate }}</h2>
+
+  @for (hint of visibleHints(); track hint.serviceId) {
+    <div class="service-hints__item" role="note">
+      <mat-icon class="icon-framed service-hints__icon" aria-hidden="true">{{ hint.icon }}</mat-icon>
+      <p class="service-hints__text">{{ hint.hintKey | translate }}</p>
+    </div>
+  }
+</section>

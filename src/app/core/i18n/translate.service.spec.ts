@@ -19,13 +19,31 @@ describe('TranslateService', () => {
     it('should return German translation (default)', () => {
       service.use('de');
       const result = service.instant('app.title');
-      expect(result).toBe('Gottfried Schultz');
+      expect(result).toBe('Autohaus GmbH');
     });
 
     it('should return English translation', () => {
       service.use('en');
       const result = service.instant('app.skipLink');
       expect(result).toBe('Skip to main content');
+    });
+
+    it('should return Ukrainian translation', () => {
+      service.use('uk');
+      const result = service.instant('app.skipLink');
+      expect(result).toBe('Перейти до основного вмісту');
+    });
+
+    it('should return French translation', () => {
+      service.use('fr');
+      const result = service.instant('app.skipLink');
+      expect(result).toBe('Aller au contenu principal');
+    });
+
+    it('should return Arabic translation', () => {
+      service.use('ar');
+      const result = service.instant('app.skipLink');
+      expect(result).toBe('انتقل إلى المحتوى الرئيسي');
     });
 
     it('should return key when translation does not exist', () => {
@@ -43,6 +61,21 @@ describe('TranslateService', () => {
     it('should set language to English', () => {
       service.use('en');
       expect(service.getCurrentLanguage()).toBe('en');
+    });
+
+    it('should set language to Ukrainian', () => {
+      service.use('uk');
+      expect(service.getCurrentLanguage()).toBe('uk');
+    });
+
+    it('should set language to French', () => {
+      service.use('fr');
+      expect(service.getCurrentLanguage()).toBe('fr');
+    });
+
+    it('should set language to Arabic', () => {
+      service.use('ar');
+      expect(service.getCurrentLanguage()).toBe('ar');
     });
 
     it('should save language to LocalStorage', () => {
@@ -92,6 +125,57 @@ describe('TranslateService', () => {
       const newService = new TranslateService();
 
       expect(newService.getCurrentLanguage()).toBe('en');
+    });
+
+    it('should load Ukrainian from LocalStorage', () => {
+      localStorage.setItem('app-language', 'uk');
+
+      const newService = new TranslateService();
+
+      expect(newService.getCurrentLanguage()).toBe('uk');
+    });
+
+    it('should load French from LocalStorage', () => {
+      localStorage.setItem('app-language', 'fr');
+
+      const newService = new TranslateService();
+
+      expect(newService.getCurrentLanguage()).toBe('fr');
+    });
+
+    it('should load Arabic from LocalStorage', () => {
+      localStorage.setItem('app-language', 'ar');
+
+      const newService = new TranslateService();
+
+      expect(newService.getCurrentLanguage()).toBe('ar');
+    });
+  });
+
+  describe('RTL support', () => {
+    it('should return true for isRtl when language is Arabic', () => {
+      service.use('ar');
+      expect(service.isRtl()).toBe(true);
+    });
+
+    it('should return false for isRtl when language is not Arabic', () => {
+      service.use('de');
+      expect(service.isRtl()).toBe(false);
+    });
+
+    it('should set dir attribute to rtl for Arabic', () => {
+      service.use('ar');
+      expect(document.documentElement.getAttribute('dir')).toBe('rtl');
+    });
+
+    it('should set dir attribute to ltr for non-RTL languages', () => {
+      service.use('de');
+      expect(document.documentElement.getAttribute('dir')).toBe('ltr');
+    });
+
+    it('should set lang attribute on document', () => {
+      service.use('fr');
+      expect(document.documentElement.getAttribute('lang')).toBe('fr');
     });
   });
 });

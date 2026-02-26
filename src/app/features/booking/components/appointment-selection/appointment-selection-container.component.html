@@ -1,0 +1,55 @@
+<section class="appointment-selection" aria-labelledby="appointment-title">
+
+  <h1 class="appointment-selection__title" id="appointment-title">
+    {{ booking.appointment.title | translate }}
+  </h1>
+
+  <div
+    class="appointment-selection__grid"
+    role="radiogroup"
+    [attr.aria-label]="booking.appointment.ariaGroupLabel | translate"
+  >
+    @for (appointment of appointments(); track appointment.id) {
+      <app-appointment-card
+        [appointment]="appointment"
+        [isSelected]="selectedAppointment()?.id === appointment.id"
+        (appointmentSelected)="onAppointmentSelect($event)"
+      />
+    }
+  </div>
+
+  <button
+    class="appointment-selection__calendar-link"
+    type="button"
+    (click)="onCalendarLinkClick($event)"
+  >
+    {{ booking.appointment.calendarLink | translate }}
+  </button>
+
+  <nav class="appointment-selection__nav" [attr.aria-label]="booking.appointment.navAriaLabel | translate">
+    <button
+      mat-flat-button
+      class="appointment-selection__back-button"
+      type="button"
+      [attr.aria-label]="booking.appointment.backButton | translate"
+      (click)="onBack()"
+    >
+      <mat-icon aria-hidden="true">arrow_back</mat-icon>
+      {{ booking.appointment.backButton | translate }}
+    </button>
+
+    <button
+      mat-flat-button
+      color="primary"
+      class="appointment-selection__continue-button"
+      type="button"
+      [disabled]="!hasAppointmentSelected()"
+      [attr.aria-label]="booking.appointment.continueButton | translate"
+      (click)="onContinue()"
+    >
+      {{ booking.appointment.continueButton | translate }}
+      <mat-icon aria-hidden="true">arrow_forward</mat-icon>
+    </button>
+  </nav>
+
+</section>

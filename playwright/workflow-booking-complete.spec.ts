@@ -2,27 +2,48 @@ import { expect, test } from '@playwright/test';
 
 import { getCurrentRoute, navigateTo, setLanguage, waitForAngular } from './helpers/app.helpers';
 import {
+  clickAppointmentBack,
+  clickLocationBack,
+  clickNotesBack,
+  clickNotesContinue,
+  clickServiceBack,
+  clickWorkshopCalendarBack,
   completeBrandToLocationFlow,
+  enterNote,
+  getAppointmentCardCount,
+  getCalendarLink,
+  getCharCounter,
   getBrandButtonTexts,
   getLocationButtonTexts,
   getPageTitle,
   getServiceCardTitles,
+  getTimeDayHeadings,
+  goToAppointmentPage,
   goToBrandSelection,
+  goToNotesPage,
   goToServiceSelection,
+  goToWorkshopCalendarPage,
+  isAppointmentCardSelected,
+  isTimeSlotSelected,
+  openDatePickerAndSelectToday,
+  selectAppointmentCard,
   selectBrand,
   selectLocation,
   selectService,
+  selectTimeSlot,
 } from './helpers/booking.helpers';
 
 /**
  * COMPLETE BOOKING WORKFLOW
  *
  * End-to-End flow through all implemented wizard steps:
- *   REQ-001 (Header) -> REQ-002 (Brand Selection) -> REQ-003 (Location Selection) -> REQ-004 (Service Selection)
+ *   REQ-001 (Header) -> REQ-002 (Brand Selection) -> REQ-003 (Location Selection)
+ *   -> REQ-004 (Service Selection) -> REQ-005 (Notes) -> REQ-006 (Appointment Selection)
+ *   -> REQ-008 (Workshop Calendar)
  *
  * Tests the full user journey including:
  * - Header always visible
- * - Brand selection -> Location selection -> Service selection
+ * - Brand selection -> Location selection -> Service selection -> Notes -> Appointment -> Workshop Calendar
  * - Language switching during the flow
  * - Alternative flows (back navigation, brand change)
  * - Guards and redirects
@@ -36,7 +57,7 @@ test.describe('Complete Booking Workflow', () => {
 
   test.describe('Happy Path', () => {
 
-    test('complete flow: Start -> Brand -> Location -> Services', async ({ page }) => {
+    test('complete flow: Start -> Brand -> Location -> Services -> Notes -> Appointment', async ({ page }) => {
       await setLanguage(page, 'de');
 
       // Step 1: Navigate to app root -> should redirect to /home/brand
@@ -49,7 +70,7 @@ test.describe('Complete Booking Workflow', () => {
       const header = page.locator('header[role="banner"]');
       await expect(header).toBeVisible();
       const companyName = page.locator('.header__company-name');
-      await expect(companyName).toContainText('Gottfried Schultz');
+      await expect(companyName).toContainText('Autohaus GmbH');
 
       // Step 3: REQ-002 — Select brand "Audi"
       const title = await getPageTitle(page);
@@ -101,6 +122,89 @@ test.describe('Complete Booking Workflow', () => {
 
       // Step 10: Header still visible on services page
       await expect(header).toBeVisible();
+
+      // Step 11: REQ-005 — Click Continue on services page to go to notes
+      const servicesContinueButton = page.locator('.summary-bar__continue-button');
+      await expect(servicesContinueButton).toBeVisible();
+      await expect(servicesContinueButton).toBeEnabled();
+      await servicesContinueButton.click();
+      await page.locator('.notes').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      const notesRoute = await getCurrentRoute(page);
+      expect(notesRoute).toBe('/home/notes');
+
+      const notesTitle = await getPageTitle(page);
+      expect(notesTitle).toBe('Bitte geben Sie uns weitere Hinweise zu Ihrer Buchung');
+
+      // Step 12: Verify notes form elements
+      const textarea = page.locator('.notes-form__textarea');
+      await expect(textarea).toBeVisible();
+
+      const counter = await getCharCounter(page);
+      expect(counter).toBe('0 / 1000');
+
+      // Step 13: Verify hints section
+      const hintsTitle = page.locator('.service-hints__title');
+      await expect(hintsTitle).toBeVisible();
+
+      // Step 14: Enter a note
+      await enterNote(page, 'Bitte Öl prüfen.');
+      const updatedCounter = await getCharCounter(page);
+      // "Bitte Öl prüfen." = 16 characters
+      expect(updatedCounter).toBe('16 / 1000');
+
+      // Step 15: Click continue on notes -> navigate to appointment
+      await clickNotesContinue(page);
+      await page.locator('.appointment-selection').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      // Step 16: REQ-006 — Verify appointment page loaded
+      const appointmentRoute = await getCurrentRoute(page);
+      expect(appointmentRoute).toBe('/home/appointment');
+
+      const appointmentTitle = await getPageTitle(page);
+      expect(appointmentTitle).toBe('Wählen Sie den für Sie passenden Tag und Uhrzeit aus');
+
+      // Step 17: Verify 4 appointment cards
+      const appointmentCardCount = await getAppointmentCardCount(page);
+      expect(appointmentCardCount).toBe(4);
+
+      // Step 18: Select first appointment
+      await selectAppointmentCard(page, 0);
+      expect(await isAppointmentCardSelected(page, 0)).toBe(true);
+
+      // Step 19: Header still visible on appointment page
+      await expect(header).toBeVisible();
+      await expect(companyName).toContainText('Autohaus GmbH');
+
+      // Step 20: REQ-008 — Click calendar link to navigate to workshop calendar
+      const calendarLink = getCalendarLink(page);
+      await expect(calendarLink).toBeVisible();
+      await calendarLink.click();
+      await page.locator('.workshop-calendar').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      const workshopRoute = await getCurrentRoute(page);
+      expect(workshopRoute).toBe('/home/workshop-calendar');
+
+      const workshopTitle = await getPageTitle(page);
+      expect(workshopTitle).toBe('Hier sehen Sie weitere freie Termine in unserem Werkstattkalender');
+
+      // Step 21: Select date via datepicker
+      await openDatePickerAndSelectToday(page);
+
+      // Step 22: Verify 3 days with time slots
+      const dayHeadings = await getTimeDayHeadings(page);
+      expect(dayHeadings).toHaveLength(3);
+
+      // Step 23: Select a time slot
+      await selectTimeSlot(page, '09:00 Uhr');
+      expect(await isTimeSlotSelected(page, '09:00 Uhr')).toBe(true);
+
+      // Step 24: Header still visible on workshop calendar page
+      await expect(header).toBeVisible();
+      await expect(companyName).toContainText('Autohaus GmbH');
     });
 
     test('complete flow: MINI brand with 3 locations', async ({ page }) => {
@@ -221,6 +325,57 @@ test.describe('Complete Booking Workflow', () => {
       expect(locationTitle).toBe('An welchem Standort dürfen wir Sie begrüßen?');
     });
 
+    test('flow: Notes -> Back to Services', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToNotesPage(page);
+
+      const notesRoute = await getCurrentRoute(page);
+      expect(notesRoute).toBe('/home/notes');
+
+      // Click back button on notes page
+      await clickNotesBack(page);
+
+      const servicesRoute = await getCurrentRoute(page);
+      expect(servicesRoute).toBe('/home/services');
+
+      const servicesTitle = await getPageTitle(page);
+      expect(servicesTitle).toBe('Welche Services möchten Sie buchen?');
+    });
+
+    test('flow: Appointment -> Back to Notes', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToAppointmentPage(page);
+
+      const appointmentRoute = await getCurrentRoute(page);
+      expect(appointmentRoute).toBe('/home/appointment');
+
+      // Click back button on appointment page
+      await clickAppointmentBack(page);
+
+      const notesRoute = await getCurrentRoute(page);
+      expect(notesRoute).toBe('/home/notes');
+
+      const notesTitle = await getPageTitle(page);
+      expect(notesTitle).toBe('Bitte geben Sie uns weitere Hinweise zu Ihrer Buchung');
+    });
+
+    test('flow: Workshop Calendar -> Back to Appointment', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToWorkshopCalendarPage(page);
+
+      const workshopRoute = await getCurrentRoute(page);
+      expect(workshopRoute).toBe('/home/workshop-calendar');
+
+      // Click back button on workshop calendar page
+      await clickWorkshopCalendarBack(page);
+
+      const appointmentRoute = await getCurrentRoute(page);
+      expect(appointmentRoute).toBe('/home/appointment');
+
+      const appointmentTitle = await getPageTitle(page);
+      expect(appointmentTitle).toBe('Wählen Sie den für Sie passenden Tag und Uhrzeit aus');
+    });
+
   });
 
   // =============================================
@@ -261,6 +416,36 @@ test.describe('Complete Booking Workflow', () => {
       expect(route).toMatch(/\/home\/(brand|location)/);
     });
 
+    test('direct access to /home/notes without prerequisites -> redirect', async ({ page }) => {
+      await navigateTo(page, '/home/notes');
+      await waitForAngular(page);
+
+      const route = await getCurrentRoute(page);
+      // Guard checks brand first -> /home/brand
+      expect(route).not.toBe('/home/notes');
+      expect(route).toMatch(/\/home\/(brand|location|services)/);
+    });
+
+    test('direct access to /home/appointment without prerequisites -> redirect', async ({ page }) => {
+      await navigateTo(page, '/home/appointment');
+      await waitForAngular(page);
+
+      const route = await getCurrentRoute(page);
+      // Guard checks brand first -> /home/brand
+      expect(route).not.toBe('/home/appointment');
+      expect(route).toMatch(/\/home\/(brand|location|services)/);
+    });
+
+    test('direct access to /home/workshop-calendar without prerequisites -> redirect', async ({ page }) => {
+      await navigateTo(page, '/home/workshop-calendar');
+      await waitForAngular(page);
+
+      const route = await getCurrentRoute(page);
+      // Guard checks services -> redirect
+      expect(route).not.toBe('/home/workshop-calendar');
+      expect(route).toMatch(/\/home\/(brand|location|services)/);
+    });
+
   });
 
   // =============================================
@@ -269,7 +454,7 @@ test.describe('Complete Booking Workflow', () => {
 
   test.describe('i18n — Language through flow', () => {
 
-    test('EN: complete flow with English language including services', async ({ page }) => {
+    test('EN: complete flow with English language including services, notes, appointment, and workshop calendar', async ({ page }) => {
       await setLanguage(page, 'en');
       await navigateTo(page, '/home/brand');
 
@@ -294,6 +479,49 @@ test.describe('Complete Booking Workflow', () => {
       expect(cardTitles).toEqual(
         expect.arrayContaining(['HU/AU', 'Inspection', 'Tire Change'])
       );
+
+      // Select a service and click Continue to navigate to notes
+      await selectService(page, 'HU/AU');
+      const enContinueButton = page.locator('.summary-bar__continue-button');
+      await expect(enContinueButton).toBeVisible();
+      await expect(enContinueButton).toBeEnabled();
+      await enContinueButton.click();
+      await page.locator('.notes').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      const notesTitle = await getPageTitle(page);
+      expect(notesTitle).toBe('Please provide further notes for your booking');
+
+      const backButton = page.locator('.notes__back-button');
+      await expect(backButton).toContainText('Back');
+
+      const continueButton = page.locator('.notes__continue-button');
+      await expect(continueButton).toContainText('Continue');
+
+      // Navigate through to appointment and workshop calendar
+      await continueButton.click();
+      await page.locator('.appointment-selection').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      const appointmentTitle = await getPageTitle(page);
+      expect(appointmentTitle).toBe('Select your preferred day and time');
+
+      // Click calendar link to go to workshop calendar
+      const calendarLink = getCalendarLink(page);
+      await calendarLink.click();
+      await page.locator('.workshop-calendar').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      // REQ-008: English title
+      const workshopTitle = await getPageTitle(page);
+      expect(workshopTitle).toBe('Here you can see further available appointments in our workshop calendar');
+
+      // English Back/Continue buttons
+      const workshopBack = page.locator('.wizard-nav__back-button');
+      await expect(workshopBack).toContainText('Back');
+
+      const workshopContinue = page.locator('.wizard-nav__continue-button');
+      await expect(workshopContinue).toContainText('Continue');
     });
 
     test('language switch mid-flow: DE brand -> EN location', async ({ page }) => {
@@ -343,24 +571,57 @@ test.describe('Complete Booking Workflow', () => {
 
   test.describe('Header persistence (REQ-001)', () => {
 
-    test('header stays visible through brand -> location -> services flow', async ({ page }) => {
+    test('header stays visible through brand -> location -> services -> notes -> appointment -> workshop calendar flow', async ({ page }) => {
       const header = page.locator('header[role="banner"]');
       const companyName = page.locator('.header__company-name');
 
       await navigateTo(page, '/home/brand');
       await expect(header).toBeVisible();
-      await expect(companyName).toContainText('Gottfried Schultz');
+      await expect(companyName).toContainText('Autohaus GmbH');
 
       await selectBrand(page, 'Audi');
       await expect(header).toBeVisible();
-      await expect(companyName).toContainText('Gottfried Schultz');
+      await expect(companyName).toContainText('Autohaus GmbH');
 
       await selectLocation(page, 'München');
       await waitForAngular(page);
 
       // Header visible on services page
       await expect(header).toBeVisible();
-      await expect(companyName).toContainText('Gottfried Schultz');
+      await expect(companyName).toContainText('Autohaus GmbH');
+
+      // Select a service and click Continue to go to notes
+      await selectService(page, 'HU/AU');
+      const headerContinueButton = page.locator('.summary-bar__continue-button');
+      await expect(headerContinueButton).toBeVisible();
+      await expect(headerContinueButton).toBeEnabled();
+      await headerContinueButton.click();
+      await page.locator('.notes').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      // Header visible on notes page
+      await expect(header).toBeVisible();
+      await expect(companyName).toContainText('Autohaus GmbH');
+
+      // Click Continue on notes to go to appointment
+      const notesContinueButton = page.locator('.notes__continue-button');
+      await notesContinueButton.click();
+      await page.locator('.appointment-selection').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      // Header visible on appointment page
+      await expect(header).toBeVisible();
+      await expect(companyName).toContainText('Autohaus GmbH');
+
+      // Click calendar link to go to workshop calendar
+      const calendarLink = getCalendarLink(page);
+      await calendarLink.click();
+      await page.locator('.workshop-calendar').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      // Header visible on workshop calendar page
+      await expect(header).toBeVisible();
+      await expect(companyName).toContainText('Autohaus GmbH');
     });
 
     test('accessibility settings persist across page navigation', async ({ page }) => {
@@ -381,7 +642,7 @@ test.describe('Complete Booking Workflow', () => {
       expect(settings).toBeTruthy();
     });
 
-    test('cart icon visible on all pages including services', async ({ page }) => {
+    test('cart icon visible on all pages including services and notes', async ({ page }) => {
       const cartButton = page.locator('.cart-icon__button');
 
       await navigateTo(page, '/home/brand');
@@ -393,6 +654,135 @@ test.describe('Complete Booking Workflow', () => {
       await selectLocation(page, 'München');
       await waitForAngular(page);
       await expect(cartButton).toBeVisible();
+
+      // Select service and click Continue to navigate to notes
+      await selectService(page, 'HU/AU');
+      const cartContinueButton = page.locator('.summary-bar__continue-button');
+      await expect(cartContinueButton).toBeVisible();
+      await expect(cartContinueButton).toBeEnabled();
+      await cartContinueButton.click();
+      await page.locator('.notes').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+      await expect(cartButton).toBeVisible();
+    });
+
+  });
+
+  // =============================================
+  // REQ-007: WIZARD STATE SYNC — Back Navigation with Store Reset
+  // =============================================
+
+  test.describe('REQ-007: Wizard State Sync — Back Navigation', () => {
+
+    test('complete backward navigation: Appointment -> Notes -> Services -> Location -> Brand', async ({ page }) => {
+      await setLanguage(page, 'de');
+
+      // Walk the full wizard forward
+      await goToAppointmentPage(page);
+      await selectAppointmentCard(page, 0);
+
+      // Now navigate all the way back
+      // Step 1: Appointment -> Notes (clears selectedAppointment)
+      await clickAppointmentBack(page);
+      expect(await getCurrentRoute(page)).toBe('/home/notes');
+
+      // Step 2: Notes -> Services (clears bookingNote)
+      await clickNotesBack(page);
+      expect(await getCurrentRoute(page)).toBe('/home/services');
+
+      // Step 3: Services -> Location (clears selectedServices)
+      await clickServiceBack(page);
+      expect(await getCurrentRoute(page)).toBe('/home/location');
+
+      // Step 4: Location -> Brand (clears selectedLocation)
+      await clickLocationBack(page);
+      expect(await getCurrentRoute(page)).toBe('/home/brand');
+
+      // Verify brand page renders
+      const title = await getPageTitle(page);
+      expect(title).toBe('Welche Fahrzeugmarke fahren Sie?');
+    });
+
+    test('guard redirect after complete backward navigation: /home/appointment -> redirected', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToAppointmentPage(page);
+
+      // Navigate all the way back
+      await clickAppointmentBack(page);
+      await clickNotesBack(page);
+      await clickServiceBack(page);
+      await clickLocationBack(page);
+      expect(await getCurrentRoute(page)).toBe('/home/brand');
+
+      // Direct access to /home/appointment should redirect
+      await navigateTo(page, '/home/appointment');
+      await waitForAngular(page);
+
+      const route = await getCurrentRoute(page);
+      expect(route).not.toBe('/home/appointment');
+      expect(route).toMatch(/\/home\/(brand|location)/);
+    });
+
+    test('partial back then forward: appointment reset requires re-selection', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToAppointmentPage(page);
+
+      // Select appointment
+      await selectAppointmentCard(page, 0);
+      expect(await isAppointmentCardSelected(page, 0)).toBe(true);
+
+      // Back to notes (clears selectedAppointment)
+      await clickAppointmentBack(page);
+      expect(await getCurrentRoute(page)).toBe('/home/notes');
+
+      // Forward from notes back to appointment
+      await clickNotesContinue(page);
+      await page.locator('.appointment-selection').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      // No appointment should be pre-selected
+      const selectedCards = page.locator('.appointment-card--selected');
+      expect(await selectedCards.count()).toBe(0);
+    });
+
+    test('cart badge resets when services are cleared via back navigation', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToNotesPage(page, { serviceNames: ['HU/AU', 'Inspektion'] });
+
+      const badge = page.locator('.cart-icon__button .mat-badge-content');
+      await expect(badge).toHaveText('2');
+
+      // Back from notes (clears bookingNote, badge stays 2)
+      await clickNotesBack(page);
+      await expect(badge).toHaveText('2');
+
+      // Back from services (clears selectedServices, badge disappears)
+      await clickServiceBack(page);
+      await expect(badge).toBeHidden();
+    });
+
+    test('header stays visible during backward navigation including workshop calendar', async ({ page }) => {
+      await setLanguage(page, 'de');
+      const header = page.locator('header[role="banner"]');
+
+      await goToWorkshopCalendarPage(page);
+      await expect(header).toBeVisible();
+
+      // Workshop Calendar -> Appointment
+      await clickWorkshopCalendarBack(page);
+      await expect(header).toBeVisible();
+
+      await clickAppointmentBack(page);
+      await expect(header).toBeVisible();
+
+      await clickNotesBack(page);
+      await expect(header).toBeVisible();
+
+      await clickServiceBack(page);
+      await expect(header).toBeVisible();
+
+      await clickLocationBack(page);
+      await expect(header).toBeVisible();
     });
 
   });
