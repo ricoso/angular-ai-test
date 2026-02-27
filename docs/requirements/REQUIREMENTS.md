@@ -31,7 +31,7 @@
 | REQ-006 | Terminauswahl | ✔️ Implemented | High | REQ-005 | Terminauswahl mit 4 Vorschlägen, Single-Select (Wizard-Schritt 5) |
 | REQ-007 | WizardStateSync | 🔍 In Review | High | REQ-002, REQ-003, REQ-004, REQ-005 | Cross-Cutting: Bei Rückwärtsnavigation im Wizard werden Store-Properties genullt, um UI-Flow und Store-State synchron zu halten. Verhindert unbeabsichtigte URL-Navigation. |
 | REQ-008 | Werkstattkalender | 🔍 In Review | High | REQ-006 | Werkstattkalender mit DatePicker und Uhrzeitslot-Auswahl (Wizard-Schritt 5b) |
-| REQ-009 | carinformation | 📝 Draft | High | REQ-008 | Fahrzeugdaten und Kundendaten erfassen (Wizard-Schritt 6) |
+| REQ-009 | carinformation | 🚧 In Progress | High | REQ-008 | Fahrzeugdaten und Kundendaten erfassen (Wizard-Schritt 6) |
 
 ---
 
@@ -81,10 +81,10 @@ REQ-007-WizardStateSync (Cross-Cutting)
 
 | Status | Count |
 |--------|-------|
-| 📝 Draft | 1 |
+| 📝 Draft | 0 |
 | 🔍 In Review | 3 |
 | ✅ Approved | 0 |
-| 🚧 In Progress | 0 |
+| 🚧 In Progress | 1 |
 | ✔️ Implemented | 5 |
 | **Total** | **9** |
 

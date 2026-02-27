@@ -1,6 +1,6 @@
 # REQ-009: carinformation
 
-**Status:** Open
+**Status:** In Progress
 **Priority:** High
 **Type:** Functional
 **Created:** 2026-02-25
