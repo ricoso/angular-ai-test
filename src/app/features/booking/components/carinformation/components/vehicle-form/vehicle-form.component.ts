@@ -24,26 +24,26 @@ import { i18nKeys, TranslatePipe } from '@core/i18n';
 export class VehicleFormComponent {
   public readonly form = input.required<FormGroup>();
 
-  protected readonly t = i18nKeys;
+  protected readonly carinformation = i18nKeys.booking.carinformation;
 
   protected readonly licensePlateErrors = computed(() => {
     const ctrl = this.form().get('licensePlate');
     if (!ctrl || !ctrl.touched || ctrl.valid) { return null; }
-    if (ctrl.hasError('required')) { return this.t.booking.carinformation.validation.required; }
-    return this.t.booking.carinformation.validation.licensePlate;
+    if (ctrl.hasError('required')) { return this.carinformation.form.licensePlate.error.required; }
+    return this.carinformation.form.licensePlate.error.invalidFormat;
   });
 
   protected readonly mileageErrors = computed(() => {
     const ctrl = this.form().get('mileage');
     if (!ctrl || !ctrl.touched || ctrl.valid) { return null; }
-    if (ctrl.hasError('required')) { return this.t.booking.carinformation.validation.required; }
-    return this.t.booking.carinformation.validation.mileage;
+    if (ctrl.hasError('required')) { return this.carinformation.form.mileage.error.required; }
+    return this.carinformation.form.mileage.error.digitsOnly;
   });
 
   protected readonly vinErrors = computed(() => {
     const ctrl = this.form().get('vin');
     if (!ctrl || !ctrl.touched || ctrl.valid) { return null; }
-    return this.t.booking.carinformation.validation.vin;
+    return this.carinformation.form.vin.error.invalidLength;
   });
 
   protected onVinLinkClick(event: Event): void {

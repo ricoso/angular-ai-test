@@ -59,7 +59,7 @@ describe('CustomerFormComponent', () => {
       };
       const ctrl = exposed.form().get('email');
       ctrl?.markAsTouched();
-      expect(exposed.emailErrors()).toBe('booking.carinformation.validation.required');
+      expect(exposed.emailErrors()).toBe('booking.carinformation.form.email.error.required');
     });
 
     it('should return email error key when email invalid format', () => {
@@ -70,7 +70,7 @@ describe('CustomerFormComponent', () => {
       const ctrl = exposed.form().get('email');
       ctrl?.setValue('not-an-email');
       ctrl?.markAsTouched();
-      expect(exposed.emailErrors()).toBe('booking.carinformation.validation.email');
+      expect(exposed.emailErrors()).toBe('booking.carinformation.form.email.error.invalid');
     });
 
     it('should return null emailErrors when valid', () => {
@@ -96,7 +96,7 @@ describe('CustomerFormComponent', () => {
       };
       const ctrl = exposed.form().get('firstName');
       ctrl?.markAsTouched();
-      expect(exposed.firstNameErrors()).toBe('booking.carinformation.validation.required');
+      expect(exposed.firstNameErrors()).toBe('booking.carinformation.form.firstName.error.required');
     });
 
     it('should return lettersOnly error key when firstName contains numbers', () => {
@@ -107,7 +107,7 @@ describe('CustomerFormComponent', () => {
       const ctrl = exposed.form().get('firstName');
       ctrl?.setValue('Max123');
       ctrl?.markAsTouched();
-      expect(exposed.firstNameErrors()).toBe('booking.carinformation.validation.lettersOnly');
+      expect(exposed.firstNameErrors()).toBe('booking.carinformation.form.firstName.error.lettersOnly');
     });
 
     it('should return null firstNameErrors when valid', () => {
@@ -133,7 +133,7 @@ describe('CustomerFormComponent', () => {
       };
       const ctrl = exposed.form().get('lastName');
       ctrl?.markAsTouched();
-      expect(exposed.lastNameErrors()).toBe('booking.carinformation.validation.required');
+      expect(exposed.lastNameErrors()).toBe('booking.carinformation.form.lastName.error.required');
     });
 
     it('should return lettersOnly error key when lastName contains numbers', () => {
@@ -144,7 +144,7 @@ describe('CustomerFormComponent', () => {
       const ctrl = exposed.form().get('lastName');
       ctrl?.setValue('Smith99');
       ctrl?.markAsTouched();
-      expect(exposed.lastNameErrors()).toBe('booking.carinformation.validation.lettersOnly');
+      expect(exposed.lastNameErrors()).toBe('booking.carinformation.form.lastName.error.lettersOnly');
     });
 
     it('should return null streetErrors when not touched', () => {
@@ -159,7 +159,7 @@ describe('CustomerFormComponent', () => {
       };
       const ctrl = exposed.form().get('street');
       ctrl?.markAsTouched();
-      expect(exposed.streetErrors()).toBe('booking.carinformation.validation.required');
+      expect(exposed.streetErrors()).toBe('booking.carinformation.form.street.error.required');
     });
 
     it('should return null for postalCode when pattern matches', () => {
@@ -181,7 +181,7 @@ describe('CustomerFormComponent', () => {
       const ctrl = exposed.form().get('postalCode');
       ctrl?.setValue('abc');
       ctrl?.markAsTouched();
-      expect(exposed.postalCodeErrors()).toBe('booking.carinformation.validation.postalCode');
+      expect(exposed.postalCodeErrors()).toBe('booking.carinformation.form.postalCode.error.digitsOnly');
     });
 
     it('should return required error key for postalCode when empty', () => {
@@ -191,7 +191,7 @@ describe('CustomerFormComponent', () => {
       };
       const ctrl = exposed.form().get('postalCode');
       ctrl?.markAsTouched();
-      expect(exposed.postalCodeErrors()).toBe('booking.carinformation.validation.required');
+      expect(exposed.postalCodeErrors()).toBe('booking.carinformation.form.postalCode.error.required');
     });
 
     it('should return null cityErrors when not touched', () => {
@@ -206,7 +206,7 @@ describe('CustomerFormComponent', () => {
       };
       const ctrl = exposed.form().get('city');
       ctrl?.markAsTouched();
-      expect(exposed.cityErrors()).toBe('booking.carinformation.validation.required');
+      expect(exposed.cityErrors()).toBe('booking.carinformation.form.city.error.required');
     });
 
     it('should return lettersOnly error key when city contains digits', () => {
@@ -217,7 +217,7 @@ describe('CustomerFormComponent', () => {
       const ctrl = exposed.form().get('city');
       ctrl?.setValue('Berlin123');
       ctrl?.markAsTouched();
-      expect(exposed.cityErrors()).toBe('booking.carinformation.validation.lettersOnly');
+      expect(exposed.cityErrors()).toBe('booking.carinformation.form.city.error.lettersOnly');
     });
 
     it('should return null cityErrors when valid', () => {
@@ -243,7 +243,7 @@ describe('CustomerFormComponent', () => {
       };
       const ctrl = exposed.form().get('mobilePhone');
       ctrl?.markAsTouched();
-      expect(exposed.mobilePhoneErrors()).toBe('booking.carinformation.validation.required');
+      expect(exposed.mobilePhoneErrors()).toBe('booking.carinformation.form.mobilePhone.error.required');
     });
 
     it('should return startsWithZero error key when mobilePhone does not start with 0', () => {
@@ -254,7 +254,7 @@ describe('CustomerFormComponent', () => {
       const ctrl = exposed.form().get('mobilePhone');
       ctrl?.setValue('1701234567');
       ctrl?.markAsTouched();
-      expect(exposed.mobilePhoneErrors()).toBe('booking.carinformation.validation.startsWithZero');
+      expect(exposed.mobilePhoneErrors()).toBe('booking.carinformation.form.mobilePhone.error.startsWithZero');
     });
 
     it('should return null mobilePhoneErrors when valid', () => {

@@ -54,7 +54,7 @@ describe('VehicleFormComponent', () => {
       };
       const ctrl = exposed.form().get('licensePlate');
       ctrl?.markAsTouched();
-      expect(exposed.licensePlateErrors()).toBe('booking.carinformation.validation.required');
+      expect(exposed.licensePlateErrors()).toBe('booking.carinformation.form.licensePlate.error.required');
     });
 
     it('should return licensePlate error key when pattern fails', () => {
@@ -65,7 +65,7 @@ describe('VehicleFormComponent', () => {
       const ctrl = exposed.form().get('licensePlate');
       ctrl?.setValue('INVALID-PLATE-!!!');
       ctrl?.markAsTouched();
-      expect(exposed.licensePlateErrors()).toBe('booking.carinformation.validation.licensePlate');
+      expect(exposed.licensePlateErrors()).toBe('booking.carinformation.form.licensePlate.error.invalidFormat');
     });
 
     it('should return null licensePlateErrors when valid', () => {
@@ -91,7 +91,7 @@ describe('VehicleFormComponent', () => {
       };
       const ctrl = exposed.form().get('mileage');
       ctrl?.markAsTouched();
-      expect(exposed.mileageErrors()).toBe('booking.carinformation.validation.required');
+      expect(exposed.mileageErrors()).toBe('booking.carinformation.form.mileage.error.required');
     });
 
     it('should return mileage error key when mileage is negative', () => {
@@ -102,7 +102,7 @@ describe('VehicleFormComponent', () => {
       const ctrl = exposed.form().get('mileage');
       ctrl?.setValue(-1);
       ctrl?.markAsTouched();
-      expect(exposed.mileageErrors()).toBe('booking.carinformation.validation.mileage');
+      expect(exposed.mileageErrors()).toBe('booking.carinformation.form.mileage.error.digitsOnly');
     });
 
     it('should return null mileageErrors when valid', () => {
@@ -129,7 +129,7 @@ describe('VehicleFormComponent', () => {
       const ctrl = exposed.form().get('vin');
       ctrl?.setValue('TOOSHORT');
       ctrl?.markAsTouched();
-      expect(exposed.vinErrors()).toBe('booking.carinformation.validation.vin');
+      expect(exposed.vinErrors()).toBe('booking.carinformation.form.vin.error.invalidLength');
     });
 
     it('should return null vinErrors when exactly 17 chars', () => {

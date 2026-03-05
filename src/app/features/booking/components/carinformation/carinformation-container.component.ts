@@ -34,7 +34,7 @@ export class CarinformationContainerComponent {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
 
-  protected readonly t = i18nKeys;
+  protected readonly carinformation = i18nKeys.booking.carinformation;
 
   protected readonly customerForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],

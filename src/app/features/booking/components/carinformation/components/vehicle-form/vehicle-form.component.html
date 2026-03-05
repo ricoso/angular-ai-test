@@ -1,21 +1,21 @@
 <fieldset class="vehicle-form" [formGroup]="form()">
-  <legend class="vehicle-form__title">{{ t.booking.carinformation.vehicleData.title | translate }}</legend>
+  <legend class="vehicle-form__title">{{ carinformation.form.vehicleTitle | translate }}</legend>
 
   <p class="vehicle-form__vin-info">
     <a href="#" class="vehicle-form__vin-link" (click)="onVinLinkClick($event)">
-      {{ t.booking.carinformation.vehicleData.vinExplanation | translate }}
+      {{ carinformation.form.vin.infoLink | translate }}
     </a>
   </p>
 
   <div class="vehicle-form__row">
     <mat-form-field appearance="outline" class="vehicle-form__input">
-      <mat-label>{{ t.booking.carinformation.vehicleData.licensePlate | translate }}</mat-label>
+      <mat-label>{{ carinformation.form.licensePlate.label | translate }}</mat-label>
       <mat-icon matPrefix class="icon-framed" aria-hidden="true">directions_car</mat-icon>
       <input
         matInput
         type="text"
         formControlName="licensePlate"
-        [placeholder]="t.booking.carinformation.vehicleData.licensePlatePlaceholder | translate"
+        [placeholder]="carinformation.form.licensePlate.placeholder | translate"
         autocomplete="off"
       />
       @if (licensePlateErrors(); as error) {
@@ -24,13 +24,13 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="vehicle-form__input">
-      <mat-label>{{ t.booking.carinformation.vehicleData.mileage | translate }}</mat-label>
+      <mat-label>{{ carinformation.form.mileage.label | translate }}</mat-label>
       <mat-icon matPrefix class="icon-framed" aria-hidden="true">directions_car</mat-icon>
       <input
         matInput
         type="number"
         formControlName="mileage"
-        [placeholder]="t.booking.carinformation.vehicleData.mileagePlaceholder | translate"
+        [placeholder]="carinformation.form.mileage.placeholder | translate"
         autocomplete="off"
         inputmode="numeric"
         min="0"
@@ -43,13 +43,13 @@
 
   <div class="vehicle-form__field--full">
     <mat-form-field appearance="outline" class="vehicle-form__input">
-      <mat-label>{{ t.booking.carinformation.vehicleData.vin | translate }}</mat-label>
+      <mat-label>{{ carinformation.form.vin.label | translate }}</mat-label>
       <mat-icon matPrefix class="icon-framed" aria-hidden="true">directions_car</mat-icon>
       <input
         matInput
         type="text"
         formControlName="vin"
-        [placeholder]="t.booking.carinformation.vehicleData.vinPlaceholder | translate"
+        [placeholder]="carinformation.form.vin.placeholder | translate"
         autocomplete="off"
         maxlength="17"
       />

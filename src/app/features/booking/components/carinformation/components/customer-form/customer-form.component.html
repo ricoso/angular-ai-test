@@ -1,15 +1,15 @@
 <fieldset class="customer-form" [formGroup]="form()">
-  <legend class="customer-form__title">{{ t.booking.carinformation.customerData.title | translate }}</legend>
+  <legend class="customer-form__title">{{ carinformation.form.customerTitle | translate }}</legend>
 
   <div class="customer-form__field customer-form__field--full">
     <mat-form-field appearance="outline" class="customer-form__input">
-      <mat-label>{{ t.booking.carinformation.customerData.email | translate }}</mat-label>
+      <mat-label>{{ carinformation.form.email.label | translate }}</mat-label>
       <mat-icon matPrefix class="icon-framed" aria-hidden="true">email</mat-icon>
       <input
         matInput
         type="email"
         formControlName="email"
-        [placeholder]="t.booking.carinformation.customerData.emailPlaceholder | translate"
+        [placeholder]="carinformation.form.email.placeholder | translate"
         autocomplete="email"
       />
       @if (emailErrors(); as error) {
@@ -20,22 +20,22 @@
 
   <div class="customer-form__row customer-form__row--three">
     <mat-form-field appearance="outline" class="customer-form__input">
-      <mat-label>{{ t.booking.carinformation.customerData.salutation | translate }}</mat-label>
+      <mat-label>{{ carinformation.form.salutation.label | translate }}</mat-label>
       <mat-icon matPrefix class="icon-framed" aria-hidden="true">person</mat-icon>
       <mat-select formControlName="salutation" autocomplete="honorific-prefix">
-        <mat-option value="mr">{{ t.booking.carinformation.customerData.salutationMr | translate }}</mat-option>
-        <mat-option value="ms">{{ t.booking.carinformation.customerData.salutationMs | translate }}</mat-option>
+        <mat-option value="mr">{{ carinformation.form.salutation.mr | translate }}</mat-option>
+        <mat-option value="ms">{{ carinformation.form.salutation.ms | translate }}</mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="customer-form__input">
-      <mat-label>{{ t.booking.carinformation.customerData.firstName | translate }}</mat-label>
+      <mat-label>{{ carinformation.form.firstName.label | translate }}</mat-label>
       <mat-icon matPrefix class="icon-framed" aria-hidden="true">person</mat-icon>
       <input
         matInput
         type="text"
         formControlName="firstName"
-        [placeholder]="t.booking.carinformation.customerData.firstNamePlaceholder | translate"
+        [placeholder]="carinformation.form.firstName.placeholder | translate"
         autocomplete="given-name"
       />
       @if (firstNameErrors(); as error) {
@@ -44,13 +44,13 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="customer-form__input">
-      <mat-label>{{ t.booking.carinformation.customerData.lastName | translate }}</mat-label>
+      <mat-label>{{ carinformation.form.lastName.label | translate }}</mat-label>
       <mat-icon matPrefix class="icon-framed" aria-hidden="true">person</mat-icon>
       <input
         matInput
         type="text"
         formControlName="lastName"
-        [placeholder]="t.booking.carinformation.customerData.lastNamePlaceholder | translate"
+        [placeholder]="carinformation.form.lastName.placeholder | translate"
         autocomplete="family-name"
       />
       @if (lastNameErrors(); as error) {
@@ -61,13 +61,13 @@
 
   <div class="customer-form__field customer-form__field--full">
     <mat-form-field appearance="outline" class="customer-form__input">
-      <mat-label>{{ t.booking.carinformation.customerData.street | translate }}</mat-label>
+      <mat-label>{{ carinformation.form.street.label | translate }}</mat-label>
       <mat-icon matPrefix class="icon-framed" aria-hidden="true">location_on</mat-icon>
       <input
         matInput
         type="text"
         formControlName="street"
-        [placeholder]="t.booking.carinformation.customerData.streetPlaceholder | translate"
+        [placeholder]="carinformation.form.street.placeholder | translate"
         autocomplete="street-address"
       />
       @if (streetErrors(); as error) {
@@ -78,13 +78,13 @@
 
   <div class="customer-form__row customer-form__row--two">
     <mat-form-field appearance="outline" class="customer-form__input">
-      <mat-label>{{ t.booking.carinformation.customerData.postalCode | translate }}</mat-label>
+      <mat-label>{{ carinformation.form.postalCode.label | translate }}</mat-label>
       <mat-icon matPrefix class="icon-framed" aria-hidden="true">location_on</mat-icon>
       <input
         matInput
         type="text"
         formControlName="postalCode"
-        [placeholder]="t.booking.carinformation.customerData.postalCodePlaceholder | translate"
+        [placeholder]="carinformation.form.postalCode.placeholder | translate"
         autocomplete="postal-code"
         inputmode="numeric"
       />
@@ -94,13 +94,13 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="customer-form__input">
-      <mat-label>{{ t.booking.carinformation.customerData.city | translate }}</mat-label>
+      <mat-label>{{ carinformation.form.city.label | translate }}</mat-label>
       <mat-icon matPrefix class="icon-framed" aria-hidden="true">location_on</mat-icon>
       <input
         matInput
         type="text"
         formControlName="city"
-        [placeholder]="t.booking.carinformation.customerData.cityPlaceholder | translate"
+        [placeholder]="carinformation.form.city.placeholder | translate"
         autocomplete="address-level2"
       />
       @if (cityErrors(); as error) {
@@ -111,17 +111,17 @@
 
   <div class="customer-form__field customer-form__field--full">
     <mat-form-field appearance="outline" class="customer-form__input">
-      <mat-label>{{ t.booking.carinformation.customerData.mobilePhone | translate }}</mat-label>
+      <mat-label>{{ carinformation.form.mobilePhone.label | translate }}</mat-label>
       <mat-icon matPrefix class="icon-framed" aria-hidden="true">phone</mat-icon>
       <input
         matInput
         type="tel"
         formControlName="mobilePhone"
-        [placeholder]="t.booking.carinformation.customerData.mobilePhonePlaceholder | translate"
+        [placeholder]="carinformation.form.mobilePhone.placeholder | translate"
         autocomplete="tel"
         inputmode="tel"
       />
-      <mat-hint>{{ t.booking.carinformation.customerData.mobilePhoneHint | translate }}</mat-hint>
+      <mat-hint>{{ carinformation.form.mobilePhone.hint | translate }}</mat-hint>
       @if (mobilePhoneErrors(); as error) {
         <mat-error>{{ error | translate }}</mat-error>
       }

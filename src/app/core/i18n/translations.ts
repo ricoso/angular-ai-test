@@ -121,63 +121,43 @@ export const translations = {
       },
       carinformation: {
         title: 'Bitte geben Sie uns letzte Informationen rund um Ihren Termin',
-        subtitle: 'Bitte geben Sie Ihre persönlichen Daten und die Fahrzeuginformationen ein.',
         returningCustomer: {
           title: 'Schon einmal bei uns gewesen?',
-          description: 'Wenn Sie bereits Kunde bei uns sind, können Sie Ihre gespeicherten Daten abrufen.',
+          description: 'Dann rufen Sie Ihre Daten automatisch mit Eingabe Ihrer E-Mail-Adresse ab.',
           button: 'Jetzt Daten abrufen!'
         },
-        customerData: {
-          title: 'Ihre Daten',
-          email: 'E-Mail-Adresse',
-          emailPlaceholder: 'z.B. max@muster.de',
-          salutation: 'Anrede',
-          salutationMr: 'Herr',
-          salutationMs: 'Frau',
-          firstName: 'Vorname',
-          firstNamePlaceholder: 'Max',
-          lastName: 'Nachname',
-          lastNamePlaceholder: 'Mustermann',
-          street: 'Straße und Hausnummer',
-          streetPlaceholder: 'Musterstraße 1',
-          postalCode: 'Postleitzahl',
-          postalCodePlaceholder: '12345',
-          city: 'Wohnort',
-          cityPlaceholder: 'Musterstadt',
-          mobilePhone: 'Mobilfunknummer',
-          mobilePhonePlaceholder: '017012345678',
-          mobilePhoneHint: 'Bitte geben Sie Ihre Mobilfunknummer ohne Sonderzeichen ein.'
+        form: {
+          customerTitle: 'Ihre Daten',
+          vehicleTitle: 'Fahrzeugdaten',
+          email: { label: 'E-Mail Adresse', placeholder: 'max@mustermann.de',
+            error: { required: 'Bitte geben Sie Ihre E-Mail-Adresse ein.', invalid: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.' } },
+          salutation: { label: 'Anrede', placeholder: 'Bitte wählen', mr: 'Herr', ms: 'Frau',
+            error: { required: 'Bitte wählen Sie eine Anrede.' } },
+          firstName: { label: 'Vorname', placeholder: 'Max',
+            error: { required: 'Bitte geben Sie Ihren Vornamen ein.', lettersOnly: 'Vorname darf nur Buchstaben enthalten.' } },
+          lastName: { label: 'Nachname', placeholder: 'Mustermann',
+            error: { required: 'Bitte geben Sie Ihren Nachnamen ein.', lettersOnly: 'Nachname darf nur Buchstaben enthalten.' } },
+          street: { label: 'Straße und Haus Nr.', placeholder: 'Musterweg 1',
+            error: { required: 'Bitte geben Sie Ihre Straße und Hausnummer ein.' } },
+          postalCode: { label: 'Postleitzahl', placeholder: '30159',
+            error: { required: 'Bitte geben Sie Ihre Postleitzahl ein.', digitsOnly: 'Postleitzahl darf nur Zahlen enthalten.' } },
+          city: { label: 'Wohnort', placeholder: 'Berlin',
+            error: { required: 'Bitte geben Sie Ihren Wohnort ein.', lettersOnly: 'Wohnort darf nur Buchstaben enthalten.' } },
+          mobilePhone: { label: 'Mobilfunknummer', placeholder: '017012345678',
+            hint: 'Bitte geben Sie Ihre Mobilfunknummer ohne Sonderzeichen als Zahl im Format 017012345678 ein.',
+            error: { required: 'Bitte geben Sie Ihre Mobilfunknummer ein.', digitsOnly: 'Mobilfunknummer darf nur Zahlen enthalten.', startsWithZero: 'Die Mobilfunknummer muss mit 0 beginnen.' } },
+          licensePlate: { label: 'Kfz. Kennzeichen', placeholder: 'XX-XX1234',
+            error: { required: 'Bitte geben Sie Ihr Kfz-Kennzeichen ein.', invalidFormat: 'Bitte geben Sie ein gültiges Kennzeichen ein (z.B. B-MS1234).' } },
+          mileage: { label: 'Kilometerstand', placeholder: '5000',
+            error: { required: 'Bitte geben Sie den Kilometerstand ein.', digitsOnly: 'Kilometerstand darf nur Zahlen enthalten.' } },
+          vin: { label: 'FIN', placeholder: 'WDB8XXXXXXA123456', infoLink: 'Erklärung der FIN',
+            error: { required: 'Bitte geben Sie die Fahrzeugidentifikationsnummer ein.', invalidLength: 'Die FIN muss genau 17 Zeichen enthalten.', invalidFormat: 'Die FIN darf nur Buchstaben und Zahlen enthalten.' } },
+          privacy: { consent: 'Ich willige in die Verarbeitung meiner personenbezogenen Daten zum Zwecke der Online-Terminvereinbarung ein. Näheres finden Sie in unserer',
+            privacyLink: 'Datenschutzerklärung',
+            error: { required: 'Bitte bestätigen Sie die Datenschutzerklärung.' } },
+          requiredHint: 'Pflichtfelder sind mit * gekennzeichnet'
         },
-        vehicleData: {
-          title: 'Fahrzeugdaten',
-          licensePlate: 'Kennzeichen',
-          licensePlatePlaceholder: 'B-AB 1234',
-          mileage: 'Kilometerstand (km)',
-          mileagePlaceholder: '50000',
-          vin: 'Fahrzeugidentifikationsnummer (FIN)',
-          vinPlaceholder: 'z.B. WVWZZZ3BZWE689725',
-          vinExplanation: 'Erklärung der FIN'
-        },
-        privacy: {
-          label: 'Ich habe die Datenschutzerklärung gelesen und bin einverstanden.',
-          link: 'Datenschutzerklärung'
-        },
-        requiredHint: '* Pflichtfelder',
-        validation: {
-          required: 'Dieses Feld ist ein Pflichtfeld.',
-          email: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
-          licensePlate: 'Bitte geben Sie ein gültiges Kennzeichen ein (z.B. B-AB 1234).',
-          mileage: 'Bitte geben Sie einen gültigen Kilometerstand ein.',
-          vin: 'Die FIN muss genau 17 Zeichen lang sein.',
-          postalCode: 'Bitte geben Sie eine gültige Postleitzahl (5 Ziffern) ein.',
-          privacyRequired: 'Bitte akzeptieren Sie die Datenschutzerklärung.',
-          lettersOnly: 'Dieses Feld darf nur Buchstaben enthalten.',
-          startsWithZero: 'Die Mobilfunknummer muss mit 0 beginnen.'
-        },
-        navigation: {
-          back: 'Zurück',
-          continue: 'Zur Buchungsübersicht'
-        }
+        navigation: { back: 'Zurück', continue: 'Zur Buchungsübersicht' }
       }
     }
   },
@@ -296,63 +276,43 @@ export const translations = {
       },
       carinformation: {
         title: 'Please provide us with final information about your appointment',
-        subtitle: 'Please enter your personal details and vehicle information.',
         returningCustomer: {
           title: 'Been with us before?',
-          description: 'If you are already a customer with us, you can retrieve your saved data.',
-          button: 'Retrieve data now!'
+          description: 'Retrieve your data automatically by entering your email address.',
+          button: 'Retrieve my data!'
         },
-        customerData: {
-          title: 'Your Details',
-          email: 'Email Address',
-          emailPlaceholder: 'e.g. john@example.com',
-          salutation: 'Salutation',
-          salutationMr: 'Mr.',
-          salutationMs: 'Ms.',
-          firstName: 'First Name',
-          firstNamePlaceholder: 'John',
-          lastName: 'Last Name',
-          lastNamePlaceholder: 'Smith',
-          street: 'Street and House Number',
-          streetPlaceholder: 'Example Street 1',
-          postalCode: 'Postal Code',
-          postalCodePlaceholder: '12345',
-          city: 'City',
-          cityPlaceholder: 'Example City',
-          mobilePhone: 'Mobile Phone',
-          mobilePhonePlaceholder: '017012345678',
-          mobilePhoneHint: 'Please enter your mobile number without special characters.'
+        form: {
+          customerTitle: 'Your Details',
+          vehicleTitle: 'Vehicle Data',
+          email: { label: 'Email Address', placeholder: 'max@example.com',
+            error: { required: 'Please enter your email address.', invalid: 'Please enter a valid email address.' } },
+          salutation: { label: 'Salutation', placeholder: 'Please select', mr: 'Mr.', ms: 'Ms.',
+            error: { required: 'Please select a salutation.' } },
+          firstName: { label: 'First Name', placeholder: 'John',
+            error: { required: 'Please enter your first name.', lettersOnly: 'First name may only contain letters.' } },
+          lastName: { label: 'Last Name', placeholder: 'Doe',
+            error: { required: 'Please enter your last name.', lettersOnly: 'Last name may only contain letters.' } },
+          street: { label: 'Street and House Number', placeholder: '1 Example Street',
+            error: { required: 'Please enter your street and house number.' } },
+          postalCode: { label: 'Postal Code', placeholder: '30159',
+            error: { required: 'Please enter your postal code.', digitsOnly: 'Postal code may only contain digits.' } },
+          city: { label: 'City', placeholder: 'Berlin',
+            error: { required: 'Please enter your city.', lettersOnly: 'City may only contain letters.' } },
+          mobilePhone: { label: 'Mobile Phone Number', placeholder: '017012345678',
+            hint: 'Please enter your mobile number without special characters in the format 017012345678.',
+            error: { required: 'Please enter your mobile phone number.', digitsOnly: 'Mobile number may only contain digits.', startsWithZero: 'Mobile number must start with 0.' } },
+          licensePlate: { label: 'License Plate', placeholder: 'XX-XX1234',
+            error: { required: 'Please enter your license plate.', invalidFormat: 'Please enter a valid license plate (e.g. B-MS1234).' } },
+          mileage: { label: 'Mileage', placeholder: '5000',
+            error: { required: 'Please enter the current mileage.', digitsOnly: 'Mileage may only contain digits.' } },
+          vin: { label: 'VIN', placeholder: 'WDB8XXXXXXA123456', infoLink: 'Explanation of VIN',
+            error: { required: 'Please enter the vehicle identification number.', invalidLength: 'The VIN must be exactly 17 characters.', invalidFormat: 'The VIN may only contain letters and digits.' } },
+          privacy: { consent: 'I consent to the processing of my personal data for the purpose of online appointment booking. More information can be found in our',
+            privacyLink: 'Privacy Policy',
+            error: { required: 'Please accept the privacy policy.' } },
+          requiredHint: 'Required fields are marked with *'
         },
-        vehicleData: {
-          title: 'Vehicle Data',
-          licensePlate: 'License Plate',
-          licensePlatePlaceholder: 'B-AB 1234',
-          mileage: 'Mileage (km)',
-          mileagePlaceholder: '50000',
-          vin: 'Vehicle Identification Number (VIN)',
-          vinPlaceholder: 'e.g. WVWZZZ3BZWE689725',
-          vinExplanation: 'VIN Explanation'
-        },
-        privacy: {
-          label: 'I have read and agree to the privacy policy.',
-          link: 'Privacy Policy'
-        },
-        requiredHint: '* Required fields',
-        validation: {
-          required: 'This field is required.',
-          email: 'Please enter a valid email address.',
-          licensePlate: 'Please enter a valid license plate (e.g. B-AB 1234).',
-          mileage: 'Please enter a valid mileage.',
-          vin: 'The VIN must be exactly 17 characters long.',
-          postalCode: 'Please enter a valid postal code (5 digits).',
-          privacyRequired: 'Please accept the privacy policy.',
-          lettersOnly: 'This field may only contain letters.',
-          startsWithZero: 'Mobile number must start with 0.'
-        },
-        navigation: {
-          back: 'Back',
-          continue: 'To Booking Summary'
-        }
+        navigation: { back: 'Back', continue: 'To Booking Overview' }
       }
     }
   },
@@ -471,63 +431,43 @@ export const translations = {
       },
       carinformation: {
         title: 'Будь ласка, надайте нам останню інформацію про ваш запис',
-        subtitle: 'Будь ласка, введіть ваші особисті дані та інформацію про автомобіль.',
         returningCustomer: {
           title: 'Вже бували у нас?',
-          description: 'Якщо ви вже є нашим клієнтом, ви можете отримати свої збережені дані.',
-          button: 'Отримати дані зараз!'
+          description: 'Отримайте свої дані автоматично, ввівши свою електронну адресу.',
+          button: 'Отримати мої дані!'
         },
-        customerData: {
-          title: 'Ваші дані',
-          email: 'Електронна адреса',
-          emailPlaceholder: 'напр. ivan@example.com',
-          salutation: 'Звертання',
-          salutationMr: 'Пан',
-          salutationMs: 'Пані',
-          firstName: 'Ім\'я',
-          firstNamePlaceholder: 'Іван',
-          lastName: 'Прізвище',
-          lastNamePlaceholder: 'Іваненко',
-          street: 'Вулиця та номер будинку',
-          streetPlaceholder: 'вул. Прикладна, 1',
-          postalCode: 'Поштовий індекс',
-          postalCodePlaceholder: '12345',
-          city: 'Місто',
-          cityPlaceholder: 'Прикладне',
-          mobilePhone: 'Мобільний телефон',
-          mobilePhonePlaceholder: '017012345678',
-          mobilePhoneHint: 'Будь ласка, введіть номер без спеціальних символів.'
+        form: {
+          customerTitle: 'Ваші дані',
+          vehicleTitle: 'Дані автомобіля',
+          email: { label: 'Електронна адреса', placeholder: 'ivan@example.com',
+            error: { required: 'Будь ласка, введіть свою електронну адресу.', invalid: 'Будь ласка, введіть дійсну електронну адресу.' } },
+          salutation: { label: 'Звертання', placeholder: 'Будь ласка, оберіть', mr: 'Пан', ms: 'Пані',
+            error: { required: 'Будь ласка, оберіть звертання.' } },
+          firstName: { label: 'Ім\'я', placeholder: 'Іван',
+            error: { required: 'Будь ласка, введіть своє ім\'я.', lettersOnly: 'Ім\'я може містити лише літери.' } },
+          lastName: { label: 'Прізвище', placeholder: 'Іваненко',
+            error: { required: 'Будь ласка, введіть своє прізвище.', lettersOnly: 'Прізвище може містити лише літери.' } },
+          street: { label: 'Вулиця та номер будинку', placeholder: 'вул. Прикладна, 1',
+            error: { required: 'Будь ласка, введіть вулицю та номер будинку.' } },
+          postalCode: { label: 'Поштовий індекс', placeholder: '30159',
+            error: { required: 'Будь ласка, введіть поштовий індекс.', digitsOnly: 'Поштовий індекс може містити лише цифри.' } },
+          city: { label: 'Місто', placeholder: 'Берлін',
+            error: { required: 'Будь ласка, введіть місто.', lettersOnly: 'Місто може містити лише літери.' } },
+          mobilePhone: { label: 'Мобільний телефон', placeholder: '017012345678',
+            hint: 'Будь ласка, введіть номер без спеціальних символів у форматі 017012345678.',
+            error: { required: 'Будь ласка, введіть номер мобільного телефону.', digitsOnly: 'Номер може містити лише цифри.', startsWithZero: 'Номер мобільного телефону має починатися з 0.' } },
+          licensePlate: { label: 'Номерний знак', placeholder: 'XX-XX1234',
+            error: { required: 'Будь ласка, введіть номерний знак.', invalidFormat: 'Будь ласка, введіть дійсний номерний знак (напр. B-MS1234).' } },
+          mileage: { label: 'Пробіг', placeholder: '5000',
+            error: { required: 'Будь ласка, введіть пробіг.', digitsOnly: 'Пробіг може містити лише цифри.' } },
+          vin: { label: 'VIN', placeholder: 'WDB8XXXXXXA123456', infoLink: 'Пояснення VIN',
+            error: { required: 'Будь ласка, введіть ідентифікаційний номер автомобіля.', invalidLength: 'VIN має складатися рівно з 17 символів.', invalidFormat: 'VIN може містити лише літери та цифри.' } },
+          privacy: { consent: 'Я погоджуюся на обробку моїх персональних даних з метою онлайн-запису на технічне обслуговування. Детальніше в нашій',
+            privacyLink: 'Політиці конфіденційності',
+            error: { required: 'Будь ласка, підтвердьте політику конфіденційності.' } },
+          requiredHint: 'Обов\'язкові поля позначені *'
         },
-        vehicleData: {
-          title: 'Дані автомобіля',
-          licensePlate: 'Номерний знак',
-          licensePlatePlaceholder: 'B-AB 1234',
-          mileage: 'Пробіг (км)',
-          mileagePlaceholder: '50000',
-          vin: 'Ідентифікаційний номер автомобіля (VIN)',
-          vinPlaceholder: 'напр. WVWZZZ3BZWE689725',
-          vinExplanation: 'Пояснення VIN'
-        },
-        privacy: {
-          label: 'Я ознайомився з політикою конфіденційності та погоджуюся.',
-          link: 'Політика конфіденційності'
-        },
-        requiredHint: '* Обов\'язкові поля',
-        validation: {
-          required: 'Це поле є обов\'язковим.',
-          email: 'Будь ласка, введіть дійсну електронну адресу.',
-          licensePlate: 'Будь ласка, введіть дійсний номерний знак (напр. B-AB 1234).',
-          mileage: 'Будь ласка, введіть дійсний пробіг.',
-          vin: 'VIN має складатися рівно з 17 символів.',
-          postalCode: 'Будь ласка, введіть дійсний поштовий індекс (5 цифр).',
-          privacyRequired: 'Будь ласка, прийміть політику конфіденційності.',
-          lettersOnly: 'Це поле може містити лише літери.',
-          startsWithZero: 'Номер мобільного телефону має починатися з 0.'
-        },
-        navigation: {
-          back: 'Назад',
-          continue: 'До підсумку бронювання'
-        }
+        navigation: { back: 'Назад', continue: 'До підсумку бронювання' }
       }
     }
   },
@@ -646,63 +586,43 @@ export const translations = {
       },
       carinformation: {
         title: 'Veuillez nous fournir les dernières informations sur votre rendez-vous',
-        subtitle: 'Veuillez saisir vos données personnelles et les informations sur le véhicule.',
         returningCustomer: {
           title: 'Déjà venu chez nous ?',
-          description: 'Si vous êtes déjà client chez nous, vous pouvez récupérer vos données enregistrées.',
-          button: 'Récupérer les données maintenant !'
+          description: 'Récupérez vos données automatiquement en saisissant votre adresse e-mail.',
+          button: 'Récupérer mes données !'
         },
-        customerData: {
-          title: 'Vos coordonnées',
-          email: 'Adresse e-mail',
-          emailPlaceholder: 'ex. jean@exemple.fr',
-          salutation: 'Civilité',
-          salutationMr: 'M.',
-          salutationMs: 'Mme',
-          firstName: 'Prénom',
-          firstNamePlaceholder: 'Jean',
-          lastName: 'Nom de famille',
-          lastNamePlaceholder: 'Dupont',
-          street: 'Rue et numéro',
-          streetPlaceholder: 'Rue Exemple 1',
-          postalCode: 'Code postal',
-          postalCodePlaceholder: '75001',
-          city: 'Ville',
-          cityPlaceholder: 'Paris',
-          mobilePhone: 'Téléphone mobile',
-          mobilePhonePlaceholder: '017012345678',
-          mobilePhoneHint: 'Veuillez saisir votre numéro sans caractères spéciaux.'
+        form: {
+          customerTitle: 'Vos coordonnées',
+          vehicleTitle: 'Données du véhicule',
+          email: { label: 'Adresse e-mail', placeholder: 'max@exemple.fr',
+            error: { required: 'Veuillez saisir votre adresse e-mail.', invalid: 'Veuillez saisir une adresse e-mail valide.' } },
+          salutation: { label: 'Civilité', placeholder: 'Veuillez sélectionner', mr: 'M.', ms: 'Mme',
+            error: { required: 'Veuillez sélectionner une civilité.' } },
+          firstName: { label: 'Prénom', placeholder: 'Jean',
+            error: { required: 'Veuillez saisir votre prénom.', lettersOnly: 'Le prénom ne peut contenir que des lettres.' } },
+          lastName: { label: 'Nom de famille', placeholder: 'Dupont',
+            error: { required: 'Veuillez saisir votre nom de famille.', lettersOnly: 'Le nom ne peut contenir que des lettres.' } },
+          street: { label: 'Rue et numéro', placeholder: 'Rue Exemple 1',
+            error: { required: 'Veuillez saisir votre rue et numéro.' } },
+          postalCode: { label: 'Code postal', placeholder: '75001',
+            error: { required: 'Veuillez saisir votre code postal.', digitsOnly: 'Le code postal ne peut contenir que des chiffres.' } },
+          city: { label: 'Ville', placeholder: 'Paris',
+            error: { required: 'Veuillez saisir votre ville.', lettersOnly: 'La ville ne peut contenir que des lettres.' } },
+          mobilePhone: { label: 'Téléphone mobile', placeholder: '017012345678',
+            hint: 'Veuillez saisir votre numéro sans caractères spéciaux au format 017012345678.',
+            error: { required: 'Veuillez saisir votre numéro de téléphone mobile.', digitsOnly: 'Le numéro ne peut contenir que des chiffres.', startsWithZero: 'Le numéro de mobile doit commencer par 0.' } },
+          licensePlate: { label: 'Plaque d\'immatriculation', placeholder: 'XX-XX1234',
+            error: { required: 'Veuillez saisir votre plaque d\'immatriculation.', invalidFormat: 'Veuillez saisir une plaque valide (ex. B-MS1234).' } },
+          mileage: { label: 'Kilométrage', placeholder: '5000',
+            error: { required: 'Veuillez saisir le kilométrage.', digitsOnly: 'Le kilométrage ne peut contenir que des chiffres.' } },
+          vin: { label: 'NIV', placeholder: 'WDB8XXXXXXA123456', infoLink: 'Explication du NIV',
+            error: { required: 'Veuillez saisir le numéro d\'identification du véhicule.', invalidLength: 'Le NIV doit comporter exactement 17 caractères.', invalidFormat: 'Le NIV ne peut contenir que des lettres et des chiffres.' } },
+          privacy: { consent: 'Je consens au traitement de mes données personnelles aux fins de la prise de rendez-vous en ligne. Pour en savoir plus, consultez notre',
+            privacyLink: 'Politique de confidentialité',
+            error: { required: 'Veuillez accepter la politique de confidentialité.' } },
+          requiredHint: 'Les champs obligatoires sont marqués d\'un *'
         },
-        vehicleData: {
-          title: 'Données du véhicule',
-          licensePlate: 'Plaque d\'immatriculation',
-          licensePlatePlaceholder: 'AB-123-CD',
-          mileage: 'Kilométrage (km)',
-          mileagePlaceholder: '50000',
-          vin: 'Numéro d\'identification du véhicule (NIV)',
-          vinPlaceholder: 'ex. WVWZZZ3BZWE689725',
-          vinExplanation: 'Explication du NIV'
-        },
-        privacy: {
-          label: 'J\'ai lu et j\'accepte la politique de confidentialité.',
-          link: 'Politique de confidentialité'
-        },
-        requiredHint: '* Champs obligatoires',
-        validation: {
-          required: 'Ce champ est obligatoire.',
-          email: 'Veuillez saisir une adresse e-mail valide.',
-          licensePlate: 'Veuillez saisir une plaque d\'immatriculation valide.',
-          mileage: 'Veuillez saisir un kilométrage valide.',
-          vin: 'Le NIV doit comporter exactement 17 caractères.',
-          postalCode: 'Veuillez saisir un code postal valide.',
-          privacyRequired: 'Veuillez accepter la politique de confidentialité.',
-          lettersOnly: 'Ce champ ne peut contenir que des lettres.',
-          startsWithZero: 'Le numéro de mobile doit commencer par 0.'
-        },
-        navigation: {
-          back: 'Retour',
-          continue: 'Vers le récapitulatif'
-        }
+        navigation: { back: 'Retour', continue: 'Vers le récapitulatif' }
       }
     }
   },
@@ -821,63 +741,43 @@ export const translations = {
       },
       carinformation: {
         title: 'يرجى تزويدنا بالمعلومات الأخيرة حول موعدك',
-        subtitle: 'يرجى إدخال بياناتك الشخصية ومعلومات السيارة.',
         returningCustomer: {
           title: 'سبق أن زرتنا؟',
-          description: 'إذا كنت بالفعل عميلاً لدينا، يمكنك استرداد بياناتك المحفوظة.',
-          button: 'استرداد البيانات الآن!'
+          description: 'استرجع بياناتك تلقائياً بإدخال عنوان بريدك الإلكتروني.',
+          button: 'استرداد بياناتي!'
         },
-        customerData: {
-          title: 'بياناتك',
-          email: 'عنوان البريد الإلكتروني',
-          emailPlaceholder: 'مثال: ahmed@example.com',
-          salutation: 'التحية',
-          salutationMr: 'السيد',
-          salutationMs: 'السيدة',
-          firstName: 'الاسم الأول',
-          firstNamePlaceholder: 'أحمد',
-          lastName: 'اسم العائلة',
-          lastNamePlaceholder: 'محمد',
-          street: 'الشارع ورقم المبنى',
-          streetPlaceholder: 'شارع النموذج 1',
-          postalCode: 'الرمز البريدي',
-          postalCodePlaceholder: '12345',
-          city: 'المدينة',
-          cityPlaceholder: 'مدينة النموذج',
-          mobilePhone: 'رقم الهاتف المحمول',
-          mobilePhonePlaceholder: '017012345678',
-          mobilePhoneHint: 'يرجى إدخال الرقم بدون أحرف خاصة.'
+        form: {
+          customerTitle: 'بياناتك',
+          vehicleTitle: 'بيانات السيارة',
+          email: { label: 'عنوان البريد الإلكتروني', placeholder: 'ahmed@example.com',
+            error: { required: 'يرجى إدخال عنوان بريدك الإلكتروني.', invalid: 'يرجى إدخال عنوان بريد إلكتروني صحيح.' } },
+          salutation: { label: 'التحية', placeholder: 'يرجى الاختيار', mr: 'السيد', ms: 'السيدة',
+            error: { required: 'يرجى اختيار التحية.' } },
+          firstName: { label: 'الاسم الأول', placeholder: 'أحمد',
+            error: { required: 'يرجى إدخال اسمك الأول.', lettersOnly: 'الاسم الأول يجب أن يحتوي على أحرف فقط.' } },
+          lastName: { label: 'اسم العائلة', placeholder: 'محمد',
+            error: { required: 'يرجى إدخال اسم عائلتك.', lettersOnly: 'اسم العائلة يجب أن يحتوي على أحرف فقط.' } },
+          street: { label: 'الشارع ورقم المبنى', placeholder: 'شارع النموذج 1',
+            error: { required: 'يرجى إدخال الشارع ورقم المبنى.' } },
+          postalCode: { label: 'الرمز البريدي', placeholder: '30159',
+            error: { required: 'يرجى إدخال الرمز البريدي.', digitsOnly: 'الرمز البريدي يجب أن يحتوي على أرقام فقط.' } },
+          city: { label: 'المدينة', placeholder: 'برلين',
+            error: { required: 'يرجى إدخال المدينة.', lettersOnly: 'المدينة يجب أن تحتوي على أحرف فقط.' } },
+          mobilePhone: { label: 'رقم الهاتف المحمول', placeholder: '017012345678',
+            hint: 'يرجى إدخال الرقم بدون أحرف خاصة بصيغة 017012345678.',
+            error: { required: 'يرجى إدخال رقم هاتفك المحمول.', digitsOnly: 'الرقم يجب أن يحتوي على أرقام فقط.', startsWithZero: 'يجب أن يبدأ رقم الهاتف المحمول بـ 0.' } },
+          licensePlate: { label: 'لوحة الترخيص', placeholder: 'XX-XX1234',
+            error: { required: 'يرجى إدخال لوحة الترخيص.', invalidFormat: 'يرجى إدخال لوحة ترخيص صحيحة (مثال: B-MS1234).' } },
+          mileage: { label: 'عداد المسافات', placeholder: '5000',
+            error: { required: 'يرجى إدخال قراءة عداد المسافات.', digitsOnly: 'عداد المسافات يجب أن يحتوي على أرقام فقط.' } },
+          vin: { label: 'VIN', placeholder: 'WDB8XXXXXXA123456', infoLink: 'شرح رقم VIN',
+            error: { required: 'يرجى إدخال رقم تعريف السيارة.', invalidLength: 'يجب أن يتكون رقم VIN من 17 حرفاً بالضبط.', invalidFormat: 'رقم VIN يجب أن يحتوي على أحرف وأرقام فقط.' } },
+          privacy: { consent: 'أوافق على معالجة بياناتي الشخصية لغرض حجز موعد عبر الإنترنت. لمزيد من المعلومات راجع',
+            privacyLink: 'سياسة الخصوصية',
+            error: { required: 'يرجى قبول سياسة الخصوصية.' } },
+          requiredHint: 'الحقول المطلوبة محددة بـ *'
         },
-        vehicleData: {
-          title: 'بيانات السيارة',
-          licensePlate: 'لوحة الترخيص',
-          licensePlatePlaceholder: 'B-AB 1234',
-          mileage: 'عداد المسافات (كم)',
-          mileagePlaceholder: '50000',
-          vin: 'رقم تعريف السيارة (VIN)',
-          vinPlaceholder: 'مثال: WVWZZZ3BZWE689725',
-          vinExplanation: 'شرح رقم VIN'
-        },
-        privacy: {
-          label: 'لقد قرأت سياسة الخصوصية وأوافق عليها.',
-          link: 'سياسة الخصوصية'
-        },
-        requiredHint: '* الحقول المطلوبة',
-        validation: {
-          required: 'هذا الحقل مطلوب.',
-          email: 'يرجى إدخال عنوان بريد إلكتروني صحيح.',
-          licensePlate: 'يرجى إدخال لوحة ترخيص صحيحة.',
-          mileage: 'يرجى إدخال قراءة عداد مسافات صحيحة.',
-          vin: 'يجب أن يتكون رقم VIN من 17 حرفاً بالضبط.',
-          postalCode: 'يرجى إدخال رمز بريدي صحيح.',
-          privacyRequired: 'يرجى قبول سياسة الخصوصية.',
-          lettersOnly: 'يمكن أن يحتوي هذا الحقل على أحرف فقط.',
-          startsWithZero: 'يجب أن يبدأ رقم الهاتف المحمول بـ 0.'
-        },
-        navigation: {
-          back: 'رجوع',
-          continue: 'إلى ملخص الحجز'
-        }
+        navigation: { back: 'رجوع', continue: 'إلى ملخص الحجز' }
       }
     }
   }

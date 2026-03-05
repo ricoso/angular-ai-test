@@ -1,6 +1,5 @@
 <section class="carinformation">
-  <h1 class="carinformation__title">{{ t.booking.carinformation.title | translate }}</h1>
-  <p class="carinformation__subtitle">{{ t.booking.carinformation.subtitle | translate }}</p>
+  <h1 class="carinformation__title">{{ carinformation.title | translate }}</h1>
 
   <div class="carinformation__returning-banner">
     <div class="carinformation__returning-content">
@@ -8,8 +7,8 @@
         <mat-icon class="icon-framed" aria-hidden="true">person</mat-icon>
       </div>
       <div class="carinformation__returning-text">
-        <strong class="carinformation__returning-title">{{ t.booking.carinformation.returningCustomer.title | translate }}</strong>
-        <p class="carinformation__returning-description">{{ t.booking.carinformation.returningCustomer.description | translate }}</p>
+        <strong class="carinformation__returning-title">{{ carinformation.returningCustomer.title | translate }}</strong>
+        <p class="carinformation__returning-description">{{ carinformation.returningCustomer.description | translate }}</p>
       </div>
     </div>
     <button
@@ -19,7 +18,7 @@
       (click)="onReturningCustomer()"
     >
       <mat-icon class="icon-framed" aria-hidden="true">login</mat-icon>
-      {{ t.booking.carinformation.returningCustomer.button | translate }}
+      {{ carinformation.returningCustomer.button | translate }}
     </button>
   </div>
 
@@ -33,36 +32,36 @@
         [formControl]="privacyControl"
         class="carinformation__privacy-checkbox"
       >
-        {{ t.booking.carinformation.privacy.label | translate }}
+        {{ carinformation.form.privacy.consent | translate }}
       </mat-checkbox>
       @if (privacyError()) {
         <p class="carinformation__privacy-error" role="alert">
-          {{ t.booking.carinformation.validation.privacyRequired | translate }}
+          {{ carinformation.form.privacy.error.required | translate }}
         </p>
       }
     </div>
 
-    <p class="carinformation__required-hint">{{ t.booking.carinformation.requiredHint | translate }}</p>
+    <p class="carinformation__required-hint">{{ carinformation.form.requiredHint | translate }}</p>
 
-    <nav class="carinformation__actions" [attr.aria-label]="t.booking.carinformation.navigation.back | translate">
+    <nav class="carinformation__actions" [attr.aria-label]="carinformation.navigation.back | translate">
       <button
         mat-flat-button
         class="carinformation__back-button"
         type="button"
-        [attr.aria-label]="t.booking.carinformation.navigation.back | translate"
+        [attr.aria-label]="carinformation.navigation.back | translate"
         (click)="onBack()"
       >
         <mat-icon class="icon-framed" aria-hidden="true">arrow_back</mat-icon>
-        {{ t.booking.carinformation.navigation.back | translate }}
+        {{ carinformation.navigation.back | translate }}
       </button>
       <button
         mat-flat-button
         color="primary"
         class="carinformation__continue-button"
         type="submit"
-        [attr.aria-label]="t.booking.carinformation.navigation.continue | translate"
+        [attr.aria-label]="carinformation.navigation.continue | translate"
       >
-        {{ t.booking.carinformation.navigation.continue | translate }}
+        {{ carinformation.navigation.continue | translate }}
         <mat-icon class="icon-framed" aria-hidden="true">arrow_forward</mat-icon>
       </button>
     </nav>
