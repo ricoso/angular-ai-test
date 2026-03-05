@@ -1,6 +1,7 @@
 import type { Routes } from '@angular/router';
 
 import { brandSelectedGuard } from './guards/brand-selected.guard';
+import { carInformationGuard } from './guards/car-information.guard';
 import { locationSelectedGuard } from './guards/location-selected.guard';
 import { servicesSelectedGuard } from './guards/services-selected.guard';
 import { appointmentsResolver } from './resolvers/appointments.resolver';
@@ -52,5 +53,11 @@ export const bookingRoutes: Routes = [
     loadComponent: () => import('./components/workshop-calendar/workshop-calendar-container.component')
       .then(m => m.WorkshopCalendarContainerComponent),
     canActivate: [servicesSelectedGuard]
+  },
+  {
+    path: 'carinformation',
+    loadComponent: () => import('./components/carinformation/carinformation-container.component')
+      .then(m => m.CarinformationContainerComponent),
+    canActivate: [carInformationGuard]
   }
 ];

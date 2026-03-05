@@ -33,8 +33,7 @@ export class AppointmentSelectionContainerComponent {
 
   protected onContinue(): void {
     console.debug('[AppointmentSelectionContainer] Continue clicked, appointment:', this.selectedAppointment());
-    // Next wizard step (REQ-007+) — currently no further step
-    void this.router.navigate(['/home/appointment']);
+    void this.router.navigate(['/home/carinformation']);
   }
 
   protected onBack(): void {

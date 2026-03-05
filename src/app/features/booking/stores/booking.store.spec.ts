@@ -345,4 +345,66 @@ describe('BookingStore', () => {
     });
   });
 
+  describe('setCustomerInfo', () => {
+    it('should set customerInfo', () => {
+      expect(store.customerInfo()).toBeNull();
+      store.setCustomerInfo({
+        email: 'test@example.com',
+        salutation: 'mr',
+        firstName: 'Max',
+        lastName: 'Mustermann',
+        street: 'Musterstraße 1',
+        postalCode: '12345',
+        city: 'Musterstadt',
+        mobilePhone: '+49151123456'
+      });
+      expect(store.customerInfo()?.email).toBe('test@example.com');
+    });
+  });
+
+  describe('setVehicleInfo', () => {
+    it('should set vehicleInfo', () => {
+      expect(store.vehicleInfo()).toBeNull();
+      store.setVehicleInfo({ licensePlate: 'B-AB 1234', mileage: 50000, vin: 'WVWZZZ3BZWE689725' });
+      expect(store.vehicleInfo()?.licensePlate).toBe('B-AB 1234');
+    });
+  });
+
+  describe('setPrivacyConsent', () => {
+    it('should set privacyConsent to true', () => {
+      expect(store.privacyConsent()).toBe(false);
+      store.setPrivacyConsent(true);
+      expect(store.privacyConsent()).toBe(true);
+    });
+
+    it('should set privacyConsent back to false', () => {
+      store.setPrivacyConsent(true);
+      store.setPrivacyConsent(false);
+      expect(store.privacyConsent()).toBe(false);
+    });
+  });
+
+  describe('clearCarInformation', () => {
+    it('should clear all car information fields', () => {
+      store.setCustomerInfo({
+        email: 'test@example.com',
+        salutation: 'ms',
+        firstName: 'Erika',
+        lastName: 'Musterfrau',
+        street: 'Musterstraße 2',
+        postalCode: '12345',
+        city: 'Musterstadt',
+        mobilePhone: '+49151000000'
+      });
+      store.setVehicleInfo({ licensePlate: 'M-XY 5678', mileage: 10000, vin: '' });
+      store.setPrivacyConsent(true);
+
+      store.clearCarInformation();
+
+      expect(store.customerInfo()).toBeNull();
+      expect(store.vehicleInfo()).toBeNull();
+      expect(store.privacyConsent()).toBe(false);
+    });
+  });
+
 });

@@ -131,7 +131,7 @@ describe('WorkshopCalendarContainerComponent', () => {
     const exposed = component as unknown as { onContinue: () => void };
     exposed.onContinue();
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/home/workshop-calendar']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/home/carinformation']);
   });
 
   it('should update hasAppointmentSelected after slot selection', () => {

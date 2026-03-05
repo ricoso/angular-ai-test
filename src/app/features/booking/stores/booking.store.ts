@@ -7,6 +7,7 @@ import { catchError, EMPTY, from, pipe, switchMap, tap } from 'rxjs';
 
 import type { AppointmentSlot } from '../models/appointment.model';
 import type { Brand, BrandDisplay } from '../models/brand.model';
+import type { CustomerInfo, VehicleInfo } from '../models/customer.model';
 import type { LocationDisplay } from '../models/location.model';
 import type { SelectedService, ServiceDisplay, ServiceType } from '../models/service.model';
 import type { WorkshopCalendarDay } from '../models/workshop-calendar.model';
@@ -26,6 +27,9 @@ interface BookingState {
   selectedAppointment: AppointmentSlot | null;
   workshopCalendarDate: string | null;
   workshopCalendarDays: WorkshopCalendarDay[];
+  customerInfo: CustomerInfo | null;
+  vehicleInfo: VehicleInfo | null;
+  privacyConsent: boolean;
   isLoading: boolean;
   error: string | null;
 }
@@ -42,6 +46,9 @@ const INITIAL_STATE: BookingState = {
   selectedAppointment: null,
   workshopCalendarDate: null,
   workshopCalendarDays: [],
+  customerInfo: null,
+  vehicleInfo: null,
+  privacyConsent: false,
   isLoading: false,
   error: null
 };
@@ -231,6 +238,25 @@ export const BookingStore = signalStore(
 
     clearSelectedServices(): void {
       patchState(store, { selectedServices: [] });
+    },
+
+    setCustomerInfo(info: CustomerInfo): void {
+      console.debug('[BookingStore] setCustomerInfo — data received');
+      patchState(store, { customerInfo: info });
+    },
+
+    setVehicleInfo(info: VehicleInfo): void {
+      console.debug('[BookingStore] setVehicleInfo — data received');
+      patchState(store, { vehicleInfo: info });
+    },
+
+    setPrivacyConsent(consent: boolean): void {
+      console.debug('[BookingStore] setPrivacyConsent:', consent);
+      patchState(store, { privacyConsent: consent });
+    },
+
+    clearCarInformation(): void {
+      patchState(store, { customerInfo: null, vehicleInfo: null, privacyConsent: false });
     }
   }))
 );

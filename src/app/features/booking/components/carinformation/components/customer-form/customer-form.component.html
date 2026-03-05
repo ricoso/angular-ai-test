@@ -1,0 +1,130 @@
+<fieldset class="customer-form" [formGroup]="form()">
+  <legend class="customer-form__title">{{ t.booking.carinformation.customerData.title | translate }}</legend>
+
+  <div class="customer-form__field customer-form__field--full">
+    <mat-form-field appearance="outline" class="customer-form__input">
+      <mat-label>{{ t.booking.carinformation.customerData.email | translate }}</mat-label>
+      <mat-icon matPrefix class="icon-framed" aria-hidden="true">email</mat-icon>
+      <input
+        matInput
+        type="email"
+        formControlName="email"
+        [placeholder]="t.booking.carinformation.customerData.emailPlaceholder | translate"
+        autocomplete="email"
+      />
+      @if (emailErrors(); as error) {
+        <mat-error>{{ error | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <div class="customer-form__row customer-form__row--three">
+    <mat-form-field appearance="outline" class="customer-form__input">
+      <mat-label>{{ t.booking.carinformation.customerData.salutation | translate }}</mat-label>
+      <mat-icon matPrefix class="icon-framed" aria-hidden="true">person</mat-icon>
+      <mat-select formControlName="salutation" autocomplete="honorific-prefix">
+        <mat-option value="mr">{{ t.booking.carinformation.customerData.salutationMr | translate }}</mat-option>
+        <mat-option value="ms">{{ t.booking.carinformation.customerData.salutationMs | translate }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="customer-form__input">
+      <mat-label>{{ t.booking.carinformation.customerData.firstName | translate }}</mat-label>
+      <mat-icon matPrefix class="icon-framed" aria-hidden="true">person</mat-icon>
+      <input
+        matInput
+        type="text"
+        formControlName="firstName"
+        [placeholder]="t.booking.carinformation.customerData.firstNamePlaceholder | translate"
+        autocomplete="given-name"
+      />
+      @if (firstNameErrors(); as error) {
+        <mat-error>{{ error | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="customer-form__input">
+      <mat-label>{{ t.booking.carinformation.customerData.lastName | translate }}</mat-label>
+      <mat-icon matPrefix class="icon-framed" aria-hidden="true">person</mat-icon>
+      <input
+        matInput
+        type="text"
+        formControlName="lastName"
+        [placeholder]="t.booking.carinformation.customerData.lastNamePlaceholder | translate"
+        autocomplete="family-name"
+      />
+      @if (lastNameErrors(); as error) {
+        <mat-error>{{ error | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <div class="customer-form__field customer-form__field--full">
+    <mat-form-field appearance="outline" class="customer-form__input">
+      <mat-label>{{ t.booking.carinformation.customerData.street | translate }}</mat-label>
+      <mat-icon matPrefix class="icon-framed" aria-hidden="true">location_on</mat-icon>
+      <input
+        matInput
+        type="text"
+        formControlName="street"
+        [placeholder]="t.booking.carinformation.customerData.streetPlaceholder | translate"
+        autocomplete="street-address"
+      />
+      @if (streetErrors(); as error) {
+        <mat-error>{{ error | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <div class="customer-form__row customer-form__row--two">
+    <mat-form-field appearance="outline" class="customer-form__input">
+      <mat-label>{{ t.booking.carinformation.customerData.postalCode | translate }}</mat-label>
+      <mat-icon matPrefix class="icon-framed" aria-hidden="true">location_on</mat-icon>
+      <input
+        matInput
+        type="text"
+        formControlName="postalCode"
+        [placeholder]="t.booking.carinformation.customerData.postalCodePlaceholder | translate"
+        autocomplete="postal-code"
+        inputmode="numeric"
+      />
+      @if (postalCodeErrors(); as error) {
+        <mat-error>{{ error | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="customer-form__input">
+      <mat-label>{{ t.booking.carinformation.customerData.city | translate }}</mat-label>
+      <mat-icon matPrefix class="icon-framed" aria-hidden="true">location_on</mat-icon>
+      <input
+        matInput
+        type="text"
+        formControlName="city"
+        [placeholder]="t.booking.carinformation.customerData.cityPlaceholder | translate"
+        autocomplete="address-level2"
+      />
+      @if (cityErrors(); as error) {
+        <mat-error>{{ error | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <div class="customer-form__field customer-form__field--full">
+    <mat-form-field appearance="outline" class="customer-form__input">
+      <mat-label>{{ t.booking.carinformation.customerData.mobilePhone | translate }}</mat-label>
+      <mat-icon matPrefix class="icon-framed" aria-hidden="true">phone</mat-icon>
+      <input
+        matInput
+        type="tel"
+        formControlName="mobilePhone"
+        [placeholder]="t.booking.carinformation.customerData.mobilePhonePlaceholder | translate"
+        autocomplete="tel"
+        inputmode="tel"
+      />
+      <mat-hint>{{ t.booking.carinformation.customerData.mobilePhoneHint | translate }}</mat-hint>
+      @if (mobilePhoneErrors(); as error) {
+        <mat-error>{{ error | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+</fieldset>

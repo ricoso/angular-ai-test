@@ -56,7 +56,7 @@ export class WorkshopCalendarContainerComponent {
 
   protected onContinue(): void {
     console.debug('[WorkshopCalendarContainer] Continue clicked, appointment:', this.selectedAppointment());
-    void this.router.navigate(['/home/workshop-calendar']);
+    void this.router.navigate(['/home/carinformation']);
   }
 
   protected onBack(): void {
