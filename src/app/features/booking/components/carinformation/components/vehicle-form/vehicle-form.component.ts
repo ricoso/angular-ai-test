@@ -1,0 +1,51 @@
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import type { FormGroup } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
+import { i18nKeys, TranslatePipe } from '@core/i18n';
+
+@Component({
+  selector: 'app-vehicle-form',
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    TranslatePipe
+  ],
+  templateUrl: './vehicle-form.component.html',
+  styleUrl: './vehicle-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class VehicleFormComponent {
+  public readonly form = input.required<FormGroup>();
+
+  protected readonly carinformation = i18nKeys.booking.carinformation;
+
+  protected readonly licensePlateErrors = computed(() => {
+    const ctrl = this.form().get('licensePlate');
+    if (!ctrl || !ctrl.touched || ctrl.valid) { return null; }
+    if (ctrl.hasError('required')) { return this.carinformation.form.licensePlate.error.required; }
+    return this.carinformation.form.licensePlate.error.invalidFormat;
+  });
+
+  protected readonly mileageErrors = computed(() => {
+    const ctrl = this.form().get('mileage');
+    if (!ctrl || !ctrl.touched || ctrl.valid) { return null; }
+    if (ctrl.hasError('required')) { return this.carinformation.form.mileage.error.required; }
+    return this.carinformation.form.mileage.error.digitsOnly;
+  });
+
+  protected readonly vinErrors = computed(() => {
+    const ctrl = this.form().get('vin');
+    if (!ctrl || !ctrl.touched || ctrl.valid) { return null; }
+    return this.carinformation.form.vin.error.invalidLength;
+  });
+
+  protected onVinLinkClick(event: Event): void {
+    event.preventDefault();
+    console.debug('[VehicleForm] VIN explanation link clicked');
+  }
+}

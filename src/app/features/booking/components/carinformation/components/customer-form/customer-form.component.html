@@ -1,0 +1,122 @@
+<fieldset class="customer-form" [formGroup]="form()">
+  <legend class="customer-form__title">{{ carinformation.form.customerTitle | translate }}</legend>
+
+  <div class="customer-form__field customer-form__field--full">
+    <mat-form-field appearance="outline" class="customer-form__input">
+      <mat-label>{{ carinformation.form.email.label | translate }}</mat-label>
+      <input
+        matInput
+        type="email"
+        formControlName="email"
+        [placeholder]="carinformation.form.email.placeholder | translate"
+        autocomplete="email"
+      />
+      @if (emailErrors(); as error) {
+        <mat-error>{{ error | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <div class="customer-form__row customer-form__row--three">
+    <mat-form-field appearance="outline" class="customer-form__input">
+      <mat-label>{{ carinformation.form.salutation.label | translate }}</mat-label>
+      <mat-select formControlName="salutation" autocomplete="honorific-prefix">
+        <mat-option value="mr">{{ carinformation.form.salutation.mr | translate }}</mat-option>
+        <mat-option value="ms">{{ carinformation.form.salutation.ms | translate }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="customer-form__input">
+      <mat-label>{{ carinformation.form.firstName.label | translate }}</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="firstName"
+        [placeholder]="carinformation.form.firstName.placeholder | translate"
+        autocomplete="given-name"
+      />
+      @if (firstNameErrors(); as error) {
+        <mat-error>{{ error | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="customer-form__input">
+      <mat-label>{{ carinformation.form.lastName.label | translate }}</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="lastName"
+        [placeholder]="carinformation.form.lastName.placeholder | translate"
+        autocomplete="family-name"
+      />
+      @if (lastNameErrors(); as error) {
+        <mat-error>{{ error | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <div class="customer-form__field customer-form__field--full">
+    <mat-form-field appearance="outline" class="customer-form__input">
+      <mat-label>{{ carinformation.form.street.label | translate }}</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="street"
+        [placeholder]="carinformation.form.street.placeholder | translate"
+        autocomplete="street-address"
+      />
+      @if (streetErrors(); as error) {
+        <mat-error>{{ error | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <div class="customer-form__row customer-form__row--two">
+    <mat-form-field appearance="outline" class="customer-form__input">
+      <mat-label>{{ carinformation.form.postalCode.label | translate }}</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="postalCode"
+        [placeholder]="carinformation.form.postalCode.placeholder | translate"
+        autocomplete="postal-code"
+        inputmode="numeric"
+      />
+      @if (postalCodeErrors(); as error) {
+        <mat-error>{{ error | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="customer-form__input">
+      <mat-label>{{ carinformation.form.city.label | translate }}</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="city"
+        [placeholder]="carinformation.form.city.placeholder | translate"
+        autocomplete="address-level2"
+      />
+      @if (cityErrors(); as error) {
+        <mat-error>{{ error | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <div class="customer-form__field customer-form__field--full">
+    <mat-form-field appearance="outline" class="customer-form__input">
+      <mat-label>{{ carinformation.form.mobilePhone.label | translate }}</mat-label>
+      <input
+        matInput
+        type="tel"
+        formControlName="mobilePhone"
+        [placeholder]="carinformation.form.mobilePhone.placeholder | translate"
+        autocomplete="tel"
+        inputmode="tel"
+      />
+      <mat-hint>{{ carinformation.form.mobilePhone.hint | translate }}</mat-hint>
+      @if (mobilePhoneErrors(); as error) {
+        <mat-error>{{ error | translate }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+</fieldset>

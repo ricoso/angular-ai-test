@@ -1,0 +1,42 @@
+@use 'breakpoints' as *;
+
+.customer-form {
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+
+  &__title {
+    font-size: var(--font-size-lg);
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-md);
+    padding: 0;
+  }
+
+  &__field--full {
+    width: 100%;
+  }
+
+  &__row {
+    display: grid;
+    gap: var(--spacing-md);
+    grid-template-columns: 1fr;
+
+    @include tablet {
+      &--two {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      &--three {
+        grid-template-columns: 1fr 2fr 2fr;
+      }
+    }
+  }
+
+  &__input {
+    width: 100%;
+  }
+}

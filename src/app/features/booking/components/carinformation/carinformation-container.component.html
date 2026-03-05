@@ -1,0 +1,63 @@
+<section class="carinformation">
+  <h1 class="carinformation__title">{{ carinformation.title | translate }}</h1>
+
+  <div class="carinformation__returning-banner">
+    <div class="carinformation__returning-content">
+      <div class="carinformation__returning-text">
+        <strong class="carinformation__returning-title">{{ carinformation.returningCustomer.title | translate }}</strong>
+        <p class="carinformation__returning-description">{{ carinformation.returningCustomer.description | translate }}</p>
+      </div>
+    </div>
+    <button
+      mat-flat-button
+      class="carinformation__returning-button"
+      type="button"
+      (click)="onReturningCustomer()"
+    >
+      {{ carinformation.returningCustomer.button | translate }}
+    </button>
+  </div>
+
+  <form class="carinformation__form" (submit)="onSubmit($event)" novalidate>
+    <app-customer-form [form]="customerForm" />
+
+    <app-vehicle-form [form]="vehicleForm" />
+
+    <div class="carinformation__privacy">
+      <mat-checkbox
+        [formControl]="privacyControl"
+        class="carinformation__privacy-checkbox"
+      >
+        {{ carinformation.form.privacy.consent | translate }}
+      </mat-checkbox>
+      @if (privacyError()) {
+        <p class="carinformation__privacy-error" role="alert">
+          {{ carinformation.form.privacy.error.required | translate }}
+        </p>
+      }
+    </div>
+
+    <p class="carinformation__required-hint">{{ carinformation.form.requiredHint | translate }}</p>
+
+    <nav class="carinformation__actions" [attr.aria-label]="carinformation.navigation.back | translate">
+      <button
+        mat-flat-button
+        class="carinformation__back-button"
+        type="button"
+        [attr.aria-label]="carinformation.navigation.back | translate"
+        (click)="onBack()"
+      >
+        {{ carinformation.navigation.back | translate }}
+      </button>
+      <button
+        mat-flat-button
+        color="primary"
+        class="carinformation__continue-button"
+        type="submit"
+        [attr.aria-label]="carinformation.navigation.continue | translate"
+      >
+        {{ carinformation.navigation.continue | translate }}
+      </button>
+    </nav>
+  </form>
+</section>
