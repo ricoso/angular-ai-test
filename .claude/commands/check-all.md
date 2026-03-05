@@ -170,9 +170,12 @@ CATEGORY_SCORE: <score>/100"
 Prompt: "Analysiere das Feature '$ARGUMENTS' und führe folgende Feature-Checks durch:
 
 1. **check-i18n**: Internationalization
-   - ALLE Texte mit {{ 'key' | translate }}
+   - Feature-Alias PFLICHT: `protected readonly <feature> = i18nKeys.<path>` (sprechend!)
+   - VERBOTEN: `protected readonly t = i18nKeys` — generisch, nicht erlaubt!
+   - Templates: `{{ featureAlias.form.field.label | translate }}` (kein String-Literal, kein `t.`)
    - KEINE hardcoded Strings in Templates
-   - Key-Naming: {feature}.{type}.{name}
+   - Nested Key-Struktur: `form.email.error.required` (kein flaches `validation.required`)
+   - Alle 5 Sprachen in translations.ts: DE + EN + UK + FR + AR
 
 2. **check-forms**: Reactive Forms
    - Reactive Forms (FormGroup, FormControl)

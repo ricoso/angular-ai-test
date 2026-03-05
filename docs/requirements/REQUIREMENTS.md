@@ -84,8 +84,8 @@ REQ-007-WizardStateSync (Cross-Cutting)
 | 📝 Draft | 0 |
 | 🔍 In Review | 2 |
 | ✅ Approved | 0 |
-| 🚧 In Progress | 1 |
-| ✔️ Implemented | 6 |
+| 🚧 In Progress | 0 |
+| ✔️ Implemented | 7 |
 | **Total** | **9** |
 
 ---

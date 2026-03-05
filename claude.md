@@ -28,7 +28,8 @@
 | Hardcoded Farben/px | CSS Variables aus `_variables.scss`, em/rem |
 | Dunkler Hintergrund bei Overlays | `var(--color-background-surface)` (weiß) |
 | `[innerHTML]` ohne Sanitizer | Angular Template Escaping |
-| Hardcoded Strings in Templates | i18n Keys (`{{ t.feature.key }}`) |
+| Hardcoded Strings in Templates | i18n Keys (`{{ featureAlias.form.field | translate }}`) |
+| `protected readonly t = i18nKeys` | Feature-Alias: `protected readonly carinformation = i18nKeys.booking.carinformation` |
 | Coverage-Thresholds ändern | Coverage-Config ist TABU — nie anfassen! |
 | `mat-stroked-button` (outlined) | `mat-flat-button` (filled) — Buttons IMMER filled! |
 
