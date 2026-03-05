@@ -44,11 +44,6 @@
     gap: var(--spacing-md);
   }
 
-  &__returning-icon {
-    flex-shrink: 0;
-    color: var(--color-primary);
-  }
-
   &__returning-text {
     display: flex;
     flex-direction: column;

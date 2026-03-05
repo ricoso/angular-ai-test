@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 
 import { i18nKeys, TranslatePipe } from '@core/i18n';
@@ -20,7 +19,6 @@ import { VehicleFormComponent } from './components/vehicle-form/vehicle-form.com
     ReactiveFormsModule,
     MatButtonModule,
     MatCheckboxModule,
-    MatIconModule,
     TranslatePipe,
     CustomerFormComponent,
     VehicleFormComponent

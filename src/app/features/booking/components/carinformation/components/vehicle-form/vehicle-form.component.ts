@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import type { FormGroup } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 
 import { i18nKeys, TranslatePipe } from '@core/i18n';
@@ -13,7 +12,6 @@ import { i18nKeys, TranslatePipe } from '@core/i18n';
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatIconModule,
     MatInputModule,
     TranslatePipe
   ],

@@ -3,9 +3,6 @@
 
   <div class="carinformation__returning-banner">
     <div class="carinformation__returning-content">
-      <div class="carinformation__returning-icon">
-        <mat-icon class="icon-framed" aria-hidden="true">person</mat-icon>
-      </div>
       <div class="carinformation__returning-text">
         <strong class="carinformation__returning-title">{{ carinformation.returningCustomer.title | translate }}</strong>
         <p class="carinformation__returning-description">{{ carinformation.returningCustomer.description | translate }}</p>
@@ -17,7 +14,6 @@
       type="button"
       (click)="onReturningCustomer()"
     >
-      <mat-icon class="icon-framed" aria-hidden="true">login</mat-icon>
       {{ carinformation.returningCustomer.button | translate }}
     </button>
   </div>
@@ -51,7 +47,6 @@
         [attr.aria-label]="carinformation.navigation.back | translate"
         (click)="onBack()"
       >
-        <mat-icon class="icon-framed" aria-hidden="true">arrow_back</mat-icon>
         {{ carinformation.navigation.back | translate }}
       </button>
       <button
@@ -62,7 +57,6 @@
         [attr.aria-label]="carinformation.navigation.continue | translate"
       >
         {{ carinformation.navigation.continue | translate }}
-        <mat-icon class="icon-framed" aria-hidden="true">arrow_forward</mat-icon>
       </button>
     </nav>
   </form>
