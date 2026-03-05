@@ -1,7 +1,7 @@
 # i18n Type-Safe Translations
 
 ## Projekt-Vorgabe
-- UI-Sprachen: DE, EN
+- UI-Sprachen: DE, EN, UK, FR, AR
 - Default: DE
 - ALLE Sprachen PFLICHT bei jedem Feature
 
@@ -13,112 +13,120 @@
 // src/app/core/i18n/translations.ts
 export const translations = {
   de: {
-    app: { title: 'Meine App', subtitle: 'Untertitel' },
-    user: {
-      form: { name: 'Name', email: 'E-Mail' },
-      buttons: { save: 'Speichern', cancel: 'Abbrechen' },
-      errors: { notFound: 'Benutzer nicht gefunden' }
+    app: { title: 'Meine App' },
+    booking: {
+      carinformation: {
+        title: 'Fahrzeugdaten',
+        form: {
+          email: { label: 'E-Mail', placeholder: 'max@muster.de',
+            error: { required: 'Pflichtfeld.', invalid: 'Ungültige E-Mail.' } },
+          firstName: { label: 'Vorname', placeholder: 'Max',
+            error: { required: 'Pflichtfeld.', lettersOnly: 'Nur Buchstaben.' } }
+        },
+        navigation: { back: 'Zurück', continue: 'Weiter' }
+      }
     }
   },
-  en: {
-    app: { title: 'My App', subtitle: 'Subtitle' },
-    user: {
-      form: { name: 'Name', email: 'Email' },
-      buttons: { save: 'Save', cancel: 'Cancel' },
-      errors: { notFound: 'User not found' }
-    }
-  }
+  en: { /* ... same structure ... */ }
 } as const;
 
 export type TranslationKey = NestedKeyOf<typeof translations.de>;
 export type Language = keyof typeof translations;
 
-/** Object-oriented key access: i18nKeys.header.warenkorb.button → 'header.warenkorb.button' */
+/** Object-oriented key access: i18nKeys.booking.carinformation.form.email.label → 'booking.carinformation.form.email.label' */
 export const i18nKeys = createKeyTree(translations.de);
 ```
 
 ### i18nKeys (KeyTree)
 
 ```typescript
-i18nKeys.app.title           // → 'app.title' (TranslationKey)
-i18nKeys.user.form.name      // → 'user.form.name'
+i18nKeys.app.title                                      // → 'app.title'
+i18nKeys.booking.carinformation.form.email.label        // → 'booking.carinformation.form.email.label'
+i18nKeys.booking.carinformation.form.email.error.required // → 'booking.carinformation.form.email.error.required'
 ```
 
 ---
 
-## TranslateService
+## Usage in Components — Feature-Scoped Alias (PFLICHT!)
+
+**VERBOTEN:** `protected readonly t = i18nKeys;` — zu generisch, kein sprechender Name!
+
+**PFLICHT:** Alias auf das Feature-Subtree zeigen lassen:
 
 ```typescript
-@Injectable({ providedIn: 'root' })
-export class TranslateService {
-  private readonly currentLanguage = signal<Language>(this.loadLanguageFromStorage());
-  private readonly currentTranslations = computed(() => translations[this.currentLanguage()]);
-
-  instant(key: TranslationKey): string { ... }
-  get(key: TranslationKey): () => string { ... }  // Computed signal for reactive templates
-  use(language: Language): void { ... }
-  getCurrentLanguage(): Language { ... }
-  getLanguageSignal(): () => Language { ... }
+// ✅ Container: auf Feature-Ebene scoppen
+export class CarinformationContainerComponent {
+  protected readonly carinformation = i18nKeys.booking.carinformation;
 }
-```
 
----
-
-## TranslatePipe
-
-```typescript
-@Pipe({ name: 'translate', standalone: true, pure: false })
-export class TranslatePipe implements PipeTransform {
-  transform(key: TranslationKey): string {
-    return this.translateService.instant(key);
-  }
+// ✅ Presentational: selber Scope wenn Component nur ein Feature kennt
+export class CustomerFormComponent {
+  protected readonly carinformation = i18nKeys.booking.carinformation;
 }
-```
 
----
-
-## Usage in Templates (i18nKeys + Pipe)
-
-```typescript
-@Component({
-  imports: [TranslatePipe]
-})
-export class MyComponent {
-  protected readonly user = i18nKeys.user;
+// ✅ Shared Component: auf passende Ebene
+export class HeaderComponent {
+  protected readonly header = i18nKeys.header;
   protected readonly app = i18nKeys.app;
 }
 ```
 
+**Naming-Regel:** Alias = Feature-Name (camelCase), zeigt auf `i18nKeys.<path>`:
+- `carinformation = i18nKeys.booking.carinformation`
+- `brand = i18nKeys.booking.brand`
+- `header = i18nKeys.header`
+
+---
+
+## Templates
+
 ```html
-<h1>{{ app.title | translate }}</h1>
-<label>{{ user.form.name | translate }}</label>
-<button>{{ user.buttons.save | translate }}</button>
-<img [alt]="header.logo.alt | translate" />
+<!-- ✅ GOOD — sprechende Variable, kurze Pfade -->
+<h1>{{ carinformation.title | translate }}</h1>
+<label>{{ carinformation.form.email.label | translate }}</label>
+<mat-error>{{ carinformation.form.email.error.required | translate }}</mat-error>
+<button>{{ carinformation.navigation.continue | translate }}</button>
+
+<!-- ❌ BAD — t ist nicht sprechend -->
+<h1>{{ t.booking.carinformation.title | translate }}</h1>
+
+<!-- ❌ BAD — Hardcoded String, kein i18nKeys -->
+<h1>{{ 'booking.carinformation.title' | translate }}</h1>
 ```
 
-### In Component-Logik (translateService.instant)
+### In Component-Logik (computed signal)
 
 ```typescript
-export class MyComponent {
-  private readonly translateService = inject(TranslateService);
-  private readonly user = i18nKeys.user;
+export class CustomerFormComponent {
+  protected readonly carinformation = i18nKeys.booking.carinformation;
 
-  protected showMessage(): void {
-    const msg = this.translateService.instant(this.user.errors.notFound);
-    this.notification.show(msg);
-  }
+  protected readonly emailErrors = computed(() => {
+    const ctrl = this.form().get('email');
+    if (!ctrl?.touched || ctrl.valid) { return null; }
+    if (ctrl.hasError('required')) { return this.carinformation.form.email.error.required; }
+    if (ctrl.hasError('email'))    { return this.carinformation.form.email.error.invalid; }
+    return null;
+  });
 }
 ```
 
 ---
 
-## Key Naming
+## Key Naming (Nested Structure)
 
 ```
-{feature}.{type}.{name}
-feature: user, product, app, header, buchung
-type: form, buttons, errors, success, labels
-name: specific identifier
+{feature}.{type}.{field}.{subtype}.{name}
+
+Beispiel: booking.carinformation.form.email.error.required
+          booking.carinformation.form.firstName.error.lettersOnly
+          booking.carinformation.navigation.back
+
+Ebenen:
+  feature    → carinformation, brand, services, ...
+  type       → form, navigation, returningCustomer, ...
+  field      → email, firstName, licensePlate, ...
+  subtype    → error, hint, ...
+  name       → required, invalid, lettersOnly, ...
 ```
 
 **Exports:** `translations`, `i18nKeys`, `TranslationKey`, `Language`, `TranslateService`, `TranslatePipe` — alle aus `@core/i18n` (index.ts)
@@ -128,17 +136,19 @@ name: specific identifier
 ## Best Practices
 
 ### DO
-- `i18nKeys.feature.key` für Type-safe Key-Zugriff
+- Feature-Alias: `protected readonly carinformation = i18nKeys.booking.carinformation;`
 - `TranslatePipe` in Template imports
-- `{{ key | translate }}` in Templates
-- `translateService.instant(key)` in Logik
-- Alle UI-Texte via i18n (DE + EN)
-- i18nKeys-Teilbaum als Component Property: `protected readonly header = i18nKeys.header;`
+- `{{ carinformation.form.email.label | translate }}` in Templates
+- `translateService.instant(key)` in Logik (nicht im Template)
+- Alle UI-Texte via i18n (DE + EN + UK + FR + AR)
+- Nested Keys: `form.email.error.required` statt flach `validation.emailRequired`
 
 ### DON'T
+- ~~`protected readonly t = i18nKeys;`~~ — generisch, nicht erlaubt
 - ~~Hardcoded strings in Templates~~
 - ~~JSON translation files~~
-- ~~String-Literal Keys: `{{ 'user.form.name' | translate }}`~~ (nutze `i18nKeys`)
+- ~~String-Literal Keys: `{{ 'booking.carinformation.title' | translate }}`~~ (nutze `i18nKeys`)
+- ~~Flache Key-Struktur: `validation.required`~~ — nutze field-spezifische nested Keys
 
 ---
 
