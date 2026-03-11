@@ -215,38 +215,49 @@ REQUIREMENT_RESULT:
 
 ---
 
-### Agent 3: REQUIREMENTS.md Agent
+### Agent 3: REQUIREMENTS.md Agent (via Board API → main Branch)
 
 ```
-Prompt: "Aktualisiere die Requirements-Liste für '$ARGUMENTS'.
+Prompt: "Trage das neue Requirement '$ARGUMENTS' über die Board-API in REQUIREMENTS.md auf dem main Branch ein.
 
-**PFLICHT-LEKTÜRE — Bestehenden Kontext verstehen:**
+**WICHTIG:** REQUIREMENTS.md wird NICHT direkt editiert! Stattdessen wird die Board-API genutzt,
+die über einen git worktree direkt auf `main` schreibt und auto-committed.
+So bleibt REQUIREMENTS.md auf main immer aktuell — unabhängig vom aktuellen Feature-Branch.
 
-1. **Bestehende Tabelle analysieren:**
-   - Lese `docs/requirements/REQUIREMENTS.md` — Tabellen-Format, Status-Icons, Spalten
-   - Übernimm EXAKT das bestehende Format (Status-Emojis, Spaltenreihenfolge, etc.)
+**Vorgehen:**
 
-2. **Dependencies aus bestehenden Requirements ableiten:**
-   - Lese `docs/requirements/REQUIREMENTS.md` — Wizard-Reihenfolge verstehen
+1. **Board-Server prüfen / starten:**
+   - Prüfe ob der Board-Server läuft: `curl -s http://localhost:3200/api/requirements | head -c 100`
+   - Falls nicht erreichbar: `cd tools/requirements-board && npm run start:dev &` und 5s warten
+
+2. **Bestehende Requirements analysieren:**
+   - Lese `docs/requirements/REQUIREMENTS.md` — Wizard-Reihenfolge + Dependencies verstehen
    - Prüfe welches REQ direkt davor liegt (→ Dependency)
-   - Prüfe welches REQ danach kommen könnte (→ Blocked by)
 
-3. **Bestehende Statistics-Sektion verstehen:**
-   - Zähle aktuelle Status-Verteilung genau nach
-   - Aktualisiere Zähler korrekt
+3. **REQ-ID und Name aus '$ARGUMENTS' extrahieren:**
+   - z.B. `REQ-010-Buchungsbestätigung` → title='Buchungsbestätigung'
+   - Description aus dem requirement.md ableiten (kurze Zusammenfassung)
 
-**Bearbeite:** `docs/requirements/REQUIREMENTS.md`
+4. **Requirement über Board-API anlegen:**
+   ```bash
+   curl -s -X POST http://localhost:3200/api/requirements \
+     -F 'title=<Name>' \
+     -F 'description=<Kurzbeschreibung>' \
+     -F 'priority=<High|Medium|Low>' \
+     -F 'label=User Story' \
+     -F 'tags='
+   ```
+   Die API schreibt automatisch in REQUIREMENTS.md auf main und committed.
 
-1. Füge neue Zeile zur Tabelle hinzu (Format EXAKT wie bestehende Zeilen!)
-2. Setze Dependencies basierend auf Wizard-Reihenfolge
-3. Aktualisiere Statistics-Sektion (Draft +1, Total +1)
-4. Sortiere nach REQ-ID
+5. **Ergebnis verifizieren:**
+   - `curl -s http://localhost:3200/api/requirements | jq '.[-1]'` — letztes REQ prüfen
 
 Gib zurück:
 REQUIREMENTS_RESULT:
-- REQUIREMENTS.md: ✅ aktualisiert
+- Board-API: ✅ erreichbar
+- REQUIREMENTS.md auf main: ✅ aktualisiert (via Board-API + Worktree)
 - Neue Zeile: REQ-XXX | Name | Draft
-- Dependencies: [REQ-YYY, ...]"
+- Auto-Commit auf main: ✅"
 ```
 
 ---
@@ -261,7 +272,7 @@ Warte auf alle 3 Agents und prüfe:
 📋 AGENT-ERGEBNISSE:
 - Agent 1 (Mockup):      [✅|❌] mockup.html + mockup.png
 - Agent 2 (Requirement):  [✅|❌] requirement.md (X/17 Sections)
-- Agent 3 (REQUIREMENTS): [✅|❌] REQUIREMENTS.md aktualisiert
+- Agent 3 (REQUIREMENTS): [✅|❌] REQUIREMENTS.md auf main aktualisiert (via Board-API)
 ```
 
 ### Step 2: Requirement prüfen
@@ -275,14 +286,17 @@ Prüft:
 - [ ] Keine Platzhalter `[...]` mehr
 - [ ] Keine hardcoded Farben
 - [ ] i18n Keys DE + EN
-- [ ] Dependencies in REQUIREMENTS.md
+- [ ] REQUIREMENTS.md auf main aktualisiert (via Board-API)
 - [ ] **Mockup vorhanden** (`mockup.html`)
 - [ ] **Kein `<script>` Tag im Mockup**
 
 ### Step 3: Commit + PR
 
+**WICHTIG:** `REQUIREMENTS.md` wird NICHT auf dem Feature-Branch committed — sie wurde bereits
+via Board-API direkt auf `main` geschrieben (Worktree + Auto-Commit).
+
 ```bash
-git add docs/requirements/$ARGUMENTS/ docs/requirements/REQUIREMENTS.md
+git add docs/requirements/$ARGUMENTS/
 git commit -m "docs($ARGUMENTS): create requirement with mockup"
 git push -u origin req/$ARGUMENTS
 gh pr create --title "docs: $ARGUMENTS" --body "..."
@@ -367,10 +381,11 @@ Der Orchestrator MUSS diese Checkliste am Ende der Ausgabe ausfüllen:
 - [ ] Container/Presentational Pattern
 - [ ] Test Cases: Given/When/Then
 
-📋 REQUIREMENTS.md (Agent 3)
-- [ ] Neue Zeile in Tabelle (Format wie bestehende)
-- [ ] Dependencies korrekt gesetzt
-- [ ] Statistics aktualisiert
+📋 REQUIREMENTS.md (Agent 3 — via Board-API → main)
+- [ ] Board-Server erreichbar (http://localhost:3200)
+- [ ] Requirement via POST /api/requirements angelegt
+- [ ] REQUIREMENTS.md auf main aktualisiert + auto-committed
+- [ ] Verifiziert via GET /api/requirements
 
 🔍 PRÜFUNG
 - [ ] /check-requirement bestanden

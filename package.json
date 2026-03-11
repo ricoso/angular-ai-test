@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:ghpages": "ng build --base-href /angular-spec-ai/",
+    "build:ghpages": "ng build --base-href /angular-ai-test/",
     "watch": "ng build --watch",
     "test": "jest --watch",
     "test:ci": "jest --ci --coverage",
@@ -23,7 +23,11 @@
     "e2e:ui": "npx playwright test --ui",
     "e2e:headed": "npx playwright test --headed",
     "e2e:report": "npx playwright show-report playwright/reports",
-    "e2e:screenshots": "node playwright/take-screenshots.js"
+    "e2e:screenshots": "node playwright/take-screenshots.js",
+    "board:install": "cd tools/requirements-board && npm install",
+    "board:build": "cd tools/requirements-board && npm run build",
+    "board:start": "cd tools/requirements-board && npm run start:dev",
+    "board:start:prod": "cd tools/requirements-board && npm run build && npm run start:prod"
   },
   "private": true,
   "dependencies": {

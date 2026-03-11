@@ -40,6 +40,26 @@ Jeder Step hat ein **GATE** — eine Bedingung die erfüllt sein MUSS bevor der 
 
 ## Workflow
 
+### Pre-Check: Dev Container Umgebung
+
+> **Empfehlung:** Dieses Projekt sollte im Dev Container entwickelt werden.
+
+**Pruefe ob im Dev Container:**
+- Pruefe ob Umgebungsvariable `REMOTE_CONTAINERS` oder `CODESPACES` gesetzt ist
+- ODER ob Datei `/.dockerenv` existiert
+
+```bash
+if [ -z "$REMOTE_CONTAINERS" ] && [ -z "$CODESPACES" ] && [ ! -f "/.dockerenv" ]; then
+  echo "⚠️ WARNUNG: Du arbeitest NICHT in einem Dev Container."
+  echo "Empfehlung: VS Code → 'Dev Containers: Reopen in Container'"
+  echo "Der Dev Container stellt sicher: Node 20, Playwright, GitHub CLI, ESLint Config."
+fi
+```
+
+> Weiter mit Step 0 (kein Blocker, nur Hinweis).
+
+---
+
 ### Step 0: PR-Status synchronisieren
 
 **Automatisch bei jedem Skill-Lauf:**
@@ -108,7 +128,7 @@ git checkout -b feat/$ARGUMENTS
 
 ---
 
-### Step 2: Requirement + Mockup lesen
+### Step 2: Requirement lesen
 
 1. Lese `docs/requirements/$ARGUMENTS/requirement.md`
 2. Extrahiere:
@@ -117,19 +137,8 @@ git checkout -b feat/$ARGUMENTS
    - Section 14: Implementation (File Structure)
    - Section 16: Naming Glossary (Methodennamen)
 3. **Extrahiere den Feature-Namen** (z.B. `booking`, `user-management`)
-4. **Mockup prüfen:** Prüfe ob `docs/requirements/$ARGUMENTS/mockup.html` existiert
-   - **Falls vorhanden:** Lese die Datei vollständig und extrahiere:
-     - **Layout-Struktur:** HTML-Hierarchie, Container/Grid/Flex-Aufbau, Reihenfolge der Sections
-     - **Komponenten-Aufteilung:** Welche visuellen Blöcke = welche Angular Components
-     - **CSS-Klassen & Styling:** BEM-Klassen, Abstände, Farben, Responsive Breakpoints
-     - **Interaktionen:** Buttons, Formulare, Toggle-States, Conditional Content
-     - **Material Components:** Welche `mat-*` Komponenten verwendet werden (Buttons, Cards, Inputs, etc.)
-     - **Icons:** Welche Material Icons verwendet werden
-     - **Responsive Verhalten:** Media Queries, Mobile/Tablet/Desktop Unterschiede
-   - **Mockup ist REFERENZ für Step 4 + 5!** Die HTML-Struktur und das Styling sollen so nah wie möglich am Mockup umgesetzt werden.
-   - **Falls NICHT vorhanden:** Weiter ohne Mockup (nur requirement.md als Basis)
 
-**GATE 2:** ✅ Requirement gelesen, Feature-Name bestimmt, Mockup analysiert (falls vorhanden)
+**GATE 2:** ✅ Requirement gelesen, Feature-Name bestimmt
 
 ---
 
@@ -174,22 +183,12 @@ git checkout -b feat/$ARGUMENTS
 
 **Verwende die Code-Sprache aus Step 3 für ALLE Dateien!**
 
-> 🎨 **Falls Mockup vorhanden (aus Step 2):**
-> - **HTML-Struktur** aus dem Mockup als Vorlage für Component Templates übernehmen
-> - **CSS-Klassen** aus dem Mockup in BEM-Nesting in den `.scss` Dateien umsetzen
-> - **Layout & Reihenfolge** der Elemente exakt wie im Mockup
-> - **Material Components** (`mat-card`, `mat-button`, etc.) wie im Mockup verwenden
-> - **Icons** aus dem Mockup übernehmen (Material Icons)
-> - **Conditional Content** (z.B. `*ngIf`/`@if` Blöcke) wie im Mockup-HTML sichtbar
-> - **Mockup-CSS → SCSS:** Inline-Styles und `<style>`-Blöcke aus dem Mockup in die jeweiligen `.scss` Dateien überführen, dabei `_variables.scss` CSS-Variablen nutzen statt hardcoded Werte
-> - **Responsive Breakpoints** aus dem Mockup in Mobile-First SCSS umsetzen
-
 Reihenfolge:
 1. **Models** (`models/*.model.ts`)
 2. **Store** (`stores/*.store.ts`)
 3. **Services** (`services/*-api.service.ts`)
-4. **Container Component** (`*-container.component.ts` + `.html` + `.scss`) — Mockup-Layout als Basis!
-5. **Presentational Components** (`components/*.component.ts` + `.html` + `.scss`) — Mockup-Sections als Basis!
+4. **Container Component** (`*-container.component.ts` + `.html` + `.scss`)
+5. **Presentational Components** (`components/*.component.ts` + `.html` + `.scss`)
 6. **i18n** (Translations in ALLEN konfigurierten UI-Sprachen)
 7. **Routes** (Feature-Routes + app.routes.ts)
 8. **Resolver** (`resolvers/*.resolver.ts`)
@@ -209,11 +208,6 @@ Reihenfolge:
 
 ### Step 5: Styling
 
-> 🎨 **Falls Mockup vorhanden:** Das Mockup-Styling ist die visuelle Referenz!
-> - Abstände, Größen, Farben, Schatten aus dem Mockup übernehmen
-> - Mockup-Werte in `_variables.scss` CSS-Variablen übersetzen (KEINE hardcoded Werte!)
-> - Responsive Breakpoints aus dem Mockup als Mobile-First Media Queries
-
 - IMMER `src/styles/_variables.scss` verwenden
 - KEINE hardcoded Farben!
 - Mobile-First responsive
@@ -221,7 +215,7 @@ Reihenfolge:
 - BEM Naming
 - WCAG 2.1 AA
 
-**GATE 5:** ✅ Styling angewendet (Mockup-konform falls vorhanden)
+**GATE 5:** ✅ Styling angewendet
 
 ---
 
@@ -393,7 +387,6 @@ git commit -m "feat($ARGUMENTS): implement <Feature-Name>"
 ## Referenzen
 
 - Requirement: `docs/requirements/$ARGUMENTS/requirement.md`
-- **Mockup: `docs/requirements/$ARGUMENTS/mockup.html`** (falls vorhanden — visuelle Referenz!)
 - Skills: `.claude/skills/*.md` (ALLE 5 lesen!)
 - Styling: `src/styles/_variables.scss`
 - Quality Template: `docs/requirements/QUALITAETS-TEMPLATE.md`

@@ -97,6 +97,14 @@ Thumbs.db
 /playwright/reports/
 /playwright/.cache/
 
+# Requirements Board Extension
+tools/requirements-board/dist/
+tools/requirements-board/node_modules/
+tools/requirements-board/webview/node_modules/
+tools/requirements-board/webview/.angular/
+*.vsix
+.board-worktree/
+
 # Claude Code
 .claude/history/
 .claude/logs/

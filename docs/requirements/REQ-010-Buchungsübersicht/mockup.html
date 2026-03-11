@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REQ-010 Buchungsübersicht - Mockup</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================================================
+       CSS Custom Properties - Design System (from _variables.scss)
+       ========================================================================= */
+    :root {
+      /* Brand Colors */
+      --color-primary: #667eea;
+      --color-primary-hover: #5a67d8;
+      --color-secondary: #764ba2;
+      --color-accent: #ed8936;
+
+      /* Text Colors (WCAG AA) */
+      --color-text-primary: #1a1a1a;
+      --color-text-secondary: #595959;
+      --color-text-muted: #767676;
+      --color-text-on-primary: #ffffff;
+      --color-text-on-dark: #ffffff;
+
+      /* Background Colors */
+      --color-background-page: #f8f9fa;
+      --color-background-surface: #ffffff;
+      --color-background-hover: #f5f5f5;
+
+      /* Border & Divider */
+      --color-border: #e0e0e0;
+      --color-divider: #eeeeee;
+
+      /* Semantic Colors */
+      --color-error: #c62828;
+      --color-success: #2e7d32;
+      --color-warning: #e65100;
+      --color-info: #1565c0;
+
+      /* Focus */
+      --color-focus-ring: #005fcc;
+
+      /* Shadows */
+      --shadow-small: 0 0.0625em 0.125em rgba(0, 0, 0, 0.1);
+      --shadow-medium: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
+      --shadow-large: 0 0.5em 1em rgba(0, 0, 0, 0.15);
+
+      /* Typography */
+      --font-size-base: 1em;
+      --font-size-xs: 0.875em;
+      --font-size-sm: 1em;
+      --font-size-md: 1.125em;
+      --font-size-lg: 1.25em;
+      --font-size-xl: 1.5em;
+      --font-size-2xl: 2em;
+      --font-size-3xl: 2.5em;
+
+      --line-height-tight: 1.25;
+      --line-height-normal: 1.5;
+      --line-height-relaxed: 1.75;
+
+      /* Spacing */
+      --spacing-xs: 0.25em;
+      --spacing-sm: 0.5em;
+      --spacing-md: 1em;
+      --spacing-lg: 1.5em;
+      --spacing-xl: 2em;
+
+      /* Border Radius */
+      --radius-sm: 0.25em;
+      --radius-md: 0.5em;
+      --radius-lg: 0.75em;
+      --radius-xl: 1em;
+      --radius-full: 50%;
+
+      /* Touch Targets */
+      --touch-target-min: 2.75em;
+    }
+
+    /* =========================================================================
+       Reset & Base
+       ========================================================================= */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      line-height: var(--line-height-normal);
+      color: var(--color-text-primary);
+      background-color: var(--color-background-page);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* =========================================================================
+       App Layout
+       ========================================================================= */
+    .app-layout {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--color-background-page);
+    }
+
+    .app-main {
+      flex: 1;
+      padding: var(--spacing-md);
+      width: 100%;
+      max-width: 80em;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 48em) {
+      .app-main {
+        padding: var(--spacing-xl);
+      }
+    }
+
+    /* =========================================================================
+       Icon Framed (from _utilities.scss)
+       ========================================================================= */
+    .icon-framed {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5em;
+      height: 2.5em;
+      background: var(--color-background-surface);
+      border: 0.0625em solid var(--color-border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-small);
+    }
+
+    .icon-framed--sm {
+      width: 2em;
+      height: 2em;
+    }
+
+    .icon-framed--primary {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    /* =========================================================================
+       Header
+       ========================================================================= */
+    .header {
+      background-color: var(--color-background-surface);
+      border-bottom: 0.0625em solid var(--color-border);
+      box-shadow: var(--shadow-small);
+    }
+
+    .header__content {
+      display: flex;
+      align-items: center;
+      padding: var(--spacing-sm) var(--spacing-md);
+      max-width: 80em;
+      margin: 0 auto;
+      min-height: 3.5em;
+    }
+
+    .header__logo-link {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      text-decoration: none;
+      color: inherit;
+      min-height: var(--touch-target-min);
+      padding: var(--spacing-xs);
+      border-radius: var(--radius-sm);
+      transition: background-color 0.2s ease;
+    }
+
+    .header__logo-link:hover {
+      background-color: var(--color-background-hover);
+    }
+
+    .header__logo-link:focus-visible {
+      outline: 0.125em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+
+    .header__logo-circle {
+      width: 2.5em;
+      height: 2.5em;
+      border-radius: var(--radius-full);
+      background-color: var(--color-primary);
+      color: var(--color-text-on-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: var(--font-size-sm);
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+
+    .header__company {
+      display: flex;
+      flex-direction: column;
+      line-height: var(--line-height-tight);
+    }
+
+    .header__company-name {
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .header__company-subtitle {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+    }
+
+    .header__spacer { flex: 1; }
+
+    .header__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .header__icon-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      min-width: var(--touch-target-min);
+      min-height: var(--touch-target-min);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      position: relative;
+      padding: 0;
+      color: var(--color-text-primary);
+    }
+
+    .header__icon-button:hover {
+      background-color: var(--color-background-hover);
+    }
+
+    .header__icon-button:focus-visible {
+      outline: 0.125em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: 0.125em;
+      right: -0.125em;
+      background-color: var(--color-accent);
+      color: var(--color-text-on-primary);
+      font-size: 0.6875em;
+      font-weight: 700;
+      min-width: 1.25em;
+      height: 1.25em;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      padding: 0 0.25em;
+    }
+
+    @media (max-width: 47.9375em) {
+      .header__company { display: none; }
+      .header__content { padding: var(--spacing-xs) var(--spacing-sm); }
+    }
+
+    @media (min-width: 64em) {
+      .header__content { padding: var(--spacing-md) var(--spacing-lg); }
+      .header__logo-circle { width: 3em; height: 3em; font-size: var(--font-size-md); }
+    }
+
+    /* =========================================================================
+       Page Content
+       ========================================================================= */
+    .booking-overview {
+      max-width: 70em;
+      margin: 0 auto;
+      padding: var(--spacing-xl) var(--spacing-md);
+    }
+
+    .booking-overview__title {
+      font-size: var(--font-size-2xl);
+      line-height: var(--line-height-tight);
+      color: var(--color-text-primary);
+      margin: 0 0 var(--spacing-sm);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .booking-overview__subtitle {
+      font-size: var(--font-size-md);
+      line-height: var(--line-height-normal);
+      color: var(--color-text-secondary);
+      margin: 0 0 var(--spacing-xl);
+      text-align: center;
+    }
+
+    /* =========================================================================
+       Summary Grid
+       ========================================================================= */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    @media (min-width: 48em) {
+      .summary-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* =========================================================================
+       Summary Card (Kachel)
+       ========================================================================= */
+    .summary-card {
+      background-color: var(--color-background-surface);
+      border: 0.125em solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      box-shadow: var(--shadow-small);
+    }
+
+    .summary-card__header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+      padding-bottom: var(--spacing-sm);
+      border-bottom: 0.0625em solid var(--color-divider);
+    }
+
+    .summary-card__title {
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      color: var(--color-primary);
+      margin: 0;
+    }
+
+    .summary-card__icon {
+      color: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .summary-card__icon .material-icons {
+      font-size: 1.5em;
+    }
+
+    /* =========================================================================
+       Appointment Tile
+       ========================================================================= */
+    .detail-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .detail-list__item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-normal);
+    }
+
+    .detail-list__item::before {
+      content: '';
+      width: 0.375em;
+      height: 0.375em;
+      border-radius: var(--radius-full);
+      background-color: var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    .detail-list__item strong {
+      color: var(--color-text-primary);
+    }
+
+    /* =========================================================================
+       Services Tile
+       ========================================================================= */
+    .service-intro {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--spacing-sm);
+      line-height: var(--line-height-normal);
+    }
+
+    .service-intro strong {
+      color: var(--color-text-primary);
+    }
+
+    /* =========================================================================
+       Personal Data Tile — 2-column inner grid
+       ========================================================================= */
+    .data-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-sm);
+    }
+
+    @media (min-width: 32em) {
+      .data-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-sm) var(--spacing-lg);
+      }
+    }
+
+    .data-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125em;
+    }
+
+    .data-field__label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+
+    .data-field__value {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-primary);
+    }
+
+    /* =========================================================================
+       Price Tile
+       ========================================================================= */
+    .price-tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .price-tile__amount {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      color: var(--color-primary);
+      line-height: var(--line-height-tight);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .price-tile__tax {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+
+    /* =========================================================================
+       Buttons
+       ========================================================================= */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-xs);
+      min-height: var(--touch-target-min);
+      padding: 0.625em 1.5em;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      line-height: 1;
+    }
+
+    .btn:focus-visible {
+      outline: 0.1875em solid var(--color-focus-ring);
+      outline-offset: 0.125em;
+    }
+
+    .btn--primary {
+      background-color: var(--color-primary);
+      color: var(--color-text-on-primary);
+    }
+
+    .btn--primary:hover {
+      background-color: var(--color-primary-hover);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .btn--flat {
+      background-color: var(--color-background-hover);
+      color: var(--color-text-primary);
+    }
+
+    .btn--flat:hover {
+      background-color: var(--color-border);
+    }
+
+    .material-icons {
+      font-size: 1.5em;
+      vertical-align: middle;
+    }
+
+    /* =========================================================================
+       Navigation Bar
+       ========================================================================= */
+    .navigation-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: var(--spacing-xl);
+      padding: var(--spacing-md) 0;
+    }
+
+    /* =========================================================================
+       Footer
+       ========================================================================= */
+    .app-footer {
+      background: var(--color-background-surface);
+      padding: var(--spacing-md);
+      text-align: center;
+      border-top: 0.0625em solid var(--color-border);
+    }
+
+    @media (min-width: 48em) {
+      .app-footer { padding: var(--spacing-lg); }
+    }
+
+    .app-footer p {
+      margin: 0;
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-xs);
+    }
+
+    /* =========================================================================
+       Reduced Motion
+       ========================================================================= */
+    @media (prefers-reduced-motion: reduce) {
+      .summary-card,
+      .header__logo-link,
+      .btn {
+        transition: none;
+      }
+    }
+
+    /* =========================================================================
+       Accessibility: High Contrast Mode
+       ========================================================================= */
+    html[data-high-contrast="true"] {
+      --color-text-primary: #000000;
+      --color-text-secondary: #000000;
+      --color-background-page: #ffffff;
+      --color-border: #000000;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+
+    <!-- ===================================================================
+         HEADER
+         =================================================================== -->
+    <header class="header" role="banner">
+      <div class="header__content">
+        <a href="#" class="header__logo-link" aria-label="Zur Startseite">
+          <div class="header__logo-circle" aria-hidden="true">AG</div>
+          <div class="header__company">
+            <span class="header__company-name">Autohaus GmbH</span>
+            <span class="header__company-subtitle"></span>
+          </div>
+        </a>
+
+        <div class="header__spacer"></div>
+
+        <div class="header__actions">
+          <button
+            class="header__icon-button"
+            type="button"
+            aria-label="Warenkorb: 1 Service ausgewählt">
+            <span class="icon-framed icon-framed--sm" style="overflow: visible; position: relative;">
+              <span class="material-icons" aria-hidden="true">shopping_cart</span>
+              <span class="cart-badge" aria-hidden="true">1</span>
+            </span>
+          </button>
+
+          <button
+            class="header__icon-button"
+            type="button"
+            aria-label="Barrierefreiheit-Einstellungen">
+            <span class="icon-framed icon-framed--sm">
+              <span class="material-icons" aria-hidden="true">accessibility_new</span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===================================================================
+         MAIN CONTENT
+         =================================================================== -->
+    <main id="main-content" class="app-main" role="main">
+      <section class="booking-overview" aria-labelledby="overview-title">
+
+        <h1 id="overview-title" class="booking-overview__title">Übersicht</h1>
+        <p class="booking-overview__subtitle">
+          Bitte prüfen Sie Ihre Angaben bevor Sie den Termin versenden.
+        </p>
+
+        <!-- Summary Grid -->
+        <div class="summary-grid" role="region" aria-label="Buchungszusammenfassung">
+
+          <!-- ===============================================================
+               Kachel 1: Wunschtermin (oben links)
+               =============================================================== -->
+          <article class="summary-card" aria-labelledby="tile-title-appointment">
+            <div class="summary-card__header">
+              <span class="summary-card__icon icon-framed icon-framed--sm icon-framed--primary" aria-hidden="true">
+                <span class="material-icons">event</span>
+              </span>
+              <h2 class="summary-card__title" id="tile-title-appointment">Wunschtermin</h2>
+            </div>
+            <ul class="detail-list" aria-label="Termindetails">
+              <li class="detail-list__item">
+                Datum: <strong>13.03.2026</strong>
+              </li>
+              <li class="detail-list__item">
+                Uhrzeit: <strong>07:30 Uhr</strong>
+              </li>
+            </ul>
+          </article>
+
+          <!-- ===============================================================
+               Kachel 2: Gewählter Service (oben rechts)
+               =============================================================== -->
+          <article class="summary-card" aria-labelledby="tile-title-service">
+            <div class="summary-card__header">
+              <span class="summary-card__icon icon-framed icon-framed--sm icon-framed--primary" aria-hidden="true">
+                <span class="material-icons">build</span>
+              </span>
+              <h2 class="summary-card__title" id="tile-title-service">Gewählter Service</h2>
+            </div>
+            <p class="service-intro">
+              Folgende Leistungen werden in <strong>Garbsen</strong> für Sie angefragt:
+            </p>
+            <ul class="detail-list" aria-label="Gewählte Services">
+              <li class="detail-list__item">
+                <strong>HU/AU</strong>
+              </li>
+            </ul>
+          </article>
+
+          <!-- ===============================================================
+               Kachel 3: Persönliche Daten (unten links)
+               =============================================================== -->
+          <article class="summary-card" aria-labelledby="tile-title-data">
+            <div class="summary-card__header">
+              <span class="summary-card__icon icon-framed icon-framed--sm icon-framed--primary" aria-hidden="true">
+                <span class="material-icons">person</span>
+              </span>
+              <h2 class="summary-card__title" id="tile-title-data">Ihre Daten</h2>
+            </div>
+            <div class="data-grid">
+              <!-- Linke Spalte: Personendaten -->
+              <div>
+                <div class="data-field">
+                  <span class="data-field__label">Name</span>
+                  <span class="data-field__value">Max Mustermann</span>
+                </div>
+                <div class="data-field" style="margin-top: 0.5em;">
+                  <span class="data-field__label">Straße</span>
+                  <span class="data-field__value">Musterstraße 12</span>
+                </div>
+                <div class="data-field" style="margin-top: 0.5em;">
+                  <span class="data-field__label">Ort</span>
+                  <span class="data-field__value">30823 Garbsen</span>
+                </div>
+                <div class="data-field" style="margin-top: 0.5em;">
+                  <span class="data-field__label">Telefon</span>
+                  <span class="data-field__value">0511 12345678</span>
+                </div>
+                <div class="data-field" style="margin-top: 0.5em;">
+                  <span class="data-field__label">E-Mail</span>
+                  <span class="data-field__value">max@mustermann.de</span>
+                </div>
+              </div>
+              <!-- Rechte Spalte: Fahrzeugdaten -->
+              <div>
+                <div class="data-field">
+                  <span class="data-field__label">Marke</span>
+                  <span class="data-field__value">Audi</span>
+                </div>
+                <div class="data-field" style="margin-top: 0.5em;">
+                  <span class="data-field__label">Kennzeichen</span>
+                  <span class="data-field__value">GS-MM 123</span>
+                </div>
+                <div class="data-field" style="margin-top: 0.5em;">
+                  <span class="data-field__label">Kilometerstand</span>
+                  <span class="data-field__value">48.500 km</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ===============================================================
+               Kachel 4: Preis (unten rechts)
+               =============================================================== -->
+          <article class="summary-card price-tile" aria-labelledby="tile-title-price">
+            <div class="summary-card__header" style="width: 100%; justify-content: center;">
+              <span class="summary-card__icon icon-framed icon-framed--sm icon-framed--primary" aria-hidden="true">
+                <span class="material-icons">euro</span>
+              </span>
+              <h2 class="summary-card__title" id="tile-title-price">Preis</h2>
+            </div>
+            <div
+              class="price-tile__amount"
+              aria-label="Preis: 129 Euro">
+              129,00 €
+            </div>
+            <p class="price-tile__tax">inkl. Mehrwertsteuer</p>
+          </article>
+
+        </div>
+
+        <!-- ===============================================================
+             Navigation Bar
+             =============================================================== -->
+        <nav class="navigation-bar" aria-label="Seitennavigation">
+          <button
+            class="btn btn--flat"
+            type="button"
+            aria-label="Zurück zur Fahrzeuginformationen-Seite">
+            <span class="material-icons" aria-hidden="true">arrow_back</span>
+            Zurück
+          </button>
+
+          <button
+            class="btn btn--primary"
+            type="button"
+            aria-label="Termin jetzt anfragen">
+            Jetzt anfragen
+            <span class="material-icons" aria-hidden="true">send</span>
+          </button>
+        </nav>
+
+      </section>
+    </main>
+
+    <!-- ===================================================================
+         FOOTER
+         =================================================================== -->
+    <footer class="app-footer" role="contentinfo">
+      <p>Autohaus GmbH</p>
+    </footer>
+
+  </div>
+</body>
+</html>
