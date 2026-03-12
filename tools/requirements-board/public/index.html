@@ -15,12 +15,13 @@
     <span class="navbar-brand mb-0 h1">
       <i class="bi bi-kanban"></i> Requirements Board
     </span>
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 align-items-center">
+      <small class="text-muted me-2" id="syncStatus"></small>
       <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createModal">
         <i class="bi bi-plus-lg"></i> New Requirement
       </button>
       <button class="btn btn-outline-light btn-sm" id="refreshBtn">
-        <i class="bi bi-arrow-clockwise"></i> Refresh
+        <i class="bi bi-arrow-clockwise"></i> Sync
       </button>
     </div>
   </nav>
@@ -74,8 +75,13 @@
               <input type="text" class="form-control" id="createTitle" required>
             </div>
             <div class="mb-3">
-              <label for="createDescription" class="form-label">Description *</label>
-              <textarea class="form-control" id="createDescription" rows="16" required></textarea>
+              <div class="description-label-row">
+                <label for="createDescription" class="form-label mb-0">Description *</label>
+                <button class="btn-mic" id="createDescMicBtn" title="Spracheingabe (Mikrofon)">
+                  <i class="bi bi-mic"></i> Diktat
+                </button>
+              </div>
+              <textarea class="form-control mt-1" id="createDescription" rows="16" required></textarea>
             </div>
             <div class="row">
               <div class="col-6 mb-3">
@@ -209,8 +215,33 @@
             </div>
           </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-outline-danger" id="deleteReqBtn">
+            <i class="bi bi-trash3"></i> Delete
+          </button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title"><i class="bi bi-exclamation-triangle"></i> Löschen bestätigen</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>Requirement <strong id="deleteConfirmReqId"></strong> wirklich löschen?</p>
+          <p class="text-muted small mb-0">Dieser Vorgang entfernt das Requirement aus der Datenbank, der REQUIREMENTS.md und löscht den zugehörigen Ordner. Dies kann nicht rückgängig gemacht werden.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+          <button type="button" class="btn btn-danger" id="deleteConfirmBtn">
+            <i class="bi bi-trash3"></i> Endgültig löschen
+          </button>
         </div>
       </div>
     </div>
@@ -232,6 +263,9 @@
     </div>
     <div class="chat-input-area">
       <textarea class="form-control" id="chatSidebarInput" rows="2" placeholder="z.B. 'Ändere die Acceptance Criteria zu...'"></textarea>
+      <button class="btn-mic" id="chatMicBtn" title="Spracheingabe (Mikrofon)">
+        <i class="bi bi-mic"></i>
+      </button>
       <button class="btn btn-primary" id="chatSidebarSendBtn">
         <i class="bi bi-send"></i>
       </button>
@@ -240,9 +274,11 @@
 
   <!-- Log Panel (slide-up) -->
   <div id="logPanel" class="log-panel" style="display:none">
+    <div id="logResizeHandle" class="log-resize-handle"></div>
     <div class="log-panel-header d-flex justify-content-between align-items-center px-3 py-2">
       <span><i class="bi bi-terminal"></i> Workflow Log — <span id="logReqId"></span></span>
       <div class="d-flex gap-2 align-items-center">
+        <button class="btn btn-sm btn-outline-light" id="logChatBtn"><i class="bi bi-chat-dots"></i> AI Chat</button>
         <span id="logSpinner" class="spinner-border spinner-border-sm text-light" style="display:none"></span>
         <button class="btn btn-sm btn-outline-light" id="logCloseBtn"><i class="bi bi-x-lg"></i></button>
       </div>

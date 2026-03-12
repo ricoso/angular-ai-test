@@ -6,6 +6,7 @@ import { BoardController } from './board/board.controller';
 import { BoardService } from './board/board.service';
 import { ChatController } from './chat/chat.controller';
 import { ChatService } from './chat/chat.service';
+import { DatabaseService } from './database/database.service';
 import { WorkflowController } from './workflow/workflow.controller';
 import { WorkflowService } from './workflow/workflow.service';
 
@@ -18,6 +19,6 @@ import { WorkflowService } from './workflow/workflow.service';
     })
   ],
   controllers: [BoardController, WorkflowController, ChatController],
-  providers: [BoardService, WorkflowService, ChatService]
+  providers: [DatabaseService, BoardService, WorkflowService, ChatService]
 })
 export class AppModule {}

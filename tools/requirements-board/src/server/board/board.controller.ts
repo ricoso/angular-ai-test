@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { mkdirSync, existsSync, createReadStream } from 'fs';
@@ -27,6 +27,11 @@ export class BoardController {
   @Get()
   public getRequirements(): Requirement[] {
     return this.boardService.getAll();
+  }
+
+  @Post('sync')
+  public sync(): { synced: number; branch: string | null } {
+    return this.boardService.syncFromRemote();
   }
 
   @Post()
@@ -72,6 +77,11 @@ export class BoardController {
     return this.boardService.updateStatus(id, dto.status);
   }
 
+  @Delete(':id')
+  public deleteRequirement(@Param('id') id: string): { success: boolean } {
+    return { success: this.boardService.delete(id) };
+  }
+
   @Get(':id/content')
   public getContent(@Param('id') id: string): { content: string } | { error: string } {
     const content = this.boardService.getRequirementContent(id);
@@ -85,6 +95,17 @@ export class BoardController {
     @Body() dto: { content: string }
   ): { success: boolean } {
     return { success: this.boardService.saveRequirementContent(id, dto.content) };
+  }
+
+  @Get(':id/history')
+  public getHistory(@Param('id') id: string): Array<{
+    field: string;
+    oldValue: string | null;
+    newValue: string | null;
+    branch: string | null;
+    changedAt: string;
+  }> {
+    return this.boardService.getHistory(id);
   }
 
   @Get(':id/attachments/:filename')

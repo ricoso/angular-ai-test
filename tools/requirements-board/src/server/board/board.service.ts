@@ -1,10 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { readFileSync, writeFileSync, readdirSync, existsSync, statSync, mkdirSync, renameSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, existsSync, statSync, mkdirSync, renameSync, rmSync } from 'fs';
 import { execSync } from 'child_process';
 import { join } from 'path';
 
 import type { Requirement, RequirementLabel, RequirementMetadata, RequirementPriority, RequirementStatus } from '../../shared/models/requirement.model';
 import { EMOJI_STATUS_MAP, STATUS_EMOJI_MAP, STATUS_TO_COLUMN } from '../../shared/models/requirement.model';
+import { DatabaseService } from '../database/database.service';
 
 const REQ_FILE_PATH = 'docs/requirements/REQUIREMENTS.md';
 
@@ -14,8 +15,12 @@ export class BoardService {
   private readonly workspaceRoot = join(__dirname, '..', '..', '..', '..', '..');
   private readonly requirementsDir = join(this.workspaceRoot, 'docs', 'requirements');
 
+  constructor(private readonly databaseService: DatabaseService) {}
+
   public onModuleInit(): void {
     this.logger.log(`Reading requirements from working directory: ${this.workspaceRoot}`);
+    this.fetchLatestMain();
+    this.syncFromMarkdown();
   }
 
   private get reqFilePath(): string {
@@ -26,28 +31,122 @@ export class BoardService {
     return this.requirementsDir;
   }
 
-  // --- Read (from working directory) ---
+  private getCurrentBranch(): string | null {
+    try {
+      return execSync(`git -C "${this.workspaceRoot}" rev-parse --abbrev-ref HEAD`, { stdio: 'pipe' })
+        .toString().trim();
+    } catch {
+      return null;
+    }
+  }
 
-  public getAll(): Requirement[] {
+  // --- Fetch latest main (for up-to-date board in dailies) ---
+
+  private fetchLatestMain(): void {
+    const branch = this.getCurrentBranch();
+    try {
+      // Always fetch latest main from remote
+      execSync(`git -C "${this.workspaceRoot}" fetch origin main --quiet`, { stdio: 'pipe', timeout: 10000 });
+      this.logger.log('Fetched latest main from origin');
+
+      // If we ARE on main, pull the changes
+      if (branch === 'main') {
+        execSync(`git -C "${this.workspaceRoot}" pull origin main --quiet`, { stdio: 'pipe', timeout: 10000 });
+        this.logger.log('Pulled latest main');
+      } else {
+        // On a feature branch: read REQUIREMENTS.md from origin/main into DB
+        // so the board always shows main's state
+        this.syncFromRemoteMain();
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.warn(`Could not fetch main (offline?): ${msg}`);
+    }
+  }
+
+  private syncFromRemoteMain(): void {
+    try {
+      const content = execSync(
+        `git -C "${this.workspaceRoot}" show origin/main:${REQ_FILE_PATH}`,
+        { stdio: 'pipe', maxBuffer: 5 * 1024 * 1024 }
+      ).toString();
+
+      const parsed = this.parseRequirements(content);
+      const count = this.databaseService.importFromMarkdown(parsed);
+      this.logger.log(`Synced ${count} requirements from origin/main → SQLite`);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.warn(`Could not read REQUIREMENTS.md from origin/main: ${msg}`);
+    }
+  }
+
+  // --- Public sync (called from controller for manual refresh) ---
+
+  public syncFromRemote(): { synced: number; branch: string | null } {
+    const branch = this.getCurrentBranch();
+    this.fetchLatestMain();
+    const reqs = this.databaseService.getAll();
+    return { synced: reqs.length, branch };
+  }
+
+  // --- Sync: Markdown → DB on startup ---
+
+  private syncFromMarkdown(): void {
+    if (!existsSync(this.reqFilePath)) {
+      this.logger.warn('REQUIREMENTS.md not found, skipping sync');
+      return;
+    }
+
     const content = readFileSync(this.reqFilePath, 'utf-8');
     const parsed = this.parseRequirements(content);
-
-    return parsed.map((req) => {
-      // Metadata + attachments: check worktree first, then working tree
+    const enriched = parsed.map((req) => {
       const metadata = this.getMetadata(req.id);
+      return { ...req, metadata: metadata ?? req.metadata };
+    });
+
+    const count = this.databaseService.importFromMarkdown(enriched);
+    this.logger.log(`Synced ${count} requirements from REQUIREMENTS.md → SQLite`);
+  }
+
+  // --- Sync: DB → Markdown (write back after changes) ---
+
+  private syncToMarkdown(): void {
+    if (!existsSync(this.reqFilePath)) return;
+
+    const dbReqs = this.databaseService.getAll();
+    const content = readFileSync(this.reqFilePath, 'utf-8');
+    const lines = content.split('\n');
+
+    const tableStart = lines.findIndex((l) => l.includes('| REQ-ID') && l.includes('| Name'));
+    if (tableStart === -1) return;
+
+    // Remove old table rows
+    let rowStart = tableStart + 2;
+    let rowEnd = rowStart;
+    while (rowEnd < lines.length && lines[rowEnd].trim().startsWith('|') && lines[rowEnd].trim() !== '') {
+      rowEnd++;
+    }
+
+    // Build new rows from DB
+    const newRows = dbReqs.map((req) => {
+      const emoji = STATUS_EMOJI_MAP[req.status];
+      const deps = req.dependencies.length > 0 ? req.dependencies.join(', ') : '-';
+      return `| ${req.id} | ${req.name} | ${emoji} ${req.status} | ${req.priority} | ${deps} | ${req.description} |`;
+    });
+
+    lines.splice(rowStart, rowEnd - rowStart, ...newRows);
+    const updated = this.updateStatistics(lines.join('\n'));
+    writeFileSync(this.reqFilePath, updated, 'utf-8');
+  }
+
+  // --- Read (DB primary, enriched with file-based attachments) ---
+
+  public getAll(): Requirement[] {
+    const dbReqs = this.databaseService.getAll();
+
+    return dbReqs.map((req) => {
       const attachments = this.detectAttachments(req.id);
-      return {
-        ...req,
-        metadata: metadata ?? {
-          priority: req.priority,
-          label: req.label,
-          tags: [],
-          prNumber: null,
-          reviewState: null,
-          lastUpdated: null
-        },
-        attachments
-      };
+      return { ...req, attachments };
     });
   }
 
@@ -60,63 +159,55 @@ export class BoardService {
     label: RequirementLabel,
     tags: string[]
   ): Requirement {
-    const content = readFileSync(this.reqFilePath, 'utf-8');
-    const nextId = this.generateNextId(content);
-    const emoji = STATUS_EMOJI_MAP['Draft'];
-    const newLine = `| ${nextId} | ${title} | ${emoji} Draft | ${priority} | - | ${description} |`;
+    const nextId = this.databaseService.getNextId();
+    const branch = this.getCurrentBranch();
 
-    const lines = content.split('\n');
-    const tableStart = lines.findIndex((l) => l.includes('| REQ-ID') && l.includes('| Name'));
-    let insertIdx = tableStart + 2;
-    while (insertIdx < lines.length && lines[insertIdx].trim().startsWith('|')) {
-      insertIdx++;
-    }
-    lines.splice(insertIdx, 0, newLine);
-
-    const updated = this.updateStatistics(lines.join('\n'));
-    writeFileSync(this.reqFilePath, updated, 'utf-8');
-    this.autoCommit(`docs: add ${nextId} ${title}`);
-
-    return {
+    const req = this.databaseService.create({
       id: nextId,
       name: title,
-      status: 'Draft',
+      description,
       priority,
       label,
-      dependencies: [],
-      description,
-      column: 'todo',
-      metadata: { priority, label, tags, prNumber: null, reviewState: null, lastUpdated: new Date().toISOString() },
-      attachments: []
-    };
+      tags,
+      branch: branch ?? undefined
+    });
+
+    // Sync back to markdown
+    this.syncToMarkdown();
+    this.autoCommit(`docs: add ${nextId} ${title}`);
+
+    return req;
+  }
+
+  public delete(reqId: string): boolean {
+    const deleted = this.databaseService.delete(reqId);
+    if (!deleted) return false;
+
+    // Remove requirement folder if it exists
+    const folder = this.findReqFolderIn(this.reqDir, reqId);
+    if (folder && existsSync(folder)) {
+      rmSync(folder, { recursive: true, force: true });
+    }
+
+    // Sync back to markdown and commit
+    this.syncToMarkdown();
+    this.autoCommit(`docs: delete ${reqId}`);
+
+    return true;
   }
 
   public updateStatus(reqId: string, newStatus: RequirementStatus): Requirement | null {
-    const content = readFileSync(this.reqFilePath, 'utf-8');
-    const emoji = STATUS_EMOJI_MAP[newStatus];
-    const lines = content.split('\n');
+    const branch = this.getCurrentBranch();
+    const updated = this.databaseService.updateStatus(reqId, newStatus, branch ?? undefined);
 
-    let found = false;
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].includes(`| ${reqId} `)) {
-        const cells = lines[i].split('|').map((c) => c.trim());
-        if (cells.length >= 4) {
-          cells[3] = `${emoji} ${newStatus}`;
-          lines[i] = '| ' + cells.filter((c) => c !== '').join(' | ') + ' |';
-          found = true;
-        }
-        break;
-      }
-    }
+    if (!updated) return null;
 
-    if (!found) return null;
-
-    const updated = this.updateStatistics(lines.join('\n'));
-    writeFileSync(this.reqFilePath, updated, 'utf-8');
+    // Sync back to markdown
+    this.syncToMarkdown();
     this.autoCommit(`docs: ${reqId} status → ${newStatus}`);
 
-    const all = this.getAll();
-    return all.find((r) => r.id === reqId) ?? null;
+    const attachments = this.detectAttachments(reqId);
+    return { ...updated, attachments };
   }
 
   private autoCommit(message: string): void {
@@ -132,7 +223,7 @@ export class BoardService {
     }
   }
 
-  // --- Parsing ---
+  // --- Parsing (for markdown import) ---
 
   private parseRequirements(content: string): Requirement[] {
     const lines = content.split('\n');
@@ -170,15 +261,6 @@ export class BoardService {
       if (statusCell.includes(emoji)) return status;
     }
     return 'Draft';
-  }
-
-  private generateNextId(content: string): string {
-    const reqs = this.parseRequirements(content);
-    const maxNum = reqs.reduce((max, r) => {
-      const num = parseInt(r.id.replace('REQ-', ''), 10);
-      return isNaN(num) ? max : Math.max(max, num);
-    }, 0);
-    return `REQ-${String(maxNum + 1).padStart(3, '0')}`;
   }
 
   private updateStatistics(content: string): string {
@@ -302,6 +384,18 @@ export class BoardService {
         renameSync(src, dest);
       }
     }
+  }
+
+  // --- History API (new, powered by SQLite) ---
+
+  public getHistory(reqId: string): Array<{
+    field: string;
+    oldValue: string | null;
+    newValue: string | null;
+    branch: string | null;
+    changedAt: string;
+  }> {
+    return this.databaseService.getHistory(reqId);
   }
 
   private findReqFolderIn(baseDir: string, reqId: string): string | null {

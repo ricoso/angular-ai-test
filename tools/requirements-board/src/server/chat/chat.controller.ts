@@ -7,6 +7,7 @@ interface ChatMessageDto {
   readonly reqId: string;
   readonly message: string;
   readonly requirementContent: string;
+  readonly planContent?: string;
 }
 
 @Controller('chat')
@@ -31,6 +32,7 @@ export class ChatController {
       dto.reqId,
       dto.message,
       dto.requirementContent,
+      dto.planContent || '',
       (chunk: string) => {
         res.write(`data: ${JSON.stringify({ type: 'chunk', text: chunk })}\n\n`);
       }

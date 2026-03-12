@@ -12,6 +12,7 @@ export class ChatService {
     reqId: string,
     userMessage: string,
     requirementContent: string,
+    planContent: string,
     onChunk: (text: string) => void
   ): Promise<void> {
     const reqFolder = this.findReqFolder(reqId);
@@ -30,7 +31,13 @@ export class ChatService {
       '',
       '--- Aktueller Requirement-Inhalt ---',
       requirementContent || '(kein Inhalt)',
-      '--- Ende ---'
+      '--- Ende ---',
+      ...(planContent ? [
+        '',
+        '--- Aktueller Plan (aus Workflow Log) ---',
+        planContent,
+        '--- Ende Plan ---'
+      ] : [])
     ].join('\n');
 
     const fullPrompt = `${systemPrompt}\n\nUser: ${userMessage}`;

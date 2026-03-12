@@ -216,6 +216,10 @@ body.chat-open #editModal .modal-dialog {
   margin-right: 420px;
 }
 
+body.chat-open .log-panel {
+  right: 400px;
+}
+
 /* Sidebar textarea must be focusable over modal backdrop */
 .chat-sidebar textarea,
 .chat-sidebar button,
@@ -407,6 +411,29 @@ body.chat-open #editModal .modal-dialog {
   animation: slideUp 0.25s ease-out;
 }
 
+.log-resize-handle {
+  height: 6px;
+  cursor: ns-resize;
+  background: transparent;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.log-resize-handle:hover,
+.log-resize-handle.active {
+  background: rgba(13, 110, 253, 0.5);
+}
+
+.log-resize-handle::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 3px;
+  background: #555;
+  border-radius: 2px;
+  margin: 2px auto 0;
+}
+
 @keyframes slideUp {
   from { transform: translateY(100%); }
   to   { transform: translateY(0); }
@@ -472,4 +499,46 @@ body.log-open .board-container {
 
 .toast {
   min-width: 280px;
+}
+
+/* ---- Mic Button (Speech-to-Text) ---- */
+
+.btn-mic {
+  background: #1e1e1e;
+  color: #ccc;
+  border: 1px solid #444;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  line-height: 1;
+}
+
+.btn-mic:hover {
+  background: #333;
+  color: #fff;
+}
+
+.btn-mic:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-mic.recording {
+  background: #dc3545;
+  color: #fff;
+  border-color: #dc3545;
+  animation: micPulse 1.2s infinite;
+}
+
+@keyframes micPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.description-label-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }

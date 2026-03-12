@@ -106,6 +106,45 @@ document.getElementById('logCloseBtn').addEventListener('click', () => {
   document.body.classList.remove('log-open');
 });
 
+// --- Log Panel Resize ---
+(() => {
+  const handle = document.getElementById('logResizeHandle');
+  const panel = document.getElementById('logPanel');
+  let startY = 0;
+  let startHeight = 0;
+
+  handle.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    startY = e.clientY;
+    startHeight = panel.offsetHeight;
+    handle.classList.add('active');
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
+
+  function onMouseMove(e) {
+    const newHeight = Math.max(150, Math.min(window.innerHeight - 50, startHeight + (startY - e.clientY)));
+    panel.style.height = newHeight + 'px';
+  }
+
+  function onMouseUp() {
+    handle.classList.remove('active');
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  }
+})();
+
+document.getElementById('logChatBtn').addEventListener('click', () => {
+  // Extract the base REQ-ID (remove " — Plan" or similar suffixes)
+  const rawId = document.getElementById('logReqId').textContent || '';
+  const reqId = rawId.split(' — ')[0].trim();
+  currentEditReqId = reqId;
+  document.getElementById('chatSidebarReqId').textContent = reqId;
+  document.getElementById('chatSidebar').style.display = 'flex';
+  document.body.classList.add('chat-open');
+  document.getElementById('chatSidebarInput').focus();
+});
+
 // --- Plan Mode (before implement) ---
 
 function triggerPlan(reqId, reqSlug) {
@@ -503,6 +542,39 @@ document.getElementById('saveReqContentBtn').addEventListener('click', async () 
   setTimeout(() => { statusEl.textContent = ''; }, 3000);
 });
 
+// --- Delete Requirement ---
+
+document.getElementById('deleteReqBtn').addEventListener('click', () => {
+  if (!currentEditReqId) return;
+  document.getElementById('deleteConfirmReqId').textContent = currentEditReqId;
+  new bootstrap.Modal(document.getElementById('deleteConfirmModal')).show();
+});
+
+document.getElementById('deleteConfirmBtn').addEventListener('click', async () => {
+  if (!currentEditReqId) return;
+  const reqId = currentEditReqId;
+
+  try {
+    const res = await fetch(`${API}/${reqId}`, { method: 'DELETE' });
+    const data = await res.json();
+
+    // Close both modals
+    bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'))?.hide();
+    bootstrap.Modal.getInstance(document.getElementById('editModal'))?.hide();
+
+    if (data.success) {
+      showToast(`${reqId} wurde gelöscht.`, 'success');
+      const reqs = await fetchRequirements();
+      renderBoard(reqs);
+      initSortable();
+    } else {
+      showToast(`Löschen von ${reqId} fehlgeschlagen.`, 'danger');
+    }
+  } catch (err) {
+    showToast('Fehler beim Löschen.', 'danger');
+  }
+});
+
 // --- Chat ---
 
 async function sendChatMessage() {
@@ -523,6 +595,12 @@ async function sendChatMessage() {
 
   const requirementContent = document.getElementById('editReqContent').value || '';
 
+  // Include plan context from log panel if visible
+  const logPanel = document.getElementById('logPanel');
+  const planContent = logPanel && logPanel.style.display !== 'none'
+    ? document.getElementById('logOutput').innerText || ''
+    : '';
+
   try {
     const res = await fetch('/api/chat', {
       method: 'POST',
@@ -530,7 +608,8 @@ async function sendChatMessage() {
       body: JSON.stringify({
         reqId: currentEditReqId,
         message,
-        requirementContent
+        requirementContent,
+        planContent
       })
     });
 
@@ -671,16 +750,96 @@ function startPolling() {
 
 // --- Refresh ---
 
-document.getElementById('refreshBtn').addEventListener('click', async () => {
+async function syncAndRefresh(showFeedback) {
+  const statusEl = document.getElementById('syncStatus');
   try {
+    if (showFeedback) statusEl.textContent = 'Syncing...';
+    const syncRes = await fetch(`${API}/sync`, { method: 'POST' });
+    const syncData = await syncRes.json();
     const reqs = await fetchRequirements();
     renderBoard(reqs);
     initSortable();
-    showToast('Refreshed!', 'success');
+    const time = new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    statusEl.textContent = `${syncData.branch ?? 'main'} · ${syncData.synced} REQs · ${time}`;
+    if (showFeedback) showToast('Synced from remote!', 'success');
   } catch (err) {
-    showToast('Refresh failed.', 'danger');
+    statusEl.textContent = 'Sync failed';
+    if (showFeedback) showToast('Sync failed.', 'danger');
   }
-});
+}
+
+document.getElementById('refreshBtn').addEventListener('click', () => syncAndRefresh(true));
+
+// Auto-sync every 60s (for daily standup view)
+setInterval(() => syncAndRefresh(false), 60000);
+
+// --- Speech-to-Text (Web Speech API) ---
+
+function createSpeechRecognizer(textareaId, micButtonId) {
+  const btn = document.getElementById(micButtonId);
+  const textarea = document.getElementById(textareaId);
+  if (!btn || !textarea) return;
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    btn.disabled = true;
+    btn.title = 'Spracheingabe wird in diesem Browser nicht unterstützt';
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'de-DE';
+  recognition.continuous = true;
+  recognition.interimResults = false;
+
+  let isRecording = false;
+
+  btn.addEventListener('click', () => {
+    if (isRecording) {
+      recognition.stop();
+    } else {
+      recognition.start();
+    }
+  });
+
+  recognition.onstart = () => {
+    isRecording = true;
+    btn.classList.add('recording');
+    btn.querySelector('i').className = 'bi bi-mic-fill';
+  };
+
+  recognition.onresult = (event) => {
+    let transcript = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      if (event.results[i].isFinal) {
+        transcript += event.results[i][0].transcript;
+      }
+    }
+    if (transcript) {
+      const current = textarea.value;
+      textarea.value = current + (current && !current.endsWith(' ') ? ' ' : '') + transcript;
+    }
+  };
+
+  recognition.onerror = (event) => {
+    if (event.error === 'not-allowed') {
+      showToast('Mikrofon-Zugriff verweigert. Bitte erlaube den Zugriff in den Browser-Einstellungen.', 'danger');
+    } else if (event.error === 'no-speech') {
+      showToast('Keine Sprache erkannt. Bitte nochmal versuchen.', 'warning');
+    } else {
+      showToast(`Spracherkennung-Fehler: ${event.error}`, 'danger');
+    }
+  };
+
+  recognition.onend = () => {
+    isRecording = false;
+    btn.classList.remove('recording');
+    btn.querySelector('i').className = 'bi bi-mic';
+  };
+}
+
+createSpeechRecognizer('chatSidebarInput', 'chatMicBtn');
+createSpeechRecognizer('createDescription', 'createDescMicBtn');
 
 // --- Init ---
 
