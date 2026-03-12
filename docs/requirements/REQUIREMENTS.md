@@ -33,6 +33,7 @@
 | REQ-008 | Werkstattkalender | ✔️ Implemented | High     | REQ-006                            | Werkstattkalender mit DatePicker und Uhrzeitslot-Auswahl (Wizard-Schritt 5b)                                                                                                    |
 | REQ-009 | carinformation    | ✔️ Implemented | High     | REQ-008                            | Fahrzeugdaten und Kundendaten erfassen (Wizard-Schritt 6)                                                                                                                       |
 | REQ-010 | Buchungsübersicht | 📝 Draft | High | REQ-009 | Letzte Seite des Buchungs-Wizards. Zeigt Übersicht aller Eingaben (Termin, Service, persönliche Daten, Preis inkl. MwSt.). Enthält "Jetzt anfragen"-Button statt Weiter-Button. |
+| REQ-011 | test | 📝 Draft | Medium | - | test test test test test test  das funktioniert ja besser als ich gedacht habe |
 
 ---
 
@@ -81,12 +82,12 @@ REQ-001-Header
 
 | Status         | Count  |
 | -------------- | ------ |
-| 📝 Draft | 1 |
+| 📝 Draft | 2 |
 | 🔍 In Review | 0 |
 | ✅ Approved | 0 |
 | 🚧 In Progress | 0 |
 | ✔️ Implemented | 9 |
-| **Total** | **10** |
+| **Total** | **11** |
 
 ---
 
