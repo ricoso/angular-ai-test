@@ -6,6 +6,13 @@ Implementiert ein Requirement basierend auf der Spezifikation.
 > werden vom Kanban Board automatisch erledigt. Dieser Workflow fokussiert sich auf die
 > reine Implementierung.
 
+> **Branch-Regel:** Es wird KEIN separater `feat/`-Branch erstellt.
+> Die Implementierung erfolgt direkt auf dem `req/<REQ-ID>`-Branch,
+> der beim `/create-requirement` angelegt wurde.
+
+> **Kein Auto-Commit:** Änderungen werden NICHT automatisch committed oder gepusht.
+> Der Benutzer prüft lokal und entscheidet selbst über Commit + Push.
+
 ## Usage
 
 ```
@@ -32,7 +39,7 @@ Implementiert ein Requirement basierend auf der Spezifikation.
 | Step 5 | Tests geschrieben + >80% |
 | **Step 6** | **lint + type-check + tests (3 parallele Agents)** |
 | **Step 7** | **`/check-all` Score >= 90 + qualitaets.md generiert** |
-| Step 8 | Commit erstellt + PR erstellt |
+| Step 8 | Implementierung abgeschlossen, Änderungen lokal bereit |
 
 ---
 
@@ -218,28 +225,29 @@ Dies führt 13 Checks aus (11 statisch + E2E + Documentation).
 
 ---
 
-### Step 8: Commit + Pull Request
+### Step 8: Fertigmeldung (KEIN Commit/Push!)
 
 **Erst nach bestandenem Quality Gate (Step 7)!**
 
-```bash
-git add .
-git commit -m "feat($ARGUMENTS): implement <Feature-Name>"
-git push -u origin HEAD
-gh pr create --title "feat: $ARGUMENTS — <Feature-Name>" --body "## Summary
-- Implements $ARGUMENTS (<Feature-Name>)
+> **WICHTIG: Änderungen werden NICHT committed oder gepusht!**
+> Der Benutzer prüft die Änderungen lokal und entscheidet selbst über Commit + Push.
+
+**Ausgabe:**
+
+```
+IMPLEMENTIERUNG ABGESCHLOSSEN: $ARGUMENTS
+- Feature: <Feature-Name>
 - Quality Score: XX/100
 - Test Coverage: XX%
+- Alle Änderungen sind LOKAL (nicht committed)
 
-## Checklist
-- [x] All 5 skills read
-- [x] lint + type-check + tests pass
-- [x] /check-all score >= 90
-- [x] qualitaets.md generated
-- [x] Feature docs DE + EN"
+Nächste Schritte (manuell):
+  git add .
+  git commit -m "feat($ARGUMENTS): implement <Feature-Name>"
+  git push -u origin HEAD
 ```
 
-**GATE 8:** Commit erstellt + PR erstellt + PR-URL ausgegeben
+**GATE 8:** Implementierung abgeschlossen, Änderungen lokal bereit zur Prüfung
 
 ---
 
@@ -263,8 +271,7 @@ gh pr create --title "feat: $ARGUMENTS — <Feature-Name>" --body "## Summary
 - [ ] **Step 7: `qualitaets.md` generiert**
 - [ ] **Step 7: E2E Tests bestanden (check-e2e)**
 - [ ] **Step 7: Feature-Dokumentation in DE + EN generiert (check-documentation)**
-- [ ] Step 8: Commit erstellt
-- [ ] **Step 8: PR erstellt + URL ausgegeben**
+- [ ] Step 8: Fertigmeldung ausgegeben (Änderungen LOKAL, kein Commit/Push)
 
 ---
 

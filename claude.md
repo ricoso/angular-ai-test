@@ -100,8 +100,10 @@
 | 5 | Tests | Jest >80% Coverage |
 | **6** | **Tech-Check (3 PARALLEL AGENTS)** | **`lint:fix` + `type-check` + `test:coverage`** |
 | **7** | **Quality Gate** | **`/check-all` Score >= 90 + qualitaets.md generiert** |
-| 8 | Commit + PR | `feat(REQ-XXX): implement <Feature>` + `gh pr create` |
+| 8 | Fertigmeldung | Änderungen LOKAL — kein Commit/Push (User prüft selbst) |
 
+> **Branch-Regel:** Kein separater `feat/`-Branch — Implementierung auf `req/REQ-XXX`.
+> **Kein Auto-Commit:** Änderungen bleiben lokal bis der User selbst committed.
 > **STOP bei Step 6 FAIL!** Erst fixen, dann weiter.
 > **STOP bei Step 7 Score < 90!** Erst fixen, Step 6+7 wiederholen.
 > Details: `.claude/commands/implement-requirement.md`
@@ -112,7 +114,7 @@
 |-------|--------------|
 | 1 Setup | Branch `req/REQ-XXX` + Ordner + Template |
 | 2 Parallel | **2 Agents:** Mockup (HTML+CSS) + Requirement (17 Sections) |
-| 3 Finalize | `/check-requirement` + Commit + PR |
+| 3 Finalize | `/check-requirement` + Fertigmeldung (alles lokal, kein Commit/Push/PR) |
 
 > Details: `.claude/commands/create-requirement.md`
 

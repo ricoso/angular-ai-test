@@ -245,21 +245,31 @@ Prüft:
 - [ ] **Mockup vorhanden** (`mockup.html`)
 - [ ] **Kein `<script>` Tag im Mockup**
 
-### Step 3: Commit + PR
+### Step 3: Fertigmeldung (KEIN Commit/Push/PR!)
 
-```bash
-git add docs/requirements/$ARGUMENTS/
-git commit -m "docs($ARGUMENTS): create requirement with mockup"
-git push -u origin req/$ARGUMENTS
-gh pr create --title "docs: $ARGUMENTS" --body "## Summary
-- New requirement: $ARGUMENTS
-- Mockup: HTML+CSS (standalone)
-- Sections: 17/17
+> **Änderungen werden NICHT committed oder gepusht!**
+> Der Benutzer prüft lokal und entscheidet selbst über Commit + Push.
+> Bei Bedarf: `/create-pr` für Pull Request.
 
-## Checklist
-- [x] requirement.md complete
-- [x] mockup.html (no JavaScript)
-- [x] /check-requirement passed"
+**Ausgabe:**
+
+```
+REQUIREMENT ERSTELLT: $ARGUMENTS
+- Branch: req/$ARGUMENTS
+- mockup.html: erstellt
+- requirement.md: X/17 Sections
+- Alle Änderungen sind LOKAL (nicht committed)
+
+Nächste Schritte (manuell):
+  git add docs/requirements/$ARGUMENTS/
+  git commit -m "docs($ARGUMENTS): create requirement with mockup"
+  git push -u origin req/$ARGUMENTS
+  /create-pr
+
+Nächste Schritte (manuell):
+  git add docs/requirements/$ARGUMENTS/
+  git commit -m "docs($ARGUMENTS): create requirement with mockup"
+  /create-pr
 ```
 
 ---
@@ -338,8 +348,7 @@ REQUIREMENT (Agent 2)
 
 PRÜFUNG
 - [ ] /check-requirement bestanden
-- [ ] Commit erstellt
-- [ ] PR erstellt + Link ausgegeben
+- [ ] Fertigmeldung ausgegeben (Änderungen LOKAL, kein Commit/Push/PR)
 ```
 
 ---
