@@ -2,6 +2,10 @@
 
 Implementiert ein Requirement basierend auf der Spezifikation.
 
+> **Board-Integration:** Branch-Erstellung, Status-Updates und REQUIREMENTS.md-Sync
+> werden vom Kanban Board automatisch erledigt. Dieser Workflow fokussiert sich auf die
+> reine Implementierung.
+
 ## Usage
 
 ```
@@ -12,29 +16,23 @@ Implementiert ein Requirement basierend auf der Spezifikation.
 
 ---
 
-## ⛔ VERBINDLICHE REGELN
+## VERBINDLICHE REGELN
 
 > **JEDER Step ist PFLICHT. Kein Step darf übersprungen werden.**
 > **Bei Verstoß: Implementierung ist UNGÜLTIG.**
 
 ### Gate-System
 
-Jeder Step hat ein **GATE** — eine Bedingung die erfüllt sein MUSS bevor der nächste Step starten darf:
-
 | Step | Gate |
 |------|------|
-| Step 0 | PR-Status synchronisiert |
-| Step 1 | Branch existiert |
-| Step 1.5 | Requirement-Status auf "In Progress" gesetzt |
-| Step 2 | Requirement gelesen, Feature-Name + Sprache extrahiert |
-| **Step 3** | **ALLE 5 Skills gelesen, Code-Sprache bestätigt** |
-| Step 4 | Code implementiert |
-| Step 5 | Styling angewendet |
-| Step 6 | Tests geschrieben + >80% |
-| **Step 7** | **lint ✅ + type-check ✅ + tests ✅** |
-| **Step 8** | **`/check-all` Score >= 90 + qualitaets.md generiert** |
-| Step 9 | Commit erstellt |
-| Step 10 | Requirement-Status auf "In Review" gesetzt |
+| Step 1 | Requirement gelesen, Feature-Name + Sprache extrahiert |
+| **Step 2** | **ALLE 5 Skills gelesen, Code-Sprache bestätigt** |
+| Step 3 | Code implementiert |
+| Step 4 | Styling angewendet |
+| Step 5 | Tests geschrieben + >80% |
+| **Step 6** | **lint + type-check + tests (3 parallele Agents)** |
+| **Step 7** | **`/check-all` Score >= 90 + qualitaets.md generiert** |
+| Step 8 | Commit erstellt + PR erstellt |
 
 ---
 
@@ -50,85 +48,16 @@ Jeder Step hat ein **GATE** — eine Bedingung die erfüllt sein MUSS bevor der 
 
 ```bash
 if [ -z "$REMOTE_CONTAINERS" ] && [ -z "$CODESPACES" ] && [ ! -f "/.dockerenv" ]; then
-  echo "⚠️ WARNUNG: Du arbeitest NICHT in einem Dev Container."
+  echo "WARNUNG: Du arbeitest NICHT in einem Dev Container."
   echo "Empfehlung: VS Code → 'Dev Containers: Reopen in Container'"
-  echo "Der Dev Container stellt sicher: Node 20, Playwright, GitHub CLI, ESLint Config."
 fi
 ```
 
-> Weiter mit Step 0 (kein Blocker, nur Hinweis).
+> Weiter mit Step 1 (kein Blocker, nur Hinweis).
 
 ---
 
-### Step 0: PR-Status synchronisieren
-
-**Automatisch bei jedem Skill-Lauf:**
-
-1. **Gemergte PRs abrufen:**
-   ```bash
-   gh pr list --state merged --search "feat/REQ-" --json headRefName --limit 100
-   ```
-
-2. **Offene PRs abrufen:**
-   ```bash
-   gh pr list --state open --search "feat/REQ-" --json headRefName
-   ```
-
-3. **Status synchronisieren:**
-
-   | PR-Status | → Requirement Status |
-   |-----------|---------------------|
-   | merged | ✔️ Implemented |
-   | open | 🔍 In Review |
-
-4. **Dateien aktualisieren:**
-   - `docs/requirements/<REQ>/requirement.md` → Status-Zeile
-   - `docs/requirements/REQUIREMENTS.md` → Tabelle + Statistics
-
-5. **Falls Änderungen:**
-   ```bash
-   git add docs/requirements/
-   git commit -m "chore: sync requirement status with GitHub PRs"
-   git push
-   ```
-
-**GATE 0:** ✅ PR-Status synchronisiert
-
----
-
-### Step 1: Branch erstellen
-
-```bash
-git checkout -b feat/$ARGUMENTS
-```
-
-**GATE 1:** ✅ Branch `feat/$ARGUMENTS` existiert
-
----
-
-### Step 1.5: Status auf "In Progress" setzen
-
-1. **`docs/requirements/REQUIREMENTS.md`** — Tabelle aktualisieren:
-   - Zeile des aktuellen Requirements finden
-   - Status ändern auf `🚧 In Progress`
-
-2. **`docs/requirements/REQUIREMENTS.md`** — Statistics aktualisieren:
-   - Zähler entsprechend anpassen (alten Status -1, `🚧 In Progress` +1)
-
-3. **`docs/requirements/$ARGUMENTS/requirement.md`** — Status-Zeile aktualisieren:
-   - `**Status:** In Progress`
-
-4. **Commit:**
-   ```bash
-   git add docs/requirements/REQUIREMENTS.md docs/requirements/$ARGUMENTS/requirement.md
-   git commit -m "chore($ARGUMENTS): set requirement status to In Progress"
-   ```
-
-**GATE 1.5:** ✅ Requirement-Status auf "In Progress" gesetzt
-
----
-
-### Step 2: Requirement lesen
+### Step 1: Requirement lesen
 
 1. Lese `docs/requirements/$ARGUMENTS/requirement.md`
 2. Extrahiere:
@@ -138,13 +67,13 @@ git checkout -b feat/$ARGUMENTS
    - Section 16: Naming Glossary (Methodennamen)
 3. **Extrahiere den Feature-Namen** (z.B. `booking`, `user-management`)
 
-**GATE 2:** ✅ Requirement gelesen, Feature-Name bestimmt
+**GATE 1:** Requirement gelesen, Feature-Name bestimmt
 
 ---
 
-### Step 3: Skills lesen (ALLE PFLICHT!)
+### Step 2: Skills lesen (ALLE PFLICHT!)
 
-> ⛔ **NICHT "bei Bedarf" — ALLE Skills MÜSSEN gelesen werden!**
+> **NICHT "bei Bedarf" — ALLE Skills MUESSEN gelesen werden!**
 > **Kein Code darf generiert werden bevor ALLE 5 Skills gelesen wurden!**
 
 **Lese ALLE 5 Skills in dieser Reihenfolge:**
@@ -160,7 +89,7 @@ git checkout -b feat/$ARGUMENTS
 **Nach dem Lesen — Bestätige explizit:**
 
 ```
-📋 SKILL-CHECK BESTÄTIGT:
+SKILL-CHECK BESTÄTIGT:
 - Code-Sprache: [Englisch/Deutsch] (aus code-language.md)
 - UI-Sprachen: [DE, EN] (aus i18n-typings.md)
 - Deployment: [Click-Dummy/Production] (aus angular-architecture.md)
@@ -168,20 +97,15 @@ git checkout -b feat/$ARGUMENTS
 - Forms: [Ja/Nein — relevant für dieses Feature]
 ```
 
-> ⛔ **STOP wenn Code-Sprache nicht bestätigt wurde!**
-> **Code-Sprache aus `code-language.md` ist BINDEND für ALLE generierten Dateien:**
-> - Variablennamen, Methodennamen, Klassennamen
-> - CSS-Klassen, i18n Key-Pfade
-> - Dateinamen, Ordnernamen
-> - Comments (optional, aber empfohlen in Code-Sprache)
+> **STOP wenn Code-Sprache nicht bestätigt wurde!**
 
-**GATE 3:** ✅ ALLE 5 Skills gelesen, Code-Sprache + UI-Sprachen + Deployment bestätigt
+**GATE 2:** ALLE 5 Skills gelesen, Code-Sprache + UI-Sprachen + Deployment bestätigt
 
 ---
 
-### Step 4: Implementieren
+### Step 3: Implementieren
 
-**Verwende die Code-Sprache aus Step 3 für ALLE Dateien!**
+**Verwende die Code-Sprache aus Step 2 für ALLE Dateien!**
 
 Reihenfolge:
 1. **Models** (`models/*.model.ts`)
@@ -202,11 +126,11 @@ Reihenfolge:
 - Separate `.html` + `.scss` Dateien (KEINE inline templates/styles!)
 - `@for` mit `track item.id` (NICHT `$index`)
 
-**GATE 4:** ✅ Alle Dateien implementiert
+**GATE 3:** Alle Dateien implementiert
 
 ---
 
-### Step 5: Styling
+### Step 4: Styling
 
 - IMMER `src/styles/_variables.scss` verwenden
 - KEINE hardcoded Farben!
@@ -215,11 +139,11 @@ Reihenfolge:
 - BEM Naming
 - WCAG 2.1 AA
 
-**GATE 5:** ✅ Styling angewendet
+**GATE 4:** Styling angewendet
 
 ---
 
-### Step 6: Tests schreiben
+### Step 5: Tests schreiben
 
 - Jest Unit Tests für Store, Services, Components
 - Ziel: >80% Coverage
@@ -229,17 +153,17 @@ Reihenfolge:
 npm run test:coverage
 ```
 
-**GATE 6:** ✅ Tests geschrieben + alle bestanden
+**GATE 5:** Tests geschrieben + alle bestanden
 
 ---
 
-### Step 7: Technische Prüfung (PFLICHT! BLOCKER! PARALLEL AGENTS!)
+### Step 6: Technische Prüfung (PFLICHT! BLOCKER! PARALLEL AGENTS!)
 
-> ⛔ **ALLE 3 Prüfungen MÜSSEN ausgeführt werden!**
-> ⚡ **ALLE 3 als parallele Agents starten** (3 Task-Tool-Aufrufe mit `subagent_type: "Bash"` in EINER Nachricht)!
-> **Bei Fehler: Fixen und erneut ALLE 3 parallel als Agents ausführen bis GRÜN!**
+> **ALLE 3 Prüfungen MUESSEN ausgeführt werden!**
+> **ALLE 3 als parallele Agents starten** (3 Tool-Aufrufe in EINER Nachricht)!
+> **Bei Fehler: Fixen und erneut ALLE 3 parallel als Agents ausführen bis GRUEN!**
 
-**3 parallele Agents starten (EINE Nachricht, 3 Task-Tool-Aufrufe):**
+**3 parallele Agents starten (EINE Nachricht, 3 Tool-Aufrufe):**
 
 | # | Agent Description | Command | Prüft |
 |---|-------------------|---------|-------|
@@ -247,57 +171,34 @@ npm run test:coverage
 | 2 | `"Run type-check"` | `npm run type-check` | TypeScript Typen |
 | 3 | `"Run test:coverage"` | `npm run test:coverage` | Jest Tests + Coverage >80% |
 
-**Jeder Agent-Aufruf sieht so aus:**
-```
-Task tool:
-  subagent_type: "Bash"
-  description: "Run lint:fix" / "Run type-check" / "Run test:coverage"
-  prompt: "Führe `npm run <command>` aus und berichte das Ergebnis: PASS oder FAIL mit Details."
-```
-
-> ⚡ **WICHTIG:** Die 3 Agents sind voneinander UNABHÄNGIG und MÜSSEN parallel gestartet werden!
-> **NICHT sequenziell ausführen — das verschwendet Zeit!**
+> **WICHTIG:** Die 3 Agents sind voneinander UNABHÄNGIG und MUESSEN parallel gestartet werden!
 
 **Ergebnis dokumentieren (erst wenn ALLE 3 Agents fertig):**
 ```
-🔧 TECHNISCHE PRÜFUNG (3 parallele Agents):
-- lint:fix     → [✅ PASS / ❌ FAIL + Fehler]
-- type-check   → [✅ PASS / ❌ FAIL + Fehler]
-- test:coverage → [✅ PASS (XX%) / ❌ FAIL + fehlgeschlagene Tests]
+TECHNISCHE PRÜFUNG (3 parallele Agents):
+- lint:fix     → [PASS / FAIL + Fehler]
+- type-check   → [PASS / FAIL + Fehler]
+- test:coverage → [PASS (XX%) / FAIL + fehlgeschlagene Tests]
 ```
 
-> ⛔ **STOP bei FAIL!** Erst fixen, dann erneut ALLE 3 parallel als Agents prüfen.
-> **Step 8 darf NICHT starten wenn Step 7 nicht GRÜN ist!**
+> **STOP bei FAIL!** Erst fixen, dann erneut ALLE 3 parallel als Agents prüfen.
+> **Step 7 darf NICHT starten wenn Step 6 nicht GRUEN ist!**
 
-**GATE 7:** ✅ lint ✅ + type-check ✅ + tests ✅
+**GATE 6:** lint + type-check + tests
 
 ---
 
-### Step 8: Quality Checks (PFLICHT! BLOCKER!)
+### Step 7: Quality Checks (PFLICHT! BLOCKER!)
 
-> ⛔ **NICHT ÜBERSPRINGEN! /check-all ist PFLICHT vor jedem Commit!**
-> **Diese Checks sind die letzte Quality Gate vor dem Commit.**
+> **NICHT UEBERSPRINGEN! /check-all ist PFLICHT vor jedem Commit!**
 
-**Feature-Name aus Step 2 verwenden:**
+**Feature-Name aus Step 1 verwenden:**
 
 ```
 /check-all <feature-name>
 ```
 
-Dies führt 13 Checks aus (11 statisch + E2E + Documentation):
-- `/check-architecture` — Container/Presentational Pattern
-- `/check-stores` — NgRx Signal Store
-- `/check-routing` — Routing Patterns
-- `/check-security` — Security Audit
-- `/check-eslint` — ESLint Rules
-- `/check-typescript` — Type Safety
-- `/check-performance` — Performance
-- `/check-styling` — SCSS & Accessibility
-- `/check-i18n` — Internationalization
-- `/check-forms` — Reactive Forms (falls relevant)
-- `/check-code-language` — Code Language
-- `/check-e2e` — E2E Tests (Playwright MCP)
-- `/check-documentation` — Feature Documentation (DE + EN)
+Dies führt 13 Checks aus (11 statisch + E2E + Documentation).
 
 **Quality Gate:**
 - Ziel: Score >= 90/100
@@ -307,80 +208,63 @@ Dies führt 13 Checks aus (11 statisch + E2E + Documentation):
 **Bei Score < 90:**
 1. Issues aus dem Report lesen
 2. Fixen
-3. **Step 7 erneut ausführen** (lint + type-check + tests)
-4. **Step 8 erneut ausführen** (/check-all)
+3. **Step 6 erneut ausführen** (lint + type-check + tests)
+4. **Step 7 erneut ausführen** (/check-all)
 5. Wiederholen bis Score >= 90
 
-> ⛔ **STOP bei Score < 90!** Commit ist NICHT erlaubt!
-> ⛔ **qualitaets.md MUSS generiert worden sein!**
+> **STOP bei Score < 90!** Commit ist NICHT erlaubt!
 
-**GATE 8:** ✅ Score >= 90/100 + qualitaets.md generiert
+**GATE 7:** Score >= 90/100 + qualitaets.md generiert
 
 ---
 
-### Step 9: Commit
+### Step 8: Commit + Pull Request
 
-**Erst nach bestandenem Quality Gate (Step 8)!**
+**Erst nach bestandenem Quality Gate (Step 7)!**
 
 ```bash
 git add .
 git commit -m "feat($ARGUMENTS): implement <Feature-Name>"
+git push -u origin HEAD
+gh pr create --title "feat: $ARGUMENTS — <Feature-Name>" --body "## Summary
+- Implements $ARGUMENTS (<Feature-Name>)
+- Quality Score: XX/100
+- Test Coverage: XX%
+
+## Checklist
+- [x] All 5 skills read
+- [x] lint + type-check + tests pass
+- [x] /check-all score >= 90
+- [x] qualitaets.md generated
+- [x] Feature docs DE + EN"
 ```
 
-**GATE 9:** ✅ Commit erstellt
-
----
-
-### Step 10: Status in REQUIREMENTS.md auf "In Review" setzen
-
-**Nach dem Commit — Requirement-Status aktualisieren:**
-
-1. **`docs/requirements/REQUIREMENTS.md`** — Tabelle aktualisieren:
-   - Zeile des aktuellen Requirements finden
-   - Status ändern auf `🔍 In Review`
-
-2. **`docs/requirements/REQUIREMENTS.md`** — Statistics aktualisieren:
-   - Zähler entsprechend anpassen (alten Status -1, `🔍 In Review` +1)
-
-3. **`docs/requirements/$ARGUMENTS/requirement.md`** — Status-Zeile aktualisieren:
-   - `**Status:** In Review`
-
-4. **Commit:**
-   ```bash
-   git add docs/requirements/REQUIREMENTS.md docs/requirements/$ARGUMENTS/requirement.md
-   git commit -m "chore($ARGUMENTS): set requirement status to In Review"
-   ```
-
-**GATE 10:** ✅ Requirement-Status auf "In Review" gesetzt
+**GATE 8:** Commit erstellt + PR erstellt + PR-URL ausgegeben
 
 ---
 
 ## Checkliste (ALLE Punkte PFLICHT!)
 
-- [ ] Step 0: PR-Status synchronisiert
-- [ ] Step 1: Branch erstellt
-- [ ] **Step 1.5: Requirement-Status in REQUIREMENTS.md auf "In Progress" gesetzt**
-- [ ] Step 2: Requirement gelesen
-- [ ] **Step 3: ALLE 5 Skills gelesen (code-language, architecture, i18n, routing, forms)**
-- [ ] **Step 3: Code-Sprache bestätigt**
-- [ ] Step 4: Models definiert
-- [ ] Step 4: Store mit `withState`, `withComputed`, `withMethods`
-- [ ] Step 4: Container Component mit `OnPush`
-- [ ] Step 4: Presentational Components mit `input()`/`output()`
-- [ ] Step 4: i18n in ALLEN UI-Sprachen
-- [ ] Step 4: Resolver für Data Loading
-- [ ] Step 5: Styling aus `_variables.scss`, Mobile-First, WCAG 2.1 AA
-- [ ] Step 6: Tests >80%
-- [ ] **Step 7: `npm run lint:fix` ✅**
-- [ ] **Step 7: `npm run type-check` ✅**
-- [ ] **Step 7: `npm run test:coverage` ✅**
-- [ ] **Step 8: `/check-all` ausgeführt (Score >= 90/100)**
-- [ ] **Step 8: `qualitaets.md` generiert**
-- [ ] **Step 8: E2E Tests bestanden (check-e2e)**
-- [ ] **Step 8: Feature-Dokumentation in DE + EN generiert (check-documentation)**
-- [ ] Step 9: Commit erstellt
-- [ ] **Step 10: Requirement-Status in REQUIREMENTS.md auf "In Review" gesetzt**
-- [ ] **Step 10: Requirement-Status in requirement.md auf "In Review" gesetzt**
+- [ ] Step 1: Requirement gelesen
+- [ ] **Step 2: ALLE 5 Skills gelesen (code-language, architecture, i18n, routing, forms)**
+- [ ] **Step 2: Code-Sprache bestätigt**
+- [ ] Step 3: Models definiert
+- [ ] Step 3: Store mit `withState`, `withComputed`, `withMethods`
+- [ ] Step 3: Container Component mit `OnPush`
+- [ ] Step 3: Presentational Components mit `input()`/`output()`
+- [ ] Step 3: i18n in ALLEN UI-Sprachen
+- [ ] Step 3: Resolver für Data Loading
+- [ ] Step 4: Styling aus `_variables.scss`, Mobile-First, WCAG 2.1 AA
+- [ ] Step 5: Tests >80%
+- [ ] **Step 6: `npm run lint:fix`**
+- [ ] **Step 6: `npm run type-check`**
+- [ ] **Step 6: `npm run test:coverage`**
+- [ ] **Step 7: `/check-all` ausgeführt (Score >= 90/100)**
+- [ ] **Step 7: `qualitaets.md` generiert**
+- [ ] **Step 7: E2E Tests bestanden (check-e2e)**
+- [ ] **Step 7: Feature-Dokumentation in DE + EN generiert (check-documentation)**
+- [ ] Step 8: Commit erstellt
+- [ ] **Step 8: PR erstellt + URL ausgegeben**
 
 ---
 

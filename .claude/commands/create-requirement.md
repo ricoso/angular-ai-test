@@ -1,7 +1,11 @@
 # Create Requirement Command (Parallel Agent-System)
 
 Erstellt ein neues Requirement mit Mockup-Generierung und Pull Request.
-Orchestriert 3 parallele Agents für maximale Geschwindigkeit.
+Orchestriert 2 parallele Agents für maximale Geschwindigkeit.
+
+> **Board-Integration:** Das Kanban Board erstellt das Requirement in der DB
+> und synchronisiert REQUIREMENTS.md automatisch. Dieser Workflow erstellt
+> nur den Branch, das Mockup, die requirement.md und den PR.
 
 ## Usage
 
@@ -46,9 +50,9 @@ cp docs/requirements/REQ-TEMPLATE.md docs/requirements/$ARGUMENTS/requirement.md
 
 ---
 
-## Phase 2: Starte 3 Agents PARALLEL
+## Phase 2: Starte 2 Agents PARALLEL
 
-Verwende das `Task`-Tool mit `subagent_type: "general-purpose"` und starte **ALLE 3 Agents in EINEM Tool-Aufruf** (parallel):
+Verwende das `Agent`-Tool und starte **BEIDE Agents in EINEM Tool-Aufruf** (parallel):
 
 ---
 
@@ -116,12 +120,12 @@ npx playwright screenshot --viewport-size='1280,720' docs/requirements/$ARGUMENT
 
 Gib zurück:
 MOCKUP_RESULT:
-- mockup.html: ✅ erstellt
-- mockup.png: ✅|❌
+- mockup.html: erstellt
+- mockup.png: [ja/nein]
 - Konsultierte Mockups: [REQ-002, REQ-003, ...]
-- Responsive: [mobile ✅, tablet ✅, desktop ✅]
-- Accessibility: ✅|❌
-- JavaScript: ✅ kein <script>"
+- Responsive: [mobile, tablet, desktop]
+- Accessibility: [ja/nein]
+- JavaScript: kein <script>"
 ```
 
 ---
@@ -203,61 +207,14 @@ Prompt: "Fülle das Requirement-Template für '$ARGUMENTS' aus.
 
 Gib zurück:
 REQUIREMENT_RESULT:
-- requirement.md: ✅ ausgefüllt
-- Vision berücksichtigt: ✅ (Kernwerte + Qualitätsziele)
+- requirement.md: ausgefüllt
+- Vision berücksichtigt: [ja/nein]
 - Sections: X/17 komplett
 - Konsultierte REQs: [REQ-002, REQ-003, ...]
-- Bestehende Store-Felder berücksichtigt: ✅|❌
+- Bestehende Store-Felder berücksichtigt: [ja/nein]
 - Platzhalter: 0 übrig
-- i18n Keys: DE ✅ + EN ✅
-- Code-Sprache: Englisch ✅"
-```
-
----
-
-### Agent 3: REQUIREMENTS.md Agent (via Board API → main Branch)
-
-```
-Prompt: "Trage das neue Requirement '$ARGUMENTS' über die Board-API in REQUIREMENTS.md auf dem main Branch ein.
-
-**WICHTIG:** REQUIREMENTS.md wird NICHT direkt editiert! Stattdessen wird die Board-API genutzt,
-die über einen git worktree direkt auf `main` schreibt und auto-committed.
-So bleibt REQUIREMENTS.md auf main immer aktuell — unabhängig vom aktuellen Feature-Branch.
-
-**Vorgehen:**
-
-1. **Board-Server prüfen / starten:**
-   - Prüfe ob der Board-Server läuft: `curl -s http://localhost:3200/api/requirements | head -c 100`
-   - Falls nicht erreichbar: `cd tools/requirements-board && npm run start:dev &` und 5s warten
-
-2. **Bestehende Requirements analysieren:**
-   - Lese `docs/requirements/REQUIREMENTS.md` — Wizard-Reihenfolge + Dependencies verstehen
-   - Prüfe welches REQ direkt davor liegt (→ Dependency)
-
-3. **REQ-ID und Name aus '$ARGUMENTS' extrahieren:**
-   - z.B. `REQ-010-Buchungsbestätigung` → title='Buchungsbestätigung'
-   - Description aus dem requirement.md ableiten (kurze Zusammenfassung)
-
-4. **Requirement über Board-API anlegen:**
-   ```bash
-   curl -s -X POST http://localhost:3200/api/requirements \
-     -F 'title=<Name>' \
-     -F 'description=<Kurzbeschreibung>' \
-     -F 'priority=<High|Medium|Low>' \
-     -F 'label=User Story' \
-     -F 'tags='
-   ```
-   Die API schreibt automatisch in REQUIREMENTS.md auf main und committed.
-
-5. **Ergebnis verifizieren:**
-   - `curl -s http://localhost:3200/api/requirements | jq '.[-1]'` — letztes REQ prüfen
-
-Gib zurück:
-REQUIREMENTS_RESULT:
-- Board-API: ✅ erreichbar
-- REQUIREMENTS.md auf main: ✅ aktualisiert (via Board-API + Worktree)
-- Neue Zeile: REQ-XXX | Name | Draft
-- Auto-Commit auf main: ✅"
+- i18n Keys: DE + EN
+- Code-Sprache: Englisch"
 ```
 
 ---
@@ -266,13 +223,12 @@ REQUIREMENTS_RESULT:
 
 ### Step 1: Ergebnisse sammeln
 
-Warte auf alle 3 Agents und prüfe:
+Warte auf beide Agents und prüfe:
 
 ```
-📋 AGENT-ERGEBNISSE:
-- Agent 1 (Mockup):      [✅|❌] mockup.html + mockup.png
-- Agent 2 (Requirement):  [✅|❌] requirement.md (X/17 Sections)
-- Agent 3 (REQUIREMENTS): [✅|❌] REQUIREMENTS.md auf main aktualisiert (via Board-API)
+AGENT-ERGEBNISSE:
+- Agent 1 (Mockup):      [OK/FAIL] mockup.html + mockup.png
+- Agent 2 (Requirement):  [OK/FAIL] requirement.md (X/17 Sections)
 ```
 
 ### Step 2: Requirement prüfen
@@ -286,20 +242,24 @@ Prüft:
 - [ ] Keine Platzhalter `[...]` mehr
 - [ ] Keine hardcoded Farben
 - [ ] i18n Keys DE + EN
-- [ ] REQUIREMENTS.md auf main aktualisiert (via Board-API)
 - [ ] **Mockup vorhanden** (`mockup.html`)
 - [ ] **Kein `<script>` Tag im Mockup**
 
 ### Step 3: Commit + PR
 
-**WICHTIG:** `REQUIREMENTS.md` wird NICHT auf dem Feature-Branch committed — sie wurde bereits
-via Board-API direkt auf `main` geschrieben (Worktree + Auto-Commit).
-
 ```bash
 git add docs/requirements/$ARGUMENTS/
 git commit -m "docs($ARGUMENTS): create requirement with mockup"
 git push -u origin req/$ARGUMENTS
-gh pr create --title "docs: $ARGUMENTS" --body "..."
+gh pr create --title "docs: $ARGUMENTS" --body "## Summary
+- New requirement: $ARGUMENTS
+- Mockup: HTML+CSS (standalone)
+- Sections: 17/17
+
+## Checklist
+- [x] requirement.md complete
+- [x] mockup.html (no JavaScript)
+- [x] /check-requirement passed"
 ```
 
 ---
@@ -312,7 +272,7 @@ gh pr create --title "docs: $ARGUMENTS" --body "..."
 
 **Ablauf:**
 1. **Phase 1** (Orchestrator): Branch + Ordner (~5s)
-2. **Phase 2** (3 Agents parallel): Mockup + Requirement + REQUIREMENTS.md (~60s)
+2. **Phase 2** (2 Agents parallel): Mockup + Requirement (~60s)
 3. **Phase 3** (Orchestrator): Check + Commit + PR (~15s)
 
 **Ergebnis:**
@@ -320,14 +280,13 @@ gh pr create --title "docs: $ARGUMENTS" --body "..."
 2. `mockup.html` — Standalone HTML+CSS Mockup (kein JavaScript!)
 3. `mockup.png` — Screenshot (falls Playwright verfügbar)
 4. `requirement.md` — Alle 17 Sections ausgefüllt
-5. `REQUIREMENTS.md` — Aktualisiert
-6. PR erstellt und Link ausgegeben
+5. PR erstellt und Link ausgegeben
 
 ---
 
 ## Wichtige Regeln
 
-1. **3 Agents PARALLEL** — Immer in EINEM Tool-Aufruf starten!
+1. **2 Agents PARALLEL** — Immer in EINEM Tool-Aufruf starten!
 2. **Mockup ist PFLICHT** — Jedes Requirement braucht ein `mockup.html`
 3. **Kein JavaScript** — Mockup ist reines HTML+CSS, KEIN `<script>` Tag!
 4. **Bestehende Features konsultieren** — Screenshots + Templates analysieren
@@ -343,19 +302,15 @@ gh pr create --title "docs: $ARGUMENTS" --body "..."
 
 ## Checkliste (PFLICHT — nach Phase 3 ausfüllen!)
 
-Der Orchestrator MUSS diese Checkliste am Ende der Ausgabe ausfüllen:
-
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ CHECKLISTE: $ARGUMENTS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CHECKLISTE: $ARGUMENTS
 
-📁 SETUP
+SETUP
 - [ ] Branch `req/$ARGUMENTS` erstellt
 - [ ] Ordner `docs/requirements/$ARGUMENTS/` erstellt
 - [ ] Template kopiert
 
-🎨 MOCKUP (Agent 1)
+MOCKUP (Agent 1)
 - [ ] `docs/VISION.md` gelesen (Accessibility + Qualitätsziele)
 - [ ] `mockup.html` erstellt
 - [ ] Kein `<script>` Tag
@@ -368,7 +323,7 @@ Der Orchestrator MUSS diese Checkliste am Ende der Ausgabe ausfüllen:
 - [ ] Icons mit `.icon-framed` Rahmen
 - [ ] em/rem statt px
 
-📝 REQUIREMENT (Agent 2)
+REQUIREMENT (Agent 2)
 - [ ] `docs/VISION.md` gelesen (Kernwerte + Definition of Done)
 - [ ] Alle 17 Sections ausgefüllt
 - [ ] Keine Platzhalter `[...]` übrig
@@ -381,17 +336,10 @@ Der Orchestrator MUSS diese Checkliste am Ende der Ausgabe ausfüllen:
 - [ ] Container/Presentational Pattern
 - [ ] Test Cases: Given/When/Then
 
-📋 REQUIREMENTS.md (Agent 3 — via Board-API → main)
-- [ ] Board-Server erreichbar (http://localhost:3200)
-- [ ] Requirement via POST /api/requirements angelegt
-- [ ] REQUIREMENTS.md auf main aktualisiert + auto-committed
-- [ ] Verifiziert via GET /api/requirements
-
-🔍 PRÜFUNG
+PRÜFUNG
 - [ ] /check-requirement bestanden
 - [ ] Commit erstellt
 - [ ] PR erstellt + Link ausgegeben
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ---
@@ -401,7 +349,7 @@ Der Orchestrator MUSS diese Checkliste am Ende der Ausgabe ausfüllen:
 Falls ein Agent fehlschlägt:
 1. Dokumentiere den Fehler
 2. Führe den fehlgeschlagenen Agent einzeln erneut aus
-3. Fahre mit Phase 3 fort sobald alle 3 Ergebnisse vorliegen
+3. Fahre mit Phase 3 fort sobald beide Ergebnisse vorliegen
 
 ---
 

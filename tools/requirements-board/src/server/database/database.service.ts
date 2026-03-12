@@ -163,6 +163,15 @@ export class DatabaseService implements OnModuleDestroy {
     return true;
   }
 
+  public updateBranch(id: string, branch: string): boolean {
+    const existing = this.getById(id);
+    if (!existing) return false;
+
+    this.db.prepare('UPDATE requirements SET branch = ?, updated_at = datetime(\'now\') WHERE id = ?').run(branch, id);
+    this.addHistory(id, 'branch', null, branch, branch);
+    return true;
+  }
+
   public updateField(id: string, field: string, value: string, branch?: string): boolean {
     const allowedFields = ['name', 'description', 'priority', 'label', 'tags', 'pr_number', 'review_state', 'branch'];
     if (!allowedFields.includes(field)) return false;

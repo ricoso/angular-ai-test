@@ -206,8 +206,45 @@ export class BoardService {
     this.syncToMarkdown();
     this.autoCommit(`docs: ${reqId} status → ${newStatus}`);
 
+    // Auto-create feature branch when moving to "In Progress"
+    if (newStatus === 'In Progress') {
+      this.createFeatureBranch(reqId, updated.name);
+    }
+
     const attachments = this.detectAttachments(reqId);
     return { ...updated, attachments };
+  }
+
+  /**
+   * Creates a feature branch feat/REQ-XXX-Name when moving to In Progress.
+   * Silently skips if branch already exists.
+   */
+  private createFeatureBranch(reqId: string, name: string): void {
+    const slug = `${reqId}-${name}`.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
+    const branchName = `feat/${slug}`;
+    try {
+      // Check if branch already exists
+      const existing = execSync(
+        `git -C "${this.workspaceRoot}" branch --list "${branchName}"`,
+        { stdio: 'pipe' }
+      ).toString().trim();
+
+      if (existing) {
+        // Branch exists, just checkout
+        execSync(`git -C "${this.workspaceRoot}" checkout "${branchName}"`, { stdio: 'pipe' });
+        this.logger.log(`Checked out existing branch: ${branchName}`);
+      } else {
+        // Create and checkout new branch
+        execSync(`git -C "${this.workspaceRoot}" checkout -b "${branchName}"`, { stdio: 'pipe' });
+        this.logger.log(`Created feature branch: ${branchName}`);
+      }
+
+      // Update the requirement's branch in DB
+      this.databaseService.updateBranch(reqId, branchName);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.warn(`Failed to create feature branch ${branchName}: ${msg}`);
+    }
   }
 
   private autoCommit(message: string): void {

@@ -7,6 +7,8 @@ import { BoardService } from './board/board.service';
 import { ChatController } from './chat/chat.controller';
 import { ChatService } from './chat/chat.service';
 import { DatabaseService } from './database/database.service';
+import { SkillsController } from './skills/skills.controller';
+import { SkillsService } from './skills/skills.service';
 import { WorkflowController } from './workflow/workflow.controller';
 import { WorkflowService } from './workflow/workflow.service';
 
@@ -18,7 +20,7 @@ import { WorkflowService } from './workflow/workflow.service';
       exclude: ['/api/(.*)']
     })
   ],
-  controllers: [BoardController, WorkflowController, ChatController],
-  providers: [DatabaseService, BoardService, WorkflowService, ChatService]
+  controllers: [BoardController, WorkflowController, ChatController, SkillsController],
+  providers: [DatabaseService, BoardService, WorkflowService, ChatService, SkillsService]
 })
 export class AppModule {}

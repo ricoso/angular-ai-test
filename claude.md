@@ -85,31 +85,40 @@
 
 **Jeder Step ist PFLICHT. Kein Step darf übersprungen werden.**
 
+> **Board-Integration:** Branch-Erstellung, Status-Updates und REQUIREMENTS.md-Sync
+> werden vom Kanban Board (`tools/requirements-board`) automatisch erledigt.
+> Die Workflows fokussieren sich auf die reine Implementierung + PR-Erstellung.
+
 ### /implement-requirement — Pflicht-Ablauf:
 
 | Step | Gate | Beschreibung |
 |------|------|--------------|
-| 0 | PR-Status sync | `gh pr list` → Status in REQUIREMENTS.md |
-| 1 | Branch | `git checkout -b feat/REQ-XXX` |
-| 1.5 | Status | REQUIREMENTS.md → "In Progress" |
-| 2 | REQ lesen | requirement.md → Feature-Name, Sections 10/11/14/16 |
-| **3** | **5 Skills lesen** | **ALLE: code-language, architecture, i18n, routing, forms** |
-| 4 | Implementieren | Models → Store → Services → Container → Components → i18n → Routes |
-| 5 | Styling | `_variables.scss`, Mobile-First, WCAG 2.1 AA |
-| 6 | Tests | Jest >80% Coverage |
-| **7** | **Tech-Check (⚡ 3 PARALLEL AGENTS)** | **`lint:fix` ✅ + `type-check` ✅ + `test:coverage` ✅ — 3 parallele Task-Agents!** |
-| **8** | **Quality Gate** | **`/check-all` Score >= 90 + qualitaets.md generiert** |
-| 9 | Commit | `feat(REQ-XXX): implement <Feature>` |
-| 10 | Status | REQUIREMENTS.md → "In Review" |
+| 1 | REQ lesen | requirement.md → Feature-Name, Sections 10/11/14/16 |
+| **2** | **5 Skills lesen** | **ALLE: code-language, architecture, i18n, routing, forms** |
+| 3 | Implementieren | Models → Store → Services → Container → Components → i18n → Routes |
+| 4 | Styling | `_variables.scss`, Mobile-First, WCAG 2.1 AA |
+| 5 | Tests | Jest >80% Coverage |
+| **6** | **Tech-Check (3 PARALLEL AGENTS)** | **`lint:fix` + `type-check` + `test:coverage`** |
+| **7** | **Quality Gate** | **`/check-all` Score >= 90 + qualitaets.md generiert** |
+| 8 | Commit + PR | `feat(REQ-XXX): implement <Feature>` + `gh pr create` |
 
-> **STOP bei Step 7 FAIL!** Erst fixen, dann weiter.
-> **STOP bei Step 8 Score < 90!** Erst fixen, Step 7+8 wiederholen.
+> **STOP bei Step 6 FAIL!** Erst fixen, dann weiter.
+> **STOP bei Step 7 Score < 90!** Erst fixen, Step 6+7 wiederholen.
 > Details: `.claude/commands/implement-requirement.md`
+
+### /create-requirement — Pflicht-Ablauf:
+
+| Phase | Beschreibung |
+|-------|--------------|
+| 1 Setup | Branch `req/REQ-XXX` + Ordner + Template |
+| 2 Parallel | **2 Agents:** Mockup (HTML+CSS) + Requirement (17 Sections) |
+| 3 Finalize | `/check-requirement` + Commit + PR |
+
+> Details: `.claude/commands/create-requirement.md`
 
 ### Weitere Commands
 
 ```
-/create-requirement REQ-XXX-Name     → Branch, Template, PR
 /check-requirement REQ-XXX-Name      → Prüft Vollständigkeit
 /check-all <feature>                 → 13 Checks, qualitaets.md
 ```
