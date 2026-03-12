@@ -55,6 +55,13 @@ async function applyLinking(changes) {
   return res.json();
 }
 
+async function deleteItem(type, filename) {
+  const res = await fetch(`${API_BASE}/${type}/${encodeURIComponent(filename)}`, {
+    method: 'DELETE',
+  });
+  return res.json();
+}
+
 // --- Tab Switching ---
 
 document.querySelectorAll('[data-tab]').forEach((btn) => {
@@ -322,6 +329,34 @@ async function offerLlmLinking(type, filename, name) {
   linkBtn.onclick = () => triggerAutoLink(type, filename, name);
   msgsEl.appendChild(linkBtn);
 }
+
+// --- Delete Item ---
+
+document.getElementById('deleteItemBtn').addEventListener('click', async () => {
+  if (!currentItem) return;
+
+  const typeLabel = TYPE_LABELS[currentItem.type] || 'Item';
+  const confirmed = confirm(
+    `${typeLabel} "${currentItem.name}" wirklich löschen?\n\n` +
+    `Die Datei ${currentItem.filename} wird gelöscht und alle Referenzen ` +
+    `aus CLAUDE.md und Workflows werden entfernt.`
+  );
+  if (!confirmed) return;
+
+  try {
+    const result = await deleteItem(currentItem.type, currentItem.filename);
+    if (result.success) {
+      showToast(`${typeLabel} "${currentItem.name}" gelöscht.`, 'success');
+      currentItem = null;
+      showEmptyDetail();
+      await loadList(currentTab);
+    } else {
+      showToast(`Löschen fehlgeschlagen.`, 'danger');
+    }
+  } catch (err) {
+    showToast(`Fehler: ${err.message}`, 'danger');
+  }
+});
 
 // --- LLM Auto-Link Trigger ---
 

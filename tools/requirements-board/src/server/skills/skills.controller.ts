@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 
 import { SkillsService } from './skills.service';
 
@@ -15,7 +15,19 @@ interface CreateWorkflowDto {
 export class SkillsController {
   constructor(private readonly skillsService: SkillsService) {}
 
-  // --- Skills ---
+  // --- LLM Linking ---
+
+  @Post('apply-linking')
+  public applyLinking(@Body() dto: { changes: Array<{ file: string; content: string }> }) {
+    return this.skillsService.applyLinking(dto.changes);
+  }
+
+  // --- Skills (POST before GET :param to avoid route collision) ---
+
+  @Post('skills')
+  public createSkill(@Body() dto: CreateWorkflowDto) {
+    return this.skillsService.createSkill(dto.name, dto.content);
+  }
 
   @Get('skills')
   public listSkills() {
@@ -35,7 +47,17 @@ export class SkillsController {
     return this.skillsService.saveSkill(filename, dto.content);
   }
 
-  // --- Commands ---
+  @Delete('skills/:filename')
+  public deleteSkill(@Param('filename') filename: string) {
+    return this.skillsService.deleteSkill(filename);
+  }
+
+  // --- Commands (POST before GET :param) ---
+
+  @Post('commands')
+  public createCommand(@Body() dto: CreateWorkflowDto) {
+    return this.skillsService.createCommand(dto.name, dto.content);
+  }
 
   @Get('commands')
   public listCommands() {
@@ -55,7 +77,17 @@ export class SkillsController {
     return this.skillsService.saveCommand(filename, dto.content);
   }
 
-  // --- Workflows ---
+  @Delete('commands/:filename')
+  public deleteCommand(@Param('filename') filename: string) {
+    return this.skillsService.deleteCommand(filename);
+  }
+
+  // --- Workflows (POST before GET :param) ---
+
+  @Post('workflows')
+  public createWorkflow(@Body() dto: CreateWorkflowDto) {
+    return this.skillsService.createWorkflow(dto.name, dto.content);
+  }
 
   @Get('workflows')
   public listWorkflows() {
@@ -75,23 +107,9 @@ export class SkillsController {
     return this.skillsService.saveWorkflow(filename, dto.content);
   }
 
-  @Post('workflows')
-  public createWorkflow(@Body() dto: CreateWorkflowDto) {
-    return this.skillsService.createWorkflow(dto.name, dto.content);
-  }
-
-  // --- Create Skill ---
-
-  @Post('skills')
-  public createSkill(@Body() dto: CreateWorkflowDto) {
-    return this.skillsService.createSkill(dto.name, dto.content);
-  }
-
-  // --- Create Command ---
-
-  @Post('commands')
-  public createCommand(@Body() dto: CreateWorkflowDto) {
-    return this.skillsService.createCommand(dto.name, dto.content);
+  @Delete('workflows/:filename')
+  public deleteWorkflow(@Param('filename') filename: string) {
+    return this.skillsService.deleteWorkflow(filename);
   }
 
   // --- LLM Linking Context ---
@@ -105,10 +123,5 @@ export class SkillsController {
       return { claudeMd: '', workflows: [], targetContent: '' };
     }
     return this.skillsService.getLinkingContext(type as 'skills' | 'commands', filename);
-  }
-
-  @Post('apply-linking')
-  public applyLinking(@Body() dto: { changes: Array<{ file: string; content: string }> }) {
-    return this.skillsService.applyLinking(dto.changes);
   }
 }

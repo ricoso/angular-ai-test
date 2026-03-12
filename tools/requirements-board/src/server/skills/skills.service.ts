@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { join, basename } from 'path';
 
 export interface FileItem {
@@ -78,6 +78,19 @@ export class SkillsService {
     return { success: true };
   }
 
+  public deleteSkill(filename: string): { success: boolean } {
+    const safe = this.sanitizeFilename(filename);
+    const filePath = join(this.skillsDir, safe);
+    if (!existsSync(filePath)) {
+      throw new BadRequestException(`Skill not found: ${safe}`);
+    }
+    unlinkSync(filePath);
+    const skillName = safe.replace(/\.md$/, '');
+    this.removeReferencesFromClaudeMd(skillName, 'skill');
+    this.logger.log(`Deleted skill: ${safe}`);
+    return { success: true };
+  }
+
   // --- Commands ---
 
   public listCommands(): FileItem[] {
@@ -112,6 +125,19 @@ export class SkillsService {
     return { success: true };
   }
 
+  public deleteCommand(filename: string): { success: boolean } {
+    const safe = this.sanitizeFilename(filename);
+    const filePath = join(this.commandsDir, safe);
+    if (!existsSync(filePath)) {
+      throw new BadRequestException(`Command not found: ${safe}`);
+    }
+    unlinkSync(filePath);
+    const cmdName = safe.replace(/\.md$/, '');
+    this.removeReferencesFromClaudeMd(cmdName, 'command');
+    this.logger.log(`Deleted command: ${safe}`);
+    return { success: true };
+  }
+
   // --- Workflows (parsed from CLAUDE.md → .claude/commands/) ---
 
   public listWorkflows(): WorkflowItem[] {
@@ -133,6 +159,19 @@ export class SkillsService {
 
   public saveWorkflow(filename: string, content: string): { success: boolean } {
     return this.saveCommand(filename, content);
+  }
+
+  public deleteWorkflow(filename: string): { success: boolean } {
+    const safe = this.sanitizeFilename(filename);
+    const filePath = join(this.commandsDir, safe);
+    if (!existsSync(filePath)) {
+      throw new BadRequestException(`Workflow not found: ${safe}`);
+    }
+    unlinkSync(filePath);
+    const cmdName = safe.replace(/\.md$/, '');
+    this.removeReferencesFromClaudeMd(cmdName, 'command');
+    this.logger.log(`Deleted workflow: ${safe}`);
+    return { success: true };
   }
 
   public createWorkflow(name: string, content: string): { success: boolean; filename: string } {
@@ -401,5 +440,50 @@ export class SkillsService {
     content = before + newLine + after;
 
     writeFileSync(this.claudeMdPath, content, 'utf-8');
+  }
+
+  /**
+   * Remove all references to a deleted skill/command from CLAUDE.md.
+   * Removes lines containing the reference and cleans up workflows that reference it.
+   */
+  private removeReferencesFromClaudeMd(name: string, type: 'skill' | 'command'): void {
+    if (!existsSync(this.claudeMdPath)) return;
+    const content = readFileSync(this.claudeMdPath, 'utf-8');
+    const lines = content.split('\n');
+    const filtered: string[] = [];
+
+    const patterns = type === 'skill'
+      ? [`.claude/skills/${name}`, `skills/${name}.md`, `**${name}**`]
+      : [`/${name}`, `.claude/commands/${name}`];
+
+    for (const line of lines) {
+      const shouldRemove = patterns.some((p) => line.includes(p))
+        && !line.startsWith('#');  // Never remove headings
+      if (!shouldRemove) {
+        filtered.push(line);
+      }
+    }
+
+    const updated = filtered.join('\n');
+    if (updated !== content) {
+      writeFileSync(this.claudeMdPath, updated, 'utf-8');
+      this.logger.log(`Removed references to ${type} "${name}" from CLAUDE.md`);
+    }
+
+    // Also remove references from workflow command files
+    if (type === 'skill' && existsSync(this.commandsDir)) {
+      const files = readdirSync(this.commandsDir).filter((f) => f.endsWith('.md'));
+      for (const f of files) {
+        const filePath = join(this.commandsDir, f);
+        const fileContent = readFileSync(filePath, 'utf-8');
+        if (fileContent.includes(`.claude/skills/${name}`) || fileContent.includes(`skills/${name}.md`)) {
+          const cleanedLines = fileContent.split('\n').filter((l) =>
+            !l.includes(`.claude/skills/${name}`) && !l.includes(`skills/${name}.md`)
+          );
+          writeFileSync(filePath, cleanedLines.join('\n'), 'utf-8');
+          this.logger.log(`Removed skill "${name}" reference from command: ${f}`);
+        }
+      }
+    }
   }
 }
