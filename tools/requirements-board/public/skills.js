@@ -324,7 +324,7 @@ async function offerLlmLinking(type, filename, name) {
 
   // Add auto-link button
   const linkBtn = document.createElement('button');
-  linkBtn.className = 'btn btn-primary btn-sm mt-2';
+  linkBtn.className = 'maui-btn maui-btn-primary maui-btn-sm mt-2';
   linkBtn.innerHTML = '<i class="bi bi-link-45deg"></i> Auto-Link in Workflows + CLAUDE.md';
   linkBtn.onclick = () => triggerAutoLink(type, filename, name);
   msgsEl.appendChild(linkBtn);
@@ -442,7 +442,7 @@ Falls du Änderungen vorschlägst, zeige sie als \`\`\`markdown Code-Blocks.`;
     // Offer to apply markdown code blocks
     if (fullText.includes('```markdown') || fullText.includes('```md')) {
       const applyBtn = document.createElement('button');
-      applyBtn.className = 'btn btn-sm btn-success mt-2';
+      applyBtn.className = 'maui-btn maui-btn-success maui-btn-sm mt-2';
       applyBtn.innerHTML = '<i class="bi bi-arrow-down-circle"></i> Apply to Editor';
       applyBtn.onclick = () => {
         const codeMatch = fullText.match(/```(?:markdown|md)\n([\s\S]*?)```/);
@@ -562,7 +562,7 @@ async function sendChatMessage() {
     // Offer to apply markdown code blocks to editor
     if (fullText.includes('```markdown') || fullText.includes('```md')) {
       const applyBtn = document.createElement('button');
-      applyBtn.className = 'btn btn-sm btn-success mt-2';
+      applyBtn.className = 'maui-btn maui-btn-success maui-btn-sm mt-2';
       applyBtn.innerHTML = '<i class="bi bi-arrow-down-circle"></i> Apply to Editor';
       applyBtn.onclick = () => {
         const codeMatch = fullText.match(/```(?:markdown|md)\n([\s\S]*?)```/);
