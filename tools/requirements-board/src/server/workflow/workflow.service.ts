@@ -18,9 +18,9 @@ export class WorkflowService {
     requirementId: string
   ): Promise<WorkflowResult> {
     const scriptMap: Record<string, string> = {
-      create: 'scripts/create-requirement.sh',
-      implement: 'scripts/implement-requirement.sh',
-      update: 'scripts/update-requirement.sh'
+      create: 'tools/requirements-board/scripts/create-requirement.sh',
+      implement: 'tools/requirements-board/scripts/implement-requirement.sh',
+      update: 'tools/requirements-board/scripts/update-requirement.sh'
     };
 
     const scriptPath = join(this.workspaceRoot, scriptMap[workflow]);
@@ -53,8 +53,8 @@ export class WorkflowService {
     }
 
     const scriptMap: Record<string, string> = {
-      create: 'scripts/create-requirement.sh',
-      update: 'scripts/update-requirement.sh'
+      create: 'tools/requirements-board/scripts/create-requirement.sh',
+      update: 'tools/requirements-board/scripts/update-requirement.sh'
     };
 
     const scriptPath = join(this.workspaceRoot, scriptMap[workflow]);

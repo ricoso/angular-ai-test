@@ -74,13 +74,25 @@ curl -s -X PUT http://localhost:3200/api/requirements/$REQ_ID/status \
 - **Board nicht erreichbar:** Warnung: `⚠️ Kanban Board nicht erreichbar — Status manuell auf "In Review" setzen`
 - **Kein Fehler-Abbruch** — PR wurde bereits erstellt, Board-Update ist optional
 
-### Step 6: Ergebnis ausgeben
+### Step 6: REQUIREMENTS.md Sync
+
+Nach dem Board-Update die REQUIREMENTS.md von main in alle `req/*` und `feat/*` Branches syncen:
+
+```bash
+npm run board:sync
+```
+
+- **Erfolgreich:** Anzahl gesyncte Branches ausgeben
+- **Fehler:** Warnung ausgeben, kein Abbruch — PR wurde bereits erstellt
+
+### Step 7: Ergebnis ausgeben
 
 ```
 PR ERSTELLT:
 - Branch: $BRANCH
 - PR: <URL>
 - Board: $REQ_ID → "In Review"
+- Sync: X Branches aktualisiert
 ```
 
 ---

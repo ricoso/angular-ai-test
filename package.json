@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --host 0.0.0.0",
     "build": "ng build",
     "build:ghpages": "ng build --base-href /angular-ai-test/",
     "watch": "ng build --watch",
@@ -18,7 +18,7 @@
     "mcp:check": "echo '✓ @angular/cli MCP (offiziell via npx)' && echo '✓ ngrx-signalstore MCP (lokal)' && echo '✓ angular-material MCP (lokal)'",
     "feature:create": "bash scripts/create-feature.sh",
     "component:create": "bash scripts/create-component.sh",
-    "requirement:create": "bash scripts/create-requirement.sh",
+    "requirement:create": "bash tools/requirements-board/scripts/create-requirement.sh",
     "e2e": "npx playwright test",
     "e2e:ui": "npx playwright test --ui",
     "e2e:headed": "npx playwright test --headed",
@@ -27,7 +27,9 @@
     "board:install": "cd tools/requirements-board && npm install",
     "board:build": "cd tools/requirements-board && npm run build",
     "board:start": "cd tools/requirements-board && npm run start:dev",
-    "board:start:prod": "cd tools/requirements-board && npm run build && npm run start:prod"
+    "board:start:prod": "cd tools/requirements-board && npm run build && npm run start:prod",
+    "board:sync": "bash tools/requirements-board/scripts/sync-requirements.sh",
+    "board:init": "bash tools/requirements-board/scripts/init-board.sh"
   },
   "private": true,
   "dependencies": {
