@@ -14,14 +14,18 @@ Keine Argumente nötig — Branch und Kontext werden automatisch ermittelt.
 
 ## Workflow
 
-### Step 1: Branch ermitteln
+### Step 1: Branch ermitteln + Auto-Commit
 
 ```bash
 BRANCH=$(git branch --show-current)
 ```
 
 - Prüfe ob Branch NICHT `main` ist → Abbruch mit Hinweis falls doch
-- Prüfe ob uncommitted Changes existieren → Warnung ausgeben
+- Prüfe ob uncommitted/untracked Changes existieren
+- **Falls ja: IMMER automatisch committen** (`git add -A && git commit`)
+  - Commit-Message aus Kontext ableiten: `feat(REQ-XXX): <Feature-Name>` für Feature-Branches
+  - Co-Authored-By Header hinzufügen
+- Falls nein: weiter
 
 ### Step 2: Kontext aus Branch-Name ableiten
 
@@ -86,6 +90,6 @@ PR ERSTELLT:
 | Fall | Aktion |
 |------|--------|
 | Branch ist `main` | Abbruch: "Wechsle zuerst auf einen Feature-Branch" |
-| Uncommitted Changes | Warnung: "Es gibt uncommitted Änderungen — diese sind NICHT im PR enthalten" |
+| Uncommitted Changes | Auto-Commit: `git add -A && git commit` mit passender Message |
 | PR existiert bereits | `gh pr view --web` öffnen und URL ausgeben |
 | Push fehlschlägt | Fehler anzeigen |
