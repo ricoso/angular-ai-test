@@ -193,10 +193,10 @@ function showPlanActions(reqSlug) {
   const actionsDiv = document.createElement('div');
   actionsDiv.className = 'log-actions';
   actionsDiv.innerHTML = `
-    <button class="btn btn-success btn-sm" id="planAcceptBtn">
+    <button class="maui-btn maui-btn-success" id="planAcceptBtn">
       <i class="bi bi-check-lg"></i> Accept & Implement
     </button>
-    <button class="btn btn-danger btn-sm" id="planRejectBtn">
+    <button class="maui-btn maui-btn-danger" id="planRejectBtn">
       <i class="bi bi-x-lg"></i> Reject
     </button>
   `;
@@ -283,26 +283,26 @@ function renderCard(req) {
 
   const priorityClass = `priority-${req.priority.toLowerCase()}`;
   const label = req.label || 'User Story';
-  const labelClass = label === 'Technical Story' ? 'badge-label-tech' : 'badge-label-user';
+  const labelClass = label === 'Technical Story' ? 'maui-badge-tech' : 'maui-badge-primary';
 
   let badges = '';
 
   const prioColor = req.priority === 'High' ? 'danger' : req.priority === 'Medium' ? 'warning' : 'success';
-  badges += `<span class="badge bg-${prioColor}">${req.priority}</span>`;
-  badges += `<span class="badge ${labelClass}">${label}</span>`;
+  badges += `<span class="maui-badge maui-badge-${prioColor}">${req.priority}</span>`;
+  badges += `<span class="maui-badge ${labelClass}">${label}</span>`;
 
   if (req.metadata && req.metadata.tags && req.metadata.tags.length) {
     req.metadata.tags.forEach(tag => {
-      badges += `<span class="badge bg-secondary">${tag}</span>`;
+      badges += `<span class="maui-badge maui-badge-secondary">${tag}</span>`;
     });
   }
 
   if (req.attachments && req.attachments.length > 0) {
-    badges += `<span class="badge badge-attachment"><i class="bi bi-paperclip"></i> ${req.attachments.length}</span>`;
+    badges += `<span class="maui-badge maui-badge-attachment"><i class="bi bi-paperclip"></i> ${req.attachments.length}</span>`;
   }
 
   if (req.metadata && req.metadata.prNumber) {
-    badges += `<span class="badge bg-info text-dark"><i class="bi bi-git"></i> #${req.metadata.prNumber}</span>`;
+    badges += `<span class="maui-badge maui-badge-info"><i class="bi bi-git"></i> #${req.metadata.prNumber}</span>`;
   }
 
   return `
@@ -461,7 +461,7 @@ function openEdit(reqId) {
       link.href = url;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
-      link.className = 'btn btn-sm btn-outline-secondary';
+      link.className = 'maui-btn maui-btn-secondary maui-btn-sm';
       link.innerHTML = `<i class="bi ${isImage ? 'bi-image' : isHtml ? 'bi-filetype-html' : 'bi-file-earmark'}"></i> ${filename}`;
       attachEl.appendChild(link);
 
@@ -485,7 +485,7 @@ function openEdit(reqId) {
         btn.href = url;
         btn.target = '_blank';
         btn.rel = 'noopener noreferrer';
-        btn.className = 'btn btn-primary mt-2 d-block';
+        btn.className = 'maui-btn maui-btn-primary mt-2';
         btn.innerHTML = '<i class="bi bi-box-arrow-up-right"></i> Open Mockup in New Tab';
         previewEl.appendChild(btn);
       }
@@ -650,7 +650,7 @@ async function sendChatMessage() {
     // Check if response contains a markdown code block — offer to apply
     if (fullText.includes('```markdown') || fullText.includes('```md')) {
       const applyBtn = document.createElement('button');
-      applyBtn.className = 'btn btn-sm btn-success mt-2';
+      applyBtn.className = 'maui-btn maui-btn-success maui-btn-sm mt-2';
       applyBtn.innerHTML = '<i class="bi bi-arrow-down-circle"></i> Apply to Editor';
       applyBtn.onclick = () => {
         const codeMatch = fullText.match(/```(?:markdown|md)\n([\s\S]*?)```/);

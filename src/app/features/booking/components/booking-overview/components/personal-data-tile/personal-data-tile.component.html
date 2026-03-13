@@ -1,0 +1,48 @@
+<article class="summary-card" aria-labelledby="tile-title-data">
+  <div class="summary-card__header">
+    <span class="summary-card__icon icon-framed icon-framed--sm icon-framed--primary" aria-hidden="true">
+      <span class="material-icons">person</span>
+    </span>
+    <h2 class="summary-card__title" id="tile-title-data">
+      {{ bookingOverview.tiles.personalData.title | translate }}
+    </h2>
+  </div>
+  <div class="data-grid">
+    <div class="data-grid__column">
+      <div class="data-field">
+        <span class="data-field__label">{{ bookingOverview.tiles.personalData.nameLabel | translate }}</span>
+        <span class="data-field__value">{{ customerInfo().firstName }} {{ customerInfo().lastName }}</span>
+      </div>
+      <div class="data-field">
+        <span class="data-field__label">{{ bookingOverview.tiles.personalData.streetLabel | translate }}</span>
+        <span class="data-field__value">{{ customerInfo().street }}</span>
+      </div>
+      <div class="data-field">
+        <span class="data-field__label">{{ bookingOverview.tiles.personalData.cityLabel | translate }}</span>
+        <span class="data-field__value">{{ customerInfo().postalCode }} {{ customerInfo().city }}</span>
+      </div>
+      <div class="data-field">
+        <span class="data-field__label">{{ bookingOverview.tiles.personalData.phoneLabel | translate }}</span>
+        <span class="data-field__value">{{ customerInfo().mobilePhone }}</span>
+      </div>
+      <div class="data-field">
+        <span class="data-field__label">{{ bookingOverview.tiles.personalData.emailLabel | translate }}</span>
+        <span class="data-field__value">{{ customerInfo().email }}</span>
+      </div>
+    </div>
+    <div class="data-grid__column">
+      <div class="data-field">
+        <span class="data-field__label">{{ bookingOverview.tiles.personalData.brandLabel | translate }}</span>
+        <span class="data-field__value">{{ brandName() }}</span>
+      </div>
+      <div class="data-field">
+        <span class="data-field__label">{{ bookingOverview.tiles.personalData.licensePlateLabel | translate }}</span>
+        <span class="data-field__value">{{ vehicleInfo().licensePlate }}</span>
+      </div>
+      <div class="data-field">
+        <span class="data-field__label">{{ bookingOverview.tiles.personalData.mileageLabel | translate }}</span>
+        <span class="data-field__value">{{ vehicleInfo().mileage }} {{ bookingOverview.tiles.personalData.mileageUnit | translate }}</span>
+      </div>
+    </div>
+  </div>
+</article>

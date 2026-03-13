@@ -69,6 +69,13 @@ export class BoardController {
     return req;
   }
 
+  @Post('sync-status')
+  public syncStatus(
+    @Body() dto: { reqId: string; status: RequirementStatus }
+  ): { commitSha: string; mainPushed: boolean; branches: Array<{ branch: string; status: string; error?: string }> } {
+    return this.boardService.syncStatusAcrossBranches(dto.reqId, dto.status);
+  }
+
   @Put(':id/status')
   public updateStatus(
     @Param('id') id: string,

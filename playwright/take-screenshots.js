@@ -235,6 +235,57 @@ const SCREENSHOT_CONFIG = {
       await page.waitForTimeout(500);
     },
   },
+
+  'REQ-010-Buchungsübersicht': {
+    route: '/home/booking-overview',
+    setup: async (page) => {
+      // Full wizard: Brand -> Location -> Services -> Notes -> Appointment -> Car Info -> Booking Overview
+      await page.goto(`${HASH}/home/brand`);
+      await page.waitForLoadState('networkidle');
+      await page.locator('button', { hasText: 'Audi' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      await page.locator('button', { hasText: 'München' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      await page.locator('.service-card', { hasText: 'HU/AU' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      await page.locator('.summary-bar__continue-button').click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
+      await page.locator('.notes__continue-button').click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
+      await page.locator('.appointment-card').first().click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      await page.locator('.appointment-selection__continue-button').click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
+      // Fill customer form
+      await page.locator('input[formcontrolname="email"]').fill('max@mustermann.de');
+      await page.locator('input[formcontrolname="firstName"]').fill('Max');
+      await page.locator('input[formcontrolname="lastName"]').fill('Mustermann');
+      await page.locator('input[formcontrolname="street"]').fill('Musterweg 1');
+      await page.locator('input[formcontrolname="postalCode"]').fill('30159');
+      await page.locator('input[formcontrolname="city"]').fill('Berlin');
+      await page.locator('input[formcontrolname="mobilePhone"]').fill('017012345678');
+      // Fill vehicle form
+      await page.locator('input[formcontrolname="licensePlate"]').fill('B-MS1234');
+      await page.locator('input[formcontrolname="mileage"]').fill('5000');
+      await page.locator('input[formcontrolname="vin"]').fill('WDB8XXXXXXA123456');
+      // Accept privacy consent
+      const checkbox = page.locator('mat-checkbox .mdc-checkbox__native-control, mat-checkbox input[type="checkbox"]').first();
+      await checkbox.click({ force: true });
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      // Click continue to booking overview
+      await page.locator('.carinformation__continue-button').click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
+    },
+  },
 };
 
 // ---------------------------------------------------------------------------

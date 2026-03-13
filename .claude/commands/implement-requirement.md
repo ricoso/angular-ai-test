@@ -6,6 +6,13 @@ Implementiert ein Requirement basierend auf der Spezifikation.
 > werden vom Kanban Board automatisch erledigt. Dieser Workflow fokussiert sich auf die
 > reine Implementierung.
 
+> **Branch-Regel:** Es wird KEIN separater `feat/`-Branch erstellt.
+> Die Implementierung erfolgt direkt auf dem `req/<REQ-ID>`-Branch,
+> der beim `/create-requirement` angelegt wurde.
+
+> **Kein Auto-Commit:** Änderungen werden NICHT automatisch committed oder gepusht.
+> Der Benutzer prüft lokal und entscheidet selbst über Commit + Push.
+
 ## Usage
 
 ```
@@ -32,7 +39,7 @@ Implementiert ein Requirement basierend auf der Spezifikation.
 | Step 5 | Tests geschrieben + >80% |
 | **Step 6** | **lint + type-check + tests (3 parallele Agents)** |
 | **Step 7** | **`/check-all` Score >= 90 + qualitaets.md generiert** |
-| Step 8 | Commit erstellt + PR erstellt |
+| Step 8 | Implementierung abgeschlossen, Änderungen lokal bereit |
 
 ---
 
@@ -106,6 +113,24 @@ SKILL-CHECK BESTÄTIGT:
 ### Step 3: Implementieren
 
 **Verwende die Code-Sprache aus Step 2 für ALLE Dateien!**
+
+> **MOCKUP-PFLICHT:** Vor der Implementierung MUSS der UI-Mockup gelesen und pixelgenau umgesetzt werden!
+
+**3a: Mockup lesen und analysieren:**
+
+1. Öffne `docs/requirements/$ARGUMENTS/mockup.html` im Browser oder lese den HTML/CSS-Code
+2. Analysiere **exakt**:
+   - Layout-Struktur (Reihenfolge, Abstände, Ausrichtung)
+   - Farben, Schriftgrößen, Icons
+   - Komponentenaufteilung (welche Elemente sind eigene Components)
+   - Responsive Verhalten (falls im Mockup erkennbar)
+3. **Die Implementierung MUSS sich 1:1 an den Mockup halten!**
+   - Keine eigenmächtigen Layout-Änderungen
+   - Keine fehlenden Elemente
+   - Keine hinzugefügten Elemente die nicht im Mockup sind
+   - Gleiche visuelle Hierarchie und Anordnung
+
+> **STOP wenn kein Mockup vorhanden!** Warnung ausgeben und User fragen ob ohne Mockup fortgefahren werden soll.
 
 Reihenfolge:
 1. **Models** (`models/*.model.ts`)
@@ -218,28 +243,29 @@ Dies führt 13 Checks aus (11 statisch + E2E + Documentation).
 
 ---
 
-### Step 8: Commit + Pull Request
+### Step 8: Fertigmeldung (KEIN Commit/Push!)
 
 **Erst nach bestandenem Quality Gate (Step 7)!**
 
-```bash
-git add .
-git commit -m "feat($ARGUMENTS): implement <Feature-Name>"
-git push -u origin HEAD
-gh pr create --title "feat: $ARGUMENTS — <Feature-Name>" --body "## Summary
-- Implements $ARGUMENTS (<Feature-Name>)
+> **WICHTIG: Änderungen werden NICHT committed oder gepusht!**
+> Der Benutzer prüft die Änderungen lokal und entscheidet selbst über Commit + Push.
+
+**Ausgabe:**
+
+```
+IMPLEMENTIERUNG ABGESCHLOSSEN: $ARGUMENTS
+- Feature: <Feature-Name>
 - Quality Score: XX/100
 - Test Coverage: XX%
+- Alle Änderungen sind LOKAL (nicht committed)
 
-## Checklist
-- [x] All 5 skills read
-- [x] lint + type-check + tests pass
-- [x] /check-all score >= 90
-- [x] qualitaets.md generated
-- [x] Feature docs DE + EN"
+Nächste Schritte (manuell):
+  git add .
+  git commit -m "feat($ARGUMENTS): implement <Feature-Name>"
+  git push -u origin HEAD
 ```
 
-**GATE 8:** Commit erstellt + PR erstellt + PR-URL ausgegeben
+**GATE 8:** Implementierung abgeschlossen, Änderungen lokal bereit zur Prüfung
 
 ---
 
@@ -248,6 +274,8 @@ gh pr create --title "feat: $ARGUMENTS — <Feature-Name>" --body "## Summary
 - [ ] Step 1: Requirement gelesen
 - [ ] **Step 2: ALLE 5 Skills gelesen (code-language, architecture, i18n, routing, forms)**
 - [ ] **Step 2: Code-Sprache bestätigt**
+- [ ] **Step 3: Mockup gelesen und analysiert (`mockup.html`)**
+- [ ] **Step 3: Implementierung hält sich 1:1 an den Mockup**
 - [ ] Step 3: Models definiert
 - [ ] Step 3: Store mit `withState`, `withComputed`, `withMethods`
 - [ ] Step 3: Container Component mit `OnPush`
@@ -263,8 +291,7 @@ gh pr create --title "feat: $ARGUMENTS — <Feature-Name>" --body "## Summary
 - [ ] **Step 7: `qualitaets.md` generiert**
 - [ ] **Step 7: E2E Tests bestanden (check-e2e)**
 - [ ] **Step 7: Feature-Dokumentation in DE + EN generiert (check-documentation)**
-- [ ] Step 8: Commit erstellt
-- [ ] **Step 8: PR erstellt + URL ausgegeben**
+- [ ] Step 8: Fertigmeldung ausgegeben (Änderungen LOKAL, kein Commit/Push)
 
 ---
 

@@ -1,0 +1,18 @@
+<article class="summary-card" aria-labelledby="tile-title-appointment">
+  <div class="summary-card__header">
+    <span class="summary-card__icon icon-framed icon-framed--sm icon-framed--primary" aria-hidden="true">
+      <span class="material-icons">event</span>
+    </span>
+    <h2 class="summary-card__title" id="tile-title-appointment">
+      {{ bookingOverview.tiles.appointment.title | translate }}
+    </h2>
+  </div>
+  <ul class="detail-list" aria-label="appointment details">
+    <li class="detail-list__item">
+      {{ bookingOverview.tiles.appointment.dateLabel | translate }}: <strong>{{ appointment().displayDate }}</strong>
+    </li>
+    <li class="detail-list__item">
+      {{ bookingOverview.tiles.appointment.timeLabel | translate }}: <strong>{{ appointment().displayTime }}</strong>
+    </li>
+  </ul>
+</article>

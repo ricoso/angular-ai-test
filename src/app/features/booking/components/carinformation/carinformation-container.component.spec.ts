@@ -137,7 +137,7 @@ describe('CarinformationContainerComponent', () => {
       expect(store.vehicleInfo()).not.toBeNull();
       expect(store.vehicleInfo()?.licensePlate).toBe('B-AB 1234');
       expect(store.privacyConsent()).toBe(true);
-      expect(router.navigate).toHaveBeenCalledWith(['/home/carinformation']);
+      expect(router.navigate).toHaveBeenCalledWith(['/home/booking-overview']);
     });
   });
 

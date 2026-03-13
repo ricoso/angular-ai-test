@@ -23,6 +23,7 @@
   ],
 
   "postCreateCommand": "npm install && npx playwright install --with-deps chromium && cd tools/requirements-board && npm install",
+  "postStartCommand": "npm run board:start:prod &",
 
   "customizations": {
     "vscode": {

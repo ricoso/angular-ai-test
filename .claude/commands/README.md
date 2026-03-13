@@ -34,6 +34,13 @@
 | `/check-quality` | ESLint + TypeScript + Performance |
 | `/check-all <feature>` | Alle 13 Checks + `qualitaets.md` |
 
+## PR & Status
+
+| Command | Description |
+|---------|-------------|
+| `/create-pr` | PR erstellen + Board → "In Review" |
+| `/request-rework [REQ-XXX]` | Board → "In Progress" (Nacharbeit) |
+
 ## Utilities
 
 | Command | Description |
