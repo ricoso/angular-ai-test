@@ -32,7 +32,7 @@
 | REQ-007 | WizardStateSync | ✔️ Implemented | High | REQ-002, REQ-003, REQ-004, REQ-005 | Cross-Cutting: Bei Rückwärtsnavigation im Wizard werden Store-Properties genullt, um UI-Flow und Store-State synchron zu halten. Verhindert unbeabsichtigte URL-Navigation. |
 | REQ-008 | Werkstattkalender | ✔️ Implemented | High | REQ-006 | Werkstattkalender mit DatePicker und Uhrzeitslot-Auswahl (Wizard-Schritt 5b) |
 | REQ-009 | carinformation | ✔️ Implemented | High | REQ-008 | Fahrzeugdaten und Kundendaten erfassen (Wizard-Schritt 6) |
-| REQ-010 | Buchungsübersicht | 🔍 In Review | High | REQ-009 | Letzte Seite des Buchungs-Wizards. Zeigt Übersicht aller Eingaben (Termin, Service, persönliche Daten, Preis inkl. MwSt.). Enthält "Jetzt anfragen"-Button statt Weiter-Button. |
+| REQ-010 | Buchungsübersicht | ✔️ Implemented | High | REQ-009 | Letzte Seite des Buchungs-Wizards. Zeigt Übersicht aller Eingaben (Termin, Service, persönliche Daten, Preis inkl. MwSt.). Enthält "Jetzt anfragen"-Button statt Weiter-Button. |
 
 ---
 
@@ -73,7 +73,7 @@ REQ-001-Header
 | REQ-007 | [REQ-007-WizardStateSync](./REQ-007-WizardStateSync/requirement.md)     |
 | REQ-008 | [REQ-008-Werkstattkalender](./REQ-008-Werkstattkalender/requirement.md) |
 | REQ-009 | [REQ-009-carinformation](./REQ-009-carinformation/requirement.md)       |
-| REQ-010 | [REQ-010-Buchungsübersicht](./REQ-010-Buchungsübersicht/requirement.md) | 🔍 In Review 
+| REQ-010 | [REQ-010-Buchungsübersicht](./REQ-010-Buchungsübersicht/requirement.md) | ✔️ Implemented 
 
 ---
 
@@ -81,12 +81,12 @@ REQ-001-Header
 
 | Status         | Count  |
 | -------------- | ------ |
-| 📝 Draft | 0 |
+| 📝 Draft | 1 |
 | 🔍 In Review | 1 |
-| ✅ Approved | 0 |
-| 🚧 In Progress | 0 |
-| ✔️ Implemented | 9 |
-| **Total** | **10** |
+| ✅ Approved | 1 |
+| 🚧 In Progress | 1 |
+| ✔️ Implemented | 12 |
+| **Total** | **16** |
 
 
 ---
