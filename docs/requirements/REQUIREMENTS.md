@@ -23,16 +23,16 @@
 
 | REQ-ID  | Name              | Status         | Priority | Dependencies                       | Description                                                                                                                                                                     |
 | ------- | ----------------- | -------------- | -------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| REQ-001 | Header | ✔️ Implemented | High | - | Wiederverwendbarer Header mit Logo und Accessibility-Einstellungen (Font-Size, High-Contrast, Reduced-Motion) |
-| REQ-002 | Markenauswahl | ✔️ Implemented | High | REQ-001 | Einstiegsseite Buchungswizard: Fahrzeugmarken-Auswahl (Audi, BMW, Mercedes-Benz, MINI, Volkswagen) |
-| REQ-003 | Standortwahl | ✔️ Implemented | High | REQ-002 | Standortwahl basierend auf gewählter Fahrzeugmarke (Wizard-Schritt 2) |
-| REQ-004 | Serviceauswahl | ✔️ Implemented | High | REQ-003 | Serviceauswahl mit Multi-Select, Radio-Varianten und Zusammenfassungsleiste (Wizard-Schritt 3) |
-| REQ-005 | Hinweisfenster | ✔️ Implemented | High | REQ-004 | Optionale Buchungsnotiz + servicespezifische Hinweise (Wizard-Schritt 4) |
-| REQ-006 | Terminauswahl | ✔️ Implemented | High | REQ-005 | Terminauswahl mit 4 Vorschlägen, Single-Select (Wizard-Schritt 5) |
-| REQ-007 | WizardStateSync | ✔️ Implemented | High | REQ-002, REQ-003, REQ-004, REQ-005 | Cross-Cutting: Bei Rückwärtsnavigation im Wizard werden Store-Properties genullt, um UI-Flow und Store-State synchron zu halten. Verhindert unbeabsichtigte URL-Navigation. |
-| REQ-008 | Werkstattkalender | ✔️ Implemented | High | REQ-006 | Werkstattkalender mit DatePicker und Uhrzeitslot-Auswahl (Wizard-Schritt 5b) |
-| REQ-009 | carinformation | ✔️ Implemented | High | REQ-008 | Fahrzeugdaten und Kundendaten erfassen (Wizard-Schritt 6) |
-| REQ-010 | Buchungsübersicht | 📝 Draft | High | REQ-009 | Letzte Seite des Buchungs-Wizards. Zeigt Übersicht aller Eingaben (Termin, Service, persönliche Daten, Preis inkl. MwSt.). Enthält "Jetzt anfragen"-Button statt Weiter-Button. |
+| REQ-001 | Header            | ✔️ Implemented | High     | -                                  | Wiederverwendbarer Header mit Logo und Accessibility-Einstellungen (Font-Size, High-Contrast, Reduced-Motion)                                                                   |
+| REQ-002 | Markenauswahl     | ✔️ Implemented | High     | REQ-001                            | Einstiegsseite Buchungswizard: Fahrzeugmarken-Auswahl (Audi, BMW, Mercedes-Benz, MINI, Volkswagen)                                                                              |
+| REQ-003 | Standortwahl      | ✔️ Implemented | High     | REQ-002                            | Standortwahl basierend auf gewählter Fahrzeugmarke (Wizard-Schritt 2)                                                                                                           |
+| REQ-004 | Serviceauswahl    | ✔️ Implemented | High     | REQ-003                            | Serviceauswahl mit Multi-Select, Radio-Varianten und Zusammenfassungsleiste (Wizard-Schritt 3)                                                                                  |
+| REQ-005 | Hinweisfenster    | ✔️ Implemented | High     | REQ-004                            | Optionale Buchungsnotiz + servicespezifische Hinweise (Wizard-Schritt 4)                                                                                                        |
+| REQ-006 | Terminauswahl     | ✔️ Implemented | High     | REQ-005                            | Terminauswahl mit 4 Vorschlägen, Single-Select (Wizard-Schritt 5)                                                                                                               |
+| REQ-007 | WizardStateSync   | ✔️ Implemented | High     | REQ-002, REQ-003, REQ-004, REQ-005 | Cross-Cutting: Bei Rückwärtsnavigation im Wizard werden Store-Properties genullt, um UI-Flow und Store-State synchron zu halten. Verhindert unbeabsichtigte URL-Navigation.     |
+| REQ-008 | Werkstattkalender | ✔️ Implemented | High     | REQ-006                            | Werkstattkalender mit DatePicker und Uhrzeitslot-Auswahl (Wizard-Schritt 5b)                                                                                                    |
+| REQ-009 | carinformation    | ✔️ Implemented | High     | REQ-008                            | Fahrzeugdaten und Kundendaten erfassen (Wizard-Schritt 6)                                                                                                                       |
+| REQ-010 | Buchungsübersicht | 🔍 In Review | High | REQ-009 | Letzte Seite des Buchungs-Wizards. Zeigt Übersicht aller Eingaben (Termin, Service, persönliche Daten, Preis inkl. MwSt.). Enthält "Jetzt anfragen"-Button statt Weiter-Button. |
 
 ---
 
@@ -73,7 +73,7 @@ REQ-001-Header
 | REQ-007 | [REQ-007-WizardStateSync](./REQ-007-WizardStateSync/requirement.md)     |
 | REQ-008 | [REQ-008-Werkstattkalender](./REQ-008-Werkstattkalender/requirement.md) |
 | REQ-009 | [REQ-009-carinformation](./REQ-009-carinformation/requirement.md)       |
-| REQ-010 | [REQ-010-Buchungsübersicht](./REQ-010-Buchungsübersicht/requirement.md) |
+| REQ-010 | [REQ-010-Buchungsübersicht](./REQ-010-Buchungsübersicht/requirement.md) | 🔍 In Review 
 
 ---
 
@@ -82,11 +82,11 @@ REQ-001-Header
 | Status         | Count  |
 | -------------- | ------ |
 | 📝 Draft | 1 |
-| 🔍 In Review | 0 |
-| ✅ Approved | 0 |
-| 🚧 In Progress | 0 |
-| ✔️ Implemented | 9 |
-| **Total** | **10** |
+| 🔍 In Review | 3 |
+| ✅ Approved | 1 |
+| 🚧 In Progress | 1 |
+| ✔️ Implemented | 10 |
+| **Total** | **16** |
 
 ---
 
