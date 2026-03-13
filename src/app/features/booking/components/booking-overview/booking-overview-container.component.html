@@ -1,0 +1,57 @@
+<section class="booking-overview" aria-labelledby="overview-title">
+  <h1 id="overview-title" class="booking-overview__title">
+    {{ bookingOverview.title | translate }}
+  </h1>
+  <p class="booking-overview__subtitle">
+    {{ bookingOverview.subtitle | translate }}
+  </p>
+
+  <div class="booking-overview__grid" role="region" aria-label="booking summary">
+    @if (appointment(); as apt) {
+      <app-appointment-tile [appointment]="apt" />
+    }
+
+    <app-services-tile
+      [services]="services()"
+      [serviceLabels]="resolvedServiceLabels()"
+      [locationName]="resolvedLocationName()"
+    />
+
+    @if (customerInfo(); as customer) {
+      @if (vehicleInfo(); as vehicle) {
+        <app-personal-data-tile
+          [customerInfo]="customer"
+          [vehicleInfo]="vehicle"
+          [brandName]="resolvedBrandName()"
+        />
+      }
+    }
+
+    <app-price-tile [totalPriceGross]="staticTotalPrice()" />
+  </div>
+
+  <nav class="booking-overview__navigation" aria-label="page navigation">
+    <button
+      mat-flat-button
+      class="booking-overview__back-button"
+      type="button"
+      [attr.aria-label]="bookingOverview.navigation.back | translate"
+      (click)="onBack()"
+    >
+      <mat-icon aria-hidden="true">arrow_back</mat-icon>
+      {{ bookingOverview.navigation.back | translate }}
+    </button>
+
+    <button
+      mat-flat-button
+      color="primary"
+      class="booking-overview__submit-button"
+      type="button"
+      [attr.aria-label]="bookingOverview.navigation.submit | translate"
+      (click)="onSubmit()"
+    >
+      {{ bookingOverview.navigation.submit | translate }}
+      <mat-icon aria-hidden="true">send</mat-icon>
+    </button>
+  </nav>
+</section>

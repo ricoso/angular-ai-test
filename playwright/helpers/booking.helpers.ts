@@ -477,3 +477,157 @@ export async function getWorkshopCalendarIntroText(page: Page): Promise<string> 
   const intro = page.locator('.slots__intro');
   return (await intro.textContent() ?? '').trim();
 }
+
+// =============================================
+// CAR INFORMATION HELPERS (REQ-009)
+// =============================================
+
+/**
+ * Navigate to the carinformation page via the full wizard flow:
+ * Brand -> Location -> Services -> Notes -> Appointment (select first) -> Continue.
+ */
+export async function goToCarinformationPage(
+  page: Page,
+  options?: {
+    brandName?: string;
+    locationName?: string;
+    serviceNames?: string[];
+  }
+): Promise<void> {
+  await goToAppointmentPage(page, options);
+  await selectAppointmentCard(page, 0);
+  await clickAppointmentContinue(page);
+  await page.locator('.carinformation').waitFor({ state: 'visible', timeout: 10000 });
+  await waitForAngular(page);
+}
+
+/** Fill in the customer form with valid test data */
+export async function fillCustomerForm(
+  page: Page,
+  data?: {
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    street?: string;
+    postalCode?: string;
+    city?: string;
+    mobilePhone?: string;
+  }
+): Promise<void> {
+  const d = {
+    email: data?.email ?? 'max@mustermann.de',
+    firstName: data?.firstName ?? 'Max',
+    lastName: data?.lastName ?? 'Mustermann',
+    street: data?.street ?? 'Musterweg 1',
+    postalCode: data?.postalCode ?? '30159',
+    city: data?.city ?? 'Berlin',
+    mobilePhone: data?.mobilePhone ?? '017012345678',
+  };
+  await page.locator('input[formcontrolname="email"]').fill(d.email);
+  await page.locator('input[formcontrolname="firstName"]').fill(d.firstName);
+  await page.locator('input[formcontrolname="lastName"]').fill(d.lastName);
+  await page.locator('input[formcontrolname="street"]').fill(d.street);
+  await page.locator('input[formcontrolname="postalCode"]').fill(d.postalCode);
+  await page.locator('input[formcontrolname="city"]').fill(d.city);
+  await page.locator('input[formcontrolname="mobilePhone"]').fill(d.mobilePhone);
+  await waitForAngular(page);
+}
+
+/** Fill in the vehicle form with valid test data */
+export async function fillVehicleForm(
+  page: Page,
+  data?: {
+    licensePlate?: string;
+    mileage?: string;
+    vin?: string;
+  }
+): Promise<void> {
+  const d = {
+    licensePlate: data?.licensePlate ?? 'B-MS1234',
+    mileage: data?.mileage ?? '5000',
+    vin: data?.vin ?? 'WDB8XXXXXXA123456',
+  };
+  await page.locator('input[formcontrolname="licensePlate"]').fill(d.licensePlate);
+  await page.locator('input[formcontrolname="mileage"]').fill(d.mileage);
+  await page.locator('input[formcontrolname="vin"]').fill(d.vin);
+  await waitForAngular(page);
+}
+
+/** Check the privacy consent checkbox */
+export async function acceptPrivacyConsent(page: Page): Promise<void> {
+  const checkbox = page.locator('mat-checkbox .mdc-checkbox__native-control, mat-checkbox input[type="checkbox"]').first();
+  await checkbox.click({ force: true });
+  await waitForAngular(page);
+}
+
+/** Click the Continue button on the carinformation page */
+export async function clickCarinformationContinue(page: Page): Promise<void> {
+  const continueButton = page.locator('.carinformation__continue-button');
+  await expect(continueButton).toBeVisible();
+  await continueButton.click();
+  await waitForAngular(page);
+}
+
+/** Click the Back button on the carinformation page */
+export async function clickCarinformationBack(page: Page): Promise<void> {
+  const backButton = page.locator('.carinformation__back-button');
+  await expect(backButton).toBeVisible();
+  await backButton.click();
+  await waitForAngular(page);
+}
+
+// =============================================
+// BOOKING OVERVIEW HELPERS (REQ-010)
+// =============================================
+
+/**
+ * Navigate to the booking overview page via the full wizard flow:
+ * Brand -> Location -> Services -> Notes -> Appointment -> Continue ->
+ * Car Information (fill forms + privacy) -> Continue.
+ */
+export async function goToBookingOverviewPage(
+  page: Page,
+  options?: {
+    brandName?: string;
+    locationName?: string;
+    serviceNames?: string[];
+    customer?: {
+      email?: string;
+      firstName?: string;
+      lastName?: string;
+      street?: string;
+      postalCode?: string;
+      city?: string;
+      mobilePhone?: string;
+    };
+    vehicle?: {
+      licensePlate?: string;
+      mileage?: string;
+      vin?: string;
+    };
+  }
+): Promise<void> {
+  await goToCarinformationPage(page, options);
+  await fillCustomerForm(page, options?.customer);
+  await fillVehicleForm(page, options?.vehicle);
+  await acceptPrivacyConsent(page);
+  await clickCarinformationContinue(page);
+  await page.locator('.booking-overview').waitFor({ state: 'visible', timeout: 10000 });
+  await waitForAngular(page);
+}
+
+/** Click the Back button on the booking overview page */
+export async function clickBookingOverviewBack(page: Page): Promise<void> {
+  const backButton = page.locator('.booking-overview__back-button');
+  await expect(backButton).toBeVisible();
+  await backButton.click();
+  await waitForAngular(page);
+}
+
+/** Click the Submit button on the booking overview page */
+export async function clickBookingOverviewSubmit(page: Page): Promise<void> {
+  const submitButton = page.locator('.booking-overview__submit-button');
+  await expect(submitButton).toBeVisible();
+  await submitButton.click();
+  await waitForAngular(page);
+}

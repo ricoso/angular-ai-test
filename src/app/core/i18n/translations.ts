@@ -158,6 +158,43 @@ export const translations = {
           requiredHint: 'Pflichtfelder sind mit * gekennzeichnet'
         },
         navigation: { back: 'Zurück', continue: 'Zur Buchungsübersicht' }
+      },
+      bookingOverview: {
+        title: 'Übersicht',
+        subtitle: 'Bitte prüfen Sie Ihre Angaben bevor Sie den Termin versenden.',
+        tiles: {
+          appointment: {
+            title: 'Wunschtermin',
+            dateLabel: 'Datum',
+            timeLabel: 'Uhrzeit'
+          },
+          services: {
+            title: 'Gewählter Service',
+            intro: 'Folgende Leistungen werden in',
+            introSuffix: 'für Sie angefragt:'
+          },
+          personalData: {
+            title: 'Ihre Daten',
+            nameLabel: 'Name',
+            streetLabel: 'Straße',
+            cityLabel: 'Ort',
+            phoneLabel: 'Telefon',
+            emailLabel: 'E-Mail',
+            brandLabel: 'Marke',
+            licensePlateLabel: 'Kennzeichen',
+            mileageLabel: 'Kilometerstand',
+            mileageUnit: 'km'
+          },
+          price: {
+            title: 'Preis',
+            vatIncluded: 'inkl. Mehrwertsteuer',
+            staticPrice: '129,00 €'
+          }
+        },
+        navigation: {
+          back: 'Zurück',
+          submit: 'Jetzt anfragen'
+        }
       }
     }
   },
@@ -313,6 +350,43 @@ export const translations = {
           requiredHint: 'Required fields are marked with *'
         },
         navigation: { back: 'Back', continue: 'To Booking Overview' }
+      },
+      bookingOverview: {
+        title: 'Overview',
+        subtitle: 'Please review your details before submitting the appointment.',
+        tiles: {
+          appointment: {
+            title: 'Desired Appointment',
+            dateLabel: 'Date',
+            timeLabel: 'Time'
+          },
+          services: {
+            title: 'Selected Service',
+            intro: 'The following services will be requested at',
+            introSuffix: 'for you:'
+          },
+          personalData: {
+            title: 'Your Details',
+            nameLabel: 'Name',
+            streetLabel: 'Street',
+            cityLabel: 'City',
+            phoneLabel: 'Phone',
+            emailLabel: 'Email',
+            brandLabel: 'Brand',
+            licensePlateLabel: 'License Plate',
+            mileageLabel: 'Mileage',
+            mileageUnit: 'km'
+          },
+          price: {
+            title: 'Price',
+            vatIncluded: 'incl. VAT',
+            staticPrice: '€ 129.00'
+          }
+        },
+        navigation: {
+          back: 'Back',
+          submit: 'Request Now'
+        }
       }
     }
   },
@@ -468,6 +542,43 @@ export const translations = {
           requiredHint: 'Обов\'язкові поля позначені *'
         },
         navigation: { back: 'Назад', continue: 'До підсумку бронювання' }
+      },
+      bookingOverview: {
+        title: 'Огляд',
+        subtitle: 'Будь ласка, перевірте свої дані перед відправленням запису.',
+        tiles: {
+          appointment: {
+            title: 'Бажаний термін',
+            dateLabel: 'Дата',
+            timeLabel: 'Час'
+          },
+          services: {
+            title: 'Обраний сервіс',
+            intro: 'Наступні послуги будуть запитані в',
+            introSuffix: 'для вас:'
+          },
+          personalData: {
+            title: 'Ваші дані',
+            nameLabel: "Ім'я",
+            streetLabel: 'Вулиця',
+            cityLabel: 'Місто',
+            phoneLabel: 'Телефон',
+            emailLabel: 'Електронна пошта',
+            brandLabel: 'Марка',
+            licensePlateLabel: 'Номерний знак',
+            mileageLabel: 'Пробіг',
+            mileageUnit: 'км'
+          },
+          price: {
+            title: 'Ціна',
+            vatIncluded: 'вкл. ПДВ',
+            staticPrice: '€ 129,00'
+          }
+        },
+        navigation: {
+          back: 'Назад',
+          submit: 'Запросити зараз'
+        }
       }
     }
   },
@@ -623,6 +734,43 @@ export const translations = {
           requiredHint: 'Les champs obligatoires sont marqués d\'un *'
         },
         navigation: { back: 'Retour', continue: 'Vers le récapitulatif' }
+      },
+      bookingOverview: {
+        title: 'Récapitulatif',
+        subtitle: 'Veuillez vérifier vos informations avant d\'envoyer le rendez-vous.',
+        tiles: {
+          appointment: {
+            title: 'Rendez-vous souhaité',
+            dateLabel: 'Date',
+            timeLabel: 'Heure'
+          },
+          services: {
+            title: 'Service sélectionné',
+            intro: 'Les prestations suivantes seront demandées à',
+            introSuffix: 'pour vous :'
+          },
+          personalData: {
+            title: 'Vos données',
+            nameLabel: 'Nom',
+            streetLabel: 'Rue',
+            cityLabel: 'Ville',
+            phoneLabel: 'Téléphone',
+            emailLabel: 'E-mail',
+            brandLabel: 'Marque',
+            licensePlateLabel: 'Plaque d\'immatriculation',
+            mileageLabel: 'Kilométrage',
+            mileageUnit: 'km'
+          },
+          price: {
+            title: 'Prix',
+            vatIncluded: 'TTC',
+            staticPrice: '129,00 €'
+          }
+        },
+        navigation: {
+          back: 'Retour',
+          submit: 'Demander maintenant'
+        }
       }
     }
   },
@@ -778,6 +926,43 @@ export const translations = {
           requiredHint: 'الحقول المطلوبة محددة بـ *'
         },
         navigation: { back: 'رجوع', continue: 'إلى ملخص الحجز' }
+      },
+      bookingOverview: {
+        title: 'ملخص',
+        subtitle: 'يرجى مراجعة بياناتك قبل إرسال الموعد.',
+        tiles: {
+          appointment: {
+            title: 'الموعد المطلوب',
+            dateLabel: 'التاريخ',
+            timeLabel: 'الوقت'
+          },
+          services: {
+            title: 'الخدمة المختارة',
+            intro: 'سيتم طلب الخدمات التالية في',
+            introSuffix: 'لك:'
+          },
+          personalData: {
+            title: 'بياناتك',
+            nameLabel: 'الاسم',
+            streetLabel: 'الشارع',
+            cityLabel: 'المدينة',
+            phoneLabel: 'الهاتف',
+            emailLabel: 'البريد الإلكتروني',
+            brandLabel: 'العلامة التجارية',
+            licensePlateLabel: 'لوحة الترخيص',
+            mileageLabel: 'عدد الكيلومترات',
+            mileageUnit: 'كم'
+          },
+          price: {
+            title: 'السعر',
+            vatIncluded: 'شامل ضريبة القيمة المضافة',
+            staticPrice: '€ 129,00'
+          }
+        },
+        navigation: {
+          back: 'رجوع',
+          submit: 'اطلب الآن'
+        }
       }
     }
   }

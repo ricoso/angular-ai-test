@@ -9,6 +9,18 @@ import { DatabaseService } from '../database/database.service';
 
 const REQ_FILE_PATH = 'docs/requirements/REQUIREMENTS.md';
 
+interface SyncResult {
+  readonly branch: string;
+  readonly status: 'synced' | 'conflict-skipped' | 'already-applied' | 'error';
+  readonly error?: string;
+}
+
+interface SyncStatusResponse {
+  readonly commitSha: string;
+  readonly mainPushed: boolean;
+  readonly branches: SyncResult[];
+}
+
 @Injectable()
 export class BoardService {
   private readonly logger = new Logger(BoardService.name);
@@ -202,9 +214,9 @@ export class BoardService {
 
     if (!updated) return null;
 
-    // Sync back to markdown
-    this.syncToMarkdown();
-    this.autoCommit(`docs: ${reqId} status → ${newStatus}`);
+    // Sync status to main and cherry-pick to all req/feat branches
+    const syncResult = this.syncStatusAcrossBranches(reqId, newStatus);
+    this.logger.log(`Synced ${reqId} to ${syncResult.branches.length} branches`);
 
     // Auto-create feature branch when moving to "In Progress"
     if (newStatus === 'In Progress') {
@@ -244,6 +256,222 @@ export class BoardService {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       this.logger.warn(`Failed to create feature branch ${branchName}: ${msg}`);
+    }
+  }
+
+  // --- Cross-branch status sync ---
+
+  public syncStatusAcrossBranches(reqId: string, newStatus: RequirementStatus): SyncStatusResponse {
+    const originalBranch = this.getCurrentBranch();
+
+    // If on detached HEAD, fallback to old behavior
+    if (!originalBranch || originalBranch === 'HEAD') {
+      this.syncToMarkdown();
+      this.autoCommit(`docs: ${reqId} status → ${newStatus}`);
+      return { commitSha: '', mainPushed: false, branches: [] };
+    }
+
+    const stashMsg = `board-sync-${Date.now()}`;
+    const stashed = this.stashLocalChanges(stashMsg);
+
+    try {
+      const commitSha = this.commitOnMain(reqId, newStatus);
+      if (!commitSha) {
+        // Main commit failed, fallback
+        this.gitCheckout(originalBranch);
+        if (stashed) this.unstashLocalChanges(stashMsg);
+        this.syncToMarkdown();
+        this.autoCommit(`docs: ${reqId} status → ${newStatus}`);
+        return { commitSha: '', mainPushed: false, branches: [] };
+      }
+
+      const branches = this.getReqFeatBranches();
+      const results = branches
+        .filter(b => b !== 'main')
+        .map(b => this.cherryPickToBranch(b, commitSha, reqId, newStatus));
+
+      return { commitSha, mainPushed: true, branches: results };
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.error(`Sync failed: ${msg}`);
+      return { commitSha: '', mainPushed: false, branches: [] };
+    } finally {
+      this.gitCheckout(originalBranch);
+      if (stashed) this.unstashLocalChanges(stashMsg);
+    }
+  }
+
+  private stashLocalChanges(stashMsg: string): boolean {
+    try {
+      const countBefore = this.getStashCount();
+      execSync(
+        `git -C "${this.workspaceRoot}" stash push -m "${stashMsg}" --include-untracked`,
+        { stdio: 'pipe' }
+      );
+      const countAfter = this.getStashCount();
+      return countAfter > countBefore;
+    } catch {
+      return false;
+    }
+  }
+
+  private unstashLocalChanges(stashMsg: string): void {
+    try {
+      const topStash = execSync(
+        `git -C "${this.workspaceRoot}" stash list -1`,
+        { stdio: 'pipe' }
+      ).toString().trim();
+
+      if (topStash.includes(stashMsg)) {
+        execSync(`git -C "${this.workspaceRoot}" stash pop`, { stdio: 'pipe' });
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.warn(`Failed to unstash: ${msg}`);
+    }
+  }
+
+  private getStashCount(): number {
+    try {
+      const list = execSync(
+        `git -C "${this.workspaceRoot}" stash list`,
+        { stdio: 'pipe' }
+      ).toString().trim();
+      return list === '' ? 0 : list.split('\n').length;
+    } catch {
+      return 0;
+    }
+  }
+
+  private getReqFeatBranches(): string[] {
+    try {
+      execSync(`git -C "${this.workspaceRoot}" fetch --all --prune`, { stdio: 'pipe', timeout: 15000 });
+    } catch {
+      this.logger.warn('fetch --all failed (offline?)');
+    }
+
+    const branches = new Set<string>();
+
+    try {
+      const local = execSync(
+        `git -C "${this.workspaceRoot}" branch --list "req/*" "feat/*"`,
+        { stdio: 'pipe' }
+      ).toString().trim();
+
+      for (const line of local.split('\n')) {
+        const name = line.replace(/^\*?\s+/, '').trim();
+        if (name) branches.add(name);
+      }
+    } catch { /* no local branches */ }
+
+    try {
+      const remote = execSync(
+        `git -C "${this.workspaceRoot}" branch -r --list "origin/req/*" "origin/feat/*"`,
+        { stdio: 'pipe' }
+      ).toString().trim();
+
+      for (const line of remote.split('\n')) {
+        const name = line.trim().replace(/^origin\//, '');
+        if (name && !name.includes('HEAD')) branches.add(name);
+      }
+    } catch { /* no remote branches */ }
+
+    return Array.from(branches);
+  }
+
+  private commitOnMain(reqId: string, newStatus: RequirementStatus): string | null {
+    try {
+      this.gitCheckout('main');
+      execSync(`git -C "${this.workspaceRoot}" pull origin main --rebase`, { stdio: 'pipe', timeout: 15000 });
+
+      this.syncToMarkdown();
+
+      execSync(`git -C "${this.workspaceRoot}" add "${REQ_FILE_PATH}"`, { stdio: 'pipe' });
+
+      // Check if there are actual changes to commit
+      try {
+        execSync(`git -C "${this.workspaceRoot}" diff --cached --quiet`, { stdio: 'pipe' });
+        // No changes — already up to date
+        return execSync(`git -C "${this.workspaceRoot}" rev-parse HEAD`, { stdio: 'pipe' }).toString().trim();
+      } catch {
+        // diff --cached --quiet exits 1 when there ARE changes — proceed with commit
+      }
+
+      const commitMsg = `docs(board-sync): ${reqId} status → ${newStatus}`;
+      execSync(
+        `git -C "${this.workspaceRoot}" commit -m "${commitMsg}"`,
+        { stdio: 'pipe' }
+      );
+
+      execSync(`git -C "${this.workspaceRoot}" push origin main`, { stdio: 'pipe', timeout: 15000 });
+      this.logger.log(`Committed and pushed to main: ${commitMsg}`);
+
+      return execSync(`git -C "${this.workspaceRoot}" rev-parse HEAD`, { stdio: 'pipe' }).toString().trim();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.error(`Failed to commit on main: ${msg}`);
+      return null;
+    }
+  }
+
+  private cherryPickToBranch(branch: string, commitSha: string, reqId: string, newStatus: RequirementStatus): SyncResult {
+    try {
+      // Try checking out existing local branch, else create from remote
+      try {
+        execSync(`git -C "${this.workspaceRoot}" checkout "${branch}"`, { stdio: 'pipe' });
+      } catch {
+        try {
+          execSync(`git -C "${this.workspaceRoot}" checkout -b "${branch}" "origin/${branch}"`, { stdio: 'pipe' });
+        } catch {
+          return { branch, status: 'error', error: `Could not checkout ${branch}` };
+        }
+      }
+
+      // Cherry-pick with --no-commit to inspect result
+      try {
+        execSync(`git -C "${this.workspaceRoot}" cherry-pick ${commitSha} --no-commit`, { stdio: 'pipe' });
+      } catch {
+        // Conflict — abort and skip
+        try {
+          execSync(`git -C "${this.workspaceRoot}" cherry-pick --abort`, { stdio: 'pipe' });
+        } catch { /* already clean */ }
+        return { branch, status: 'conflict-skipped' };
+      }
+
+      // Check if cherry-pick produced any staged changes
+      try {
+        execSync(`git -C "${this.workspaceRoot}" diff --cached --quiet`, { stdio: 'pipe' });
+        // No changes — already applied
+        execSync(`git -C "${this.workspaceRoot}" reset`, { stdio: 'pipe' });
+        return { branch, status: 'already-applied' };
+      } catch {
+        // There are changes — commit them
+      }
+
+      const commitMsg = `docs(board-sync): ${reqId} status → ${newStatus}`;
+      execSync(`git -C "${this.workspaceRoot}" commit -m "${commitMsg}"`, { stdio: 'pipe' });
+
+      try {
+        execSync(`git -C "${this.workspaceRoot}" push origin "${branch}"`, { stdio: 'pipe', timeout: 15000 });
+      } catch (pushErr: unknown) {
+        const pushMsg = pushErr instanceof Error ? pushErr.message : String(pushErr);
+        this.logger.warn(`Push failed for ${branch}: ${pushMsg}`);
+        // Commit is local, next sync will retry
+      }
+
+      return { branch, status: 'synced' };
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      return { branch, status: 'error', error: errMsg };
+    }
+  }
+
+  private gitCheckout(branch: string): void {
+    try {
+      execSync(`git -C "${this.workspaceRoot}" checkout "${branch}"`, { stdio: 'pipe' });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.warn(`Failed to checkout ${branch}: ${msg}`);
     }
   }
 

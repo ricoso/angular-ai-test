@@ -2,7 +2,11 @@ import { expect, test } from '@playwright/test';
 
 import { getCurrentRoute, navigateTo, setLanguage, waitForAngular } from './helpers/app.helpers';
 import {
+  acceptPrivacyConsent,
   clickAppointmentBack,
+  clickAppointmentContinue,
+  clickBookingOverviewBack,
+  clickCarinformationBack,
   clickLocationBack,
   clickNotesBack,
   clickNotesContinue,
@@ -10,6 +14,8 @@ import {
   clickWorkshopCalendarBack,
   completeBrandToLocationFlow,
   enterNote,
+  fillCustomerForm,
+  fillVehicleForm,
   getAppointmentCardCount,
   getCalendarLink,
   getCharCounter,
@@ -20,6 +26,8 @@ import {
   getTimeDayHeadings,
   goToAppointmentPage,
   goToBrandSelection,
+  goToBookingOverviewPage,
+  goToCarinformationPage,
   goToNotesPage,
   goToServiceSelection,
   goToWorkshopCalendarPage,
@@ -39,11 +47,11 @@ import {
  * End-to-End flow through all implemented wizard steps:
  *   REQ-001 (Header) -> REQ-002 (Brand Selection) -> REQ-003 (Location Selection)
  *   -> REQ-004 (Service Selection) -> REQ-005 (Notes) -> REQ-006 (Appointment Selection)
- *   -> REQ-008 (Workshop Calendar)
+ *   -> REQ-008 (Workshop Calendar) -> REQ-009 (Car Information) -> REQ-010 (Booking Overview)
  *
  * Tests the full user journey including:
  * - Header always visible
- * - Brand selection -> Location selection -> Service selection -> Notes -> Appointment -> Workshop Calendar
+ * - Brand selection -> Location selection -> Service selection -> Notes -> Appointment -> Workshop Calendar -> Car Information -> Booking Overview
  * - Language switching during the flow
  * - Alternative flows (back navigation, brand change)
  * - Guards and redirects
@@ -783,6 +791,110 @@ test.describe('Complete Booking Workflow', () => {
 
       await clickLocationBack(page);
       await expect(header).toBeVisible();
+    });
+
+  });
+
+  // =============================================
+  // REQ-010: BOOKING OVERVIEW — Complete Flow Extension
+  // =============================================
+
+  test.describe('REQ-010: Booking Overview Flow', () => {
+
+    test('complete flow: Brand -> ... -> Car Information -> Booking Overview (Happy Path)', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToBookingOverviewPage(page);
+
+      const route = await getCurrentRoute(page);
+      expect(route).toBe('/home/booking-overview');
+
+      // Title
+      const title = await getPageTitle(page);
+      expect(title).toBe('Übersicht');
+
+      // 4 summary tiles
+      const cards = page.locator('.summary-card');
+      await expect(cards).toHaveCount(4);
+
+      // Appointment tile
+      const appointmentTile = page.locator('app-appointment-tile');
+      await expect(appointmentTile).toBeVisible();
+
+      // Services tile with location
+      const servicesTile = page.locator('app-services-tile');
+      await expect(servicesTile).toBeVisible();
+      await expect(servicesTile).toContainText('München');
+
+      // Personal data tile
+      const personalTile = page.locator('app-personal-data-tile');
+      await expect(personalTile).toBeVisible();
+      await expect(personalTile).toContainText('Max');
+      await expect(personalTile).toContainText('Mustermann');
+
+      // Price tile
+      const priceTile = page.locator('.price-tile');
+      await expect(priceTile.first()).toBeVisible();
+
+      // Header still visible
+      const header = page.locator('header[role="banner"]');
+      await expect(header).toBeVisible();
+    });
+
+    test('flow: Booking Overview -> Back to Car Information', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToBookingOverviewPage(page);
+
+      expect(await getCurrentRoute(page)).toBe('/home/booking-overview');
+
+      await clickBookingOverviewBack(page);
+
+      expect(await getCurrentRoute(page)).toBe('/home/carinformation');
+    });
+
+    test('flow: Car Information -> Back to Appointment', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToCarinformationPage(page);
+
+      expect(await getCurrentRoute(page)).toBe('/home/carinformation');
+
+      await clickCarinformationBack(page);
+
+      const route = await getCurrentRoute(page);
+      expect(route).toMatch(/\/home\/(appointment|workshop-calendar)/);
+    });
+
+    test('guard: direct /home/booking-overview without prerequisites -> redirect', async ({ page }) => {
+      await navigateTo(page, '/home/booking-overview');
+      await waitForAngular(page);
+
+      const route = await getCurrentRoute(page);
+      expect(route).not.toBe('/home/booking-overview');
+      expect(route).toMatch(/\/home/);
+    });
+
+    test('i18n: EN titles on booking overview page', async ({ page }) => {
+      await setLanguage(page, 'en');
+      await goToBookingOverviewPage(page);
+
+      const title = await getPageTitle(page);
+      expect(title).toBe('Overview');
+
+      const backButton = page.locator('.booking-overview__back-button');
+      await expect(backButton).toContainText('Back');
+
+      const submitButton = page.locator('.booking-overview__submit-button');
+      await expect(submitButton).toContainText('Request Now');
+    });
+
+    test('header visible on booking overview page', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToBookingOverviewPage(page);
+
+      const header = page.locator('header[role="banner"]');
+      await expect(header).toBeVisible();
+
+      const companyName = page.locator('.header__company-name');
+      await expect(companyName).toContainText('Autohaus GmbH');
     });
 
   });

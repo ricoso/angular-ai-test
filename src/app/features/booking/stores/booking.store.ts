@@ -30,6 +30,7 @@ interface BookingState {
   customerInfo: CustomerInfo | null;
   vehicleInfo: VehicleInfo | null;
   privacyConsent: boolean;
+  bookingSubmitted: boolean;
   isLoading: boolean;
   error: string | null;
 }
@@ -49,6 +50,7 @@ const INITIAL_STATE: BookingState = {
   customerInfo: null,
   vehicleInfo: null,
   privacyConsent: false,
+  bookingSubmitted: false,
   isLoading: false,
   error: null
 };
@@ -58,7 +60,7 @@ export const BookingStore = signalStore(
 
   withState<BookingState>(INITIAL_STATE),
 
-  withComputed(({ brands, selectedBrand, locations, selectedLocation, selectedServices, bookingNote, selectedAppointment, workshopCalendarDate }) => ({
+  withComputed(({ brands, selectedBrand, locations, selectedLocation, selectedServices, bookingNote, selectedAppointment, workshopCalendarDate, customerInfo, vehicleInfo, privacyConsent, bookingSubmitted }) => ({
     hasBrandSelected: computed(() => selectedBrand() !== null),
     brandCount: computed(() => brands().length),
     filteredLocations: computed(() => locations()),
@@ -72,7 +74,17 @@ export const BookingStore = signalStore(
       const appointment = selectedAppointment();
       const calendarDate = workshopCalendarDate();
       return appointment !== null && calendarDate !== null;
-    })
+    }),
+    isBookingComplete: computed(() =>
+      selectedBrand() !== null &&
+      selectedLocation() !== null &&
+      selectedServices().length > 0 &&
+      selectedAppointment() !== null &&
+      customerInfo() !== null &&
+      vehicleInfo() !== null &&
+      privacyConsent()
+    ),
+    hasBookingSubmitted: computed(() => bookingSubmitted())
   })),
 
   withMethods((store, api = inject(BookingApiService), appointmentApi = inject(AppointmentApiService), workshopCalendarApi = inject(WorkshopCalendarApiService)) => ({
@@ -257,6 +269,11 @@ export const BookingStore = signalStore(
 
     clearCarInformation(): void {
       patchState(store, { customerInfo: null, vehicleInfo: null, privacyConsent: false });
+    },
+
+    submitBooking(): void {
+      console.debug('[BookingStore] submitBooking — marking as submitted');
+      patchState(store, { bookingSubmitted: true });
     }
   }))
 );

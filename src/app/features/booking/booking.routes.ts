@@ -1,5 +1,6 @@
 import type { Routes } from '@angular/router';
 
+import { bookingOverviewGuard } from './guards/booking-overview.guard';
 import { brandSelectedGuard } from './guards/brand-selected.guard';
 import { carInformationGuard } from './guards/car-information.guard';
 import { locationSelectedGuard } from './guards/location-selected.guard';
@@ -59,5 +60,11 @@ export const bookingRoutes: Routes = [
     loadComponent: () => import('./components/carinformation/carinformation-container.component')
       .then(m => m.CarinformationContainerComponent),
     canActivate: [carInformationGuard]
+  },
+  {
+    path: 'booking-overview',
+    loadComponent: () => import('./components/booking-overview/booking-overview-container.component')
+      .then(m => m.BookingOverviewContainerComponent),
+    canActivate: [bookingOverviewGuard]
   }
 ];

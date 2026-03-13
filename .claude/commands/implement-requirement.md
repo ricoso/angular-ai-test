@@ -114,6 +114,24 @@ SKILL-CHECK BESTÄTIGT:
 
 **Verwende die Code-Sprache aus Step 2 für ALLE Dateien!**
 
+> **MOCKUP-PFLICHT:** Vor der Implementierung MUSS der UI-Mockup gelesen und pixelgenau umgesetzt werden!
+
+**3a: Mockup lesen und analysieren:**
+
+1. Öffne `docs/requirements/$ARGUMENTS/mockup.html` im Browser oder lese den HTML/CSS-Code
+2. Analysiere **exakt**:
+   - Layout-Struktur (Reihenfolge, Abstände, Ausrichtung)
+   - Farben, Schriftgrößen, Icons
+   - Komponentenaufteilung (welche Elemente sind eigene Components)
+   - Responsive Verhalten (falls im Mockup erkennbar)
+3. **Die Implementierung MUSS sich 1:1 an den Mockup halten!**
+   - Keine eigenmächtigen Layout-Änderungen
+   - Keine fehlenden Elemente
+   - Keine hinzugefügten Elemente die nicht im Mockup sind
+   - Gleiche visuelle Hierarchie und Anordnung
+
+> **STOP wenn kein Mockup vorhanden!** Warnung ausgeben und User fragen ob ohne Mockup fortgefahren werden soll.
+
 Reihenfolge:
 1. **Models** (`models/*.model.ts`)
 2. **Store** (`stores/*.store.ts`)
@@ -256,6 +274,8 @@ Nächste Schritte (manuell):
 - [ ] Step 1: Requirement gelesen
 - [ ] **Step 2: ALLE 5 Skills gelesen (code-language, architecture, i18n, routing, forms)**
 - [ ] **Step 2: Code-Sprache bestätigt**
+- [ ] **Step 3: Mockup gelesen und analysiert (`mockup.html`)**
+- [ ] **Step 3: Implementierung hält sich 1:1 an den Mockup**
 - [ ] Step 3: Models definiert
 - [ ] Step 3: Store mit `withState`, `withComputed`, `withMethods`
 - [ ] Step 3: Container Component mit `OnPush`

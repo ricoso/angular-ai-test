@@ -56,12 +56,27 @@ gh pr create \
 "
 ```
 
-### Step 5: Ergebnis ausgeben
+### Step 5: Kanban Board → "In Review"
+
+Nach erfolgreicher PR-Erstellung den Requirement-Status im Kanban Board aktualisieren:
+
+```bash
+curl -s -X PUT http://localhost:3200/api/requirements/$REQ_ID/status \
+  -H "Content-Type: application/json" \
+  -d '{"status": "In Review"}'
+```
+
+- **Erfolgreich:** Hinweis ausgeben: `✅ $REQ_ID im Kanban Board → "In Review"`
+- **Board nicht erreichbar:** Warnung: `⚠️ Kanban Board nicht erreichbar — Status manuell auf "In Review" setzen`
+- **Kein Fehler-Abbruch** — PR wurde bereits erstellt, Board-Update ist optional
+
+### Step 6: Ergebnis ausgeben
 
 ```
 PR ERSTELLT:
 - Branch: $BRANCH
 - PR: <URL>
+- Board: $REQ_ID → "In Review"
 ```
 
 ---

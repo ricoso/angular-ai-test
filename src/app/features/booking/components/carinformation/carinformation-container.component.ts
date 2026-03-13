@@ -94,9 +94,8 @@ export class CarinformationContainerComponent {
     this.store.setVehicleInfo(vehicleInfo);
     this.store.setPrivacyConsent(true);
 
-    console.debug('[CarinformationContainer] Form submitted, navigating to booking summary');
-    // Next wizard step (REQ-010+) — placeholder
-    void this.router.navigate(['/home/carinformation']);
+    console.debug('[CarinformationContainer] Form submitted, navigating to booking overview');
+    void this.router.navigate(['/home/booking-overview']);
   }
 
   protected onBack(): void {

@@ -1,0 +1,22 @@
+<article class="summary-card" aria-labelledby="tile-title-service">
+  <div class="summary-card__header">
+    <span class="summary-card__icon icon-framed icon-framed--sm icon-framed--primary" aria-hidden="true">
+      <span class="material-icons">build</span>
+    </span>
+    <h2 class="summary-card__title" id="tile-title-service">
+      {{ bookingOverview.tiles.services.title | translate }}
+    </h2>
+  </div>
+  <p class="service-intro">
+    {{ bookingOverview.tiles.services.intro | translate }}
+    <strong>{{ locationName() }}</strong>
+    {{ bookingOverview.tiles.services.introSuffix | translate }}
+  </p>
+  <ul class="detail-list" aria-label="selected services">
+    @for (service of services(); track service.serviceId) {
+      <li class="detail-list__item">
+        <strong>{{ serviceLabels()[service.serviceId] }}</strong>
+      </li>
+    }
+  </ul>
+</article>
