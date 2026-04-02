@@ -66,7 +66,7 @@ export async function completeBrandToLocationFlow(
 }
 
 // =============================================
-// SERVICE SELECTION HELPERS (REQ-004)
+// SERVICE SELECTION HELPERS (REQ-011)
 // =============================================
 
 /**
@@ -88,12 +88,27 @@ export async function goToServiceSelection(
   await waitForAngular(page);
 }
 
-/** Click on a service card by its visible title text */
+/**
+ * Click on a service card by its title text.
+ * Uses the __title element for precise matching to avoid ambiguity
+ * when service names appear in descriptions of other cards.
+ * For services without options (brake-fluid): toggles selection directly.
+ * For services with options: toggles expand/collapse.
+ */
 export async function selectService(page: Page, serviceName: string): Promise<void> {
-  const card = page.locator('.service-card', { hasText: serviceName });
+  const card = page.locator('.service-card').filter({
+    has: page.locator('.service-card__title', { hasText: serviceName })
+  });
   await expect(card).toBeVisible();
   await card.click();
   await waitForAngular(page);
+}
+
+/** Get the service card locator by its title text (precise match via __title) */
+export function getServiceCard(page: Page, serviceName: string) {
+  return page.locator('.service-card').filter({
+    has: page.locator('.service-card__title', { hasText: serviceName })
+  });
 }
 
 /** Get visible service card title texts */
@@ -103,39 +118,107 @@ export async function getServiceCardTitles(page: Page): Promise<string[]> {
 }
 
 /**
- * Confirm tire change with a specific variant.
- * Selects the radio button for the variant, then clicks the confirm button.
+ * Confirm a service with options by selecting checkboxes and clicking Confirm.
+ * @param page - Playwright page
+ * @param serviceName - Visible service card title (DE or EN)
+ * @param optionTexts - Array of checkbox label texts to select
  */
-export async function confirmTireChange(
+export async function confirmServiceWithOptions(
   page: Page,
-  variant: 'with-storage' | 'without-storage'
+  serviceName: string,
+  optionTexts: string[]
 ): Promise<void> {
-  const tireCard = page.locator('.service-card', { hasText: 'Räderwechsel' }).or(
-    page.locator('.service-card', { hasText: 'Tire Change' })
-  );
-  await expect(tireCard.first()).toBeVisible();
+  const card = getServiceCard(page, serviceName);
+  await expect(card).toBeVisible();
 
-  // Select the radio input by value
-  const radio = tireCard.first().locator(`.service-card__radio-input[value="${variant}"]`);
-  await radio.click();
-  await waitForAngular(page);
+  // Expand card if not already expanded
+  const options = card.locator('.service-card__options');
+  if (!(await options.isVisible())) {
+    await card.click();
+    await waitForAngular(page);
+  }
+
+  // Click each mat-checkbox label to toggle the checkbox
+  // The mat-checkbox component handles click on the label element
+  for (const text of optionTexts) {
+    const matCheckbox = card.locator('mat-checkbox', { hasText: text });
+    await expect(matCheckbox).toBeVisible();
+    // Use the label element which triggers the mat-checkbox correctly
+    await matCheckbox.locator('label.mdc-label').click();
+    await waitForAngular(page);
+  }
 
   // Click confirm button
-  const confirmButton = tireCard.first().locator('.service-card__confirm-button');
+  const confirmButton = card.locator('.service-card__confirm-button');
   await expect(confirmButton).toBeVisible();
+  await expect(confirmButton).toBeEnabled();
   await confirmButton.click();
   await waitForAngular(page);
 }
 
-/** Click the deselect button on the tire change card */
-export async function deselectTireChange(page: Page): Promise<void> {
-  const tireCard = page.locator('.service-card', { hasText: 'Räderwechsel' }).or(
-    page.locator('.service-card', { hasText: 'Tire Change' })
-  );
-  const deselectButton = tireCard.first().locator('.service-card__deselect-button');
+/**
+ * Click the Deselect button on a service card.
+ * The card must be expanded and selected.
+ */
+export async function deselectServiceWithButton(
+  page: Page,
+  serviceName: string
+): Promise<void> {
+  const card = getServiceCard(page, serviceName);
+  await expect(card).toBeVisible();
+
+  // Expand card if not already expanded
+  const deselectButton = card.locator('.service-card__deselect-button');
+  if (!(await deselectButton.isVisible())) {
+    await card.click();
+    await waitForAngular(page);
+  }
+
   await expect(deselectButton).toBeVisible();
   await deselectButton.click();
   await waitForAngular(page);
+}
+
+/** Get checkbox labels within an expanded service card */
+export async function getServiceCheckboxLabels(
+  page: Page,
+  serviceName: string
+): Promise<string[]> {
+  const card = getServiceCard(page, serviceName);
+
+  // Expand card if not already expanded
+  const options = card.locator('.service-card__options');
+  if (!(await options.isVisible())) {
+    await card.click();
+    await waitForAngular(page);
+  }
+
+  const checkboxes = card.locator('.service-card__checkbox');
+  return checkboxes.allTextContents().then(texts => texts.map(t => t.trim()));
+}
+
+// Legacy helpers (REQ-004 compat) — redirect to new pattern
+
+/**
+ * @deprecated Use confirmServiceWithOptions() instead.
+ * Kept for backward compatibility with workflow tests.
+ */
+export async function confirmTireChange(
+  page: Page,
+  _variant: 'with-storage' | 'without-storage'
+): Promise<void> {
+  // In REQ-011, tire change uses checkboxes. Map old variants to new options.
+  const optionText = _variant === 'with-storage'
+    ? 'eingelagert'
+    : 'bringe meine Räder mit';
+  await confirmServiceWithOptions(page, 'Räderwechsel', [optionText]);
+}
+
+/**
+ * @deprecated Use deselectServiceWithButton() instead.
+ */
+export async function deselectTireChange(page: Page): Promise<void> {
+  await deselectServiceWithButton(page, 'Räderwechsel');
 }
 
 /**
@@ -182,7 +265,8 @@ export async function clickServiceBack(page: Page): Promise<void> {
 
 /**
  * Navigate to the notes page via brand -> location -> service selection -> notes.
- * Selects HU/AU as a default service to satisfy the guard.
+ * Selects brake-fluid (no options) as a default service to satisfy the guard.
+ * Or selects Inspektion with a default option if serviceNames includes it.
  * Additional services can be selected via the serviceNames parameter.
  */
 export async function goToNotesPage(
@@ -195,13 +279,33 @@ export async function goToNotesPage(
 ): Promise<void> {
   const brandName = options?.brandName ?? 'Audi';
   const locationName = options?.locationName ?? 'München';
-  const serviceNames = options?.serviceNames ?? ['HU/AU'];
+  const defaultServiceNames = options?.serviceNames;
 
   await goToServiceSelection(page, brandName, locationName);
 
+  // Determine service names to select
+  // If none provided, auto-detect language and use brake-fluid (no options, simplest toggle)
+  let serviceNames: string[];
+  if (defaultServiceNames) {
+    serviceNames = defaultServiceNames;
+  } else {
+    // Auto-detect: check if brake-fluid card has DE or EN title
+    const brakeFluidDE = page.locator('.service-card').filter({
+      has: page.locator('.service-card__title', { hasText: 'Wechsel Bremsflüssigkeit' })
+    });
+    const isDE = await brakeFluidDE.isVisible().catch(() => false);
+    serviceNames = isDE ? ['Wechsel Bremsflüssigkeit'] : ['Brake Fluid Change'];
+  }
+
   // Select each requested service
   for (const serviceName of serviceNames) {
-    await selectService(page, serviceName);
+    // brake-fluid has no options -> direct toggle
+    if (serviceName === 'Wechsel Bremsflüssigkeit' || serviceName === 'Brake Fluid Change') {
+      await selectService(page, serviceName);
+    } else {
+      // Services with options need at least 1 checkbox + confirm
+      await confirmServiceWithOptions(page, serviceName, [await getFirstOptionText(page, serviceName)]);
+    }
   }
 
   // Click the Continue button on the services page to navigate to /home/notes
@@ -212,6 +316,27 @@ export async function goToNotesPage(
   // Wait for notes form to appear
   await page.locator('.notes').waitFor({ state: 'visible', timeout: 10000 });
   await waitForAngular(page);
+}
+
+/** Get the first option text for a service card (used as default selection) */
+async function getFirstOptionText(page: Page, serviceName: string): Promise<string> {
+  const card = getServiceCard(page, serviceName);
+
+  // Expand card if not already expanded
+  const options = card.locator('.service-card__options');
+  if (!(await options.isVisible())) {
+    await card.click();
+    await waitForAngular(page);
+  }
+
+  const firstCheckbox = card.locator('.service-card__checkbox').first();
+  const text = (await firstCheckbox.textContent() ?? '').trim();
+
+  // Collapse the card again so we start fresh
+  await card.click();
+  await waitForAngular(page);
+
+  return text;
 }
 
 /** Type text into the notes textarea */

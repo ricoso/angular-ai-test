@@ -7,10 +7,10 @@
       <app-service-card
         [service]="service"
         [isSelected]="selectedServiceIds().includes(service.id)"
-        [tireChangeVariantId]="tireChangeVariantId()"
+        [selectedOptionIds]="selectedOptionsMap()[service.id] ?? []"
         (serviceClicked)="onServiceClick($event)"
-        (tireChangeConfirmed)="onTireChangeConfirm($event)"
-        (tireChangeDeselected)="onTireChangeDeselect()"
+        (serviceConfirmed)="onServiceConfirm($event)"
+        (serviceDeselected)="onServiceDeselect($event)"
       />
     }
   </div>

@@ -36,59 +36,59 @@ describe('ServiceHintsComponent', () => {
       expect(exposed.visibleHints()).toEqual([]);
     });
 
-    it('should return hints for selected huau service', () => {
+    it('should return hints for selected tuv service', () => {
       const services: SelectedService[] = [
-        { serviceId: 'huau', selectedVariantId: null }
+        { serviceId: 'tuv', selectedOptionIds: [] }
       ];
       fixture.componentRef.setInput('selectedServices', services);
       fixture.detectChanges();
 
       const exposed = component as unknown as {
-        visibleHints: () => { serviceId: string; icon: string; hintKey: string }[];
+        visibleHints: () => { serviceId: string; svgIcon: string; hintKey: string }[];
       };
       const hints = exposed.visibleHints();
       expect(hints).toHaveLength(1);
-      expect(hints[0].serviceId).toBe('huau');
-      expect(hints[0].icon).toBe('verified');
+      expect(hints[0].serviceId).toBe('tuv');
+      expect(hints[0].svgIcon).toBe('assets/icons/services/tuv.svg');
     });
 
     it('should return hints for selected inspection service', () => {
       const services: SelectedService[] = [
-        { serviceId: 'inspection', selectedVariantId: null }
+        { serviceId: 'inspection', selectedOptionIds: [] }
       ];
       fixture.componentRef.setInput('selectedServices', services);
       fixture.detectChanges();
 
       const exposed = component as unknown as {
-        visibleHints: () => { serviceId: string; icon: string }[];
+        visibleHints: () => { serviceId: string; svgIcon: string }[];
       };
       const hints = exposed.visibleHints();
       expect(hints).toHaveLength(1);
       expect(hints[0].serviceId).toBe('inspection');
-      expect(hints[0].icon).toBe('build');
+      expect(hints[0].svgIcon).toBe('assets/icons/services/inspection.svg');
     });
 
     it('should return hints for selected tire-change service', () => {
       const services: SelectedService[] = [
-        { serviceId: 'tire-change', selectedVariantId: 'with-storage' }
+        { serviceId: 'tire-change', selectedOptionIds: ['stored-tires'] }
       ];
       fixture.componentRef.setInput('selectedServices', services);
       fixture.detectChanges();
 
       const exposed = component as unknown as {
-        visibleHints: () => { serviceId: string; icon: string }[];
+        visibleHints: () => { serviceId: string; svgIcon: string }[];
       };
       const hints = exposed.visibleHints();
       expect(hints).toHaveLength(1);
       expect(hints[0].serviceId).toBe('tire-change');
-      expect(hints[0].icon).toBe('tire_repair');
+      expect(hints[0].svgIcon).toBe('assets/icons/services/tire-change.svg');
     });
 
     it('should return hints for all selected services', () => {
       const services: SelectedService[] = [
-        { serviceId: 'huau', selectedVariantId: null },
-        { serviceId: 'inspection', selectedVariantId: null },
-        { serviceId: 'tire-change', selectedVariantId: 'without-storage' }
+        { serviceId: 'tuv', selectedOptionIds: [] },
+        { serviceId: 'inspection', selectedOptionIds: [] },
+        { serviceId: 'tire-change', selectedOptionIds: ['bring-own-tires'] }
       ];
       fixture.componentRef.setInput('selectedServices', services);
       fixture.detectChanges();
@@ -101,7 +101,7 @@ describe('ServiceHintsComponent', () => {
 
     it('should only show hints for selected services', () => {
       const services: SelectedService[] = [
-        { serviceId: 'huau', selectedVariantId: null }
+        { serviceId: 'tuv', selectedOptionIds: [] }
       ];
       fixture.componentRef.setInput('selectedServices', services);
       fixture.detectChanges();
@@ -111,7 +111,7 @@ describe('ServiceHintsComponent', () => {
       };
       const hints = exposed.visibleHints();
       expect(hints).toHaveLength(1);
-      expect(hints[0].serviceId).toBe('huau');
+      expect(hints[0].serviceId).toBe('tuv');
     });
   });
 });

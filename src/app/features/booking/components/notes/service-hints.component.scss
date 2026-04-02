@@ -28,6 +28,13 @@
     margin-top: var(--spacing-xs);
   }
 
+  &__svg-icon {
+    width: 1.5em;
+    height: 1.5em;
+    object-fit: contain;
+    filter: invert(48%) sepia(79%) saturate(1564%) hue-rotate(212deg) brightness(97%) contrast(88%);
+  }
+
   &__text {
     font-size: var(--font-size-sm);
     line-height: var(--line-height-relaxed);

@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
-import { MatRadioModule } from '@angular/material/radio';
 
 import { i18nKeys, TranslatePipe } from '@core/i18n';
 
@@ -11,7 +11,7 @@ import type { ServiceDisplay, ServiceType } from '../../models/service.model';
 @Component({
   selector: 'app-service-card',
   standalone: true,
-  imports: [MatCardModule, MatIconModule, MatButtonModule, MatRadioModule, TranslatePipe],
+  imports: [MatCardModule, MatIconModule, MatButtonModule, MatCheckboxModule, TranslatePipe],
   templateUrl: './service-card.component.html',
   styleUrl: './service-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -19,58 +19,74 @@ import type { ServiceDisplay, ServiceType } from '../../models/service.model';
 export class ServiceCardComponent {
   public readonly service = input.required<ServiceDisplay>();
   public readonly isSelected = input<boolean>(false);
-  public readonly tireChangeVariantId = input<string | null>(null);
+  public readonly selectedOptionIds = input<string[]>([]);
 
   public readonly serviceClicked = output<ServiceType>();
-  public readonly tireChangeConfirmed = output<string>();
-  public readonly tireChangeDeselected = output();
+  public readonly serviceConfirmed = output<{ serviceId: ServiceType; optionIds: string[] }>();
+  public readonly serviceDeselected = output<ServiceType>();
 
-  protected readonly tireChange = i18nKeys.booking.services.tireChange;
-  protected readonly selectedRadioVariant = signal<string | null>(null);
+  protected readonly services = i18nKeys.booking.services;
+  protected readonly isExpanded = signal<boolean>(false);
+  protected readonly selectedCheckboxOptions = signal<Set<string>>(new Set());
 
-  protected readonly hasTireChangeVariants = computed(() => this.service().variants.length > 0);
+  protected readonly hasOptions = computed(() => this.service().options.length > 0);
 
-  protected readonly isTireChangeSelected = computed(() =>
-    this.isSelected() && this.hasTireChangeVariants()
-  );
-
-  protected readonly confirmedVariantId = computed(() => this.tireChangeVariantId());
-
-  protected readonly hasVariantChanged = computed(() => {
-    const confirmed = this.confirmedVariantId();
-    const selected = this.selectedRadioVariant();
-    if (!confirmed || !selected) return false;
-    return confirmed !== selected;
+  protected readonly hasOptionsChanged = computed(() => {
+    const confirmed = this.selectedOptionIds();
+    const selected = this.selectedCheckboxOptions();
+    if (confirmed.length === 0 || selected.size === 0) return false;
+    if (confirmed.length !== selected.size) return true;
+    return !confirmed.every((id) => selected.has(id));
   });
 
   protected readonly showConfirmButton = computed(() => {
-    if (!this.hasTireChangeVariants()) return false;
+    if (!this.hasOptions()) return false;
+    if (!this.isExpanded()) return false;
     if (!this.isSelected()) return true;
-    return this.hasVariantChanged();
+    return this.hasOptionsChanged();
   });
 
   protected readonly showDeselectButton = computed(() =>
-    this.isTireChangeSelected() && !this.hasVariantChanged()
+    this.isSelected() && this.hasOptions() && this.isExpanded() && !this.hasOptionsChanged()
   );
 
+  constructor() {
+    effect(() => {
+      const optionIds = this.selectedOptionIds();
+      if (optionIds.length > 0) {
+        this.selectedCheckboxOptions.set(new Set(optionIds));
+      }
+    });
+  }
+
   protected onCardClick(): void {
-    if (this.hasTireChangeVariants()) return;
+    if (this.hasOptions()) {
+      this.isExpanded.set(!this.isExpanded());
+      return;
+    }
     this.serviceClicked.emit(this.service().id);
   }
 
-  protected onRadioChange(variantId: string): void {
-    this.selectedRadioVariant.set(variantId);
+  protected onCheckboxChange(optionId: string, checked: boolean): void {
+    const current = new Set(this.selectedCheckboxOptions());
+    if (checked) {
+      current.add(optionId);
+    } else {
+      current.delete(optionId);
+    }
+    this.selectedCheckboxOptions.set(current);
   }
 
   protected onConfirm(): void {
-    const variantId = this.selectedRadioVariant();
-    if (variantId) {
-      this.tireChangeConfirmed.emit(variantId);
+    const optionIds = Array.from(this.selectedCheckboxOptions());
+    if (optionIds.length > 0) {
+      this.serviceConfirmed.emit({ serviceId: this.service().id, optionIds });
     }
   }
 
   protected onDeselect(): void {
-    this.tireChangeDeselected.emit();
-    this.selectedRadioVariant.set(null);
+    this.serviceDeselected.emit(this.service().id);
+    this.selectedCheckboxOptions.set(new Set());
+    this.isExpanded.set(false);
   }
 }

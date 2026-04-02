@@ -64,15 +64,15 @@ describe('BookingApiService', () => {
       expect(result).toEqual(AVAILABLE_SERVICES);
     });
 
-    it('should return 3 services', async () => {
+    it('should return 7 services', async () => {
       const result = await service.getServices();
-      expect(result).toHaveLength(3);
+      expect(result).toHaveLength(7);
     });
 
-    it('should include tire-change with variants', async () => {
+    it('should include tire-change with options', async () => {
       const result = await service.getServices();
       const tireChange = result.find(s => s.id === 'tire-change');
-      expect(tireChange?.variants).toHaveLength(2);
+      expect(tireChange?.options).toHaveLength(4);
     });
   });
 });

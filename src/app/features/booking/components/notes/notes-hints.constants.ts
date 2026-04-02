@@ -5,24 +5,44 @@ import type { ServiceType } from '../../models/service.model';
 
 export interface ServiceHint {
   serviceId: ServiceType;
-  icon: string;
+  svgIcon: string;
   hintKey: TranslationKey;
 }
 
 export const SERVICE_HINTS: ServiceHint[] = [
   {
-    serviceId: 'huau',
-    icon: 'verified',
-    hintKey: i18nKeys.booking.notes.hints.huau as TranslationKey
-  },
-  {
     serviceId: 'inspection',
-    icon: 'build',
+    svgIcon: 'assets/icons/services/inspection.svg',
     hintKey: i18nKeys.booking.notes.hints.inspection as TranslationKey
   },
   {
+    serviceId: 'tuv',
+    svgIcon: 'assets/icons/services/tuv.svg',
+    hintKey: i18nKeys.booking.notes.hints.tuv as TranslationKey
+  },
+  {
+    serviceId: 'brake-fluid',
+    svgIcon: 'assets/icons/services/brake-fluid.svg',
+    hintKey: i18nKeys.booking.notes.hints.brakeFluid as TranslationKey
+  },
+  {
     serviceId: 'tire-change',
-    icon: 'tire_repair',
+    svgIcon: 'assets/icons/services/tire-change.svg',
     hintKey: i18nKeys.booking.notes.hints.tireChange as TranslationKey
+  },
+  {
+    serviceId: 'actions-checks',
+    svgIcon: 'assets/icons/services/actions-checks.svg',
+    hintKey: i18nKeys.booking.notes.hints.actionsChecks as TranslationKey
+  },
+  {
+    serviceId: 'repair',
+    svgIcon: 'assets/icons/services/repair.svg',
+    hintKey: i18nKeys.booking.notes.hints.repair as TranslationKey
+  },
+  {
+    serviceId: 'bodywork',
+    svgIcon: 'assets/icons/services/bodywork.svg',
+    hintKey: i18nKeys.booking.notes.hints.bodywork as TranslationKey
   }
 ];

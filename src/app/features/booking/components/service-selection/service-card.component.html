@@ -1,10 +1,12 @@
 <mat-card
   class="service-card"
   [class.service-card--selected]="isSelected()"
-  [class.service-card--clickable]="!hasTireChangeVariants()"
-  [attr.role]="hasTireChangeVariants() ? 'region' : 'button'"
-  [attr.aria-pressed]="hasTireChangeVariants() ? null : isSelected()"
-  [attr.tabindex]="hasTireChangeVariants() ? null : 0"
+  [class.service-card--clickable]="!hasOptions()"
+  [class.service-card--expandable]="hasOptions()"
+  [attr.role]="hasOptions() ? 'region' : 'button'"
+  [attr.aria-pressed]="hasOptions() ? null : isSelected()"
+  [attr.aria-expanded]="hasOptions() ? isExpanded() : null"
+  [attr.tabindex]="0"
   (click)="onCardClick()"
   (keydown.enter)="onCardClick()"
   (keydown.space)="onCardClick()">
@@ -14,26 +16,21 @@
   }
 
   <mat-card-content class="service-card__content">
-    <span class="icon-framed service-card__icon">
-      <mat-icon aria-hidden="true">{{ service().icon }}</mat-icon>
+    <span class="icon-framed icon-framed--xl service-card__icon">
+      <img [src]="service().svgIcon" [alt]="service().titleKey | translate" class="service-card__svg-icon">
     </span>
     <h2 class="service-card__title">{{ service().titleKey | translate }}</h2>
     <p class="service-card__description">{{ service().descriptionKey | translate }}</p>
 
-    @if (hasTireChangeVariants()) {
-      <div class="service-card__variants">
-        @for (variant of service().variants; track variant.id) {
-          <label class="service-card__radio-label">
-            <input
-              type="radio"
-              name="tire-change-variant"
-              [value]="variant.id"
-              [checked]="selectedRadioVariant() === variant.id || confirmedVariantId() === variant.id"
-              (change)="onRadioChange(variant.id)"
-              class="service-card__radio-input"
-            />
-            <span class="service-card__radio-text">{{ variant.labelKey | translate }}</span>
-          </label>
+    @if (hasOptions() && isExpanded()) {
+      <div class="service-card__options" tabindex="-1" (click)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()" (keydown.space)="$event.stopPropagation()">
+        @for (option of service().options; track option.id) {
+          <mat-checkbox
+            class="service-card__checkbox"
+            [checked]="selectedCheckboxOptions().has(option.id)"
+            (change)="onCheckboxChange(option.id, $event.checked)">
+            {{ option.labelKey | translate }}
+          </mat-checkbox>
         }
 
         <div class="service-card__actions">
@@ -42,17 +39,17 @@
               mat-raised-button
               color="primary"
               class="service-card__confirm-button"
-              [disabled]="!selectedRadioVariant()"
-              (click)="onConfirm(); $event.stopPropagation()">
-              {{ tireChange.confirmButton | translate }}
+              [disabled]="selectedCheckboxOptions().size === 0"
+              (click)="onConfirm()">
+              {{ services.confirmButton | translate }}
             </button>
           }
           @if (showDeselectButton()) {
             <button
               mat-flat-button
               class="service-card__deselect-button"
-              (click)="onDeselect(); $event.stopPropagation()">
-              {{ tireChange.deselectButton | translate }}
+              (click)="onDeselect()">
+              {{ services.deselectButton | translate }}
             </button>
           }
         </div>

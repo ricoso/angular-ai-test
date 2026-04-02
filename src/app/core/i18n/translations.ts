@@ -67,21 +67,70 @@ export const translations = {
         ariaGroupLabel: 'Verfügbare Services',
         continueButton: 'Weiter',
         backButton: 'Zurück',
-        huau: {
-          title: 'HU/AU',
-          description: 'Jetzt Ihren Termin für eine gesetzliche HU/AU vereinbaren!'
-        },
+        confirmButton: 'Bestätigen',
+        deselectButton: 'Abwählen',
         inspection: {
           title: 'Inspektion',
-          description: 'Lassen Sie Ihre fällige Inspektion hier durchführen! Buchen Sie jetzt einen Termin.'
+          description: 'Services rund um Ihr Fahrzeug: von Inspektion über Ölwechsel bis Fahrzeugvermessung.',
+          options: {
+            dialogAcceptance: 'Dialogannahme',
+            inspection: 'Inspektion',
+            oilChange: 'Ölwechsel-Service',
+            brakeCheck: 'Bremsen prüfen (kostenlos) und bei Bedarf erneuern',
+            wiperBlades: 'Wischerblätter erneuern',
+            maintenanceContract: 'Interesse an einem Wartungsvertrag',
+            emergencyOil: '1 Liter Notfallöl'
+          }
+        },
+        tuv: {
+          title: 'TÜV',
+          description: 'Hier klicken und Termin zur Haupt- & Abgasuntersuchung oder UVV-Prüfung buchen.',
+          options: {
+            tuv: 'TÜV',
+            uvvInspection: 'UVV-Prüfung (für Dienstwagen & gewerblich genutzte Fahrzeuge)',
+            acCleaning: 'Klimaanlagenreinigung (149,00 € inkl. MwSt.)'
+          }
+        },
+        brakeFluid: {
+          title: 'Wechsel Bremsflüssigkeit',
+          description: 'Wechsel der Bremsflüssigkeit Ihres Fahrzeugs ist fällig? Einfach hier buchen.'
         },
         tireChange: {
           title: 'Räderwechsel',
-          description: 'Kommen Sie zu uns für Ihren Räderwechsel – inkl. optionaler Einlagerung!',
-          withoutStorage: 'Räderwechsel ohne Einlagerung',
-          withStorage: 'Räderwechsel mit Einlagerung',
-          confirmButton: 'Bestätigen',
-          deselectButton: 'Abwählen'
+          description: 'Alle Services rund um Ihre Räder und Reifen finden Sie hier.',
+          options: {
+            bringOwnTires: 'Räderwechsel - ich bringe meine Räder mit',
+            storedTires: 'Räderwechsel - meine Räder sind eingelagert',
+            pickupDelivery: 'Hol & Bringservice',
+            storeTires: 'Meine angelieferten Räder sollen bitte eingelagert werden'
+          }
+        },
+        actionsChecks: {
+          title: 'Aktionen / Checks',
+          description: 'Sie wollen Ihr Fahrzeug durchchecken lassen oder fit für die aktuelle Jahreszeit machen? Hier den passenden Service buchen.',
+          options: {
+            warrantyCheck: 'Kostenloser Check vor Ablauf der Herstellergarantie',
+            safetyCheck: 'Sicherheits-Check / Saisonaler Check',
+            fluidCheck: 'Flüssigkeitsstände prüfen (kostenlos) und bei Bedarf auffüllen',
+            batteryCheck: 'Batterie Check (Kostenlos im Verbund)'
+          }
+        },
+        repair: {
+          title: 'Reparatur / Beanstandung',
+          description: 'Sie haben anderweitige Anliegen bezüglich Ihres Fahrzeugs? Hier klicken und im folgenden Kommentarfeld konkretisieren.',
+          options: {
+            diagnostics: 'Allgemeine Diagnosearbeiten',
+            noises: 'Geräusche',
+            acMalfunction: 'Klimaanlage ohne Funktion'
+          }
+        },
+        bodywork: {
+          title: 'Karosserie / Frontscheibe wechseln',
+          description: 'Sie benötigen eine neue Windschutzscheibe oder einen Kostenvoranschlag? Hier einfach und schnell buchen.',
+          options: {
+            costEstimate: 'Kostenvoranschlag / Gutachten nach Unfall',
+            windshieldReplacement: 'Windschutzscheibe erneuern'
+          }
         }
       },
       appointment: {
@@ -114,9 +163,13 @@ export const translations = {
         backButton: 'Zurück',
         continueButton: 'Weiter',
         hints: {
-          huau: 'Bitte beachten Sie: Für die HU/AU benötigen Sie alle Fahrzeugpapiere. Stellen Sie sicher, dass Ihr Fahrzeug fahrtüchtig und verkehrssicher ist.',
           inspection: 'Bitte beachten Sie: Bringen Sie Ihr Serviceheft mit. Bei umfangreichen Arbeiten kann ein Ersatzfahrzeug bereitgestellt werden — bitte im Voraus anfragen.',
-          tireChange: 'Bitte beachten Sie: Für die Einlagerung Ihrer Reifen bitten wir um Vorabinformation über Reifenanzahl und -größe. Die Einlagerung ist kostenpflichtig.'
+          tuv: 'Bitte beachten Sie: Für die HU/AU benötigen Sie alle Fahrzeugpapiere. Stellen Sie sicher, dass Ihr Fahrzeug fahrtüchtig und verkehrssicher ist.',
+          brakeFluid: 'Bitte beachten Sie: Der Wechsel der Bremsflüssigkeit ist gemäß Herstellervorgaben alle 2 Jahre empfohlen.',
+          tireChange: 'Bitte beachten Sie: Für die Einlagerung Ihrer Reifen bitten wir um Vorabinformation über Reifenanzahl und -größe. Die Einlagerung ist kostenpflichtig.',
+          actionsChecks: 'Bitte beachten Sie: Für den Garantie-Check benötigen wir die Fahrzeugpapiere und ggf. das Serviceheft.',
+          repair: 'Bitte beachten Sie: Beschreiben Sie Ihre Beanstandung so detailliert wie möglich im Kommentarfeld, damit wir uns optimal vorbereiten können.',
+          bodywork: 'Bitte beachten Sie: Bei Unfallschäden benötigen wir ggf. die Schadennummer Ihrer Versicherung. Bringen Sie relevante Unterlagen mit.'
         }
       },
       carinformation: {
@@ -259,21 +312,70 @@ export const translations = {
         ariaGroupLabel: 'Available services',
         continueButton: 'Continue',
         backButton: 'Back',
-        huau: {
-          title: 'HU/AU',
-          description: 'Book your appointment for a mandatory HU/AU inspection now!'
-        },
+        confirmButton: 'Confirm',
+        deselectButton: 'Deselect',
         inspection: {
           title: 'Inspection',
-          description: 'Have your due inspection carried out here! Book an appointment now.'
+          description: 'Services for your vehicle: from inspection to oil change and vehicle alignment.',
+          options: {
+            dialogAcceptance: 'Dialog acceptance',
+            inspection: 'Inspection',
+            oilChange: 'Oil change service',
+            brakeCheck: 'Check brakes (free) and replace if needed',
+            wiperBlades: 'Replace wiper blades',
+            maintenanceContract: 'Interest in a maintenance contract',
+            emergencyOil: '1 litre emergency oil'
+          }
+        },
+        tuv: {
+          title: 'MOT',
+          description: 'Click here to book an appointment for MOT inspection or UVV check.',
+          options: {
+            tuv: 'MOT',
+            uvvInspection: 'UVV inspection (for company cars & commercially used vehicles)',
+            acCleaning: 'Air conditioning cleaning (€149.00 incl. VAT)'
+          }
+        },
+        brakeFluid: {
+          title: 'Brake Fluid Change',
+          description: 'Is your vehicle\'s brake fluid change due? Simply book it here.'
         },
         tireChange: {
           title: 'Tire Change',
-          description: 'Come to us for your tire change – including optional storage!',
-          withoutStorage: 'Tire change without storage',
-          withStorage: 'Tire change with storage',
-          confirmButton: 'Confirm',
-          deselectButton: 'Deselect'
+          description: 'All services for your wheels and tires can be found here.',
+          options: {
+            bringOwnTires: 'Tire change - I bring my own tires',
+            storedTires: 'Tire change - my tires are in storage',
+            pickupDelivery: 'Pick-up & delivery service',
+            storeTires: 'Please store my delivered tires'
+          }
+        },
+        actionsChecks: {
+          title: 'Actions / Checks',
+          description: 'Want to have your vehicle checked or ready for the current season? Book the right service here.',
+          options: {
+            warrantyCheck: 'Free check before manufacturer warranty expires',
+            safetyCheck: 'Safety check / seasonal check',
+            fluidCheck: 'Check fluid levels (free) and top up if needed',
+            batteryCheck: 'Battery check (free in network)'
+          }
+        },
+        repair: {
+          title: 'Repair / Complaint',
+          description: 'Do you have other concerns regarding your vehicle? Click here and specify in the comment field below.',
+          options: {
+            diagnostics: 'General diagnostics',
+            noises: 'Noises',
+            acMalfunction: 'Air conditioning malfunction'
+          }
+        },
+        bodywork: {
+          title: 'Bodywork / Windshield Replacement',
+          description: 'Need a new windshield or a cost estimate? Book quickly and easily here.',
+          options: {
+            costEstimate: 'Cost estimate / assessment after accident',
+            windshieldReplacement: 'Replace windshield'
+          }
         }
       },
       appointment: {
@@ -306,9 +408,13 @@ export const translations = {
         backButton: 'Back',
         continueButton: 'Continue',
         hints: {
-          huau: 'Please note: For the HU/AU you will need all vehicle documents. Make sure your vehicle is roadworthy and safe to drive.',
           inspection: 'Please note: Please bring your service booklet. For extensive work, a replacement vehicle may be provided — please enquire in advance.',
-          tireChange: 'Please note: For tire storage, please inform us in advance about the number and size of tires. Storage is subject to a fee.'
+          tuv: 'Please note: For the MOT you will need all vehicle documents. Make sure your vehicle is roadworthy and safe to drive.',
+          brakeFluid: 'Please note: Brake fluid change is recommended every 2 years according to manufacturer specifications.',
+          tireChange: 'Please note: For tire storage, please inform us in advance about the number and size of tires. Storage is subject to a fee.',
+          actionsChecks: 'Please note: For the warranty check we need the vehicle documents and, if applicable, the service booklet.',
+          repair: 'Please note: Please describe your complaint as detailed as possible in the comment field so we can prepare optimally.',
+          bodywork: 'Please note: For accident damage we may need your insurance claim number. Please bring relevant documents.'
         }
       },
       carinformation: {
@@ -446,26 +552,75 @@ export const translations = {
         backButton: 'Назад'
       },
       services: {
-        title: 'Які послуги ви хочете замовити?',
-        subtitle: 'Оберіть бажані послуги.',
+        title: 'Які послуги ви хотіли б замовити?',
+        subtitle: 'Оберіть потрібні послуги.',
         ariaGroupLabel: 'Доступні послуги',
         continueButton: 'Далі',
         backButton: 'Назад',
-        huau: {
-          title: 'ТО/ТА',
-          description: 'Запишіться зараз на обов\'язковий технічний огляд!'
-        },
+        confirmButton: 'Підтвердити',
+        deselectButton: 'Скасувати вибір',
         inspection: {
           title: 'Інспекція',
-          description: 'Проведіть заплановану інспекцію тут! Запишіться зараз.'
+          description: 'Послуги для вашого автомобіля: від інспекції до заміни масла та вирівнювання.',
+          options: {
+            dialogAcceptance: 'Діалогове прийняття',
+            inspection: 'Інспекція',
+            oilChange: 'Заміна масла',
+            brakeCheck: 'Перевірка гальм (безкоштовно) та заміна за потреби',
+            wiperBlades: 'Заміна щіток склоочисника',
+            maintenanceContract: 'Зацікавленість у договорі обслуговування',
+            emergencyOil: '1 літр аварійної оливи'
+          }
+        },
+        tuv: {
+          title: 'Техогляд',
+          description: 'Натисніть тут, щоб записатися на техогляд або перевірку UVV.',
+          options: {
+            tuv: 'Техогляд',
+            uvvInspection: 'Перевірка UVV (для службових та комерційних автомобілів)',
+            acCleaning: 'Очищення кондиціонера (149,00 € з ПДВ)'
+          }
+        },
+        brakeFluid: {
+          title: 'Заміна гальмівної рідини',
+          description: 'Час замінити гальмівну рідину? Просто запишіться тут.'
         },
         tireChange: {
           title: 'Заміна коліс',
-          description: 'Завітайте до нас для заміни коліс – включно з опціональним зберіганням!',
-          withoutStorage: 'Заміна коліс без зберігання',
-          withStorage: 'Заміна коліс зі зберіганням',
-          confirmButton: 'Підтвердити',
-          deselectButton: 'Скасувати вибір'
+          description: 'Усі послуги для ваших коліс та шин знаходяться тут.',
+          options: {
+            bringOwnTires: 'Заміна коліс - я привезу свої колеса',
+            storedTires: 'Заміна коліс - мої колеса на зберіганні',
+            pickupDelivery: 'Послуга доставки та забору',
+            storeTires: 'Будь ласка, збережіть мої доставлені колеса'
+          }
+        },
+        actionsChecks: {
+          title: 'Акції / Перевірки',
+          description: 'Хочете перевірити свій автомобіль або підготувати до поточного сезону? Замовте відповідну послугу тут.',
+          options: {
+            warrantyCheck: 'Безкоштовна перевірка перед закінченням гарантії виробника',
+            safetyCheck: 'Перевірка безпеки / сезонна перевірка',
+            fluidCheck: 'Перевірка рівня рідин (безкоштовно) та доливання за потреби',
+            batteryCheck: 'Перевірка акумулятора (безкоштовно в мережі)'
+          }
+        },
+        repair: {
+          title: 'Ремонт / Скарга',
+          description: 'Маєте інші питання щодо вашого автомобіля? Натисніть тут та вкажіть у полі коментарів.',
+          options: {
+            diagnostics: 'Загальна діагностика',
+            noises: 'Шуми',
+            acMalfunction: 'Несправність кондиціонера'
+          }
+        },
+        bodywork: {
+          title: 'Кузов / Заміна лобового скла',
+          description: 'Потрібне нове лобове скло або кошторис? Швидко та легко запишіться тут.',
+          options: {
+            costEstimate: 'Кошторис / оцінка після аварії',
+            windshieldReplacement: 'Заміна лобового скла'
+          }
         }
       },
       appointment: {
@@ -498,9 +653,13 @@ export const translations = {
         backButton: 'Назад',
         continueButton: 'Далі',
         hints: {
-          huau: 'Зверніть увагу: Для ТО/ТА вам знадобляться всі документи на автомобіль. Переконайтеся, що ваш автомобіль справний та безпечний для руху.',
-          inspection: 'Зверніть увагу: Візьміть з собою сервісну книжку. При масштабних роботах може бути надано підмінний автомобіль — запитуйте заздалегідь.',
-          tireChange: 'Зверніть увагу: Для зберігання шин просимо заздалегідь повідомити про кількість та розмір шин. Зберігання є платним.'
+          inspection: 'Зверніть увагу: принесіть сервісну книжку. При масштабних роботах може бути надано підмінний автомобіль — запитайте заздалегідь.',
+          tuv: 'Зверніть увагу: для техогляду вам знадобляться всі документи на автомобіль. Переконайтеся, що ваш автомобіль справний та безпечний.',
+          brakeFluid: 'Зверніть увагу: заміна гальмівної рідини рекомендується кожні 2 роки відповідно до вимог виробника.',
+          tireChange: 'Зверніть увагу: для зберігання шин повідомте нас заздалегідь про кількість та розмір шин. Зберігання платне.',
+          actionsChecks: 'Зверніть увагу: для гарантійної перевірки нам потрібні документи на автомобіль та, за потреби, сервісна книжка.',
+          repair: 'Зверніть увагу: опишіть вашу скаргу якомога детальніше у полі коментарів, щоб ми могли оптимально підготуватися.',
+          bodywork: 'Зверніть увагу: при аварійних пошкодженнях нам може знадобитися номер страхового випадку. Принесіть відповідні документи.'
         }
       },
       carinformation: {
@@ -643,21 +802,70 @@ export const translations = {
         ariaGroupLabel: 'Services disponibles',
         continueButton: 'Continuer',
         backButton: 'Retour',
-        huau: {
-          title: 'CT/CTA',
-          description: 'Prenez rendez-vous maintenant pour un contrôle technique obligatoire !'
-        },
+        confirmButton: 'Confirmer',
+        deselectButton: 'Désélectionner',
         inspection: {
           title: 'Inspection',
-          description: 'Faites réaliser votre inspection ici ! Prenez rendez-vous maintenant.'
+          description: 'Services pour votre véhicule : de l\'inspection à la vidange en passant par l\'alignement.',
+          options: {
+            dialogAcceptance: 'Accueil dialogue',
+            inspection: 'Inspection',
+            oilChange: 'Service vidange',
+            brakeCheck: 'Vérification des freins (gratuit) et remplacement si nécessaire',
+            wiperBlades: 'Remplacement des essuie-glaces',
+            maintenanceContract: 'Intérêt pour un contrat d\'entretien',
+            emergencyOil: '1 litre d\'huile de secours'
+          }
+        },
+        tuv: {
+          title: 'Contrôle technique',
+          description: 'Cliquez ici pour prendre rendez-vous pour le contrôle technique ou la vérification UVV.',
+          options: {
+            tuv: 'Contrôle technique',
+            uvvInspection: 'Vérification UVV (véhicules de service et commerciaux)',
+            acCleaning: 'Nettoyage de la climatisation (149,00 € TTC)'
+          }
+        },
+        brakeFluid: {
+          title: 'Changement de liquide de frein',
+          description: 'Le changement de liquide de frein de votre véhicule est dû ? Réservez simplement ici.'
         },
         tireChange: {
           title: 'Changement de pneus',
-          description: 'Venez chez nous pour votre changement de pneus – stockage optionnel inclus !',
-          withoutStorage: 'Changement de pneus sans stockage',
-          withStorage: 'Changement de pneus avec stockage',
-          confirmButton: 'Confirmer',
-          deselectButton: 'Désélectionner'
+          description: 'Tous les services pour vos roues et pneus sont disponibles ici.',
+          options: {
+            bringOwnTires: 'Changement de pneus - j\'apporte mes propres roues',
+            storedTires: 'Changement de pneus - mes roues sont entreposées',
+            pickupDelivery: 'Service de collecte et livraison',
+            storeTires: 'Veuillez entreposer mes roues livrées'
+          }
+        },
+        actionsChecks: {
+          title: 'Actions / Vérifications',
+          description: 'Vous souhaitez faire vérifier votre véhicule ou le préparer pour la saison ? Réservez le bon service ici.',
+          options: {
+            warrantyCheck: 'Vérification gratuite avant expiration de la garantie',
+            safetyCheck: 'Vérification de sécurité / saisonnière',
+            fluidCheck: 'Vérification des niveaux de liquides (gratuit) et complément si nécessaire',
+            batteryCheck: 'Vérification de la batterie (gratuit en réseau)'
+          }
+        },
+        repair: {
+          title: 'Réparation / Réclamation',
+          description: 'Vous avez d\'autres préoccupations concernant votre véhicule ? Cliquez ici et précisez dans le champ de commentaire.',
+          options: {
+            diagnostics: 'Diagnostic général',
+            noises: 'Bruits',
+            acMalfunction: 'Climatisation en panne'
+          }
+        },
+        bodywork: {
+          title: 'Carrosserie / Remplacement de pare-brise',
+          description: 'Besoin d\'un nouveau pare-brise ou d\'un devis ? Réservez rapidement et facilement ici.',
+          options: {
+            costEstimate: 'Devis / expertise après accident',
+            windshieldReplacement: 'Remplacement du pare-brise'
+          }
         }
       },
       appointment: {
@@ -690,9 +898,13 @@ export const translations = {
         backButton: 'Retour',
         continueButton: 'Continuer',
         hints: {
-          huau: 'Veuillez noter : Pour le CT/CTA, vous aurez besoin de tous les documents du véhicule. Assurez-vous que votre véhicule est en état de rouler et sûr.',
-          inspection: 'Veuillez noter : Apportez votre carnet d\'entretien. Pour des travaux importants, un véhicule de remplacement peut être fourni — veuillez vous renseigner à l\'avance.',
-          tireChange: 'Veuillez noter : Pour le stockage des pneus, veuillez nous informer à l\'avance du nombre et de la taille des pneus. Le stockage est payant.'
+          inspection: 'Veuillez noter : apportez votre carnet d\'entretien. Pour les travaux importants, un véhicule de remplacement peut être fourni — veuillez vous renseigner à l\'avance.',
+          tuv: 'Veuillez noter : pour le contrôle technique, vous aurez besoin de tous les documents du véhicule. Assurez-vous que votre véhicule est en état de rouler.',
+          brakeFluid: 'Veuillez noter : le changement de liquide de frein est recommandé tous les 2 ans selon les spécifications du fabricant.',
+          tireChange: 'Veuillez noter : pour l\'entreposage des pneus, informez-nous à l\'avance du nombre et de la taille des pneus. L\'entreposage est payant.',
+          actionsChecks: 'Veuillez noter : pour la vérification de garantie, nous avons besoin des documents du véhicule et éventuellement du carnet d\'entretien.',
+          repair: 'Veuillez noter : décrivez votre réclamation aussi précisément que possible dans le champ de commentaire afin que nous puissions nous préparer au mieux.',
+          bodywork: 'Veuillez noter : en cas de dommages accidentels, nous pourrions avoir besoin de votre numéro de sinistre. Apportez les documents pertinents.'
         }
       },
       carinformation: {
@@ -833,23 +1045,72 @@ export const translations = {
         title: 'ما هي الخدمات التي ترغب في حجزها؟',
         subtitle: 'اختر الخدمات المطلوبة.',
         ariaGroupLabel: 'الخدمات المتاحة',
-        continueButton: 'متابعة',
+        continueButton: 'التالي',
         backButton: 'رجوع',
-        huau: {
-          title: 'الفحص الفني',
-          description: 'احجز موعدك الآن للفحص الفني الإلزامي!'
-        },
+        confirmButton: 'تأكيد',
+        deselectButton: 'إلغاء الاختيار',
         inspection: {
-          title: 'التفتيش',
-          description: 'قم بإجراء التفتيش المستحق هنا! احجز موعداً الآن.'
+          title: 'فحص',
+          description: 'خدمات لسيارتك: من الفحص إلى تغيير الزيت ومحاذاة السيارة.',
+          options: {
+            dialogAcceptance: 'استقبال حواري',
+            inspection: 'فحص',
+            oilChange: 'خدمة تغيير الزيت',
+            brakeCheck: 'فحص الفرامل (مجاني) والاستبدال عند الحاجة',
+            wiperBlades: 'استبدال شفرات المساحات',
+            maintenanceContract: 'اهتمام بعقد صيانة',
+            emergencyOil: '١ لتر زيت طوارئ'
+          }
+        },
+        tuv: {
+          title: 'الفحص الفني',
+          description: 'انقر هنا لحجز موعد للفحص الفني أو فحص UVV.',
+          options: {
+            tuv: 'الفحص الفني',
+            uvvInspection: 'فحص UVV (للسيارات الخدمية والتجارية)',
+            acCleaning: 'تنظيف المكيف (١٤٩٫٠٠ يورو شامل الضريبة)'
+          }
+        },
+        brakeFluid: {
+          title: 'تغيير سائل الفرامل',
+          description: 'هل حان وقت تغيير سائل فرامل سيارتك؟ احجز ببساطة هنا.'
         },
         tireChange: {
           title: 'تغيير الإطارات',
-          description: 'تعال إلينا لتغيير الإطارات – مع إمكانية التخزين الاختياري!',
-          withoutStorage: 'تغيير الإطارات بدون تخزين',
-          withStorage: 'تغيير الإطارات مع تخزين',
-          confirmButton: 'تأكيد',
-          deselectButton: 'إلغاء الاختيار'
+          description: 'جميع خدمات العجلات والإطارات متوفرة هنا.',
+          options: {
+            bringOwnTires: 'تغيير الإطارات - أحضر إطاراتي الخاصة',
+            storedTires: 'تغيير الإطارات - إطاراتي مخزنة',
+            pickupDelivery: 'خدمة الاستلام والتوصيل',
+            storeTires: 'يرجى تخزين إطاراتي المُسلَّمة'
+          }
+        },
+        actionsChecks: {
+          title: 'عروض / فحوصات',
+          description: 'هل تريد فحص سيارتك أو تجهيزها للموسم الحالي؟ احجز الخدمة المناسبة هنا.',
+          options: {
+            warrantyCheck: 'فحص مجاني قبل انتهاء ضمان الشركة المصنعة',
+            safetyCheck: 'فحص السلامة / الفحص الموسمي',
+            fluidCheck: 'فحص مستويات السوائل (مجاني) والتعبئة عند الحاجة',
+            batteryCheck: 'فحص البطارية (مجاني في الشبكة)'
+          }
+        },
+        repair: {
+          title: 'إصلاح / شكوى',
+          description: 'لديك مخاوف أخرى بشأن سيارتك؟ انقر هنا وحدد في حقل التعليقات.',
+          options: {
+            diagnostics: 'تشخيص عام',
+            noises: 'أصوات',
+            acMalfunction: 'عطل في المكيف'
+          }
+        },
+        bodywork: {
+          title: 'هيكل السيارة / استبدال الزجاج الأمامي',
+          description: 'تحتاج زجاجًا أماميًا جديدًا أو تقدير تكلفة؟ احجز بسرعة وسهولة هنا.',
+          options: {
+            costEstimate: 'تقدير التكلفة / التقييم بعد الحادث',
+            windshieldReplacement: 'استبدال الزجاج الأمامي'
+          }
         }
       },
       appointment: {
@@ -882,9 +1143,13 @@ export const translations = {
         backButton: 'رجوع',
         continueButton: 'متابعة',
         hints: {
-          huau: 'يرجى ملاحظة: للفحص الفني ستحتاج إلى جميع وثائق السيارة. تأكد من أن سيارتك صالحة للقيادة وآمنة.',
-          inspection: 'يرجى ملاحظة: أحضر دفتر الصيانة. للأعمال الكبيرة، يمكن توفير سيارة بديلة — يرجى الاستفسار مسبقاً.',
-          tireChange: 'يرجى ملاحظة: لتخزين الإطارات، يرجى إبلاغنا مسبقاً بعدد وحجم الإطارات. التخزين مقابل رسوم.'
+          inspection: 'يرجى ملاحظة: أحضر دفتر الخدمة الخاص بك. للأعمال الكبيرة يمكن توفير سيارة بديلة — يرجى الاستفسار مسبقاً.',
+          tuv: 'يرجى ملاحظة: للفحص الفني ستحتاج إلى جميع وثائق السيارة. تأكد من أن سيارتك صالحة للقيادة وآمنة.',
+          brakeFluid: 'يرجى ملاحظة: يوصى بتغيير سائل الفرامل كل سنتين وفقاً لمواصفات الشركة المصنعة.',
+          tireChange: 'يرجى ملاحظة: لتخزين الإطارات، أبلغنا مسبقاً بعدد وحجم الإطارات. التخزين مقابل رسوم.',
+          actionsChecks: 'يرجى ملاحظة: لفحص الضمان نحتاج إلى وثائق السيارة وربما دفتر الخدمة.',
+          repair: 'يرجى ملاحظة: صف شكواك بأكبر قدر ممكن من التفصيل في حقل التعليقات حتى نتمكن من التحضير بشكل مثالي.',
+          bodywork: 'يرجى ملاحظة: في حالة أضرار الحوادث قد نحتاج إلى رقم مطالبة التأمين الخاص بك. أحضر المستندات ذات الصلة.'
         }
       },
       carinformation: {

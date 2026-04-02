@@ -138,10 +138,10 @@ describe('BookingOverviewContainerComponent', () => {
     const exposed = component as unknown as { resolvedServiceLabels: () => Record<string, string> };
     expect(Object.keys(exposed.resolvedServiceLabels()).length).toBe(0);
 
-    store.toggleService('huau');
+    store.toggleService('tuv');
     const labels = exposed.resolvedServiceLabels();
-    expect(labels.huau).toBeDefined();
-    expect(typeof labels.huau).toBe('string');
+    expect(labels.tuv).toBeDefined();
+    expect(typeof labels.tuv).toBe('string');
   });
 
   it('should compute static total price', () => {
@@ -187,7 +187,7 @@ describe('BookingOverviewContainerComponent', () => {
   it('should handle services with variants', () => {
     const exposed = component as unknown as { resolvedServiceLabels: () => Record<string, string> };
     store.toggleService('tire-change');
-    store.confirmTireChange('with-storage');
+    store.confirmServiceOptions('tire-change', ['stored-tires']);
 
     const labels = exposed.resolvedServiceLabels();
     expect(labels['tire-change']).toBeDefined();

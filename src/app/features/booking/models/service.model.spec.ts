@@ -1,37 +1,42 @@
 import { AVAILABLE_SERVICES } from './service.model';
 
 describe('Service Model', () => {
-  it('should have 3 available services', () => {
-    expect(AVAILABLE_SERVICES).toHaveLength(3);
+  it('should have 7 available services', () => {
+    expect(AVAILABLE_SERVICES).toHaveLength(7);
   });
 
   it('should have correct service IDs', () => {
     const ids = AVAILABLE_SERVICES.map(s => s.id);
-    expect(ids).toEqual(['huau', 'inspection', 'tire-change']);
+    expect(ids).toEqual(['inspection', 'tuv', 'brake-fluid', 'tire-change', 'actions-checks', 'repair', 'bodywork']);
   });
 
-  it('should have no variants for huau', () => {
-    const huau = AVAILABLE_SERVICES.find(s => s.id === 'huau');
-    expect(huau?.variants).toEqual([]);
-  });
-
-  it('should have no variants for inspection', () => {
+  it('should have options for inspection', () => {
     const inspection = AVAILABLE_SERVICES.find(s => s.id === 'inspection');
-    expect(inspection?.variants).toEqual([]);
+    expect(inspection?.options.length).toBeGreaterThan(0);
   });
 
-  it('should have 2 variants for tire-change', () => {
+  it('should have options for tuv', () => {
+    const tuv = AVAILABLE_SERVICES.find(s => s.id === 'tuv');
+    expect(tuv?.options.length).toBeGreaterThan(0);
+  });
+
+  it('should have no options for brake-fluid', () => {
+    const brakeFluid = AVAILABLE_SERVICES.find(s => s.id === 'brake-fluid');
+    expect(brakeFluid?.options).toEqual([]);
+  });
+
+  it('should have 4 options for tire-change', () => {
     const tireChange = AVAILABLE_SERVICES.find(s => s.id === 'tire-change');
-    expect(tireChange?.variants).toHaveLength(2);
-    expect(tireChange?.variants[0].id).toBe('without-storage');
-    expect(tireChange?.variants[1].id).toBe('with-storage');
+    expect(tireChange?.options).toHaveLength(4);
+    expect(tireChange?.options[0].id).toBe('bring-own-tires');
+    expect(tireChange?.options[1].id).toBe('stored-tires');
   });
 
   it('should have translation keys for all services', () => {
     for (const service of AVAILABLE_SERVICES) {
       expect(service.titleKey).toBeTruthy();
       expect(service.descriptionKey).toBeTruthy();
-      expect(service.icon).toBeTruthy();
+      expect(service.svgIcon).toBeTruthy();
     }
   });
 });

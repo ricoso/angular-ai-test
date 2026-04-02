@@ -64,10 +64,15 @@ export class BookingOverviewContainerComponent {
 
       let label = this.translateService.instant(serviceDisplay.titleKey);
 
-      if (service.selectedVariantId) {
-        const variant = serviceDisplay.variants.find(v => v.id === service.selectedVariantId);
-        if (variant) {
-          label += ' — ' + this.translateService.instant(variant.labelKey);
+      if (service.selectedOptionIds.length > 0) {
+        const optionLabels = service.selectedOptionIds
+          .map(optionId => {
+            const option = serviceDisplay.options.find(o => o.id === optionId);
+            return option ? this.translateService.instant(option.labelKey) : '';
+          })
+          .filter(Boolean);
+        if (optionLabels.length > 0) {
+          label += ' — ' + optionLabels.join(', ');
         }
       }
 

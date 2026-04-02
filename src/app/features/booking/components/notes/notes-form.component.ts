@@ -9,12 +9,12 @@ import {
   output,
   signal
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 import { i18nKeys, TranslatePipe } from '@core/i18n';
+import { type Subscription } from 'rxjs';
 
 const MAX_NOTE_LENGTH = 1000;
 
@@ -28,6 +28,7 @@ const MAX_NOTE_LENGTH = 1000;
 })
 export class NotesFormComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
+  private subscription: Subscription | null = null;
 
   public readonly initialNote = input<string | null>(null);
   public readonly noteChanged = output<string | null>();
@@ -48,11 +49,14 @@ export class NotesFormComponent implements OnInit {
         this.currentLength.set(note.length);
       }
     });
+
+    this.destroyRef.onDestroy(() => {
+      this.subscription?.unsubscribe();
+    });
   }
 
   public ngOnInit(): void {
-    this.noteControl.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.subscription = this.noteControl.valueChanges
       .subscribe((value: string) => {
         this.currentLength.set(value.length);
         const emitValue = value.trim().length > 0 ? value : null;

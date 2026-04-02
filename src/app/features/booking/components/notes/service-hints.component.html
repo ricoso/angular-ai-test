@@ -6,7 +6,9 @@
 
   @for (hint of visibleHints(); track hint.serviceId) {
     <div class="service-hints__item" role="note">
-      <mat-icon class="icon-framed service-hints__icon" aria-hidden="true">{{ hint.icon }}</mat-icon>
+      <span class="icon-framed service-hints__icon" aria-hidden="true">
+        <img [src]="hint.svgIcon" [alt]="''" class="service-hints__svg-icon">
+      </span>
       <p class="service-hints__text">{{ hint.hintKey | translate }}</p>
     </div>
   }

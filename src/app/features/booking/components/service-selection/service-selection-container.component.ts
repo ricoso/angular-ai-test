@@ -31,21 +31,24 @@ export class ServiceSelectionContainerComponent {
     this.store.selectedServices().map(s => s.serviceId)
   );
 
-  protected readonly tireChangeVariantId = computed(() => {
-    const tireChange = this.store.selectedServices().find(s => s.serviceId === 'tire-change');
-    return tireChange?.selectedVariantId ?? null;
+  protected readonly selectedOptionsMap = computed(() => {
+    const map: Record<string, string[]> = {};
+    for (const s of this.store.selectedServices()) {
+      map[s.serviceId] = s.selectedOptionIds;
+    }
+    return map;
   });
 
   protected onServiceClick(serviceId: ServiceType): void {
     this.store.toggleService(serviceId);
   }
 
-  protected onTireChangeConfirm(variantId: string): void {
-    this.store.confirmTireChange(variantId);
+  protected onServiceConfirm(event: { serviceId: ServiceType; optionIds: string[] }): void {
+    this.store.confirmServiceOptions(event.serviceId, event.optionIds);
   }
 
-  protected onTireChangeDeselect(): void {
-    this.store.deselectTireChange();
+  protected onServiceDeselect(serviceId: ServiceType): void {
+    this.store.deselectService(serviceId);
   }
 
   protected onContinue(): void {
