@@ -68,7 +68,7 @@ describe('bookingOverviewGuard', () => {
   function setupCompleteBooking(): void {
     store.setBrand('audi');
     store.setLocation(MOCK_LOCATION);
-    store.toggleService('huau');
+    store.toggleService('tuv');
     store.selectAppointment({
       id: '2026-03-15-10-00',
       date: '2026-03-15',
@@ -111,7 +111,7 @@ describe('bookingOverviewGuard', () => {
   it('should redirect when privacy consent is missing', () => {
     store.setBrand('audi');
     store.setLocation(MOCK_LOCATION);
-    store.toggleService('huau');
+    store.toggleService('tuv');
     store.selectAppointment({
       id: '2026-03-15-10-00',
       date: '2026-03-15',
@@ -151,7 +151,7 @@ describe('bookingOverviewGuard', () => {
   it('should redirect when customer info is missing', () => {
     store.setBrand('audi');
     store.setLocation(MOCK_LOCATION);
-    store.toggleService('huau');
+    store.toggleService('tuv');
     store.selectAppointment({
       id: '2026-03-15-10-00',
       date: '2026-03-15',

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
 
 import { i18nKeys, TranslatePipe } from '@core/i18n';
 
@@ -10,7 +9,7 @@ import { SERVICE_HINTS } from './notes-hints.constants';
 @Component({
   selector: 'app-service-hints',
   standalone: true,
-  imports: [MatIconModule, TranslatePipe],
+  imports: [TranslatePipe],
   templateUrl: './service-hints.component.html',
   styleUrl: './service-hints.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

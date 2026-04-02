@@ -2,9 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import { getCurrentRoute, navigateTo, setLanguage, waitForAngular } from './helpers/app.helpers';
 import {
-  acceptPrivacyConsent,
   clickAppointmentBack,
-  clickAppointmentContinue,
   clickBookingOverviewBack,
   clickCarinformationBack,
   clickLocationBack,
@@ -13,9 +11,8 @@ import {
   clickServiceBack,
   clickWorkshopCalendarBack,
   completeBrandToLocationFlow,
+  confirmServiceWithOptions,
   enterNote,
-  fillCustomerForm,
-  fillVehicleForm,
   getAppointmentCardCount,
   getCalendarLink,
   getCharCounter,
@@ -46,12 +43,14 @@ import {
  *
  * End-to-End flow through all implemented wizard steps:
  *   REQ-001 (Header) -> REQ-002 (Brand Selection) -> REQ-003 (Location Selection)
- *   -> REQ-004 (Service Selection) -> REQ-005 (Notes) -> REQ-006 (Appointment Selection)
- *   -> REQ-008 (Workshop Calendar) -> REQ-009 (Car Information) -> REQ-010 (Booking Overview)
+ *   -> REQ-011 (Extended Service Selection, 7 Services) -> REQ-005 (Notes)
+ *   -> REQ-006 (Appointment Selection) -> REQ-008 (Workshop Calendar)
+ *   -> REQ-009 (Car Information) -> REQ-010 (Booking Overview)
  *
  * Tests the full user journey including:
  * - Header always visible
- * - Brand selection -> Location selection -> Service selection -> Notes -> Appointment -> Workshop Calendar -> Car Information -> Booking Overview
+ * - Brand selection -> Location selection -> Service selection (7 services with checkboxes)
+ *   -> Notes -> Appointment -> Workshop Calendar -> Car Information -> Booking Overview
  * - Language switching during the flow
  * - Alternative flows (back navigation, brand change)
  * - Guards and redirects
@@ -65,7 +64,7 @@ test.describe('Complete Booking Workflow', () => {
 
   test.describe('Happy Path', () => {
 
-    test('complete flow: Start -> Brand -> Location -> Services -> Notes -> Appointment', async ({ page }) => {
+    test('complete flow: Start -> Brand -> Location -> Services (7 cards) -> Notes -> Appointment', async ({ page }) => {
       await setLanguage(page, 'de');
 
       // Step 1: Navigate to app root -> should redirect to /home/brand
@@ -109,24 +108,27 @@ test.describe('Complete Booking Workflow', () => {
       await selectLocation(page, 'München');
       await waitForAngular(page);
 
-      // Step 7: REQ-004 — Verify services page loaded
+      // Step 7: REQ-011 — Verify services page loaded with 7 cards
       const servicesRoute = await getCurrentRoute(page);
       expect(servicesRoute).toBe('/home/services');
 
       const servicesTitle = await getPageTitle(page);
       expect(servicesTitle).toBe('Welche Services möchten Sie buchen?');
 
-      // Step 8: Verify 3 service cards
+      // Step 8: Verify 7 service cards
       const serviceCards = await getServiceCardTitles(page);
-      expect(serviceCards).toHaveLength(3);
+      expect(serviceCards).toHaveLength(7);
       expect(serviceCards).toEqual(
-        expect.arrayContaining(['HU/AU', 'Inspektion', 'Räderwechsel'])
+        expect.arrayContaining([
+          'Inspektion', 'TÜV', 'Wechsel Bremsflüssigkeit', 'Räderwechsel',
+          'Aktionen / Checks', 'Reparatur / Beanstandung', 'Karosserie / Frontscheibe wechseln'
+        ])
       );
 
-      // Step 9: Select HU/AU service
-      await selectService(page, 'HU/AU');
-      const huauCard = page.locator('.service-card', { hasText: 'HU/AU' });
-      await expect(huauCard).toHaveClass(/service-card--selected/);
+      // Step 9: Select brake-fluid service (direct toggle, no options)
+      await selectService(page, 'Wechsel Bremsflüssigkeit');
+      const brakeFluidCard = page.locator('.service-card', { hasText: 'Wechsel Bremsflüssigkeit' });
+      await expect(brakeFluidCard).toHaveClass(/service-card--selected/);
 
       // Step 10: Header still visible on services page
       await expect(header).toBeVisible();
@@ -159,7 +161,6 @@ test.describe('Complete Booking Workflow', () => {
       // Step 14: Enter a note
       await enterNote(page, 'Bitte Öl prüfen.');
       const updatedCounter = await getCharCounter(page);
-      // "Bitte Öl prüfen." = 16 characters
       expect(updatedCounter).toBe('16 / 1000');
 
       // Step 15: Click continue on notes -> navigate to appointment
@@ -249,6 +250,26 @@ test.describe('Complete Booking Workflow', () => {
 
         await goToBrandSelection(page);
       }
+    });
+
+    test('complete flow with service with options: Inspektion -> Notes', async ({ page }) => {
+      await setLanguage(page, 'de');
+      await goToServiceSelection(page);
+
+      // Confirm Inspektion with checkboxes
+      await confirmServiceWithOptions(page, 'Inspektion', ['Dialogannahme', 'Ölwechsel-Service']);
+
+      const inspectionCard = page.locator('.service-card', { hasText: 'Inspektion' });
+      await expect(inspectionCard).toHaveClass(/service-card--selected/);
+
+      // Continue to notes
+      const continueButton = page.locator('.summary-bar__continue-button');
+      await expect(continueButton).toBeEnabled();
+      await continueButton.click();
+      await page.locator('.notes').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
+
+      expect(await getCurrentRoute(page)).toBe('/home/notes');
     });
 
   });
@@ -462,7 +483,7 @@ test.describe('Complete Booking Workflow', () => {
 
   test.describe('i18n — Language through flow', () => {
 
-    test('EN: complete flow with English language including services, notes, appointment, and workshop calendar', async ({ page }) => {
+    test('EN: complete flow with English language including services (7 cards), notes, appointment, and workshop calendar', async ({ page }) => {
       await setLanguage(page, 'en');
       await navigateTo(page, '/home/brand');
 
@@ -484,12 +505,16 @@ test.describe('Complete Booking Workflow', () => {
       expect(servicesTitle).toBe('Which services would you like to book?');
 
       const cardTitles = await getServiceCardTitles(page);
+      expect(cardTitles).toHaveLength(7);
       expect(cardTitles).toEqual(
-        expect.arrayContaining(['HU/AU', 'Inspection', 'Tire Change'])
+        expect.arrayContaining([
+          'Inspection', 'MOT', 'Brake Fluid Change', 'Tire Change',
+          'Actions / Checks', 'Repair / Complaint', 'Bodywork / Windshield Replacement'
+        ])
       );
 
-      // Select a service and click Continue to navigate to notes
-      await selectService(page, 'HU/AU');
+      // Select brake fluid (no options, direct toggle) and click Continue to navigate to notes
+      await selectService(page, 'Brake Fluid Change');
       const enContinueButton = page.locator('.summary-bar__continue-button');
       await expect(enContinueButton).toBeVisible();
       await expect(enContinueButton).toBeEnabled();
@@ -580,6 +605,7 @@ test.describe('Complete Booking Workflow', () => {
   test.describe('Header persistence (REQ-001)', () => {
 
     test('header stays visible through brand -> location -> services -> notes -> appointment -> workshop calendar flow', async ({ page }) => {
+      await setLanguage(page, 'de');
       const header = page.locator('header[role="banner"]');
       const companyName = page.locator('.header__company-name');
 
@@ -598,8 +624,8 @@ test.describe('Complete Booking Workflow', () => {
       await expect(header).toBeVisible();
       await expect(companyName).toContainText('Autohaus GmbH');
 
-      // Select a service and click Continue to go to notes
-      await selectService(page, 'HU/AU');
+      // Select brake fluid (no options) and click Continue to go to notes
+      await selectService(page, 'Wechsel Bremsflüssigkeit');
       const headerContinueButton = page.locator('.summary-bar__continue-button');
       await expect(headerContinueButton).toBeVisible();
       await expect(headerContinueButton).toBeEnabled();
@@ -633,6 +659,7 @@ test.describe('Complete Booking Workflow', () => {
     });
 
     test('accessibility settings persist across page navigation', async ({ page }) => {
+      await setLanguage(page, 'de');
       await navigateTo(page, '/home/brand');
 
       // Open accessibility menu and change font size
@@ -651,6 +678,7 @@ test.describe('Complete Booking Workflow', () => {
     });
 
     test('cart icon visible on all pages including services and notes', async ({ page }) => {
+      await setLanguage(page, 'de');
       const cartButton = page.locator('.cart-icon__button');
 
       await navigateTo(page, '/home/brand');
@@ -663,8 +691,8 @@ test.describe('Complete Booking Workflow', () => {
       await waitForAngular(page);
       await expect(cartButton).toBeVisible();
 
-      // Select service and click Continue to navigate to notes
-      await selectService(page, 'HU/AU');
+      // Select brake fluid and click Continue to navigate to notes
+      await selectService(page, 'Wechsel Bremsflüssigkeit');
       const cartContinueButton = page.locator('.summary-bar__continue-button');
       await expect(cartContinueButton).toBeVisible();
       await expect(cartContinueButton).toBeEnabled();
@@ -755,10 +783,19 @@ test.describe('Complete Booking Workflow', () => {
 
     test('cart badge resets when services are cleared via back navigation', async ({ page }) => {
       await setLanguage(page, 'de');
-      await goToNotesPage(page, { serviceNames: ['HU/AU', 'Inspektion'] });
+      // Select 2 services: Inspektion (with options) and brake-fluid (toggle)
+      await goToServiceSelection(page);
+      await confirmServiceWithOptions(page, 'Inspektion', ['Dialogannahme']);
+      await selectService(page, 'Wechsel Bremsflüssigkeit');
 
       const badge = page.locator('.cart-icon__button .mat-badge-content');
       await expect(badge).toHaveText('2');
+
+      // Continue to notes
+      const continueButton = page.locator('.summary-bar__continue-button');
+      await continueButton.click();
+      await page.locator('.notes').waitFor({ state: 'visible', timeout: 10000 });
+      await waitForAngular(page);
 
       // Back from notes (clears bookingNote, badge stays 2)
       await clickNotesBack(page);

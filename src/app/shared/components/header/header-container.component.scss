@@ -125,6 +125,13 @@
     font-size: var(--font-size-sm);
   }
 
+  &__cart-chip-icon {
+    width: 1.5em;
+    height: 1.5em;
+    object-fit: contain;
+    filter: invert(48%) sepia(79%) saturate(1564%) hue-rotate(212deg) brightness(97%) contrast(88%);
+  }
+
   &__cart-variant {
     font-size: var(--font-size-xs);
     color: var(--color-text-secondary);

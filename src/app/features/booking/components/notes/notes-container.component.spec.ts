@@ -173,7 +173,7 @@ describe('NotesContainerComponent', () => {
   describe('Store Integration', () => {
     it('should reflect selectedServices after store changes', () => {
       const exposed = component as unknown as { selectedServices: () => unknown[] };
-      store.toggleService('huau');
+      store.toggleService('tuv');
       expect(exposed.selectedServices()).toHaveLength(1);
     });
 

@@ -81,6 +81,20 @@ const SCREENSHOT_CONFIG = {
     },
   },
 
+  'REQ-011-Serviceauswahl-Erweitert': {
+    route: '/home/services',
+    setup: async (page) => {
+      await page.goto(`${HASH}/home/brand`);
+      await page.waitForLoadState('networkidle');
+      await page.locator('button', { hasText: 'Audi' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      await page.locator('button', { hasText: 'München' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
+    },
+  },
+
   'REQ-005-Hinweisfenster': {
     route: '/home/notes',
     setup: async (page) => {
@@ -93,8 +107,8 @@ const SCREENSHOT_CONFIG = {
       await page.locator('button', { hasText: 'München' }).click();
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(300);
-      // Select HU/AU service
-      await page.locator('.service-card', { hasText: 'HU/AU' }).click();
+      // Select brake-fluid service (direct toggle, no options)
+      await page.locator('.service-card', { hasText: 'Wechsel Bremsflüssigkeit' }).click();
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(300);
       // Click Continue button to navigate to notes
@@ -116,8 +130,8 @@ const SCREENSHOT_CONFIG = {
       await page.locator('button', { hasText: 'München' }).click();
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(300);
-      // Select HU/AU service
-      await page.locator('.service-card', { hasText: 'HU/AU' }).click();
+      // Select brake-fluid service (direct toggle, no options)
+      await page.locator('.service-card', { hasText: 'Wechsel Bremsflüssigkeit' }).click();
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(300);
       // Click Continue on services -> notes
@@ -143,8 +157,8 @@ const SCREENSHOT_CONFIG = {
       await page.locator('button', { hasText: 'München' }).click();
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(300);
-      // Select HU/AU service
-      await page.locator('.service-card', { hasText: 'HU/AU' }).click();
+      // Select brake-fluid service (direct toggle, no options)
+      await page.locator('.service-card', { hasText: 'Wechsel Bremsflüssigkeit' }).click();
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(300);
       // Click Continue on services -> notes
@@ -183,8 +197,8 @@ const SCREENSHOT_CONFIG = {
       await page.locator('button', { hasText: 'München' }).click();
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(300);
-      // Select HU/AU service
-      await page.locator('.service-card', { hasText: 'HU/AU' }).click();
+      // Select brake-fluid service (direct toggle, no options)
+      await page.locator('.service-card', { hasText: 'Wechsel Bremsflüssigkeit' }).click();
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(300);
       // Click Continue on services -> notes
@@ -221,8 +235,8 @@ const SCREENSHOT_CONFIG = {
       await page.locator('button', { hasText: 'München' }).click();
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(300);
-      // Select HU/AU service
-      await page.locator('.service-card', { hasText: 'HU/AU' }).click();
+      // Select brake-fluid service (direct toggle, no options)
+      await page.locator('.service-card', { hasText: 'Wechsel Bremsflüssigkeit' }).click();
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(300);
       // Click Continue on services -> notes

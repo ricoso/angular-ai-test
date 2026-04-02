@@ -164,23 +164,23 @@ export const BookingStore = signalStore(
         patchState(store, { selectedServices: current.filter(s => s.serviceId !== serviceId) });
       } else {
         console.debug('[BookingStore] Selecting service:', serviceId);
-        patchState(store, { selectedServices: [...current, { serviceId, selectedVariantId: null }] });
+        patchState(store, { selectedServices: [...current, { serviceId, selectedOptionIds: [] }] });
       }
     },
 
-    confirmTireChange(variantId: string): void {
-      console.debug('[BookingStore] Confirming tire change with variant:', variantId);
+    confirmServiceOptions(serviceId: ServiceType, optionIds: string[]): void {
+      console.debug('[BookingStore] Confirming service options:', serviceId, optionIds);
       const current = store.selectedServices();
-      const filtered = current.filter(s => s.serviceId !== 'tire-change');
+      const filtered = current.filter(s => s.serviceId !== serviceId);
       patchState(store, {
-        selectedServices: [...filtered, { serviceId: 'tire-change', selectedVariantId: variantId }]
+        selectedServices: [...filtered, { serviceId, selectedOptionIds: optionIds }]
       });
     },
 
-    deselectTireChange(): void {
-      console.debug('[BookingStore] Deselecting tire change');
+    deselectService(serviceId: ServiceType): void {
+      console.debug('[BookingStore] Deselecting service:', serviceId);
       const current = store.selectedServices();
-      patchState(store, { selectedServices: current.filter(s => s.serviceId !== 'tire-change') });
+      patchState(store, { selectedServices: current.filter(s => s.serviceId !== serviceId) });
     },
 
     setBookingNote(note: string | null): void {

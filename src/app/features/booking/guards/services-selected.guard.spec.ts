@@ -69,7 +69,7 @@ describe('servicesSelectedGuard', () => {
   it('should allow access when all prerequisites are met', () => {
     store.setBrand('audi');
     store.setLocation(LOCATIONS_BY_BRAND.audi[0]);
-    store.toggleService('huau');
+    store.toggleService('tuv');
     const result = TestBed.runInInjectionContext(() =>
       servicesSelectedGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
     );
@@ -79,7 +79,7 @@ describe('servicesSelectedGuard', () => {
   it('should allow access with multiple services selected', () => {
     store.setBrand('bmw');
     store.setLocation(LOCATIONS_BY_BRAND.bmw[0]);
-    store.toggleService('huau');
+    store.toggleService('tuv');
     store.toggleService('inspection');
     const result = TestBed.runInInjectionContext(() =>
       servicesSelectedGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)

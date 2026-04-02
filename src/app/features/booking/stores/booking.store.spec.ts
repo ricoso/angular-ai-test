@@ -222,48 +222,48 @@ describe('BookingStore', () => {
     });
 
     it('should toggle service on', () => {
-      store.toggleService('huau');
-      expect(store.selectedServices()).toEqual([{ serviceId: 'huau', selectedVariantId: null }]);
+      store.toggleService('tuv');
+      expect(store.selectedServices()).toEqual([{ serviceId: 'tuv', selectedOptionIds: [] }]);
       expect(store.selectedServiceCount()).toBe(1);
       expect(store.hasServicesSelected()).toBe(true);
     });
 
     it('should toggle service off', () => {
-      store.toggleService('huau');
-      store.toggleService('huau');
+      store.toggleService('tuv');
+      store.toggleService('tuv');
       expect(store.selectedServices()).toEqual([]);
       expect(store.selectedServiceCount()).toBe(0);
     });
 
     it('should support multi-select', () => {
-      store.toggleService('huau');
+      store.toggleService('tuv');
       store.toggleService('inspection');
       expect(store.selectedServiceCount()).toBe(2);
     });
 
-    it('should confirm tire change with variant', () => {
-      store.confirmTireChange('without-storage');
+    it('should confirm service options', () => {
+      store.confirmServiceOptions('tire-change', ['bring-own-tires']);
       expect(store.selectedServices()).toEqual([
-        { serviceId: 'tire-change', selectedVariantId: 'without-storage' }
+        { serviceId: 'tire-change', selectedOptionIds: ['bring-own-tires'] }
       ]);
     });
 
-    it('should switch tire change variant', () => {
-      store.confirmTireChange('without-storage');
-      store.confirmTireChange('with-storage');
+    it('should switch service options', () => {
+      store.confirmServiceOptions('tire-change', ['bring-own-tires']);
+      store.confirmServiceOptions('tire-change', ['stored-tires']);
       expect(store.selectedServices()).toEqual([
-        { serviceId: 'tire-change', selectedVariantId: 'with-storage' }
+        { serviceId: 'tire-change', selectedOptionIds: ['stored-tires'] }
       ]);
     });
 
-    it('should deselect tire change', () => {
-      store.confirmTireChange('without-storage');
-      store.deselectTireChange();
+    it('should deselect service', () => {
+      store.confirmServiceOptions('tire-change', ['bring-own-tires']);
+      store.deselectService('tire-change');
       expect(store.selectedServices()).toEqual([]);
     });
 
     it('should clear selected services', () => {
-      store.toggleService('huau');
+      store.toggleService('tuv');
       store.toggleService('inspection');
       store.clearSelectedServices();
       expect(store.selectedServices()).toEqual([]);

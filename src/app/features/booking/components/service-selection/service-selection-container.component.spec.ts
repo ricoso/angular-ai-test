@@ -60,87 +60,87 @@ describe('ServiceSelectionContainerComponent', () => {
     });
 
     it('should compute selectedServiceIds after selecting services', () => {
-      store.toggleService('huau');
       store.toggleService('inspection');
+      store.toggleService('tuv');
       const exposed = component as unknown as { selectedServiceIds: () => string[] };
-      expect(exposed.selectedServiceIds()).toEqual(['huau', 'inspection']);
+      expect(exposed.selectedServiceIds()).toEqual(['inspection', 'tuv']);
     });
 
-    it('should compute tireChangeVariantId as null initially', () => {
-      const exposed = component as unknown as { tireChangeVariantId: () => string | null };
-      expect(exposed.tireChangeVariantId()).toBeNull();
+    it('should compute empty selectedOptionsMap initially', () => {
+      const exposed = component as unknown as { selectedOptionsMap: () => Record<string, string[]> };
+      expect(Object.keys(exposed.selectedOptionsMap()).length).toBe(0);
     });
 
-    it('should compute tireChangeVariantId after confirming tire change', () => {
-      store.confirmTireChange('with-storage');
-      const exposed = component as unknown as { tireChangeVariantId: () => string | null };
-      expect(exposed.tireChangeVariantId()).toBe('with-storage');
+    it('should compute selectedOptionsMap after confirming service options', () => {
+      store.confirmServiceOptions('tire-change', ['bring-own-tires']);
+      const exposed = component as unknown as { selectedOptionsMap: () => Record<string, string[]> };
+      expect(exposed.selectedOptionsMap()['tire-change']).toEqual(['bring-own-tires']);
     });
 
-    it('should return null tireChangeVariantId when tire change not selected', () => {
-      store.toggleService('huau');
-      const exposed = component as unknown as { tireChangeVariantId: () => string | null };
-      expect(exposed.tireChangeVariantId()).toBeNull();
+    it('should return empty options when service has no options selected', () => {
+      store.toggleService('inspection');
+      const exposed = component as unknown as { selectedOptionsMap: () => Record<string, string[]> };
+      expect(exposed.selectedOptionsMap().inspection).toEqual([]);
     });
   });
 
   describe('Service Click', () => {
     it('should toggle service in store on click', () => {
       const exposed = component as unknown as {
-        onServiceClick: (serviceId: 'huau' | 'inspection' | 'tire-change') => void;
+        onServiceClick: (serviceId: 'inspection' | 'tuv' | 'tire-change') => void;
       };
-      exposed.onServiceClick('huau');
-      expect(store.selectedServices()).toEqual([{ serviceId: 'huau', selectedVariantId: null }]);
+      exposed.onServiceClick('inspection');
+      expect(store.selectedServices()).toEqual([{ serviceId: 'inspection', selectedOptionIds: [] }]);
     });
 
     it('should deselect service on second click', () => {
       const exposed = component as unknown as {
-        onServiceClick: (serviceId: 'huau' | 'inspection' | 'tire-change') => void;
+        onServiceClick: (serviceId: 'inspection' | 'tuv' | 'tire-change') => void;
       };
-      exposed.onServiceClick('huau');
-      exposed.onServiceClick('huau');
+      exposed.onServiceClick('inspection');
+      exposed.onServiceClick('inspection');
       expect(store.selectedServices()).toEqual([]);
     });
 
     it('should support multi-select', () => {
       const exposed = component as unknown as {
-        onServiceClick: (serviceId: 'huau' | 'inspection' | 'tire-change') => void;
+        onServiceClick: (serviceId: 'inspection' | 'tuv' | 'tire-change') => void;
       };
-      exposed.onServiceClick('huau');
       exposed.onServiceClick('inspection');
+      exposed.onServiceClick('tuv');
       expect(store.selectedServices()).toHaveLength(2);
     });
   });
 
-  describe('Tire Change', () => {
-    it('should confirm tire change with variant', () => {
+  describe('Service Confirm', () => {
+    it('should confirm service with options', () => {
       const exposed = component as unknown as {
-        onTireChangeConfirm: (variantId: string) => void;
+        onServiceConfirm: (event: { serviceId: 'tire-change'; optionIds: string[] }) => void;
       };
-      exposed.onTireChangeConfirm('without-storage');
+      exposed.onServiceConfirm({ serviceId: 'tire-change', optionIds: ['bring-own-tires'] });
       expect(store.selectedServices()).toEqual([
-        { serviceId: 'tire-change', selectedVariantId: 'without-storage' }
+        { serviceId: 'tire-change', selectedOptionIds: ['bring-own-tires'] }
       ]);
     });
 
-    it('should deselect tire change', () => {
+    it('should deselect service', () => {
       const exposed = component as unknown as {
-        onTireChangeConfirm: (variantId: string) => void;
-        onTireChangeDeselect: () => void;
+        onServiceConfirm: (event: { serviceId: 'tire-change'; optionIds: string[] }) => void;
+        onServiceDeselect: (serviceId: 'tire-change') => void;
       };
-      exposed.onTireChangeConfirm('without-storage');
-      exposed.onTireChangeDeselect();
+      exposed.onServiceConfirm({ serviceId: 'tire-change', optionIds: ['bring-own-tires'] });
+      exposed.onServiceDeselect('tire-change');
       expect(store.selectedServices()).toEqual([]);
     });
 
-    it('should switch variant on re-confirm', () => {
+    it('should switch options on re-confirm', () => {
       const exposed = component as unknown as {
-        onTireChangeConfirm: (variantId: string) => void;
+        onServiceConfirm: (event: { serviceId: 'tire-change'; optionIds: string[] }) => void;
       };
-      exposed.onTireChangeConfirm('without-storage');
-      exposed.onTireChangeConfirm('with-storage');
+      exposed.onServiceConfirm({ serviceId: 'tire-change', optionIds: ['bring-own-tires'] });
+      exposed.onServiceConfirm({ serviceId: 'tire-change', optionIds: ['stored-tires'] });
       expect(store.selectedServices()).toEqual([
-        { serviceId: 'tire-change', selectedVariantId: 'with-storage' }
+        { serviceId: 'tire-change', selectedOptionIds: ['stored-tires'] }
       ]);
     });
   });
@@ -154,10 +154,10 @@ describe('ServiceSelectionContainerComponent', () => {
 
     it('should navigate back and clear services on back', () => {
       const exposed = component as unknown as {
-        onServiceClick: (serviceId: 'huau' | 'inspection' | 'tire-change') => void;
+        onServiceClick: (serviceId: 'inspection' | 'tuv' | 'tire-change') => void;
         onBack: () => void;
       };
-      exposed.onServiceClick('huau');
+      exposed.onServiceClick('inspection');
       exposed.onBack();
       expect(store.selectedServices()).toEqual([]);
       expect(router.navigate).toHaveBeenCalledWith(['/home/location']);

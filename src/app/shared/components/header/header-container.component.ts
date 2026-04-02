@@ -62,15 +62,17 @@ export class HeaderContainerComponent {
     return selected.map(s => {
       const serviceData = AVAILABLE_SERVICES.find(svc => svc.id === s.serviceId);
       const title = serviceData ? this.translateService.instant(serviceData.titleKey) : s.serviceId;
-      const icon = serviceData?.icon ?? 'build';
-      let variantLabel: string | null = null;
-      if (s.selectedVariantId && serviceData) {
-        const variant = serviceData.variants.find(v => v.id === s.selectedVariantId);
-        if (variant) {
-          variantLabel = this.translateService.instant(variant.labelKey);
+      const svgIcon = serviceData?.svgIcon ?? 'build';
+      const optionLabels: string[] = [];
+      if (s.selectedOptionIds.length > 0 && serviceData) {
+        for (const optionId of s.selectedOptionIds) {
+          const option = serviceData.options.find(o => o.id === optionId);
+          if (option) {
+            optionLabels.push(this.translateService.instant(option.labelKey));
+          }
         }
       }
-      return { title, icon, variantLabel };
+      return { title, svgIcon, optionLabels };
     });
   });
 

@@ -147,27 +147,27 @@ describe('HeaderContainerComponent', () => {
       expect(exposed.cartServiceChips()).toEqual([]);
     });
 
-    it('should return service chips with title and icon when services selected', () => {
-      bookingStore.toggleService('huau');
-      const exposed = component as unknown as { cartServiceChips: () => { title: string; icon: string; variantLabel: string | null }[] };
+    it('should return service chips with title and svgIcon when services selected', () => {
+      bookingStore.toggleService('tuv');
+      const exposed = component as unknown as { cartServiceChips: () => { title: string; svgIcon: string; optionLabels: string[] }[] };
       const chips = exposed.cartServiceChips();
       expect(chips).toHaveLength(1);
       expect(chips[0].title).toBeTruthy();
-      expect(chips[0].icon).toBe('verified');
-      expect(chips[0].variantLabel).toBeNull();
+      expect(chips[0].svgIcon).toBe('assets/icons/services/tuv.svg');
+      expect(chips[0].optionLabels).toEqual([]);
     });
 
-    it('should return variant label for tire change with variant', () => {
-      bookingStore.confirmTireChange('with-storage');
-      const exposed = component as unknown as { cartServiceChips: () => { title: string; icon: string; variantLabel: string | null }[] };
+    it('should return option labels for tire change with options', () => {
+      bookingStore.confirmServiceOptions('tire-change', ['stored-tires']);
+      const exposed = component as unknown as { cartServiceChips: () => { title: string; svgIcon: string; optionLabels: string[] }[] };
       const chips = exposed.cartServiceChips();
       expect(chips).toHaveLength(1);
-      expect(chips[0].icon).toBe('tire_repair');
-      expect(chips[0].variantLabel).toBeTruthy();
+      expect(chips[0].svgIcon).toBe('assets/icons/services/tire-change.svg');
+      expect(chips[0].optionLabels.length).toBeGreaterThan(0);
     });
 
     it('should return summary text with count', () => {
-      bookingStore.toggleService('huau');
+      bookingStore.toggleService('tuv');
       bookingStore.toggleService('inspection');
       const exposed = component as unknown as { cartSummaryText: () => string };
       const text = exposed.cartSummaryText();

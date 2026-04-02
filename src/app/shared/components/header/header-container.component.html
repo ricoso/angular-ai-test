@@ -62,10 +62,10 @@
             <mat-chip-set class="header__cart-chips">
               @for (chip of cartServiceChips(); track chip.title) {
                 <mat-chip class="header__cart-chip">
-                  <mat-icon matChipAvatar>{{ chip.icon }}</mat-icon>
+                  <img matChipAvatar [src]="chip.svgIcon" [alt]="chip.title" class="header__cart-chip-icon">
                   {{ chip.title }}
-                  @if (chip.variantLabel) {
-                    <span class="header__cart-variant">({{ chip.variantLabel }})</span>
+                  @if (chip.optionLabels.length > 0) {
+                    <span class="header__cart-variant">({{ chip.optionLabels.join(', ') }})</span>
                   }
                 </mat-chip>
               }

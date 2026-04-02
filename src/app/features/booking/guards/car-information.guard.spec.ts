@@ -83,7 +83,7 @@ describe('carInformationGuard', () => {
   it('should redirect to /home/appointment when no appointment selected', () => {
     store.setBrand('audi');
     store.setLocation(LOCATIONS_BY_BRAND.audi[0]);
-    store.toggleService('huau');
+    store.toggleService('tuv');
     const result = TestBed.runInInjectionContext(() =>
       carInformationGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
     );
@@ -94,7 +94,7 @@ describe('carInformationGuard', () => {
   it('should allow access when all prerequisites are met', () => {
     store.setBrand('audi');
     store.setLocation(LOCATIONS_BY_BRAND.audi[0]);
-    store.toggleService('huau');
+    store.toggleService('tuv');
     store.selectAppointment({
       id: 'apt-1',
       date: '2026-03-10',

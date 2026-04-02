@@ -41,7 +41,7 @@ describe('CartStore', () => {
     });
 
     it('should return service count from BookingStore', () => {
-      bookingStore.toggleService('huau');
+      bookingStore.toggleService('tuv');
       expect(store.itemCount()).toBe(1);
 
       bookingStore.toggleService('inspection');
@@ -55,7 +55,7 @@ describe('CartStore', () => {
     });
 
     it('should return count as string when services selected', () => {
-      bookingStore.toggleService('huau');
+      bookingStore.toggleService('tuv');
       expect(store.badgeText()).toBe('1');
 
       bookingStore.toggleService('inspection');
@@ -69,7 +69,7 @@ describe('CartStore', () => {
     });
 
     it('should return true when services are selected', () => {
-      bookingStore.toggleService('huau');
+      bookingStore.toggleService('tuv');
       expect(store.hasItems()).toBe(true);
     });
   });
