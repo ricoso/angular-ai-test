@@ -1,12 +1,6 @@
 <fieldset class="vehicle-form" [formGroup]="form()">
   <legend class="vehicle-form__title">{{ carinformation.form.vehicleTitle | translate }}</legend>
 
-  <p class="vehicle-form__vin-info">
-    <a href="#" class="vehicle-form__vin-link" (click)="onVinLinkClick($event)">
-      {{ carinformation.form.vin.infoLink | translate }}
-    </a>
-  </p>
-
   <div class="vehicle-form__row">
     <mat-form-field appearance="outline" class="vehicle-form__input">
       <mat-label>{{ carinformation.form.licensePlate.label | translate }}</mat-label>
@@ -39,20 +33,4 @@
     </mat-form-field>
   </div>
 
-  <div class="vehicle-form__field--full">
-    <mat-form-field appearance="outline" class="vehicle-form__input">
-      <mat-label>{{ carinformation.form.vin.label | translate }}</mat-label>
-      <input
-        matInput
-        type="text"
-        formControlName="vin"
-        [placeholder]="carinformation.form.vin.placeholder | translate"
-        autocomplete="off"
-        maxlength="17"
-      />
-      @if (vinErrors(); as error) {
-        <mat-error>{{ error | translate }}</mat-error>
-      }
-    </mat-form-field>
-  </div>
 </fieldset>

@@ -29,7 +29,12 @@
       }
     }
 
-    <app-price-tile [totalPriceGross]="staticTotalPrice()" />
+    <app-price-tile
+      [mobilityOption]="store.selectedMobilityOption()"
+      [appointmentPreference]="store.selectedAppointmentPreference()"
+      [callbackOption]="store.selectedCallbackOption()"
+      [bookingNote]="store.bookingNote() ?? ''"
+    />
   </div>
 
   <nav class="booking-overview__navigation" [attr.aria-label]="bookingOverview.ariaNavLabel | translate">

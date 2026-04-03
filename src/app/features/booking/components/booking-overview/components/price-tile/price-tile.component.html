@@ -1,16 +1,30 @@
-<article class="summary-card price-tile" aria-labelledby="tile-title-price">
+<article class="summary-card" aria-labelledby="tile-title-extras">
   <div class="summary-card__header">
     <span class="summary-card__icon icon-framed icon-framed--sm icon-framed--primary" aria-hidden="true">
-      <span class="material-icons">euro</span>
+      <span class="material-icons">info</span>
     </span>
-    <h2 class="summary-card__title" id="tile-title-price">
-      {{ bookingOverview.tiles.price.title | translate }}
+    <h2 class="summary-card__title" id="tile-title-extras">
+      {{ bookingOverview.tiles.extras.title | translate }}
     </h2>
   </div>
-  <div class="price-tile__amount" aria-label="price">
-    {{ totalPriceGross() }}
+  <div class="data-grid">
+    <div class="data-field">
+      <span class="data-field__label">{{ bookingOverview.tiles.extras.mobilityLabel | translate }}</span>
+      <span class="data-field__value">{{ mobilityOptionLabel() }}</span>
+    </div>
+    <div class="data-field">
+      <span class="data-field__label">{{ bookingOverview.tiles.extras.appointmentPreferenceLabel | translate }}</span>
+      <span class="data-field__value">{{ appointmentPreferenceLabel() }}</span>
+    </div>
+    <div class="data-field">
+      <span class="data-field__label">{{ bookingOverview.tiles.extras.callbackLabel | translate }}</span>
+      <span class="data-field__value">{{ callbackOptionLabel() }}</span>
+    </div>
+    @if (bookingNote()) {
+      <div class="data-field">
+        <span class="data-field__label">{{ bookingOverview.tiles.extras.noteLabel | translate }}</span>
+        <span class="data-field__value">{{ bookingNote() }}</span>
+      </div>
+    }
   </div>
-  <p class="price-tile__tax">
-    {{ bookingOverview.tiles.price.vatIncluded | translate }}
-  </p>
 </article>

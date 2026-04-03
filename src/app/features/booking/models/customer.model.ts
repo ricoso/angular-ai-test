@@ -14,5 +14,4 @@ export interface CustomerInfo {
 export interface VehicleInfo {
   licensePlate: string;
   mileage: number;
-  vin: string;
 }

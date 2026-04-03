@@ -38,14 +38,4 @@ export class VehicleFormComponent {
     return this.carinformation.form.mileage.error.digitsOnly;
   });
 
-  protected readonly vinErrors = computed(() => {
-    const ctrl = this.form().get('vin');
-    if (!ctrl || !ctrl.touched || ctrl.valid) { return null; }
-    return this.carinformation.form.vin.error.invalidLength;
-  });
-
-  protected onVinLinkClick(event: Event): void {
-    event.preventDefault();
-    console.debug('[VehicleForm] VIN explanation link clicked');
-  }
 }
