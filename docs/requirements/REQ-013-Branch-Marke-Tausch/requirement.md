@@ -31,6 +31,9 @@ Refactoring des Wizard-Flows: Die Reihenfolge der Schritte "Markenauswahl" (REQ-
   - **Selection-Icon abgeschnitten:** Der Checkmark/Badge auf den Service-Cards (`service-card.component`) wird am Rand abgeschnitten (`overflow: hidden` Problem). Fix: `overflow: visible` setzen oder Icon-Positionierung korrigieren.
   - **Alle gewählten Service-Details anzeigen:** Warenkorb soll pro Service ALLE gewählten Optionen/Varianten vollständig auflisten, nicht nur den Titel.
 
+- **VIN/FIN entfernt** (betrifft REQ-009): Das Fahrzeugformular enthält nur noch Kfz-Kennzeichen + Kilometerstand. Die VIN/FIN wurde entfernt — es wird nur mit Nummernschild gearbeitet. Betrifft: `VehicleInfo` Interface, `vehicle-form.component`, `carinformation-container.component`.
+- **Preis-Kachel ersetzt durch Hinweise & Optionen** (betrifft REQ-010): In der Buchungsübersicht wird statt der Preis-Kachel die Hinweisseite-Daten angezeigt: Mobilitätsoption, Terminpräferenz, Rückruf, Nachricht. Betrifft: `price-tile.component` (umgebaut).
+
 **Excluded:**
 - Serviceauswahl (REQ-004) — nur Guard-Anpassung (prüft weiterhin `selectedLocation`)
 - Wizard-Schritte ab REQ-005 bleiben inhaltlich unverändert (bekommen aber den Breadcrumb)
@@ -71,6 +74,8 @@ Refactoring des Wizard-Flows: Die Reihenfolge der Schritte "Markenauswahl" (REQ-
 - [x] AC-19: Markenauswahl hat KEINEN "Weiter"-Button — Klick auf Marken-Card navigiert AUTOMATISCH zur Serviceauswahl. Nur "Zurück"-Button zu Standortwahl. **IMPLEMENTIERT:** `brand-selection-container.component.ts` — `onBrandSelect()` ruft `setBrand()` + `router.navigate(['/home/services'])`, "Weiter"-Button aus Template entfernt.
 - [ ] AC-20: Serviceauswahl behält "Weiter"-Button (weil Multi-Select mit Optionen). Nur ab Serviceauswahl gibt es "Weiter".
 - [ ] AC-21: Standort-Cards zeigen Marken als echte SVG-Logos (nicht als Text-Abkürzungen/Chips). Die SVGs aus `assets/brands/` müssen als `<img>` eingebunden werden, nicht als Text-Fallback.
+- [x] AC-22: VIN/FIN-Feld ist aus dem Fahrzeugformular entfernt — nur Kfz-Kennzeichen + Kilometerstand. **IMPLEMENTIERT:** `VehicleInfo` Interface, `vehicle-form.component`, `carinformation-container.component`.
+- [x] AC-23: Preis-Kachel in der Buchungsübersicht ist durch "Hinweise & Optionen" ersetzt — zeigt Mobilität, Terminpräferenz, Rückruf, Nachricht. **IMPLEMENTIERT:** `price-tile.component` umgebaut.
 
 ---
 
