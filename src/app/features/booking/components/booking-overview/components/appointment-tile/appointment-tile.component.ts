@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { i18nKeys,TranslatePipe } from '@core/i18n';
+import { i18nKeys, TranslatePipe } from '@core/i18n';
 
 import type { AppointmentSlot } from '../../../../models/appointment.model';
 

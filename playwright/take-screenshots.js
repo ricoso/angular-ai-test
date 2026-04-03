@@ -118,6 +118,27 @@ const SCREENSHOT_CONFIG = {
     },
   },
 
+  'REQ-012-Hinweisseite-Erweitert': {
+    route: '/home/notes',
+    setup: async (page) => {
+      // Brand -> Location -> Services -> Continue to Notes (same as REQ-005)
+      await page.goto(`${HASH}/home/brand`);
+      await page.waitForLoadState('networkidle');
+      await page.locator('button', { hasText: 'Audi' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      await page.locator('button', { hasText: 'München' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      await page.locator('.service-card', { hasText: 'Wechsel Bremsflüssigkeit' }).click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(300);
+      await page.locator('.summary-bar__continue-button').click();
+      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(500);
+    },
+  },
+
   'REQ-006-Terminauswahl': {
     route: '/home/appointment',
     setup: async (page) => {

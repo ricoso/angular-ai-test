@@ -1,0 +1,37 @@
+<nav class="wizard" aria-label="Buchungsfortschritt">
+  <ol class="wizard__steps">
+    @for (step of stepsWithStatus(); track step.route) {
+      <li
+        class="wizard__step"
+        [class.wizard__step--done]="step.status === 'done'"
+        [class.wizard__step--active]="step.status === 'active'"
+        [class.wizard__step--future]="step.status === 'future'"
+        [attr.aria-current]="step.status === 'active' ? 'step' : null"
+      >
+        <span class="wizard__step-icon">
+          @if (step.status === 'done') {
+            <mat-icon aria-hidden="true" [style.font-size.rem]="0.875" [style.width.rem]="0.875" [style.height.rem]="0.875">check</mat-icon>
+          } @else {
+            <mat-icon aria-hidden="true" [style.font-size.rem]="0.875" [style.width.rem]="0.875" [style.height.rem]="0.875">{{ step.icon }}</mat-icon>
+          }
+        </span>
+        @if (step.status === 'done') {
+          <a
+            class="wizard__step-label"
+            [routerLink]="step.route"
+            [attr.aria-label]="step.label | translate"
+          >{{ step.label | translate }}</a>
+        } @else {
+          <span class="wizard__step-label">{{ step.label | translate }}</span>
+        }
+      </li>
+      @if (!step.isLast) {
+        <li
+          class="wizard__separator"
+          [class.wizard__separator--done]="step.status === 'done'"
+          aria-hidden="true"
+        ></li>
+      }
+    }
+  </ol>
+</nav>

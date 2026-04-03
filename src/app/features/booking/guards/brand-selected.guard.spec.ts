@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import type { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Router } from '@angular/router';
 
+import { ALL_LOCATIONS } from '../models/location.model';
 import { BookingApiService } from '../services/booking-api.service';
 import { BookingStore } from '../stores/booking.store';
 
@@ -17,7 +18,17 @@ describe('brandSelectedGuard', () => {
     TestBed.configureTestingModule({
       providers: [
         BookingStore,
-        { provide: BookingApiService, useValue: { getBrands: jest.fn().mockResolvedValue([]) } },
+        {
+          provide: BookingApiService,
+          useValue: {
+            getBrands: jest.fn().mockResolvedValue([]),
+            getBrandsByLocation: jest.fn().mockResolvedValue([]),
+            getBrandsByBranch: jest.fn().mockResolvedValue([]),
+            getAllLocations: jest.fn().mockResolvedValue([]),
+            getBranches: jest.fn().mockResolvedValue([]),
+            getServices: jest.fn().mockResolvedValue([])
+          }
+        },
         {
           provide: Router,
           useValue: {
@@ -31,7 +42,16 @@ describe('brandSelectedGuard', () => {
     router = TestBed.inject(Router);
   });
 
-  it('should redirect to /home/brand when no brand selected', () => {
+  it('should redirect to /home/location when no location selected', () => {
+    const result = TestBed.runInInjectionContext(() =>
+      brandSelectedGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
+    );
+    expect(result).not.toBe(true);
+    expect(router.createUrlTree).toHaveBeenCalledWith(['/home/location']);
+  });
+
+  it('should redirect to /home/brand when location selected but no brand', () => {
+    store.setLocation(ALL_LOCATIONS[0]);
     const result = TestBed.runInInjectionContext(() =>
       brandSelectedGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
     );
@@ -39,7 +59,8 @@ describe('brandSelectedGuard', () => {
     expect(router.createUrlTree).toHaveBeenCalledWith(['/home/brand']);
   });
 
-  it('should allow access when brand is selected', () => {
+  it('should allow access when location and brand are selected', () => {
+    store.setLocation(ALL_LOCATIONS[0]);
     store.setBrand('audi');
     const result = TestBed.runInInjectionContext(() =>
       brandSelectedGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)

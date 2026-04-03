@@ -5,6 +5,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Router } from '@angular/router';
 
 import { i18nKeys, TranslatePipe } from '@core/i18n';
+import { WizardBreadcrumbComponent } from '@shared/components/wizard-breadcrumb/wizard-breadcrumb.component';
+import { WIZARD_STEPS } from '@shared/components/wizard-breadcrumb/wizard-steps.config';
 
 import type { CustomerInfo, VehicleInfo } from '../../models/customer.model';
 import { BookingStore } from '../../stores/booking.store';
@@ -20,6 +22,7 @@ import { VehicleFormComponent } from './components/vehicle-form/vehicle-form.com
     MatButtonModule,
     MatCheckboxModule,
     TranslatePipe,
+    WizardBreadcrumbComponent,
     CustomerFormComponent,
     VehicleFormComponent
   ],
@@ -33,6 +36,8 @@ export class CarinformationContainerComponent {
   private readonly fb = inject(FormBuilder);
 
   protected readonly carinformation = i18nKeys.booking.carinformation;
+  protected readonly wizardSteps = WIZARD_STEPS;
+  protected readonly activeStepIndex = 5;
 
   protected readonly customerForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],

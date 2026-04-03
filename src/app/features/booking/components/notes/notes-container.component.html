@@ -1,6 +1,13 @@
+<app-wizard-breadcrumb [steps]="wizardSteps" [activeIndex]="activeStepIndex" />
+
 <section class="notes">
   <h1 class="notes__title">{{ booking.notes.pageTitle | translate }}</h1>
   <p class="notes__subtitle">{{ booking.notes.sectionTitle | translate }}</p>
+
+  <app-notes-extras-form
+    [initialExtras]="initialExtras()"
+    (extrasChanged)="onExtrasChanged($event)"
+  />
 
   <app-notes-form
     [initialNote]="initialNote()"

@@ -1,0 +1,84 @@
+import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal } from '@angular/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+
+import { i18nKeys, TranslatePipe } from '@core/i18n';
+
+import type {
+  AppointmentPreference,
+  CallbackOption,
+  MobilityOption,
+  NotesExtras
+} from '../../models/notes-extras.model';
+import { DEFAULT_NOTES_EXTRAS } from '../../models/notes-extras.model';
+
+@Component({
+  selector: 'app-notes-extras-form',
+  standalone: true,
+  imports: [MatFormFieldModule, MatSelectModule, TranslatePipe],
+  templateUrl: './notes-extras-form.component.html',
+  styleUrl: './notes-extras-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class NotesExtrasFormComponent {
+  public readonly initialExtras = input<NotesExtras | null>(null);
+  public readonly extrasChanged = output<NotesExtras>();
+
+  protected readonly notes = i18nKeys.booking.notes;
+
+  protected readonly mobilityOption = signal<MobilityOption>(DEFAULT_NOTES_EXTRAS.mobilityOption);
+  protected readonly appointmentPreference = signal<AppointmentPreference>(DEFAULT_NOTES_EXTRAS.appointmentPreference);
+  protected readonly callbackOption = signal<CallbackOption>(DEFAULT_NOTES_EXTRAS.callbackOption);
+
+  protected readonly mobilityOptionItems = computed(() => [
+    { value: 'none' as MobilityOption, label: this.notes.mobilityOptions.none },
+    { value: 'compact-car' as MobilityOption, label: this.notes.mobilityOptions.compactCar },
+    { value: 'mid-range' as MobilityOption, label: this.notes.mobilityOptions.midRange },
+    { value: 'luxury' as MobilityOption, label: this.notes.mobilityOptions.luxury }
+  ]);
+
+  protected readonly appointmentOptionItems = computed(() => [
+    { value: 'anytime' as AppointmentPreference, label: this.notes.appointmentPreference.anytime },
+    { value: 'morning' as AppointmentPreference, label: this.notes.appointmentPreference.morning },
+    { value: 'afternoon' as AppointmentPreference, label: this.notes.appointmentPreference.afternoon }
+  ]);
+
+  protected readonly callbackOptionItems = computed(() => [
+    { value: 'none' as CallbackOption, label: this.notes.callback.none },
+    { value: 'yes' as CallbackOption, label: this.notes.callback.yes }
+  ]);
+
+  constructor() {
+    effect(() => {
+      const extras = this.initialExtras();
+      if (extras) {
+        this.mobilityOption.set(extras.mobilityOption);
+        this.appointmentPreference.set(extras.appointmentPreference);
+        this.callbackOption.set(extras.callbackOption);
+      }
+    });
+  }
+
+  protected onMobilityOptionChange(value: MobilityOption): void {
+    this.mobilityOption.set(value);
+    this.emitExtras();
+  }
+
+  protected onAppointmentPreferenceChange(value: AppointmentPreference): void {
+    this.appointmentPreference.set(value);
+    this.emitExtras();
+  }
+
+  protected onCallbackOptionChange(value: CallbackOption): void {
+    this.callbackOption.set(value);
+    this.emitExtras();
+  }
+
+  private emitExtras(): void {
+    this.extrasChanged.emit({
+      mobilityOption: this.mobilityOption(),
+      appointmentPreference: this.appointmentPreference(),
+      callbackOption: this.callbackOption()
+    });
+  }
+}

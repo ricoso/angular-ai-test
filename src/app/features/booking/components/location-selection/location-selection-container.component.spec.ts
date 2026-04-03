@@ -2,12 +2,25 @@ import type { ComponentFixture } from '@angular/core/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { AVAILABLE_BRANDS } from '../../models/brand.model';
-import { LOCATIONS_BY_BRAND } from '../../models/location.model';
+import type { BranchConfig } from '../../models/branch-config.model';
 import { BookingApiService } from '../../services/booking-api.service';
 import { BookingStore } from '../../stores/booking.store';
 
 import { LocationSelectionContainerComponent } from './location-selection-container.component';
+
+const TEST_BRANCH: BranchConfig = {
+  branchId: 'test-branch-1',
+  name: 'Test Branch Essen',
+  address: { street: 'Teststr. 1', zip: '45127', city: 'Essen' },
+  brands: ['VW', 'Audi']
+};
+
+const TEST_BRANCH_2: BranchConfig = {
+  branchId: 'test-branch-2',
+  name: 'Test Branch Dortmund',
+  address: { street: 'Teststr. 2', zip: '44135', city: 'Dortmund' },
+  brands: ['VW']
+};
 
 // UI rendering is verified via E2E (Playwright) — unit tests focus on logic only
 describe('LocationSelectionContainerComponent', () => {
@@ -26,8 +39,9 @@ describe('LocationSelectionContainerComponent', () => {
         {
           provide: BookingApiService,
           useValue: {
-            getBrands: jest.fn().mockResolvedValue(AVAILABLE_BRANDS),
-            getLocations: jest.fn().mockResolvedValue(LOCATIONS_BY_BRAND.audi)
+            getBranches: jest.fn().mockResolvedValue([TEST_BRANCH, TEST_BRANCH_2]),
+            getBrands: jest.fn().mockResolvedValue([]),
+            getAllLocations: jest.fn().mockResolvedValue([])
           }
         },
         { provide: Router, useValue: router }
@@ -52,58 +66,38 @@ describe('LocationSelectionContainerComponent', () => {
     expect(store).toBeTruthy();
   });
 
-  describe('Location Selection', () => {
-    it('should set location in store and navigate on selection', () => {
-      const testLocation = LOCATIONS_BY_BRAND.audi[0];
+  describe('Branch Selection', () => {
+    it('should set branch in store on selection', () => {
       const exposed = component as unknown as {
-        onLocationSelect: (location: { id: string; name: string; city: string }) => void;
+        onBranchSelect: (branch: BranchConfig) => void;
       };
-      exposed.onLocationSelect(testLocation);
+      exposed.onBranchSelect(TEST_BRANCH);
 
-      expect(store.selectedLocation()).toEqual(testLocation);
-      expect(router.navigate).toHaveBeenCalledWith(['/home/services']);
+      expect(store.selectedBranch()).toEqual(TEST_BRANCH);
+      expect(store.selectedLocation()).toEqual({
+        id: TEST_BRANCH.branchId,
+        name: TEST_BRANCH.name,
+        city: TEST_BRANCH.address.city
+      });
     });
 
-    it('should navigate to services route after selection', () => {
-      const testLocation = LOCATIONS_BY_BRAND.audi[2];
+    it('should navigate to brand route on continue', () => {
+      const exposed = component as unknown as { onContinue: () => void };
+      exposed.onContinue();
+
+      expect(router.navigate).toHaveBeenCalledWith(['/home/brand']);
+    });
+
+    it('should cascade-reset downstream state when branch changes', () => {
       const exposed = component as unknown as {
-        onLocationSelect: (location: { id: string; name: string; city: string }) => void;
+        onBranchSelect: (branch: BranchConfig) => void;
       };
-      exposed.onLocationSelect(testLocation);
+      exposed.onBranchSelect(TEST_BRANCH);
+      expect(store.selectedBranch()).toEqual(TEST_BRANCH);
 
-      expect(store.selectedLocation()).toEqual(testLocation);
-      expect(router.navigate).toHaveBeenCalledWith(['/home/services']);
-    });
-  });
-
-  describe('Back Navigation', () => {
-    it('should navigate to brand selection on back', () => {
-      const exposed = component as unknown as { onBack: () => void };
-      exposed.onBack();
-
-      expect(router.navigate).toHaveBeenCalledWith(['/home/brand']);
-    });
-
-    it('should clear selected location in store before navigating back', () => {
-      store.setLocation(LOCATIONS_BY_BRAND.audi[0]);
-      expect(store.selectedLocation()).not.toBeNull();
-
-      const exposed = component as unknown as { onBack: () => void };
-      exposed.onBack();
-
-      expect(store.selectedLocation()).toBeNull();
-      expect(store.hasLocationSelected()).toBe(false);
-      expect(router.navigate).toHaveBeenCalledWith(['/home/brand']);
-    });
-
-    it('should handle back when location is already null', () => {
-      expect(store.selectedLocation()).toBeNull();
-
-      const exposed = component as unknown as { onBack: () => void };
-      exposed.onBack();
-
-      expect(store.selectedLocation()).toBeNull();
-      expect(router.navigate).toHaveBeenCalledWith(['/home/brand']);
+      exposed.onBranchSelect(TEST_BRANCH_2);
+      expect(store.selectedBranch()).toEqual(TEST_BRANCH_2);
+      expect(store.selectedBrand()).toBeNull();
     });
   });
 });

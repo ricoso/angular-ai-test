@@ -1,0 +1,119 @@
+@use 'breakpoints' as *;
+
+.wizard {
+  background-color: var(--color-background-surface);
+  border-bottom: 0.0625em solid var(--color-divider);
+  padding: var(--spacing-sm) var(--spacing-md);
+
+  &__steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    max-width: 60em;
+    margin: 0 auto;
+    list-style: none;
+    padding: 0;
+    height: 2.5rem;
+  }
+
+  &__step {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 0 var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    height: 100%;
+
+    &--active {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
+    &--done {
+      color: var(--color-success);
+      font-weight: 500;
+    }
+  }
+
+  &__step-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    min-width: 1.5rem;
+    min-height: 1.5rem;
+    max-width: 1.5rem;
+    max-height: 1.5rem;
+    border-radius: var(--radius-full);
+    flex-shrink: 0;
+
+    .wizard__step--active & {
+      background-color: var(--color-primary);
+      color: var(--color-text-on-primary);
+    }
+
+    .wizard__step--done & {
+      background-color: var(--color-success);
+      color: var(--color-text-on-primary);
+    }
+
+    .wizard__step--future & {
+      background-color: var(--color-border);
+      color: var(--color-text-muted);
+    }
+
+    .mat-icon {
+      font-size: 0.875rem !important;
+      width: 0.875rem !important;
+      height: 0.875rem !important;
+      line-height: 1 !important;
+      overflow: hidden;
+    }
+  }
+
+  &__step-label {
+    display: none;
+    line-height: 1.5rem;
+
+    @include tablet {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    &:where(a) {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      &:focus-visible {
+        outline: 0.125em solid var(--color-focus-ring);
+        outline-offset: 0.125em;
+        border-radius: var(--radius-sm);
+      }
+    }
+  }
+
+  &__separator {
+    width: 1.5em;
+    height: 0.0625em;
+    background-color: var(--color-border);
+    flex-shrink: 0;
+    align-self: center;
+
+    &--done {
+      background-color: var(--color-success);
+    }
+
+    @include tablet {
+      width: 2em;
+    }
+  }
+}

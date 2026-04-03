@@ -1,29 +1,48 @@
 import type { ComponentFixture } from '@angular/core/testing';
 import { TestBed } from '@angular/core/testing';
 
-import type { LocationDisplay } from '../../models/location.model';
-import { LOCATIONS_BY_BRAND } from '../../models/location.model';
+import type { BranchConfig } from '../../models/branch-config.model';
 
-import { LocationButtonsComponent } from './location-buttons.component';
+import { LocationCardsComponent } from './location-cards.component';
+
+const TEST_BRANCHES: BranchConfig[] = [
+  {
+    branchId: 'branch-1',
+    name: 'Test Branch 1',
+    address: { street: 'Str. 1', zip: '45127', city: 'Essen' },
+    brands: ['VW', 'Audi']
+  },
+  {
+    branchId: 'branch-2',
+    name: 'Test Branch 2',
+    address: { street: 'Str. 2', zip: '44135', city: 'Dortmund' },
+    brands: ['VW']
+  },
+  {
+    branchId: 'branch-3',
+    name: 'Test Branch 3',
+    address: { street: 'Str. 3', zip: '40210', city: 'Düsseldorf' },
+    brands: ['Audi', 'SEAT']
+  }
+];
 
 // UI rendering is verified via E2E (Playwright) — unit tests focus on logic only
-describe('LocationButtonsComponent', () => {
-  let component: LocationButtonsComponent;
-  let fixture: ComponentFixture<LocationButtonsComponent>;
-  const testLocations = LOCATIONS_BY_BRAND.audi;
+describe('LocationCardsComponent', () => {
+  let component: LocationCardsComponent;
+  let fixture: ComponentFixture<LocationCardsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LocationButtonsComponent]
+      imports: [LocationCardsComponent]
     })
-      .overrideComponent(LocationButtonsComponent, {
-        set: { template: '<div class="mocked">Mocked Location Buttons</div>' }
+      .overrideComponent(LocationCardsComponent, {
+        set: { template: '<div class="mocked">Mocked Location Cards</div>' }
       })
       .compileComponents();
 
-    fixture = TestBed.createComponent(LocationButtonsComponent);
+    fixture = TestBed.createComponent(LocationCardsComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('locations', testLocations);
+    fixture.componentRef.setInput('branches', TEST_BRANCHES);
     fixture.detectChanges();
   });
 
@@ -32,40 +51,62 @@ describe('LocationButtonsComponent', () => {
   });
 
   describe('Inputs', () => {
-    it('should accept locations input', () => {
-      expect(component.locations()).toEqual(testLocations);
+    it('should accept branches input', () => {
+      expect(component.branches()).toEqual(TEST_BRANCHES);
     });
 
-    it('should accept selectedLocation input', () => {
-      fixture.componentRef.setInput('selectedLocation', testLocations[0]);
+    it('should accept selectedBranch input', () => {
+      fixture.componentRef.setInput('selectedBranch', TEST_BRANCHES[0]);
       fixture.detectChanges();
-      expect(component.selectedLocation()).toEqual(testLocations[0]);
+      expect(component.selectedBranch()).toEqual(TEST_BRANCHES[0]);
     });
 
-    it('should default selectedLocation to null', () => {
-      expect(component.selectedLocation()).toBeNull();
+    it('should default selectedBranch to null', () => {
+      expect(component.selectedBranch()).toBeNull();
     });
   });
 
   describe('Outputs', () => {
-    it('should emit locationSelected with full location object', () => {
+    it('should emit branchSelected with full branch object', () => {
       const spy = jest.fn();
-      component.locationSelected.subscribe(spy);
+      component.branchSelected.subscribe(spy);
 
-      const exposed = component as unknown as { onClick: (location: LocationDisplay) => void };
-      exposed.onClick(testLocations[0]);
+      const exposed = component as unknown as { onSelect: (branch: BranchConfig) => void };
+      exposed.onSelect(TEST_BRANCHES[0]);
 
-      expect(spy).toHaveBeenCalledWith(testLocations[0]);
+      expect(spy).toHaveBeenCalledWith(TEST_BRANCHES[0]);
     });
 
-    it('should emit correct location for each click', () => {
+    it('should emit correct branch for each selection', () => {
       const spy = jest.fn();
-      component.locationSelected.subscribe(spy);
+      component.branchSelected.subscribe(spy);
 
-      const exposed = component as unknown as { onClick: (location: LocationDisplay) => void };
-      exposed.onClick(testLocations[2]);
+      const exposed = component as unknown as { onSelect: (branch: BranchConfig) => void };
+      exposed.onSelect(TEST_BRANCHES[2]);
 
-      expect(spy).toHaveBeenCalledWith(testLocations[2]);
+      expect(spy).toHaveBeenCalledWith(TEST_BRANCHES[2]);
+    });
+  });
+
+  describe('Computed signals', () => {
+    it('should compute enriched branches with formatted address', () => {
+      const exposed = component as unknown as { enrichedBranches: () => unknown[] };
+      const enriched = exposed.enrichedBranches() as Array<{ formattedAddress: string }>;
+      expect(enriched[0].formattedAddress).toBe('Str. 1, 45127 Essen');
+    });
+
+    it('should compute enriched branches with brand logos for known brands', () => {
+      const exposed = component as unknown as { enrichedBranches: () => unknown[] };
+      const enriched = exposed.enrichedBranches() as Array<{ brandLogos: { name: string; path: string }[] }>;
+      const audiLogo = enriched[0].brandLogos.find(b => b.name === 'Audi');
+      expect(audiLogo?.path).toBe('assets/brands/audi.svg');
+    });
+
+    it('should filter out unknown brands from brand logos', () => {
+      const exposed = component as unknown as { enrichedBranches: () => unknown[] };
+      const enriched = exposed.enrichedBranches() as Array<{ brandLogos: { name: string; path: string }[] }>;
+      const unknownLogo = enriched[0].brandLogos.find(b => b.name === 'UnknownBrand');
+      expect(unknownLogo).toBeUndefined();
     });
   });
 });

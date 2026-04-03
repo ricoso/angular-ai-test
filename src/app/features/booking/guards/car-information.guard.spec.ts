@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import type { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Router } from '@angular/router';
 
-import { LOCATIONS_BY_BRAND } from '../models/location.model';
+import { ALL_LOCATIONS } from '../models/location.model';
 import { AppointmentApiService } from '../services/appointment-api.service';
 import { BookingApiService } from '../services/booking-api.service';
 import { WorkshopCalendarApiService } from '../services/workshop-calendar-api.service';
@@ -24,7 +24,10 @@ describe('carInformationGuard', () => {
           provide: BookingApiService,
           useValue: {
             getBrands: jest.fn().mockResolvedValue([]),
-            getLocations: jest.fn().mockResolvedValue([]),
+            getBrandsByLocation: jest.fn().mockResolvedValue([]),
+            getBrandsByBranch: jest.fn().mockResolvedValue([]),
+            getAllLocations: jest.fn().mockResolvedValue([]),
+            getBranches: jest.fn().mockResolvedValue([]),
             getServices: jest.fn().mockResolvedValue([])
           }
         },
@@ -53,16 +56,7 @@ describe('carInformationGuard', () => {
     router = TestBed.inject(Router);
   });
 
-  it('should redirect to /home/brand when no brand selected', () => {
-    const result = TestBed.runInInjectionContext(() =>
-      carInformationGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
-    );
-    expect(result).not.toBe(true);
-    expect(router.createUrlTree).toHaveBeenCalledWith(['/home/brand']);
-  });
-
-  it('should redirect to /home/location when brand selected but no location', () => {
-    store.setBrand('audi');
+  it('should redirect to /home/location when no location selected', () => {
     const result = TestBed.runInInjectionContext(() =>
       carInformationGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
     );
@@ -70,9 +64,18 @@ describe('carInformationGuard', () => {
     expect(router.createUrlTree).toHaveBeenCalledWith(['/home/location']);
   });
 
+  it('should redirect to /home/brand when location selected but no brand', () => {
+    store.setLocation(ALL_LOCATIONS[0]);
+    const result = TestBed.runInInjectionContext(() =>
+      carInformationGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
+    );
+    expect(result).not.toBe(true);
+    expect(router.createUrlTree).toHaveBeenCalledWith(['/home/brand']);
+  });
+
   it('should redirect to /home/services when no services selected', () => {
+    store.setLocation(ALL_LOCATIONS[0]);
     store.setBrand('audi');
-    store.setLocation(LOCATIONS_BY_BRAND.audi[0]);
     const result = TestBed.runInInjectionContext(() =>
       carInformationGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
     );
@@ -81,8 +84,8 @@ describe('carInformationGuard', () => {
   });
 
   it('should redirect to /home/appointment when no appointment selected', () => {
+    store.setLocation(ALL_LOCATIONS[0]);
     store.setBrand('audi');
-    store.setLocation(LOCATIONS_BY_BRAND.audi[0]);
     store.toggleService('tuv');
     const result = TestBed.runInInjectionContext(() =>
       carInformationGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot)
@@ -92,8 +95,8 @@ describe('carInformationGuard', () => {
   });
 
   it('should allow access when all prerequisites are met', () => {
+    store.setLocation(ALL_LOCATIONS[0]);
     store.setBrand('audi');
-    store.setLocation(LOCATIONS_BY_BRAND.audi[0]);
     store.toggleService('tuv');
     store.selectAppointment({
       id: 'apt-1',

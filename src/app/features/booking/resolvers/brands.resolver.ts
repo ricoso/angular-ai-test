@@ -5,6 +5,9 @@ import { BookingStore } from '../stores/booking.store';
 
 export const brandsResolver: ResolveFn<void> = () => {
   const store = inject(BookingStore);
-  store.loadBrands();
+  const branch = store.selectedBranch();
+  if (branch) {
+    store.loadBrands(branch.branchId);
+  }
   return;
 };

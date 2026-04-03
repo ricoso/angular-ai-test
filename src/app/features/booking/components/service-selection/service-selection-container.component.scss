@@ -24,6 +24,7 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--spacing-lg);
+    padding: var(--spacing-sm);
 
     @include tablet {
       grid-template-columns: repeat(2, 1fr);

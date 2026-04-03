@@ -123,6 +123,13 @@
 
   &__cart-chip {
     font-size: var(--font-size-sm);
+
+    // Fix: Allow option labels to wrap instead of truncating
+    ::ng-deep .mdc-evolution-chip__text-label {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+    }
   }
 
   &__cart-chip-icon {

@@ -3,7 +3,6 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { AVAILABLE_BRANDS } from '../../models/brand.model';
-import { LOCATIONS_BY_BRAND } from '../../models/location.model';
 import { AVAILABLE_SERVICES } from '../../models/service.model';
 import { BookingApiService } from '../../services/booking-api.service';
 import { BookingStore } from '../../stores/booking.store';
@@ -27,7 +26,10 @@ describe('ServiceSelectionContainerComponent', () => {
           provide: BookingApiService,
           useValue: {
             getBrands: jest.fn().mockResolvedValue(AVAILABLE_BRANDS),
-            getLocations: jest.fn().mockResolvedValue(LOCATIONS_BY_BRAND.audi),
+            getBrandsByLocation: jest.fn().mockResolvedValue([]),
+            getBrandsByBranch: jest.fn().mockResolvedValue([]),
+            getAllLocations: jest.fn().mockResolvedValue([]),
+            getBranches: jest.fn().mockResolvedValue([]),
             getServices: jest.fn().mockResolvedValue(AVAILABLE_SERVICES)
           }
         },
@@ -160,7 +162,7 @@ describe('ServiceSelectionContainerComponent', () => {
       exposed.onServiceClick('inspection');
       exposed.onBack();
       expect(store.selectedServices()).toEqual([]);
-      expect(router.navigate).toHaveBeenCalledWith(['/home/location']);
+      expect(router.navigate).toHaveBeenCalledWith(['/home/brand']);
     });
   });
 });

@@ -6,9 +6,11 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, from, pipe, switchMap, tap } from 'rxjs';
 
 import type { AppointmentSlot } from '../models/appointment.model';
+import type { BranchConfig } from '../models/branch-config.model';
 import type { Brand, BrandDisplay } from '../models/brand.model';
 import type { CustomerInfo, VehicleInfo } from '../models/customer.model';
 import type { LocationDisplay } from '../models/location.model';
+import type { NotesExtras } from '../models/notes-extras.model';
 import type { SelectedService, ServiceDisplay, ServiceType } from '../models/service.model';
 import type { WorkshopCalendarDay } from '../models/workshop-calendar.model';
 import { AppointmentApiService } from '../services/appointment-api.service';
@@ -16,6 +18,8 @@ import { BookingApiService } from '../services/booking-api.service';
 import { WorkshopCalendarApiService } from '../services/workshop-calendar-api.service';
 
 interface BookingState {
+  branches: BranchConfig[];
+  selectedBranch: BranchConfig | null;
   brands: BrandDisplay[];
   selectedBrand: Brand | null;
   locations: LocationDisplay[];
@@ -30,12 +34,15 @@ interface BookingState {
   customerInfo: CustomerInfo | null;
   vehicleInfo: VehicleInfo | null;
   privacyConsent: boolean;
+  notesExtras: NotesExtras | null;
   bookingSubmitted: boolean;
   isLoading: boolean;
   error: string | null;
 }
 
 const INITIAL_STATE: BookingState = {
+  branches: [],
+  selectedBranch: null,
   brands: [],
   selectedBrand: null,
   locations: [],
@@ -50,6 +57,7 @@ const INITIAL_STATE: BookingState = {
   customerInfo: null,
   vehicleInfo: null,
   privacyConsent: false,
+  notesExtras: null,
   bookingSubmitted: false,
   isLoading: false,
   error: null
@@ -60,7 +68,13 @@ export const BookingStore = signalStore(
 
   withState<BookingState>(INITIAL_STATE),
 
-  withComputed(({ brands, selectedBrand, locations, selectedLocation, selectedServices, bookingNote, selectedAppointment, workshopCalendarDate, customerInfo, vehicleInfo, privacyConsent, bookingSubmitted }) => ({
+  withComputed(({ branches, selectedBranch, brands, selectedBrand, locations, selectedLocation, selectedServices, bookingNote, selectedAppointment, workshopCalendarDate, customerInfo, vehicleInfo, privacyConsent, bookingSubmitted, notesExtras }) => ({
+    hasBranchSelected: computed(() => selectedBranch() !== null),
+    selectedBranchBrands: computed(() => {
+      const branch = selectedBranch();
+      return branch ? branch.brands : [];
+    }),
+    branchCount: computed(() => branches().length),
     hasBrandSelected: computed(() => selectedBrand() !== null),
     brandCount: computed(() => brands().length),
     filteredLocations: computed(() => locations()),
@@ -84,17 +98,51 @@ export const BookingStore = signalStore(
       vehicleInfo() !== null &&
       privacyConsent()
     ),
-    hasBookingSubmitted: computed(() => bookingSubmitted())
+    hasBookingSubmitted: computed(() => bookingSubmitted()),
+    hasNotesExtras: computed(() => notesExtras() !== null),
+    selectedMobilityOption: computed(() => notesExtras()?.mobilityOption ?? 'none'),
+    selectedAppointmentPreference: computed(() => notesExtras()?.appointmentPreference ?? 'anytime'),
+    selectedCallbackOption: computed(() => notesExtras()?.callbackOption ?? 'none')
   })),
 
   withMethods((store, api = inject(BookingApiService), appointmentApi = inject(AppointmentApiService), workshopCalendarApi = inject(WorkshopCalendarApiService)) => ({
-    loadBrands: rxMethod<void>(
+    loadBrands: rxMethod<string | void>(
       pipe(
         tap(() => { patchState(store, { isLoading: true, error: null }); }),
-        switchMap(() => from(api.getBrands()).pipe(
-          tap((brands) => {
-            console.debug('[BookingStore] Brands loaded:', brands);
-            patchState(store, { brands, isLoading: false });
+        switchMap((branchId) => {
+          let source;
+          if (branchId) {
+            const branch = store.selectedBranch();
+            if (branch) {
+              source = from(api.getBrandsByBranch(branch.brands));
+            } else {
+              source = from(api.getBrandsByLocation(branchId));
+            }
+          } else {
+            source = from(api.getBrands());
+          }
+          return source.pipe(
+            tap((brands) => {
+              console.debug('[BookingStore] Brands loaded:', brands);
+              patchState(store, { brands, isLoading: false });
+            }),
+            catchError((err: unknown) => {
+              const message = err instanceof Error ? err.message : 'Unknown error';
+              patchState(store, { error: message, isLoading: false });
+              return EMPTY;
+            })
+          );
+        })
+      )
+    ),
+
+    loadLocations: rxMethod<void>(
+      pipe(
+        tap(() => { patchState(store, { isLoading: true, error: null }); }),
+        switchMap(() => from(api.getAllLocations()).pipe(
+          tap((locations) => {
+            console.debug('[BookingStore] Locations loaded:', locations);
+            patchState(store, { locations, isLoading: false });
           }),
           catchError((err: unknown) => {
             const message = err instanceof Error ? err.message : 'Unknown error';
@@ -105,27 +153,20 @@ export const BookingStore = signalStore(
       )
     ),
 
-    loadLocations: rxMethod<void>(
+    loadBranches: rxMethod<void>(
       pipe(
         tap(() => { patchState(store, { isLoading: true, error: null }); }),
-        switchMap(() => {
-          const brand = store.selectedBrand();
-          if (!brand) {
-            patchState(store, { locations: [], isLoading: false });
+        switchMap(() => from(api.getBranches()).pipe(
+          tap((branches) => {
+            console.debug('[BookingStore] Branches loaded:', branches);
+            patchState(store, { branches, isLoading: false });
+          }),
+          catchError((err: unknown) => {
+            const message = err instanceof Error ? err.message : 'Unknown error';
+            patchState(store, { error: message, isLoading: false });
             return EMPTY;
-          }
-          return from(api.getLocations(brand)).pipe(
-            tap((locations) => {
-              console.debug('[BookingStore] Locations loaded:', locations);
-              patchState(store, { locations, isLoading: false });
-            }),
-            catchError((err: unknown) => {
-              const message = err instanceof Error ? err.message : 'Unknown error';
-              patchState(store, { error: message, isLoading: false });
-              return EMPTY;
-            })
-          );
-        })
+          })
+        ))
       )
     ),
 
@@ -153,7 +194,49 @@ export const BookingStore = signalStore(
 
     setLocation(location: LocationDisplay): void {
       console.debug('[BookingStore] setLocation:', location);
+      const currentLocation = store.selectedLocation();
+      const locationChanged = currentLocation?.id !== location.id;
       patchState(store, { selectedLocation: location });
+      if (locationChanged) {
+        patchState(store, {
+          selectedBrand: null,
+          selectedServices: [],
+          bookingNote: null,
+          selectedAppointment: null,
+          notesExtras: null,
+          customerInfo: null,
+          vehicleInfo: null,
+          privacyConsent: false,
+          bookingSubmitted: false
+        });
+      }
+    },
+
+    selectBranch(branch: BranchConfig): void {
+      console.debug('[BookingStore] selectBranch:', branch.branchId);
+      const currentBranch = store.selectedBranch();
+      const branchChanged = currentBranch?.branchId !== branch.branchId;
+      patchState(store, {
+        selectedBranch: branch,
+        selectedLocation: { id: branch.branchId, name: branch.name, city: branch.address.city }
+      });
+      if (branchChanged) {
+        patchState(store, {
+          selectedBrand: null,
+          selectedServices: [],
+          bookingNote: null,
+          selectedAppointment: null,
+          notesExtras: null,
+          customerInfo: null,
+          vehicleInfo: null,
+          privacyConsent: false,
+          bookingSubmitted: false
+        });
+      }
+    },
+
+    clearSelectedBranch(): void {
+      patchState(store, { selectedBranch: null, selectedLocation: null });
     },
 
     toggleService(serviceId: ServiceType): void {
@@ -240,8 +323,26 @@ export const BookingStore = signalStore(
       patchState(store, { selectedLocation: null });
     },
 
+    clearSelectedBrand(): void {
+      patchState(store, { selectedBrand: null });
+    },
+
+    setSelectedBranch(branch: BranchConfig | null): void {
+      console.debug('[BookingStore] setSelectedBranch:', branch?.branchId ?? null);
+      patchState(store, { selectedBranch: branch });
+    },
+
     clearBookingNote(): void {
       patchState(store, { bookingNote: null });
+    },
+
+    setNotesExtras(extras: NotesExtras): void {
+      console.debug('[BookingStore] setNotesExtras:', extras);
+      patchState(store, { notesExtras: extras });
+    },
+
+    clearNotesExtras(): void {
+      patchState(store, { notesExtras: null });
     },
 
     clearSelectedAppointment(): void {
