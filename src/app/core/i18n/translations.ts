@@ -51,15 +51,33 @@ export const translations = {
     },
 
     booking: {
+      wizard: {
+        location: 'Standort',
+        brand: 'Marke',
+        service: 'Service',
+        notes: 'Hinweise',
+        appointment: 'Termin',
+        vehicle: 'Fahrzeug',
+        overview: 'Übersicht'
+      },
+      branch: {
+        infoLabel: 'Ihr Standort',
+        infoSeparator: '—'
+      },
       brand: {
-        title: 'Welche Fahrzeugmarke fahren Sie?',
-        subtitle: 'Bitte wählen Sie die gewünschte Marke aus.'
+        title: 'Welche Marke möchten Sie servicen lassen?',
+        subtitle: 'Am Standort stehen Ihnen folgende Marken zur Verfügung',
+        backButton: 'Zurück',
+        noBrandsAvailable: 'Für diesen Standort sind derzeit keine Marken verfügbar.',
+        ariaGroupLabel: 'Markenauswahl',
+        ariaNavLabel: 'Seitennavigation'
       },
       location: {
-        title: 'An welchem Standort dürfen wir Sie begrüßen?',
-        subtitle: 'Bitte wählen Sie den gewünschten Standort aus.',
-        ariaGroupLabel: 'Standorte',
-        backButton: 'Zurück'
+        title: 'Buchen Sie Ihren Werkstatt-Termin online!',
+        subtitle: 'Wählen Sie Ihren Standort — die Markenlogos helfen Ihnen bei der Orientierung',
+        ariaGroupLabel: 'Standortauswahl',
+        ariaNavLabel: 'Seitennavigation',
+        continueButton: 'Weiter'
       },
       services: {
         title: 'Welche Services möchten Sie buchen?',
@@ -170,6 +188,27 @@ export const translations = {
           actionsChecks: 'Bitte beachten Sie: Für den Garantie-Check benötigen wir die Fahrzeugpapiere und ggf. das Serviceheft.',
           repair: 'Bitte beachten Sie: Beschreiben Sie Ihre Beanstandung so detailliert wie möglich im Kommentarfeld, damit wir uns optimal vorbereiten können.',
           bodywork: 'Bitte beachten Sie: Bei Unfallschäden benötigen wir ggf. die Schadennummer Ihrer Versicherung. Bringen Sie relevante Unterlagen mit.'
+        },
+        mobilityOptions: {
+          title: 'Mobilitätsoptionen (kostenpflichtig)',
+          label: 'Wählen',
+          none: 'Keine Auswahl',
+          compactCar: 'Kleinwagen',
+          midRange: 'Mittelklasse',
+          luxury: 'Oberklasse'
+        },
+        appointmentPreference: {
+          title: 'Terminpräferenz',
+          label: 'Wählen',
+          anytime: 'Jederzeit',
+          morning: 'Vormittags',
+          afternoon: 'Nachmittags'
+        },
+        callback: {
+          title: 'Weitere Optionen: Rückruf',
+          label: 'Rückruf',
+          none: 'Keine Auswahl',
+          yes: 'Ja'
         }
       },
       carinformation: {
@@ -215,6 +254,8 @@ export const translations = {
       bookingOverview: {
         title: 'Übersicht',
         subtitle: 'Bitte prüfen Sie Ihre Angaben bevor Sie den Termin versenden.',
+        ariaGridLabel: 'Buchungsübersicht',
+        ariaNavLabel: 'Seitennavigation',
         tiles: {
           appointment: {
             title: 'Wunschtermin',
@@ -296,15 +337,33 @@ export const translations = {
     },
 
     booking: {
+      wizard: {
+        location: 'Location',
+        brand: 'Brand',
+        service: 'Service',
+        notes: 'Notes',
+        appointment: 'Appointment',
+        vehicle: 'Vehicle',
+        overview: 'Overview'
+      },
+      branch: {
+        infoLabel: 'Your location',
+        infoSeparator: '—'
+      },
       brand: {
-        title: 'What vehicle brand do you drive?',
-        subtitle: 'Please select your desired brand.'
+        title: 'Which brand would you like to have serviced?',
+        subtitle: 'The following brands are available at your location',
+        backButton: 'Back',
+        noBrandsAvailable: 'No brands are currently available for this location.',
+        ariaGroupLabel: 'Brand selection',
+        ariaNavLabel: 'Page navigation'
       },
       location: {
-        title: 'At which location may we welcome you?',
-        subtitle: 'Please select your desired location.',
-        ariaGroupLabel: 'Locations',
-        backButton: 'Back'
+        title: 'Book your workshop appointment online!',
+        subtitle: 'Select your location — brand logos help you navigate',
+        ariaGroupLabel: 'Location selection',
+        ariaNavLabel: 'Page navigation',
+        continueButton: 'Continue'
       },
       services: {
         title: 'Which services would you like to book?',
@@ -415,6 +474,27 @@ export const translations = {
           actionsChecks: 'Please note: For the warranty check we need the vehicle documents and, if applicable, the service booklet.',
           repair: 'Please note: Please describe your complaint as detailed as possible in the comment field so we can prepare optimally.',
           bodywork: 'Please note: For accident damage we may need your insurance claim number. Please bring relevant documents.'
+        },
+        mobilityOptions: {
+          title: 'Mobility options (chargeable)',
+          label: 'Select',
+          none: 'No selection',
+          compactCar: 'Compact car',
+          midRange: 'Mid-range',
+          luxury: 'Luxury'
+        },
+        appointmentPreference: {
+          title: 'Appointment preference',
+          label: 'Select',
+          anytime: 'Anytime',
+          morning: 'Morning',
+          afternoon: 'Afternoon'
+        },
+        callback: {
+          title: 'Further options: Callback',
+          label: 'Callback',
+          none: 'No selection',
+          yes: 'Yes'
         }
       },
       carinformation: {
@@ -460,6 +540,8 @@ export const translations = {
       bookingOverview: {
         title: 'Overview',
         subtitle: 'Please review your details before submitting the appointment.',
+        ariaGridLabel: 'Booking summary',
+        ariaNavLabel: 'Page navigation',
         tiles: {
           appointment: {
             title: 'Desired Appointment',
@@ -541,15 +623,33 @@ export const translations = {
     },
 
     booking: {
+      wizard: {
+        location: 'Місце',
+        brand: 'Марка',
+        service: 'Сервіс',
+        notes: 'Примітки',
+        appointment: 'Зустріч',
+        vehicle: 'Автомобіль',
+        overview: 'Огляд'
+      },
+      branch: {
+        infoLabel: 'Ваше місце',
+        infoSeparator: '—'
+      },
       brand: {
-        title: 'Яку марку автомобіля ви водите?',
-        subtitle: 'Будь ласка, оберіть бажану марку.'
+        title: 'Яку марку ви хочете обслуговувати?',
+        subtitle: 'У вашому місці доступні наступні марки',
+        backButton: 'Назад',
+        noBrandsAvailable: 'Для цього місця наразі немає доступних марок.',
+        ariaGroupLabel: 'Вибір марки',
+        ariaNavLabel: 'Навігація сторінки'
       },
       location: {
-        title: 'В якому місці ми можемо вас привітати?',
-        subtitle: 'Будь ласка, оберіть бажане місцезнаходження.',
-        ariaGroupLabel: 'Місцезнаходження',
-        backButton: 'Назад'
+        title: 'Забронюйте візит до автосервісу онлайн!',
+        subtitle: 'Оберіть ваше місце — логотипи марок допоможуть зорієнтуватися',
+        ariaGroupLabel: 'Вибір місця',
+        ariaNavLabel: 'Навігація сторінки',
+        continueButton: 'Далі'
       },
       services: {
         title: 'Які послуги ви хотіли б замовити?',
@@ -660,6 +760,27 @@ export const translations = {
           actionsChecks: 'Зверніть увагу: для гарантійної перевірки нам потрібні документи на автомобіль та, за потреби, сервісна книжка.',
           repair: 'Зверніть увагу: опишіть вашу скаргу якомога детальніше у полі коментарів, щоб ми могли оптимально підготуватися.',
           bodywork: 'Зверніть увагу: при аварійних пошкодженнях нам може знадобитися номер страхового випадку. Принесіть відповідні документи.'
+        },
+        mobilityOptions: {
+          title: 'Варіанти мобільності (платно)',
+          label: 'Обрати',
+          none: 'Без вибору',
+          compactCar: 'Малолітражка',
+          midRange: 'Середній клас',
+          luxury: 'Преміум-клас'
+        },
+        appointmentPreference: {
+          title: 'Бажаний час',
+          label: 'Обрати',
+          anytime: 'Будь-який час',
+          morning: 'Зранку',
+          afternoon: 'Після обіду'
+        },
+        callback: {
+          title: 'Додаткові опції: Зворотний дзвінок',
+          label: 'Зворотний дзвінок',
+          none: 'Без вибору',
+          yes: 'Так'
         }
       },
       carinformation: {
@@ -705,6 +826,8 @@ export const translations = {
       bookingOverview: {
         title: 'Огляд',
         subtitle: 'Будь ласка, перевірте свої дані перед відправленням запису.',
+        ariaGridLabel: 'Огляд бронювання',
+        ariaNavLabel: 'Навігація сторінки',
         tiles: {
           appointment: {
             title: 'Бажаний термін',
@@ -786,15 +909,33 @@ export const translations = {
     },
 
     booking: {
+      wizard: {
+        location: 'Lieu',
+        brand: 'Marque',
+        service: 'Service',
+        notes: 'Remarques',
+        appointment: 'Rendez-vous',
+        vehicle: 'Véhicule',
+        overview: 'Aperçu'
+      },
+      branch: {
+        infoLabel: 'Votre lieu',
+        infoSeparator: '—'
+      },
       brand: {
-        title: 'Quelle marque de véhicule conduisez-vous ?',
-        subtitle: 'Veuillez sélectionner la marque souhaitée.'
+        title: 'Quelle marque souhaitez-vous faire entretenir ?',
+        subtitle: 'Les marques suivantes sont disponibles à votre emplacement',
+        backButton: 'Retour',
+        noBrandsAvailable: 'Aucune marque n\'est disponible pour cet emplacement.',
+        ariaGroupLabel: 'Sélection de la marque',
+        ariaNavLabel: 'Navigation de la page'
       },
       location: {
-        title: 'À quel emplacement pouvons-nous vous accueillir ?',
-        subtitle: 'Veuillez sélectionner l\'emplacement souhaité.',
-        ariaGroupLabel: 'Emplacements',
-        backButton: 'Retour'
+        title: 'Réservez en ligne votre visite à l\'atelier !',
+        subtitle: 'Sélectionnez votre emplacement — les logos des marques vous aident à vous orienter',
+        ariaGroupLabel: 'Sélection de l\'emplacement',
+        ariaNavLabel: 'Navigation de la page',
+        continueButton: 'Continuer'
       },
       services: {
         title: 'Quels services souhaitez-vous réserver ?',
@@ -905,6 +1046,27 @@ export const translations = {
           actionsChecks: 'Veuillez noter : pour la vérification de garantie, nous avons besoin des documents du véhicule et éventuellement du carnet d\'entretien.',
           repair: 'Veuillez noter : décrivez votre réclamation aussi précisément que possible dans le champ de commentaire afin que nous puissions nous préparer au mieux.',
           bodywork: 'Veuillez noter : en cas de dommages accidentels, nous pourrions avoir besoin de votre numéro de sinistre. Apportez les documents pertinents.'
+        },
+        mobilityOptions: {
+          title: 'Options de mobilité (payantes)',
+          label: 'Sélectionner',
+          none: 'Aucune sélection',
+          compactCar: 'Voiture compacte',
+          midRange: 'Gamme moyenne',
+          luxury: 'Haut de gamme'
+        },
+        appointmentPreference: {
+          title: 'Préférence de rendez-vous',
+          label: 'Sélectionner',
+          anytime: 'À tout moment',
+          morning: 'Le matin',
+          afternoon: "L'après-midi"
+        },
+        callback: {
+          title: 'Options supplémentaires : Rappel',
+          label: 'Rappel',
+          none: 'Aucune sélection',
+          yes: 'Oui'
         }
       },
       carinformation: {
@@ -950,6 +1112,8 @@ export const translations = {
       bookingOverview: {
         title: 'Récapitulatif',
         subtitle: 'Veuillez vérifier vos informations avant d\'envoyer le rendez-vous.',
+        ariaGridLabel: 'Récapitulatif de la réservation',
+        ariaNavLabel: 'Navigation de la page',
         tiles: {
           appointment: {
             title: 'Rendez-vous souhaité',
@@ -1031,15 +1195,33 @@ export const translations = {
     },
 
     booking: {
+      wizard: {
+        location: 'الموقع',
+        brand: 'العلامة',
+        service: 'الخدمة',
+        notes: 'ملاحظات',
+        appointment: 'الموعد',
+        vehicle: 'السيارة',
+        overview: 'نظرة عامة'
+      },
+      branch: {
+        infoLabel: 'موقعك',
+        infoSeparator: '—'
+      },
       brand: {
-        title: 'ما هي ماركة سيارتك؟',
-        subtitle: 'يرجى اختيار العلامة التجارية المطلوبة.'
+        title: 'أي علامة تجارية ترغب في صيانتها؟',
+        subtitle: 'العلامات التجارية التالية متاحة في موقعك',
+        backButton: 'رجوع',
+        noBrandsAvailable: 'لا توجد علامات تجارية متاحة حالياً لهذا الموقع.',
+        ariaGroupLabel: 'اختيار العلامة التجارية',
+        ariaNavLabel: 'التنقل في الصفحة'
       },
       location: {
-        title: 'في أي موقع يمكننا استقبالك؟',
-        subtitle: 'يرجى اختيار الموقع المطلوب.',
-        ariaGroupLabel: 'المواقع',
-        backButton: 'رجوع'
+        title: 'احجز زيارتك لورشة العمل عبر الإنترنت!',
+        subtitle: 'اختر موقعك — شعارات العلامات التجارية تساعدك في التنقل',
+        ariaGroupLabel: 'اختيار الموقع',
+        ariaNavLabel: 'التنقل في الصفحة',
+        continueButton: 'متابعة'
       },
       services: {
         title: 'ما هي الخدمات التي ترغب في حجزها؟',
@@ -1150,6 +1332,27 @@ export const translations = {
           actionsChecks: 'يرجى ملاحظة: لفحص الضمان نحتاج إلى وثائق السيارة وربما دفتر الخدمة.',
           repair: 'يرجى ملاحظة: صف شكواك بأكبر قدر ممكن من التفصيل في حقل التعليقات حتى نتمكن من التحضير بشكل مثالي.',
           bodywork: 'يرجى ملاحظة: في حالة أضرار الحوادث قد نحتاج إلى رقم مطالبة التأمين الخاص بك. أحضر المستندات ذات الصلة.'
+        },
+        mobilityOptions: {
+          title: 'خيارات التنقل (مقابل رسوم)',
+          label: 'اختيار',
+          none: 'بدون اختيار',
+          compactCar: 'سيارة صغيرة',
+          midRange: 'فئة متوسطة',
+          luxury: 'فئة فاخرة'
+        },
+        appointmentPreference: {
+          title: 'تفضيل الموعد',
+          label: 'اختيار',
+          anytime: 'أي وقت',
+          morning: 'صباحاً',
+          afternoon: 'بعد الظهر'
+        },
+        callback: {
+          title: 'خيارات إضافية: معاودة الاتصال',
+          label: 'معاودة الاتصال',
+          none: 'بدون اختيار',
+          yes: 'نعم'
         }
       },
       carinformation: {
@@ -1195,6 +1398,8 @@ export const translations = {
       bookingOverview: {
         title: 'ملخص',
         subtitle: 'يرجى مراجعة بياناتك قبل إرسال الموعد.',
+        ariaGridLabel: 'ملخص الحجز',
+        ariaNavLabel: 'التنقل في الصفحة',
         tiles: {
           appointment: {
             title: 'الموعد المطلوب',

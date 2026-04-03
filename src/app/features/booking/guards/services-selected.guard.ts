@@ -9,20 +9,20 @@ export const servicesSelectedGuard: CanActivateFn = () => {
   const router = inject(Router);
 
   console.debug(
-    '[Guard] servicesSelectedGuard — brand:',
-    store.selectedBrand(),
-    'hasLocation:',
+    '[Guard] servicesSelectedGuard — hasLocation:',
     store.hasLocationSelected(),
+    'hasBrand:',
+    store.hasBrandSelected(),
     'hasServices:',
     store.hasServicesSelected()
   );
 
-  if (!store.hasBrandSelected()) {
-    return router.createUrlTree(['/home/brand']);
-  }
-
   if (!store.hasLocationSelected()) {
     return router.createUrlTree(['/home/location']);
+  }
+
+  if (!store.hasBrandSelected()) {
+    return router.createUrlTree(['/home/brand']);
   }
 
   if (store.hasServicesSelected()) {

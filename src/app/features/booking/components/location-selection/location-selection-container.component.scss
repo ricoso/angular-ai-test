@@ -8,6 +8,7 @@
 
   &__title {
     font-size: var(--font-size-2xl);
+    font-weight: 700;
     line-height: var(--line-height-tight);
     color: var(--color-text-primary);
     margin: 0 0 var(--spacing-sm);
@@ -22,8 +23,19 @@
 
   &__nav {
     display: flex;
-    justify-content: flex-start;
-    margin-top: var(--spacing-xl);
-    padding-top: var(--spacing-md);
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) 0;
+  }
+}
+
+@media (max-width: 47.9375em) {
+  .location-selection {
+    padding: var(--spacing-lg) var(--spacing-sm);
+
+    &__title {
+      font-size: var(--font-size-xl);
+    }
   }
 }

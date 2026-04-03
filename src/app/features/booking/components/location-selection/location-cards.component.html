@@ -1,0 +1,35 @@
+<div class="location-grid" role="radiogroup" [attr.aria-label]="booking.location.ariaGroupLabel | translate">
+  @for (branch of enrichedBranches(); track branch.branchId) {
+    <div class="location-grid__item">
+      <input
+        type="radio"
+        name="location"
+        [id]="'location-' + branch.branchId"
+        class="location-grid__radio"
+        [value]="branch.branchId"
+        [checked]="branch.branchId === selectedBranch()?.branchId"
+        [attr.aria-label]="branch.name + ', ' + branch.formattedAddress"
+        (change)="onSelect(branch)"
+      />
+      <label [for]="'location-' + branch.branchId" class="location-card">
+        <span class="location-card__check" aria-hidden="true">
+          <mat-icon>check</mat-icon>
+        </span>
+        <span class="location-card__name">{{ branch.name }}</span>
+        <span class="location-card__address">
+          <mat-icon aria-hidden="true">location_on</mat-icon>
+          {{ branch.formattedAddress }}
+        </span>
+        <span class="location-card__brands">
+          @for (logo of branch.brandLogos; track logo.name) {
+            <img
+              [src]="logo.path"
+              [alt]="logo.name"
+              class="location-card__brand-logo"
+            />
+          }
+        </span>
+      </label>
+    </div>
+  }
+</div>

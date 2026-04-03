@@ -111,3 +111,5 @@ tools/requirements-board/webview/.angular/
 .claude/cache/
 /private/tmp/claude-*
 node_modules
+3rd-party_Authentication-Authorization.html
+cognigy.net_fingerprint-e6ced285a2bfce274426c261cca6edcd.json

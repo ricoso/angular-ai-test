@@ -13,27 +13,27 @@ import { servicesResolver } from './resolvers/services.resolver';
 export const bookingRoutes: Routes = [
   {
     path: '',
-    redirectTo: 'brand',
+    redirectTo: 'location',
     pathMatch: 'full'
-  },
-  {
-    path: 'brand',
-    loadComponent: () => import('./components/brand-selection/brand-selection-container.component')
-      .then(m => m.BrandSelectionContainerComponent),
-    resolve: { _: brandsResolver }
   },
   {
     path: 'location',
     loadComponent: () => import('./components/location-selection/location-selection-container.component')
       .then(m => m.LocationSelectionContainerComponent),
-    canActivate: [brandSelectedGuard],
     resolve: { _: locationsResolver }
+  },
+  {
+    path: 'brand',
+    loadComponent: () => import('./components/brand-selection/brand-selection-container.component')
+      .then(m => m.BrandSelectionContainerComponent),
+    canActivate: [locationSelectedGuard],
+    resolve: { _: brandsResolver }
   },
   {
     path: 'services',
     loadComponent: () => import('./components/service-selection/service-selection-container.component')
       .then(m => m.ServiceSelectionContainerComponent),
-    canActivate: [locationSelectedGuard],
+    canActivate: [brandSelectedGuard],
     resolve: { _: servicesResolver }
   },
   {

@@ -30,7 +30,10 @@ describe('bookingOverviewGuard', () => {
           provide: BookingApiService,
           useValue: {
             getBrands: jest.fn().mockResolvedValue([]),
-            getLocations: jest.fn().mockResolvedValue([]),
+            getBrandsByLocation: jest.fn().mockResolvedValue([]),
+            getBrandsByBranch: jest.fn().mockResolvedValue([]),
+            getAllLocations: jest.fn().mockResolvedValue([]),
+            getBranches: jest.fn().mockResolvedValue([]),
             getServices: jest.fn().mockResolvedValue([])
           }
         },
@@ -43,7 +46,7 @@ describe('bookingOverviewGuard', () => {
         {
           provide: WorkshopCalendarApiService,
           useValue: {
-            getWorkshopSlots: jest.fn().mockResolvedValue([])
+            getWorkshopCalendarDays: jest.fn().mockResolvedValue([])
           }
         },
         {
@@ -66,8 +69,8 @@ describe('bookingOverviewGuard', () => {
   }
 
   function setupCompleteBooking(): void {
-    store.setBrand('audi');
     store.setLocation(MOCK_LOCATION);
+    store.setBrand('audi');
     store.toggleService('tuv');
     store.selectAppointment({
       id: '2026-03-15-10-00',
@@ -109,8 +112,8 @@ describe('bookingOverviewGuard', () => {
   });
 
   it('should redirect when privacy consent is missing', () => {
-    store.setBrand('audi');
     store.setLocation(MOCK_LOCATION);
+    store.setBrand('audi');
     store.toggleService('tuv');
     store.selectAppointment({
       id: '2026-03-15-10-00',
@@ -149,8 +152,8 @@ describe('bookingOverviewGuard', () => {
   });
 
   it('should redirect when customer info is missing', () => {
-    store.setBrand('audi');
     store.setLocation(MOCK_LOCATION);
+    store.setBrand('audi');
     store.toggleService('tuv');
     store.selectAppointment({
       id: '2026-03-15-10-00',
@@ -172,8 +175,8 @@ describe('bookingOverviewGuard', () => {
   });
 
   it('should redirect when services are empty', () => {
-    store.setBrand('audi');
     store.setLocation(MOCK_LOCATION);
+    store.setBrand('audi');
     store.selectAppointment({
       id: '2026-03-15-10-00',
       date: '2026-03-15',

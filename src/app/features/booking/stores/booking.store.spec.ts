@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import type { AppointmentSlot } from '../models/appointment.model';
 import { AVAILABLE_BRANDS } from '../models/brand.model';
-import { LOCATIONS_BY_BRAND } from '../models/location.model';
+import { ALL_LOCATIONS,LOCATIONS_BY_BRAND } from '../models/location.model';
 import { AVAILABLE_SERVICES } from '../models/service.model';
 import { AppointmentApiService } from '../services/appointment-api.service';
 import { BookingApiService } from '../services/booking-api.service';
@@ -16,7 +16,10 @@ describe('BookingStore', () => {
   beforeEach(() => {
     apiSpy = {
       getBrands: jest.fn().mockResolvedValue(AVAILABLE_BRANDS),
+      getBrandsByLocation: jest.fn().mockResolvedValue(AVAILABLE_BRANDS),
       getLocations: jest.fn().mockResolvedValue(LOCATIONS_BY_BRAND.audi),
+      getAllLocations: jest.fn().mockResolvedValue(ALL_LOCATIONS),
+      getBranches: jest.fn().mockResolvedValue([]),
       getServices: jest.fn().mockResolvedValue(AVAILABLE_SERVICES)
     } as unknown as jest.Mocked<BookingApiService>;
 
@@ -137,37 +140,27 @@ describe('BookingStore', () => {
   });
 
   describe('loadLocations', () => {
-    it('should call API service with selected brand', async () => {
-      store.setBrand('audi');
+    it('should call getAllLocations API', async () => {
       store.loadLocations();
       await new Promise(resolve => setTimeout(resolve, 0));
-      expect(apiSpy.getLocations).toHaveBeenCalledWith('audi');
+      expect(apiSpy.getAllLocations).toHaveBeenCalled();
     });
 
     it('should load locations from API', async () => {
-      store.setBrand('audi');
       store.loadLocations();
       await new Promise(resolve => setTimeout(resolve, 0));
-      expect(store.locations()).toEqual(LOCATIONS_BY_BRAND.audi);
+      expect(store.locations()).toEqual(ALL_LOCATIONS);
       expect(store.isLoading()).toBe(false);
     });
 
     it('should update locationCount after load', async () => {
-      store.setBrand('audi');
       store.loadLocations();
       await new Promise(resolve => setTimeout(resolve, 0));
-      expect(store.locationCount()).toBe(5);
-    });
-
-    it('should return empty locations when no brand selected', async () => {
-      store.loadLocations();
-      await new Promise(resolve => setTimeout(resolve, 0));
-      expect(store.locations()).toEqual([]);
+      expect(store.locationCount()).toBe(ALL_LOCATIONS.length);
     });
 
     it('should handle API error with Error instance', async () => {
-      store.setBrand('audi');
-      apiSpy.getLocations.mockRejectedValueOnce(new Error('Location error'));
+      apiSpy.getAllLocations.mockRejectedValueOnce(new Error('Location error'));
       store.loadLocations();
       await new Promise(resolve => setTimeout(resolve, 0));
       expect(store.error()).toBe('Location error');
@@ -175,8 +168,7 @@ describe('BookingStore', () => {
     });
 
     it('should handle API error with non-Error value', async () => {
-      store.setBrand('audi');
-      apiSpy.getLocations.mockRejectedValueOnce(42);
+      apiSpy.getAllLocations.mockRejectedValueOnce(42);
       store.loadLocations();
       await new Promise(resolve => setTimeout(resolve, 0));
       expect(store.error()).toBe('Unknown error');
@@ -404,6 +396,55 @@ describe('BookingStore', () => {
       expect(store.customerInfo()).toBeNull();
       expect(store.vehicleInfo()).toBeNull();
       expect(store.privacyConsent()).toBe(false);
+    });
+  });
+
+  describe('notesExtras', () => {
+    it('should have null notesExtras initially', () => {
+      expect(store.notesExtras()).toBeNull();
+    });
+
+    it('should have hasNotesExtras as false initially', () => {
+      expect(store.hasNotesExtras()).toBe(false);
+    });
+
+    it('should have default computed values initially', () => {
+      expect(store.selectedMobilityOption()).toBe('none');
+      expect(store.selectedAppointmentPreference()).toBe('anytime');
+      expect(store.selectedCallbackOption()).toBe('none');
+    });
+
+    it('should set notesExtras', () => {
+      const extras = { mobilityOption: 'mid-range' as const, appointmentPreference: 'morning' as const, callbackOption: 'yes' as const };
+      store.setNotesExtras(extras);
+      expect(store.notesExtras()).toEqual(extras);
+    });
+
+    it('should update hasNotesExtras to true after set', () => {
+      store.setNotesExtras({ mobilityOption: 'none', appointmentPreference: 'anytime', callbackOption: 'none' });
+      expect(store.hasNotesExtras()).toBe(true);
+    });
+
+    it('should update computed signals after set', () => {
+      store.setNotesExtras({ mobilityOption: 'luxury', appointmentPreference: 'afternoon', callbackOption: 'yes' });
+      expect(store.selectedMobilityOption()).toBe('luxury');
+      expect(store.selectedAppointmentPreference()).toBe('afternoon');
+      expect(store.selectedCallbackOption()).toBe('yes');
+    });
+
+    it('should clear notesExtras', () => {
+      store.setNotesExtras({ mobilityOption: 'compact-car', appointmentPreference: 'morning', callbackOption: 'yes' });
+      store.clearNotesExtras();
+      expect(store.notesExtras()).toBeNull();
+      expect(store.hasNotesExtras()).toBe(false);
+    });
+
+    it('should reset computed signals after clear', () => {
+      store.setNotesExtras({ mobilityOption: 'luxury', appointmentPreference: 'afternoon', callbackOption: 'yes' });
+      store.clearNotesExtras();
+      expect(store.selectedMobilityOption()).toBe('none');
+      expect(store.selectedAppointmentPreference()).toBe('anytime');
+      expect(store.selectedCallbackOption()).toBe('none');
     });
   });
 

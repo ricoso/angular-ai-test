@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { AVAILABLE_BRANDS } from '../../models/brand.model';
 import { LOCATIONS_BY_BRAND } from '../../models/location.model';
+import type { NotesExtras } from '../../models/notes-extras.model';
 import { AVAILABLE_SERVICES } from '../../models/service.model';
 import { BookingApiService } from '../../services/booking-api.service';
 import { BookingStore } from '../../stores/booking.store';
@@ -68,6 +69,20 @@ describe('NotesContainerComponent', () => {
       const exposed = component as unknown as { currentNote: () => string | null };
       expect(exposed.currentNote()).toBeNull();
     });
+
+    it('should expose initialExtras from store', () => {
+      const exposed = component as unknown as { initialExtras: () => NotesExtras | null };
+      expect(exposed.initialExtras()).toBeNull();
+    });
+
+    it('should expose currentExtras with defaults initially', () => {
+      const exposed = component as unknown as { currentExtras: () => NotesExtras };
+      expect(exposed.currentExtras()).toEqual({
+        mobilityOption: 'none',
+        appointmentPreference: 'anytime',
+        callbackOption: 'none'
+      });
+    });
   });
 
   describe('onNoteChanged', () => {
@@ -90,15 +105,39 @@ describe('NotesContainerComponent', () => {
     });
   });
 
+  describe('onExtrasChanged', () => {
+    it('should update currentExtras when extras change', () => {
+      const extras: NotesExtras = {
+        mobilityOption: 'luxury',
+        appointmentPreference: 'afternoon',
+        callbackOption: 'yes'
+      };
+      const exposed = component as unknown as {
+        onExtrasChanged: (extras: NotesExtras) => void;
+        currentExtras: () => NotesExtras;
+      };
+      exposed.onExtrasChanged(extras);
+      expect(exposed.currentExtras()).toEqual(extras);
+    });
+  });
+
   describe('onContinue', () => {
-    it('should save note to store and navigate', () => {
+    it('should save note and extras to store and navigate', () => {
+      const extras: NotesExtras = {
+        mobilityOption: 'mid-range',
+        appointmentPreference: 'morning',
+        callbackOption: 'yes'
+      };
       const exposed = component as unknown as {
         onNoteChanged: (note: string | null) => void;
+        onExtrasChanged: (extras: NotesExtras) => void;
         onContinue: () => void;
       };
       exposed.onNoteChanged('Bitte Öl prüfen.');
+      exposed.onExtrasChanged(extras);
       exposed.onContinue();
       expect(store.bookingNote()).toBe('Bitte Öl prüfen.');
+      expect(store.notesExtras()).toEqual(extras);
       expect(router.navigate).toHaveBeenCalledWith(['/home/appointment']);
     });
 
@@ -132,10 +171,14 @@ describe('NotesContainerComponent', () => {
       expect(store.bookingNote()).toBe('Test note');
     });
 
-    it('should save null when no note provided', () => {
+    it('should save default extras when no changes made', () => {
       const exposed = component as unknown as { onContinue: () => void };
       exposed.onContinue();
-      expect(store.bookingNote()).toBeNull();
+      expect(store.notesExtras()).toEqual({
+        mobilityOption: 'none',
+        appointmentPreference: 'anytime',
+        callbackOption: 'none'
+      });
       expect(router.navigate).toHaveBeenCalledWith(['/home/appointment']);
     });
   });
@@ -147,25 +190,29 @@ describe('NotesContainerComponent', () => {
       expect(router.navigate).toHaveBeenCalledWith(['/home/services']);
     });
 
-    it('should clear booking note in store before navigating back', () => {
+    it('should clear booking note and notesExtras in store before navigating back', () => {
       store.setBookingNote('Test note');
-      expect(store.bookingNote()).toBe('Test note');
+      store.setNotesExtras({ mobilityOption: 'luxury', appointmentPreference: 'afternoon', callbackOption: 'yes' });
 
       const exposed = component as unknown as { onBack: () => void };
       exposed.onBack();
 
       expect(store.bookingNote()).toBeNull();
+      expect(store.notesExtras()).toBeNull();
       expect(store.hasBookingNote()).toBe(false);
+      expect(store.hasNotesExtras()).toBe(false);
       expect(router.navigate).toHaveBeenCalledWith(['/home/services']);
     });
 
-    it('should handle back when booking note is already null', () => {
+    it('should handle back when values are already null', () => {
       expect(store.bookingNote()).toBeNull();
+      expect(store.notesExtras()).toBeNull();
 
       const exposed = component as unknown as { onBack: () => void };
       exposed.onBack();
 
       expect(store.bookingNote()).toBeNull();
+      expect(store.notesExtras()).toBeNull();
       expect(router.navigate).toHaveBeenCalledWith(['/home/services']);
     });
   });
@@ -181,6 +228,17 @@ describe('NotesContainerComponent', () => {
       const exposed = component as unknown as { initialNote: () => string | null };
       store.setBookingNote('Previous note');
       expect(exposed.initialNote()).toBe('Previous note');
+    });
+
+    it('should reflect notesExtras from store', () => {
+      const extras: NotesExtras = {
+        mobilityOption: 'compact-car',
+        appointmentPreference: 'morning',
+        callbackOption: 'yes'
+      };
+      const exposed = component as unknown as { initialExtras: () => NotesExtras | null };
+      store.setNotesExtras(extras);
+      expect(exposed.initialExtras()).toEqual(extras);
     });
   });
 });

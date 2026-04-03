@@ -22,7 +22,17 @@ describe('BrandSelectionContainerComponent', () => {
       imports: [BrandSelectionContainerComponent],
       providers: [
         BookingStore,
-        { provide: BookingApiService, useValue: { getBrands: jest.fn().mockResolvedValue(AVAILABLE_BRANDS) } },
+        {
+          provide: BookingApiService,
+          useValue: {
+            getBrands: jest.fn().mockResolvedValue(AVAILABLE_BRANDS),
+            getBrandsByLocation: jest.fn().mockResolvedValue([]),
+            getBrandsByBranch: jest.fn().mockResolvedValue([]),
+            getAllLocations: jest.fn().mockResolvedValue([]),
+            getBranches: jest.fn().mockResolvedValue([]),
+            getServices: jest.fn().mockResolvedValue([])
+          }
+        },
         { provide: Router, useValue: router }
       ]
     })
@@ -46,21 +56,54 @@ describe('BrandSelectionContainerComponent', () => {
   });
 
   describe('Brand Selection', () => {
-    it('should set brand in store and navigate on selection', () => {
+    it('should set brand in store on selection', () => {
       const exposed = component as unknown as { onBrandSelect: (b: string) => void };
       exposed.onBrandSelect('audi');
 
       expect(store.selectedBrand()).toBe('audi');
-      expect(router.navigate).toHaveBeenCalledWith(['/home/location']);
     });
 
-    it('should navigate to location route', () => {
+    it('should set different brand in store', () => {
       const exposed = component as unknown as { onBrandSelect: (b: string) => void };
       exposed.onBrandSelect('bmw');
 
       expect(store.selectedBrand()).toBe('bmw');
+    });
+  });
+
+  describe('Navigation', () => {
+    it('should navigate to /home/services on continue', () => {
+      const exposed = component as unknown as { onContinue: () => void };
+      exposed.onContinue();
+
+      expect(router.navigate).toHaveBeenCalledWith(['/home/services']);
+    });
+
+    it('should clear brand and navigate to /home/location on back', () => {
+      const exposed = component as unknown as { onBrandSelect: (b: string) => void; onBack: () => void };
+      exposed.onBrandSelect('audi');
+      exposed.onBack();
+
+      expect(store.selectedBrand()).toBeNull();
       expect(router.navigate).toHaveBeenCalledWith(['/home/location']);
     });
   });
 
+  describe('Branch Address', () => {
+    it('should return empty string when no branch is selected', () => {
+      const exposed = component as unknown as { formattedBranchAddress: () => string };
+      expect(exposed.formattedBranchAddress()).toBe('');
+    });
+
+    it('should format branch address correctly', () => {
+      store.selectBranch({
+        branchId: 'b1',
+        name: 'Autohaus Test',
+        address: { street: 'Musterstr. 1', zip: '12345', city: 'Berlin' },
+        brands: ['audi']
+      });
+      const exposed = component as unknown as { formattedBranchAddress: () => string };
+      expect(exposed.formattedBranchAddress()).toBe('Musterstr. 1, 12345 Berlin');
+    });
+  });
 });

@@ -4,6 +4,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 
 import { i18nKeys, TranslatePipe, TranslateService } from '@core/i18n';
+import { WizardBreadcrumbComponent } from '@shared/components/wizard-breadcrumb/wizard-breadcrumb.component';
+import { WIZARD_STEPS } from '@shared/components/wizard-breadcrumb/wizard-steps.config';
 
 import { AVAILABLE_BRANDS } from '../../models/brand.model';
 import { AVAILABLE_SERVICES } from '../../models/service.model';
@@ -21,6 +23,7 @@ import { ServicesTileComponent } from './components/services-tile/services-tile.
     MatButtonModule,
     MatIconModule,
     TranslatePipe,
+    WizardBreadcrumbComponent,
     AppointmentTileComponent,
     ServicesTileComponent,
     PersonalDataTileComponent,
@@ -36,6 +39,8 @@ export class BookingOverviewContainerComponent {
   private readonly translateService = inject(TranslateService);
 
   protected readonly bookingOverview = i18nKeys.booking.bookingOverview;
+  protected readonly wizardSteps = WIZARD_STEPS;
+  protected readonly activeStepIndex = 6;
 
   protected readonly appointment = this.store.selectedAppointment;
   protected readonly services = this.store.selectedServices;

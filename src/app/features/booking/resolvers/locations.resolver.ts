@@ -5,6 +5,6 @@ import { BookingStore } from '../stores/booking.store';
 
 export const locationsResolver: ResolveFn<void> = () => {
   const store = inject(BookingStore);
-  store.loadLocations();
+  store.loadBranches();
   return;
 };

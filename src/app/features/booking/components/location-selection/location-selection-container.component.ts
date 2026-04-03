@@ -4,16 +4,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 
 import { i18nKeys, TranslatePipe } from '@core/i18n';
+import { WizardBreadcrumbComponent } from '@shared/components/wizard-breadcrumb/wizard-breadcrumb.component';
+import { WIZARD_STEPS } from '@shared/components/wizard-breadcrumb/wizard-steps.config';
 
-import type { LocationDisplay } from '../../models/location.model';
+import type { BranchConfig } from '../../models/branch-config.model';
 import { BookingStore } from '../../stores/booking.store';
 
-import { LocationButtonsComponent } from './location-buttons.component';
+import { LocationCardsComponent } from './location-cards.component';
 
 @Component({
   selector: 'app-location-selection-container',
   standalone: true,
-  imports: [LocationButtonsComponent, MatButtonModule, MatIconModule, TranslatePipe],
+  imports: [LocationCardsComponent, WizardBreadcrumbComponent, MatButtonModule, MatIconModule, TranslatePipe],
   templateUrl: './location-selection-container.component.html',
   styleUrl: './location-selection-container.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -23,16 +25,13 @@ export class LocationSelectionContainerComponent {
   private readonly router = inject(Router);
 
   protected readonly booking = i18nKeys.booking;
-  protected readonly locations = this.store.filteredLocations;
-  protected readonly selectedLocation = this.store.selectedLocation;
+  protected readonly wizardSteps = WIZARD_STEPS;
+  protected readonly activeStepIndex = 0;
+  protected readonly branches = this.store.branches;
+  protected readonly selectedBranch = this.store.selectedBranch;
 
-  protected onLocationSelect(location: LocationDisplay): void {
-    this.store.setLocation(location);
-    void this.router.navigate(['/home/services']);
-  }
-
-  protected onBack(): void {
-    this.store.clearSelectedLocation();
+  protected onBranchSelect(branch: BranchConfig): void {
+    this.store.selectBranch(branch);
     void this.router.navigate(['/home/brand']);
   }
 }

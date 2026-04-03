@@ -4,6 +4,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 
 import { i18nKeys, TranslatePipe } from '@core/i18n';
+import { WizardBreadcrumbComponent } from '@shared/components/wizard-breadcrumb/wizard-breadcrumb.component';
+import { WIZARD_STEPS } from '@shared/components/wizard-breadcrumb/wizard-steps.config';
 
 import type { AppointmentSlot } from '../../models/appointment.model';
 import { BookingStore } from '../../stores/booking.store';
@@ -13,7 +15,7 @@ import { AppointmentCardComponent } from './appointment-card.component';
 @Component({
   selector: 'app-appointment-selection-container',
   standalone: true,
-  imports: [TranslatePipe, MatButtonModule, MatIconModule, AppointmentCardComponent],
+  imports: [TranslatePipe, MatButtonModule, MatIconModule, WizardBreadcrumbComponent, AppointmentCardComponent],
   templateUrl: './appointment-selection-container.component.html',
   styleUrl: './appointment-selection-container.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -23,6 +25,8 @@ export class AppointmentSelectionContainerComponent {
   private readonly router = inject(Router);
 
   protected readonly booking = i18nKeys.booking;
+  protected readonly wizardSteps = WIZARD_STEPS;
+  protected readonly activeStepIndex = 4;
   protected readonly appointments = this.store.appointments;
   protected readonly selectedAppointment = this.store.selectedAppointment;
   protected readonly hasAppointmentSelected = this.store.hasAppointmentSelected;

@@ -1,11 +1,38 @@
+<app-wizard-breadcrumb [steps]="wizardSteps" [activeIndex]="activeStepIndex" />
+
 <section class="brand-selection">
+  @if (selectedBranch()) {
+    <div class="brand-selection__info-banner" role="status" aria-live="polite">
+      <span class="brand-selection__info-icon">
+        <mat-icon aria-hidden="true">location_on</mat-icon>
+      </span>
+      <span class="brand-selection__info-text">
+        {{ booking.branch.infoLabel | translate }}: <strong>{{ selectedBranch()!.name }}</strong> — {{ formattedBranchAddress() }}
+      </span>
+    </div>
+  }
+
   <h1 class="brand-selection__title">{{ booking.brand.title | translate }}</h1>
   <p class="brand-selection__subtitle">{{ booking.brand.subtitle | translate }}</p>
 
-  <app-brand-buttons
-    [brands]="brands()"
-    [selectedBrand]="selectedBrand()"
-    (brandSelected)="onBrandSelect($event)"
-  />
+  @if (brands().length > 0) {
+    <app-brand-cards
+      [brands]="brands()"
+      [selectedBrand]="selectedBrand()"
+      (brandSelected)="onBrandSelect($event)"
+    />
+  } @else {
+    <p class="brand-selection__empty">{{ booking.brand.noBrandsAvailable | translate }}</p>
+  }
 
+  <!-- Navigation: Nur Zurück (Auto-Navigation bei Marken-Klick) -->
+  <nav class="brand-selection__nav" [attr.aria-label]="booking.brand.ariaNavLabel | translate">
+    <button
+      mat-flat-button
+      class="brand-selection__back-button"
+      (click)="onBack()">
+      <mat-icon aria-hidden="true">arrow_back</mat-icon>
+      {{ booking.brand.backButton | translate }}
+    </button>
+  </nav>
 </section>

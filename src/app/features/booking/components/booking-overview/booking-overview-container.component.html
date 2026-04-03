@@ -1,3 +1,5 @@
+<app-wizard-breadcrumb [steps]="wizardSteps" [activeIndex]="activeStepIndex" />
+
 <section class="booking-overview" aria-labelledby="overview-title">
   <h1 id="overview-title" class="booking-overview__title">
     {{ bookingOverview.title | translate }}
@@ -6,7 +8,7 @@
     {{ bookingOverview.subtitle | translate }}
   </p>
 
-  <div class="booking-overview__grid" role="region" aria-label="booking summary">
+  <div class="booking-overview__grid" role="region" [attr.aria-label]="bookingOverview.ariaGridLabel | translate">
     @if (appointment(); as apt) {
       <app-appointment-tile [appointment]="apt" />
     }
@@ -30,7 +32,7 @@
     <app-price-tile [totalPriceGross]="staticTotalPrice()" />
   </div>
 
-  <nav class="booking-overview__navigation" aria-label="page navigation">
+  <nav class="booking-overview__navigation" [attr.aria-label]="bookingOverview.ariaNavLabel | translate">
     <button
       mat-flat-button
       class="booking-overview__back-button"

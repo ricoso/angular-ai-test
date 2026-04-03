@@ -4,6 +4,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 
 import { i18nKeys, TranslatePipe } from '@core/i18n';
+import { WizardBreadcrumbComponent } from '@shared/components/wizard-breadcrumb/wizard-breadcrumb.component';
+import { WIZARD_STEPS } from '@shared/components/wizard-breadcrumb/wizard-steps.config';
 
 import type { AppointmentSlot } from '../../models/appointment.model';
 import type { WorkshopCalendarDay, WorkshopTimeSlot } from '../../models/workshop-calendar.model';
@@ -19,6 +21,7 @@ import { WorkshopCalendarDayComponent } from './workshop-calendar-day.component'
     TranslatePipe,
     MatButtonModule,
     MatIconModule,
+    WizardBreadcrumbComponent,
     WorkshopCalendarDatePickerComponent,
     WorkshopCalendarDayComponent
   ],
@@ -31,6 +34,8 @@ export class WorkshopCalendarContainerComponent {
   private readonly router = inject(Router);
 
   protected readonly booking = i18nKeys.booking;
+  protected readonly wizardSteps = WIZARD_STEPS;
+  protected readonly activeStepIndex = 4;
   protected readonly workshopCalendarDays = this.store.workshopCalendarDays;
   protected readonly workshopCalendarDate = this.store.workshopCalendarDate;
   protected readonly selectedAppointment = this.store.selectedAppointment;

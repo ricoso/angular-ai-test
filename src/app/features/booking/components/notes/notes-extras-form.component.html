@@ -1,0 +1,61 @@
+<div class="notes-extras" role="group" [attr.aria-label]="notes.mobilityOptions.title | translate">
+  <!-- Mobility Options -->
+  <div class="notes-extras__section" role="region">
+    <h2 class="notes-extras__heading">{{ notes.mobilityOptions.title | translate }}</h2>
+    <div class="notes-extras__card">
+      <mat-form-field appearance="outline" class="notes-extras__field">
+        <mat-label>{{ notes.mobilityOptions.label | translate }}</mat-label>
+        <mat-select
+          [value]="mobilityOption()"
+          (selectionChange)="onMobilityOptionChange($event.value)"
+        >
+          @for (item of mobilityOptionItems(); track item.value) {
+            <mat-option [value]="item.value">
+              {{ item.label | translate }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Appointment Preference -->
+  <div class="notes-extras__section" role="region">
+    <h2 class="notes-extras__heading">{{ notes.appointmentPreference.title | translate }}</h2>
+    <div class="notes-extras__card">
+      <mat-form-field appearance="outline" class="notes-extras__field">
+        <mat-label>{{ notes.appointmentPreference.label | translate }}</mat-label>
+        <mat-select
+          [value]="appointmentPreference()"
+          (selectionChange)="onAppointmentPreferenceChange($event.value)"
+        >
+          @for (item of appointmentOptionItems(); track item.value) {
+            <mat-option [value]="item.value">
+              {{ item.label | translate }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Callback -->
+  <div class="notes-extras__section" role="region">
+    <h2 class="notes-extras__heading">{{ notes.callback.title | translate }}</h2>
+    <div class="notes-extras__card">
+      <mat-form-field appearance="outline" class="notes-extras__field">
+        <mat-label>{{ notes.callback.label | translate }}</mat-label>
+        <mat-select
+          [value]="callbackOption()"
+          (selectionChange)="onCallbackOptionChange($event.value)"
+        >
+          @for (item of callbackOptionItems(); track item.value) {
+            <mat-option [value]="item.value">
+              {{ item.label | translate }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+</div>

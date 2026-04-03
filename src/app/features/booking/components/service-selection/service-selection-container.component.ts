@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { Router } from '@angular/router';
 
 import { i18nKeys, TranslatePipe } from '@core/i18n';
+import { WizardBreadcrumbComponent } from '@shared/components/wizard-breadcrumb/wizard-breadcrumb.component';
+import { WIZARD_STEPS } from '@shared/components/wizard-breadcrumb/wizard-steps.config';
 
 import type { ServiceType } from '../../models/service.model';
 import { BookingStore } from '../../stores/booking.store';
@@ -12,7 +14,7 @@ import { ServiceSummaryBarComponent } from './service-summary-bar.component';
 @Component({
   selector: 'app-service-selection-container',
   standalone: true,
-  imports: [TranslatePipe, ServiceCardComponent, ServiceSummaryBarComponent],
+  imports: [TranslatePipe, WizardBreadcrumbComponent, ServiceCardComponent, ServiceSummaryBarComponent],
   templateUrl: './service-selection-container.component.html',
   styleUrl: './service-selection-container.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -22,6 +24,8 @@ export class ServiceSelectionContainerComponent {
   private readonly router = inject(Router);
 
   protected readonly booking = i18nKeys.booking;
+  protected readonly wizardSteps = WIZARD_STEPS;
+  protected readonly activeStepIndex = 2;
   protected readonly services = this.store.services;
   protected readonly selectedServices = this.store.selectedServices;
   protected readonly hasServicesSelected = this.store.hasServicesSelected;
@@ -58,6 +62,6 @@ export class ServiceSelectionContainerComponent {
 
   protected onBack(): void {
     this.store.clearSelectedServices();
-    void this.router.navigate(['/home/location']);
+    void this.router.navigate(['/home/brand']);
   }
 }

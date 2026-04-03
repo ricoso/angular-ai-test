@@ -8,6 +8,12 @@ export const brandSelectedGuard: CanActivateFn = () => {
   const store = inject(BookingStore);
   const router = inject(Router);
 
+  console.debug('[Guard] brandSelectedGuard — hasLocation:', store.hasLocationSelected(), 'hasBrand:', store.hasBrandSelected());
+
+  if (!store.hasLocationSelected()) {
+    return router.createUrlTree(['/home/location']);
+  }
+
   if (store.hasBrandSelected()) {
     return true;
   }
