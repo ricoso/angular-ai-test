@@ -34,7 +34,7 @@ import { ServicesTileComponent } from './components/services-tile/services-tile.
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BookingOverviewContainerComponent {
-  private readonly store = inject(BookingStore);
+  protected readonly store = inject(BookingStore);
   private readonly router = inject(Router);
   private readonly translateService = inject(TranslateService);
 
@@ -87,9 +87,6 @@ export class BookingOverviewContainerComponent {
     return labels;
   });
 
-  protected readonly staticTotalPrice = computed(() =>
-    this.translateService.instant(i18nKeys.booking.bookingOverview.tiles.price.staticPrice)
-  );
 
   protected onSubmit(): void {
     this.store.submitBooking();

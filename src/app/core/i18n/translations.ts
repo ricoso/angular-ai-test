@@ -279,10 +279,12 @@ export const translations = {
             mileageLabel: 'Kilometerstand',
             mileageUnit: 'km'
           },
-          price: {
-            title: 'Preis',
-            vatIncluded: 'inkl. Mehrwertsteuer',
-            staticPrice: '129,00 €'
+          extras: {
+            title: 'Hinweise & Optionen',
+            mobilityLabel: 'Mobilität',
+            appointmentPreferenceLabel: 'Terminpräferenz',
+            callbackLabel: 'Rückruf',
+            noteLabel: 'Nachricht'
           }
         },
         navigation: {
@@ -565,10 +567,12 @@ export const translations = {
             mileageLabel: 'Mileage',
             mileageUnit: 'km'
           },
-          price: {
-            title: 'Price',
-            vatIncluded: 'incl. VAT',
-            staticPrice: '€ 129.00'
+          extras: {
+            title: 'Notes & Options',
+            mobilityLabel: 'Mobility',
+            appointmentPreferenceLabel: 'Appointment Preference',
+            callbackLabel: 'Callback',
+            noteLabel: 'Message'
           }
         },
         navigation: {

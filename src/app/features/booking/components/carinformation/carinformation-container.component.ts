@@ -52,8 +52,7 @@ export class CarinformationContainerComponent {
 
   protected readonly vehicleForm = this.fb.group({
     licensePlate: ['', [Validators.required, Validators.pattern(/^[A-ZÄÖÜ]{1,3}-[A-Z]{1,2}\s?\d{1,4}$/i)]],
-    mileage: [null as number | null, [Validators.required, Validators.min(0)]],
-    vin: ['', [Validators.minLength(17), Validators.maxLength(17), Validators.pattern(/^[A-HJ-NPR-Z0-9]{17}$/i)]]
+    mileage: [null as number | null, [Validators.required, Validators.min(0)]]
   });
 
   protected readonly privacyControl = new FormControl(false, [Validators.requiredTrue]);
@@ -91,8 +90,7 @@ export class CarinformationContainerComponent {
 
     const vehicleInfo: VehicleInfo = {
       licensePlate: vehicleValue.licensePlate ?? '',
-      mileage: vehicleValue.mileage ?? 0,
-      vin: vehicleValue.vin ?? ''
+      mileage: vehicleValue.mileage ?? 0
     };
 
     this.store.setCustomerInfo(customerInfo);
