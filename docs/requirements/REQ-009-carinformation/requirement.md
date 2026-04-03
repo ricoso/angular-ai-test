@@ -265,7 +265,7 @@ export interface CustomerInfo {
 export interface VehicleInfo {
   licensePlate: string;  // Kfz-Kennzeichen
   mileage: number;       // Kilometerstand
-  vin: string;           // FIN — genau 17 Zeichen
+  // VIN entfernt (REQ-013) — nur Nummernschild wird verwendet
 }
 ```
 

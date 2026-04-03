@@ -52,7 +52,7 @@ Der Benutzer erhält eine strukturierte Übersicht aller im Buchungs-Wizard gema
 - [ ] AC-2: Kachel „Wunschtermin" zeigt Datum und Uhrzeit des gewählten Termins aus dem BookingStore
 - [ ] AC-3: Kachel „Gewählter Service" listet alle gewählten Services (inkl. Variante bei Räderwechsel)
 - [ ] AC-4: Kachel „Persönliche Daten" zeigt Name, Straße, Ort, Telefon, E-Mail, Marke, Kennzeichen sowie Kilometerstand
-- [ ] AC-5: Preisanzeige zeigt Gesamtpreis inkl. MwSt. (statischer Wert)
+- [ ] AC-5: Kachel "Hinweise & Optionen" zeigt Mobilitätsoption, Terminpräferenz, Rückruf und Nachricht aus der Hinweisseite (REQ-012)
 - [ ] AC-6: Zurück-Button navigiert zur carinformation-Seite
 - [ ] AC-7: „Jetzt anfragen"-Button sendet die simulierte Buchung ab und navigiert zum Buchungsabschluss
 - [ ] AC-8: Guard verhindert Direktaufruf ohne vollständige Store-Daten — Redirect zu `/home`
@@ -275,7 +275,7 @@ export interface AppointmentSlot {
 | 1 | Wunschtermin | `displayDate`, `displayTime` |
 | 2 | Gewählter Service | Service-Titel(n) aus `selectedServices` (inkl. Variante) |
 | 3 | Persönliche Daten | Vorname + Nachname, Straße, PLZ + Ort, Telefon, E-Mail, Marke, Kennzeichen, Kilometerstand |
-| 4 | Preis | Gesamtpreis inkl. MwSt. (statisch) |
+| 4 | Hinweise & Optionen | Mobilitätsoption, Terminpräferenz, Rückruf, Nachricht (aus Hinweisseite REQ-012) |
 
 ### Material Components
 - `MatCard` für jede Kachel
@@ -284,7 +284,7 @@ export interface AppointmentSlot {
 - Keine Formulare — rein read-only Ansicht
 
 ### Layout (Desktop >= 48em)
-- 2-Spalten-Grid: Kachel 1 (oben links), Kachel 2 (oben rechts), Kachel 3 (unten links), Preis (unten rechts)
+- 2-Spalten-Grid: Kachel 1 (oben links), Kachel 2 (oben rechts), Kachel 3 (unten links), Hinweise & Optionen (unten rechts)
 - Navigationsleiste: `display: flex; justify-content: space-between`
 
 ### Layout (Mobile < 48em)
