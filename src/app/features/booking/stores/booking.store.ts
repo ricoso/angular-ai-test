@@ -375,6 +375,17 @@ export const BookingStore = signalStore(
     submitBooking(): void {
       console.debug('[BookingStore] submitBooking — marking as submitted');
       patchState(store, { bookingSubmitted: true });
+    },
+
+    resetFromStep(targetIndex: number): void {
+      console.debug(`[BookingStore] resetFromStep — clearing steps after index ${targetIndex}`);
+      // Clear all steps AFTER targetIndex (targetIndex itself stays)
+      // Step 0: Standort, Step 1: Marke, Step 2: Service, Step 3: Hinweise, Step 4: Termin, Step 5: Fahrzeug
+      if (targetIndex < 1) { patchState(store, { selectedBrand: null }); }
+      if (targetIndex < 2) { patchState(store, { selectedServices: [] }); }
+      if (targetIndex < 3) { patchState(store, { bookingNote: null, notesExtras: null }); }
+      if (targetIndex < 4) { patchState(store, { selectedAppointment: null, workshopCalendarDate: null, workshopCalendarDays: [] }); }
+      if (targetIndex < 5) { patchState(store, { customerInfo: null, vehicleInfo: null, privacyConsent: false }); }
     }
   }))
 );
