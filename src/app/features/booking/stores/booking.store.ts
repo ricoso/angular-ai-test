@@ -382,7 +382,6 @@ export const BookingStore = signalStore(
       if (targetIndex <= 0) { patchState(store, { selectedBranch: null, selectedLocation: null }); }
       if (targetIndex <= 1) { patchState(store, { selectedBrand: null }); }
       if (targetIndex <= 2) { patchState(store, { selectedServices: [] }); }
-      if (targetIndex <= 3) { patchState(store, { notesExtras: null }); }
       if (targetIndex <= 4) { patchState(store, { selectedAppointment: null, workshopCalendarDate: null, workshopCalendarDays: [] }); }
     }
   }))
