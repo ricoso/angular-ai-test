@@ -59,6 +59,20 @@ export class CarinformationContainerComponent {
 
   private readonly privacyTouched = signal(false);
 
+  constructor() {
+    const customer = this.store.customerInfo();
+    if (customer) {
+      this.customerForm.patchValue(customer);
+    }
+    const vehicle = this.store.vehicleInfo();
+    if (vehicle) {
+      this.vehicleForm.patchValue(vehicle);
+    }
+    if (this.store.privacyConsent()) {
+      this.privacyControl.setValue(true);
+    }
+  }
+
   protected readonly privacyError = computed(() =>
     this.privacyTouched() && this.privacyControl.invalid
   );
