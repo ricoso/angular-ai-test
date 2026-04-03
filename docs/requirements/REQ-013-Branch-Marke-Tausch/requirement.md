@@ -77,7 +77,7 @@ Refactoring des Wizard-Flows: Die Reihenfolge der Schritte "Markenauswahl" (REQ-
 - [ ] AC-21: Standort-Cards zeigen Marken als echte SVG-Logos (nicht als Text-Abkürzungen/Chips). Die SVGs aus `assets/brands/` müssen als `<img>` eingebunden werden, nicht als Text-Fallback.
 - [x] AC-22: VIN/FIN-Feld ist aus dem Fahrzeugformular entfernt — nur Kfz-Kennzeichen + Kilometerstand. **IMPLEMENTIERT:** `VehicleInfo` Interface, `vehicle-form.component`, `carinformation-container.component`.
 - [x] AC-23: Preis-Kachel in der Buchungsübersicht ist durch "Hinweise & Optionen" ersetzt — zeigt Mobilität, Terminpräferenz, Rückruf, Nachricht. **IMPLEMENTIERT:** `price-tile.component` umgebaut.
-- [ ] AC-24: Wenn der User im Wizard-Breadcrumb auf einen erledigten Schritt zurückspringt, werden alle übersprungenen Schritte im Store gelöscht und in der UI unselectiert. Beispiel: Von Termin (Step 5) zurück zu Marke (Step 2) → Service, Hinweise, Termin werden gelöscht.
+- [x] AC-24: Wizard-Breadcrumb Reset — Klick auf erledigten Schritt löscht Wizard-Auswahldaten (Standort, Marke, Services, Extras, Termin). **Kundendaten, Fahrzeugdaten und Kommentar/Nachricht bleiben erhalten.** IMPLEMENTIERT: `BookingStore.resetFromStep(targetIndex)`.
 
 ---
 
@@ -563,11 +563,13 @@ Wenn der User über den Breadcrumb zu einem früheren Schritt zurückspringt, we
 
 | Von → Nach | Was wird gelöscht |
 |-----------|-------------------|
-| Beliebig → Standort (0) | Marke, Services, Hinweise, Termin, Fahrzeugdaten |
-| Beliebig → Marke (1) | Services, Hinweise, Termin, Fahrzeugdaten |
-| Beliebig → Service (2) | Hinweise, Termin, Fahrzeugdaten |
-| Beliebig → Hinweise (3) | Termin, Fahrzeugdaten |
-| Beliebig → Termin (4) | Fahrzeugdaten |
+| Beliebig → Standort (0) | Standort, Marke, Services, Extras, Termin |
+| Beliebig → Marke (1) | Marke, Services, Extras, Termin |
+| Beliebig → Service (2) | Services, Extras, Termin |
+| Beliebig → Hinweise (3) | Extras, Termin |
+| Beliebig → Termin (4) | Termin |
+
+**Erhalten bleiben immer:** Kundendaten, Fahrzeugdaten, Kommentar/Nachricht
 
 **Implementierung:** `BookingStore.resetFromStep(targetIndex)` ruft pro übersprungenen Schritt die passende clear-Methode auf. Der `WizardBreadcrumbComponent` injectet den Store und Router — bei Klick auf Done-Step: `store.resetFromStep(targetIndex)` + `router.navigate([step.route])`.
 
