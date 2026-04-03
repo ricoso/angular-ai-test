@@ -56,8 +56,6 @@ export class NotesContainerComponent {
   }
 
   protected onBack(): void {
-    this.store.clearBookingNote();
-    this.store.clearNotesExtras();
     void this.router.navigate(['/home/services']);
   }
 }
