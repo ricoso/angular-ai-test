@@ -33,7 +33,9 @@ Refactoring des Wizard-Flows: Die Reihenfolge der Schritte "Markenauswahl" (REQ-
 
 - **VIN/FIN entfernt** (betrifft REQ-009): Das Fahrzeugformular enthält nur noch Kfz-Kennzeichen + Kilometerstand. Die VIN/FIN wurde entfernt — es wird nur mit Nummernschild gearbeitet. Betrifft: `VehicleInfo` Interface, `vehicle-form.component`, `carinformation-container.component`.
 - **Preis-Kachel ersetzt durch Hinweise & Optionen** (betrifft REQ-010): In der Buchungsübersicht wird statt der Preis-Kachel die Hinweisseite-Daten angezeigt: Mobilitätsoption, Terminpräferenz, Rückruf, Nachricht. Betrifft: `price-tile.component` (umgebaut).
+
 - **Wizard-Breadcrumb Reset:** Klick auf erledigten Schritt im Breadcrumb löscht alle nachfolgenden Schritte bis zum aktuellen aus dem Store (cascading reset). Betrifft: `wizard-breadcrumb.component`, `BookingStore.resetFromStep()`.
+
 
 **Excluded:**
 - Serviceauswahl (REQ-004) — nur Guard-Anpassung (prüft weiterhin `selectedLocation`)
@@ -78,6 +80,7 @@ Refactoring des Wizard-Flows: Die Reihenfolge der Schritte "Markenauswahl" (REQ-
 - [x] AC-22: VIN/FIN-Feld ist aus dem Fahrzeugformular entfernt — nur Kfz-Kennzeichen + Kilometerstand. **IMPLEMENTIERT:** `VehicleInfo` Interface, `vehicle-form.component`, `carinformation-container.component`.
 - [x] AC-23: Preis-Kachel in der Buchungsübersicht ist durch "Hinweise & Optionen" ersetzt — zeigt Mobilität, Terminpräferenz, Rückruf, Nachricht. **IMPLEMENTIERT:** `price-tile.component` umgebaut.
 - [x] AC-24: Wizard-Breadcrumb Reset — Klick auf erledigten Schritt löscht Wizard-Auswahldaten (Standort, Marke, Services, Extras, Termin). **Kundendaten, Fahrzeugdaten und Kommentar/Nachricht bleiben erhalten.** IMPLEMENTIERT: `BookingStore.resetFromStep(targetIndex)`.
+
 
 ---
 
