@@ -201,12 +201,8 @@ export const BookingStore = signalStore(
         patchState(store, {
           selectedBrand: null,
           selectedServices: [],
-          bookingNote: null,
           selectedAppointment: null,
           notesExtras: null,
-          customerInfo: null,
-          vehicleInfo: null,
-          privacyConsent: false,
           bookingSubmitted: false
         });
       }
@@ -224,12 +220,8 @@ export const BookingStore = signalStore(
         patchState(store, {
           selectedBrand: null,
           selectedServices: [],
-          bookingNote: null,
           selectedAppointment: null,
           notesExtras: null,
-          customerInfo: null,
-          vehicleInfo: null,
-          privacyConsent: false,
           bookingSubmitted: false
         });
       }
