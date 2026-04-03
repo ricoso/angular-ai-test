@@ -65,7 +65,6 @@ export class WorkshopCalendarContainerComponent {
   }
 
   protected onBack(): void {
-    this.store.clearWorkshopCalendar();
     void this.router.navigate(['/home/appointment']);
   }
 

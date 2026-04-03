@@ -43,7 +43,6 @@ export class BrandSelectionContainerComponent {
   }
 
   protected onBack(): void {
-    this.store.clearSelectedBrand();
     void this.router.navigate(['/home/location']);
   }
 }

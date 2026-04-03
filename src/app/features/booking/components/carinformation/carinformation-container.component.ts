@@ -102,7 +102,6 @@ export class CarinformationContainerComponent {
   }
 
   protected onBack(): void {
-    this.store.clearCarInformation();
     void this.router.navigate(['/home/appointment']);
   }
 

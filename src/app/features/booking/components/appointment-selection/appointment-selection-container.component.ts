@@ -41,7 +41,6 @@ export class AppointmentSelectionContainerComponent {
   }
 
   protected onBack(): void {
-    this.store.clearSelectedAppointment();
     void this.router.navigate(['/home/notes']);
   }
 

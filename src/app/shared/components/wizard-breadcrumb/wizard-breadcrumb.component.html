@@ -18,8 +18,9 @@
         @if (step.status === 'done') {
           <a
             class="wizard__step-label"
-            [routerLink]="step.route"
+            href="#"
             [attr.aria-label]="step.label | translate"
+            (click)="onStepClick($event, $index)"
           >{{ step.label | translate }}</a>
         } @else {
           <span class="wizard__step-label">{{ step.label | translate }}</span>
