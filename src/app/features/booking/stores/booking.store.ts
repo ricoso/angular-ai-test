@@ -378,14 +378,15 @@ export const BookingStore = signalStore(
     },
 
     resetFromStep(targetIndex: number): void {
-      console.debug(`[BookingStore] resetFromStep — clearing steps after index ${targetIndex}`);
-      // Clear all steps AFTER targetIndex (targetIndex itself stays)
+      console.debug(`[BookingStore] resetFromStep — clearing target step ${targetIndex} and all after`);
+      // Clear the TARGET step AND all steps after it
       // Step 0: Standort, Step 1: Marke, Step 2: Service, Step 3: Hinweise, Step 4: Termin, Step 5: Fahrzeug
-      if (targetIndex < 1) { patchState(store, { selectedBrand: null }); }
-      if (targetIndex < 2) { patchState(store, { selectedServices: [] }); }
-      if (targetIndex < 3) { patchState(store, { bookingNote: null, notesExtras: null }); }
-      if (targetIndex < 4) { patchState(store, { selectedAppointment: null, workshopCalendarDate: null, workshopCalendarDays: [] }); }
-      if (targetIndex < 5) { patchState(store, { customerInfo: null, vehicleInfo: null, privacyConsent: false }); }
+      if (targetIndex <= 0) { patchState(store, { selectedBranch: null, selectedLocation: null }); }
+      if (targetIndex <= 1) { patchState(store, { selectedBrand: null }); }
+      if (targetIndex <= 2) { patchState(store, { selectedServices: [] }); }
+      if (targetIndex <= 3) { patchState(store, { bookingNote: null, notesExtras: null }); }
+      if (targetIndex <= 4) { patchState(store, { selectedAppointment: null, workshopCalendarDate: null, workshopCalendarDays: [] }); }
+      if (targetIndex <= 5) { patchState(store, { customerInfo: null, vehicleInfo: null, privacyConsent: false }); }
     }
   }))
 );
